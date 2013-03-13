@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block header %}
+Rooms
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'room-add' %}" class="button success small right">Add Room</a>
+{% endblock %}
+
+{% block content %}
+    <table width="100%" id="roomtable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Building</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for room in room_list %}
+    <tr>
+      <td><a href="{% url 'room-detail' room.id %}">{{ room.name }}</a></td>
+      <td>{{ room.building }}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+{% block scriptend %}
+{% endblock %}

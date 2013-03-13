@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block header %}
+IP addresses
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'ipaddress-add' %}" class="button success right small">Add Ip address</a>
+{% endblock %}
+{% block content %}
+
+    <table width="100%" id="adresstable">
+  <thead>
+    <tr>
+      <th>IP Address</th>
+      <th>Device</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for ipaddress in ipaddress_list %}
+    <tr>
+      <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
+      {% if ipaddress.device %}
+          <td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td>
+          {% else %}
+          <td>Not assigned</td>
+          {% endif %}
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+{% block scriptend %}
+$(document).ready(function() {
+    $('#devicetable tr').click(function() {
+        var href = $(this).find("a").attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+
+});
+{% endblock %}

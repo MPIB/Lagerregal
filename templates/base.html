@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Warenhaus</title>
+	<link rel="stylesheet" href="/static/css/foundation.min.css">
+</head>
+<body>
+	<nav class="top-bar">
+  <ul class="title-area">
+    <!-- Title Area -->
+    <li class="name">
+      <h1><a href="{% url 'home' %}">Warenhaus </a></h1>
+    </li>
+    <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
+    <li class="toggle-topbar menu-icon"><a href="#"></a></li>
+  </ul>
+
+  <section class="top-bar-section">
+    <!-- Left Nav Section -->
+    <ul class="left">
+      <li class="divider"></li>
+      <li class="has-dropdown"><a href="{% url 'device-list' %}">Devices</a>
+
+        <ul class="dropdown">
+          <li><a href="{% url 'type-list' %}">Devicetypes</a></li>
+          <li><a href="{% url 'manufacturer-list' %}">Manufacturers</a></li>
+        </ul>
+      </li>
+      <li class="divider"></li>
+      <li class="has-dropdown"><a href="#">Locations</a>
+
+        <ul class="dropdown">
+          <li><a href="{% url 'room-list' %}">Rooms</a></li>
+          <li><a href="{% url 'building-list' %}">Buildings</a></li>
+        </ul>
+      </li>
+      <li class="divider"></li>
+      <li><a href="{% url 'ipaddress-list' %}">IP Adresses</a>
+      <li class="divider"></li>
+    </ul>
+    <ul class="right">
+      {% if user.is_authenticated %}
+      <li class="divider"></li>
+      <li class="has-form">
+        <div class="row collapse">
+        <form method="post" action="{% url 'search' %}">{% csrf_token %}
+            <div class="small-6 columns">
+              <input type="text" placeholder="Search" name="searchquery">
+            </div>
+            <div class="small-4 columns">
+              <input type="submit" value="Search" class="button" />
+            </div>
+</div>
+        </form>
+      </li>
+      <li class="divider"></li>
+  <li class="has-dropdown"><a href="#">{{ user.username }}</a>
+  <ul class="dropdown">
+      {% if user.is_staff %}
+      <li><a href="{% url 'admin:index' %}"><i class="icon-lock"></i> Admin</a></li>
+      {% endif %}
+  <li><a href="{% url 'django.contrib.auth.views.logout' %}" >Logout</a></li>
+  </ul>
+</li>
+{% else %}
+    <a href="{% url 'django.contrib.auth.views.login' %}" class="button button-success">Login</a>
+{% endif %}
+    </ul>
+
+  </section>
+</nav>
+{% if messages %}
+    {% for message in messages %}
+    <div class="row">
+	<div class="small-12">
+    <div class="alert-box {{message.tags}}">
+			{{message|safe }}
+			<a href="#" class="close">&times;</a>
+		</div>
+</div>
+</div>
+    {% endfor %}
+{% endif %}
+<div class="row">
+	<div class="small-6 columns"><h2>{% block header %}{% endblock %}</h2></div>
+  <div class="small-6 columns" style="margin-top:20px">{% block  pullright %}{% endblock %}</div>
+</div>
+<div class="row">
+	<div class="small-12 columns">{% block content %}{% endblock %}</div>
+</div>
+<script src="/static/js/jquery.min.js"></script>
+	<script src="/static/js/foundation.min.js"></script>
+	<script>
+  $(document).foundation();
+  {% block scriptend %}{% endblock %}
+</script>
+</body>
+
+</html>

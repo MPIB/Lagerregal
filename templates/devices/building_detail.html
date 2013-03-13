@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block header %}
+Building: {{building.name}}
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'building-delete' building.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
+<a href="{% url 'building-edit' building.id %}" class="button success small right">Edit</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="small-6 large-8 columns">
+    <table>
+      <tbody>
+        <tr><td>Street</td><td>{{building.street}} {{building.number}}</td></tr>
+        <tr><td>ZIP Code</td><td>{{building.zipcode}}</td></tr>
+        <tr><td>City</td><td>{{building.city}}</td></tr>
+        <tr><td>State</td><td>{{building.state}}</td></tr>
+        <tr><td>Country</td><td>{{building.country}}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if device_list %}
+<h4>Devices</h4>
+    <table width="100%" id="devicetable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Buildnumber</th>
+      <th>Devicetype</th>
+      <th>Room</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for device in device_list %}
+    <tr>
+      <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+      <td>{{ device.buildnumber }}</td>
+      <td>{{ device.devicetype }}</td>
+      <td>{{ device.room }}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

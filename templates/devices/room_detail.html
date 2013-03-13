@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block header %}
+Room: {{room.name}}
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'room-delete' room.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
+<a href="{% url 'room-edit' room.id %}" class="button success small right">Edit</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="small-6 large-8 columns">
+    <table>
+      <tbody>
+        <tr><td>Building</td><td><a href="{% url 'building-detail' room.building.id %}">{{room.building}}</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h4>Devices</h4>
+{% if device_list %}
+    <table width="100%" id="devicetable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Buildnumber</th>
+      <th>Devicetype</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for device in device_list %}
+    <tr>
+      <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+      <td>{{ device.buildnumber }}</td>
+      <td>{{ device.devicetype }}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block header %}
+IP adress
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'ipaddress-delete' ipaddress.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
+<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="button success right small">Edit</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="small-6 large-8 columns">
+    <table>
+      <tbody>
+        <tr><td>Address</td><td>{{ipaddress.address}}</td></tr>
+        {% if ipaddress.device %}
+          <tr><td>Device</td><td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td></tr>
+          {% else %}
+          <tr><td>Device</td><td><a href="#">Assign device</a></td></tr>
+          {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

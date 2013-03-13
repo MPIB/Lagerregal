@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block header %}
+Devices
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'device-add' %}" class="button success small right">Add Device</a>
+{% endblock %}
+
+{% block content %}
+    <table width="100%" id="devicetable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Buildnumber</th>
+      <th>Devicetype</th>
+      <th>Room</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for device in device_list %}
+    <tr>
+      <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+      <td>{{ device.buildnumber }}</td>
+      <td>{{ device.devicetype }}</td>
+      <td>{{ device.room }} ({{device.room.building}})</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
+{% block scriptend %}
+$(document).ready(function() {
+    $('#devicetable tr').click(function() {
+        var href = $(this).find("a").attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+
+});
+{% endblock %}

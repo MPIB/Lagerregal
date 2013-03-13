@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block header %}
+Devicetypes
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'type-add' %}" class="button success small right">Add Devicetype</a>
+{% endblock %}
+
+{% block content %}
+<ul>
+  {% for type in type_list %}
+  <li><a href="{% url 'type-detail' type.id %}">{{type.name}}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
+
+{% block scriptend %}
+{% endblock %}

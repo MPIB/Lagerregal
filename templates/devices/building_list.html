@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block header %}
+Buildings
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'building-add' %}" class="button success small right">Add Building</a>
+{% endblock %}
+
+{% block content %}
+<ul>
+  {% for building in building_list %}
+  <li><a href="{% url 'building-detail' building.id %}">{{building.name}}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
+
+{% block scriptend %}
+{% endblock %}
