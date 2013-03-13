@@ -1,0 +1,93 @@
+[
+  {
+    "model": "devices.building",
+    "pk": 1,
+    "fields": {
+      "name": "Building 1"
+    }
+  },
+
+
+  {
+    "model": "devices.room",
+    "pk": 1,
+    "fields": {
+      "name": "212",
+      "building":"1"
+    }
+  },
+  {
+    "model": "devices.room",
+    "pk": 2,
+    "fields": {
+      "name": "210",
+      "building":"1"
+    }
+  },
+
+
+  {
+    "model": "devices.type",
+    "pk": 1,
+    "fields": {
+      "name": "Laptop"
+    }
+  },
+  {
+    "model": "devices.type",
+    "pk": 2,
+    "fields": {
+      "name": "Workstation"
+    }
+  },
+
+  {
+    "model": "devices.manufacturer",
+    "pk": 1,
+    "fields": {
+      "name": "Lenovo"
+    }
+  },
+  {
+    "model": "devices.manufacturer",
+    "pk": 2,
+    "fields": {
+      "name": "Apple"
+    }
+  },
+
+
+  {
+    "model": "devices.device",
+    "pk": 1,
+    "fields": {
+      "name": "Thinkpad x230",
+      "buildnumber":"124376543",
+      "devicetype":"1",
+      "room":"1",
+      "manufacturer":"1"
+    }
+  },
+  {
+    "model": "devices.device",
+    "pk": 2,
+    "fields": {
+      "name": "MacPro",
+      "buildnumber":"653647645",
+      "devicetype":"2",
+      "room":"1",
+      "manufacturer":"2"
+    }
+  },
+  {
+    "model": "devices.device",
+    "pk": 3,
+    "fields": {
+      "name": "MacPro",
+      "buildnumber":"99038503245",
+      "devicetype":"2",
+      "room":"2",
+      "manufacturer":"2"
+    }
+  }
+]
