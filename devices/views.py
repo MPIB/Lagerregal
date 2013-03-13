@@ -20,6 +20,7 @@ class Home(TemplateView):
 class DeviceList(ListView):
 	model = Device
 	context_object_name = 'device_list'
+	paginate_by = 30
 
 class DeviceDetail(DetailView):
 	model = Device

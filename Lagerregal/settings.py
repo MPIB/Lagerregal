@@ -1,4 +1,4 @@
-# Django settings for Warenhaus project.
+# Django settings for Lagerregal project.
 import os
 
 DEBUG = True
@@ -96,10 +96,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'Warenhaus.urls'
+ROOT_URLCONF = 'Lagerregal.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'Warenhaus.wsgi.application'
+WSGI_APPLICATION = 'Lagerregal.wsgi.application'
 
 TEMPLATE_DIRS = (
     '{0}/templates'.format(os.getcwd())
