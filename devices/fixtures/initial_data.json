@@ -63,6 +63,8 @@
     "fields": {
       "name": "Thinkpad x230",
       "buildnumber":"124376543",
+      "serialnumber":"1234",
+      "macaddress":"1234",
       "devicetype":"1",
       "room":"1",
       "manufacturer":"1"
@@ -74,6 +76,8 @@
     "fields": {
       "name": "MacPro",
       "buildnumber":"653647645",
+      "serialnumber":"12345",
+      "macaddress":"12345",
       "devicetype":"2",
       "room":"1",
       "manufacturer":"2"
@@ -85,6 +89,8 @@
     "fields": {
       "name": "MacPro",
       "buildnumber":"99038503245",
+      "serialnumber":"123456",
+      "macaddress":"123456",
       "devicetype":"2",
       "room":"2",
       "manufacturer":"2"
