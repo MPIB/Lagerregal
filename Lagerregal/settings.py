@@ -116,6 +116,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'devices',
     'network',
+    'rest_framework', 
 )
 
 # A sample logging configuration. The only tangible logging
