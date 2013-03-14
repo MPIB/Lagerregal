@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from devices.views import *
 from network.views import *
 from django.views.generic import TemplateView
+from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -52,4 +53,9 @@ urlpatterns = patterns('',
     url(r'^search/$', login_required(Search.as_view()), name="search"),
 
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
+
+urlpatterns += format_suffix_patterns(patterns('',
+    url(r'^api/$', api_root),
+))

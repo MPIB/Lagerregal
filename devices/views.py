@@ -5,6 +5,16 @@ from django.core.urlresolvers import reverse_lazy
 from devices.models import *
 from network.models import IpAddress
 from django.shortcuts import render_to_response
+from rest_framework import renderers
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
+@api_view(('GET',))
+def api_root(request, format=None):
+    return Response({
+    })
+
 
 class Home(TemplateView):
 	template_name = "home.html"
