@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
-from models import *
+from devices.models import *
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.comments.moderation import CommentModerator, moderator

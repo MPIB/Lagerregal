@@ -172,7 +172,6 @@ class Search(View):
 	def post(self, request, *args, **kwargs):
 		searchquery = request.POST["searchquery"]
 		devices = Device.objects.filter(name__icontains=searchquery)
-		print devices
 		context = {
 		"device_list":devices,
 		"searchquery":searchquery
