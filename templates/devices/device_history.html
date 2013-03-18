@@ -5,13 +5,15 @@ Device: {{device.name}}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'device-delete' device.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
-<a href="{% url 'device-edit' device.id %}" class="button success small right">Edit</a>
+<form method="post">{% csrf_token %}
+    <input type="submit" value="Restore Revision">
+</form>
 {% endblock %}
 
 {% block content %}
 <div class="row">
   <div class="small-6 large-8 columns">
+    <h4>Revision: {{version.pk}} from {{version.revision.date_created}}{% if version.revision.user %}, by {{version.revision.user.username}}{% endif %}</h4>
     <table>
       <tbody>
         <tr><td>Buildnumber</td><td>{{device.buildnumber}}</td></tr>
@@ -21,16 +23,6 @@ Device: {{device.name}}
         <tr><td>Owner</td><td>{{device.owner}}</td></tr>
       </tbody>
     </table>
-    <a href="{% url 'device-history-list' device.pk %}">View history</a>
-  </div>
-  <div class="small-6 large-4 columns">
-    <ul class="pricing-table">
-      <li class="title">IP addresses</li>
-      {% for address in ipaddress_list %}
-        <li class="bullet-item">{{address.address}}</li>
-      {% endfor %}
-      <li class="cta-button"><a class="button" href="#">Add new</a></li>
-    </ul>
   </div>
 </div>
 {% endblock %}

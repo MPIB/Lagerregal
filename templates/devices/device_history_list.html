@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block header %}
+History for <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
+{% endblock %}
+
+{% block content %}
+<div class="module">
+            {% if version_list %}
+                <table id="change-history">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Date/time' %}</th>
+                            <th scope="col">{% trans 'User' %}</th>
+                            <th scope="col">{% trans 'Comment' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in version_list %}
+                            <tr>
+                                <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}">{{action.revision.date_created}}</a></th>
+                                <td>
+                                    {% if action.revision.user %}
+                                        {{action.revision.user.username}}
+                                        {% if action.revision.user.first_name %} ({{action.revision.user.first_name}} {{action.revision.user.last_name}}){% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{% trans "This object doesn't have a change history." %}</p>
+            {% endif %}
+        </div>
+{% endblock %}

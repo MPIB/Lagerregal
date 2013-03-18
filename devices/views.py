@@ -9,6 +9,10 @@ from rest_framework import renderers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
+from reversion.models import Version
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+from django.utils.formats import localize
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -41,7 +45,37 @@ class DeviceDetail(DetailView):
 		context = super(DeviceDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
 		context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
+		context['version_list'] = reversion.get_unique_for_object(context["device"])
 		return context
+
+class DeviceHistory(View):
+
+	def get(self, request, *args, **kwargs):
+		deviceid = kwargs["pk"]
+		revisionid = kwargs["revision"]
+		device = get_object_or_404(Device, pk=deviceid)
+		version = get_object_or_404(Version, pk=revisionid)
+		context = {"version":version, "device":version.field_dict}
+		return render_to_response('devices/device_history.html', context, RequestContext(request))
+
+	def post(self, request, *args, **kwargs):
+		deviceid = kwargs["pk"]
+		revisionid = kwargs["revision"]
+		device = get_object_or_404(Device, pk=deviceid)
+		version = get_object_or_404(Version, pk=revisionid)
+		version.revision.revert()
+		reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
+		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+class DeviceHistoryList(View):
+
+	def get(self, request, *args, **kwargs):
+		deviceid = kwargs["pk"]
+		device = get_object_or_404(Device, pk=deviceid)
+		version_list = reversion.get_unique_for_object(device)
+		context = {"version_list":version_list, "device":device}
+		return render_to_response('devices/device_history_list.html', context, RequestContext(request))
+
 
 class DeviceCreate(CreateView):
 	model = Device
