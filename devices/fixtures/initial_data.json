@@ -24,7 +24,14 @@
       "building":"1"
     }
   },
-
+{
+    "model": "devices.room",
+    "pk": 3,
+    "fields": {
+      "name": "99",
+      "building":"1"
+    }
+  },
 
   {
     "model": "devices.type",
@@ -40,6 +47,13 @@
       "name": "Workstation"
     }
   },
+  {
+    "model": "devices.type",
+    "pk": 3,
+    "fields": {
+      "name": "Printer"
+    }
+  },
 
   {
     "model": "devices.manufacturer",
@@ -53,6 +67,13 @@
     "pk": 2,
     "fields": {
       "name": "Apple"
+    }
+  },
+  {
+    "model": "devices.manufacturer",
+    "pk": 3,
+    "fields": {
+      "name": "HP"
     }
   },
 
@@ -94,6 +115,92 @@
       "devicetype":"2",
       "room":"2",
       "manufacturer":"2"
+    }
+  },
+  {
+    "model": "devices.device",
+    "pk": 4,
+    "fields": {
+      "name": "Macbook Pro",
+      "buildnumber":"123123123",
+      "serialnumber":"532143523",
+      "macaddress":"124475",
+      "devicetype":"1",
+      "room":"1",
+      "manufacturer":"2"
+    }
+  },
+  {
+    "model": "devices.device",
+    "pk": 5,
+    "fields": {
+      "name": "Macbook Pro",
+      "buildnumber":"94343434",
+      "serialnumber":"1234562323",
+      "macaddress":"123456223",
+      "devicetype":"1",
+      "room":"2",
+      "manufacturer":"3"
+    }
+  },
+  {
+    "model": "devices.device",
+    "pk": 6,
+    "fields": {
+      "name": "HP Printer",
+      "buildnumber":"123435315",
+      "serialnumber":"1232362345",
+      "macaddress":"321253256",
+      "devicetype":"3",
+      "room":"3",
+      "manufacturer":"3"
+    }
+  },
+
+
+  {
+    "model": "network.IpAddress",
+    "pk": 1,
+    "fields": {
+      "address": "127.0.0.1",
+      "device":"1"
+    }
+  },
+  {
+    "model": "network.IpAddress",
+    "pk": 2,
+    "fields": {
+      "address": "127.0.0.2" 
+    }
+  },
+  {
+    "model": "network.IpAddress",
+    "pk": 3,
+    "fields": {
+      "address": "127.0.0.3"
+    }
+  },
+  {
+    "model": "network.IpAddress",
+    "pk": 4,
+    "fields": {
+      "address": "127.0.0.4",
+      "device":"1"
+    }
+  },
+  {
+    "model": "network.IpAddress",
+    "pk": 5,
+    "fields": {
+      "address": "127.0.0.5",
+      "device":"3"
+    }
+  },
+  {
+    "model": "network.IpAddress",
+    "pk": 6,
+    "fields": {
+      "address": "127.0.0.6"
     }
   }
 ]
