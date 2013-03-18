@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+import reversion
 
 class Type(models.Model):
 	name = models.CharField(_('Name'), max_length=200, blank=True)
@@ -101,3 +102,6 @@ class Device(models.Model):
 
 	def get_edit_url(self):
 		return reverse('device-edit', kwargs={'pk': self.pk})
+
+
+reversion.register(Device)
