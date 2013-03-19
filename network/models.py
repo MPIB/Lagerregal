@@ -12,8 +12,8 @@ class IpAddress(models.Model):
 		return self.address
 
 	class Meta:
-		verbose_name = _('IP address')
-		verbose_name_plural = _('IP addresses')
+		verbose_name = _('IP-Address')
+		verbose_name_plural = _('IP-Addresses')
 
 	def get_absolute_url(self):
 		return reverse('ipaddress-detail', kwargs={'pk': self.pk})
