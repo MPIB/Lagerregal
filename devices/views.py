@@ -338,8 +338,8 @@ class Search(FormView):
 		if form.cleaned_data["room"] != None:
 			search["room"] = form.cleaned_data["room"] 
 
-		#if form.cleaned_data["ipaddress"] != "":
-		#	search["name__icontains"] = form.cleaned_data["name"] 
+		if form.cleaned_data["ipaddress"] != "":
+			search["ipaddress__address"] = form.cleaned_data["ipaddress"] 
 
 		if form.cleaned_data["overdue"]=="y":
 			search["duedate__gt"] = datetime.datetime.now()
