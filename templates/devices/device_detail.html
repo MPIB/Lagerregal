@@ -49,5 +49,6 @@ Device: {{device.name}}
 {% endblock %}
 
 {% block scriptend %}
-$("#id_ipaddresses").select2();
+$("#id_ipaddresses").select2({
+    tokenSeparators: [",", " "]});
 {% endblock %}
