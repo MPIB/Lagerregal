@@ -329,3 +329,7 @@ class Search(View):
 		"searchquery":searchquery
 		}
 		return render_to_response('devices/searchresult.html', context, RequestContext(request))
+
+	def get(self, request, *args, **kwargs):
+		context = {}
+		return render_to_response('devices/search.html', context, RequestContext(request))

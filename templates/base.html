@@ -38,24 +38,27 @@
         </ul>
       </li>
       <li class="divider"></li>
-      <li><a href="{% url 'ipaddress-list' %}">IP Adresses</a>
+      <li><a href="{% url 'ipaddress-list' %}">IP Adresses</a></li>
       <li class="divider"></li>
     </ul>
     <ul class="right">
       {% if user.is_authenticated %}
       <li class="divider"></li>
       <li class="has-form">
-        <div class="row collapse">
+
         <form method="post" action="{% url 'search' %}">{% csrf_token %}
-            <div class="small-6 columns">
+                  <div class="row collapse">
+            <div class="small-8 columns">
               <input type="text" placeholder="Search" name="searchquery">
             </div>
-            <div class="small-4 columns">
+            <div class="small-3 columns">
               <input type="submit" value="Search" class="button" />
             </div>
 </div>
         </form>
+
       </li>
+      <li><a href="{% url 'search' %}" class="button">Advanced</a></li>
       <li class="divider"></li>
   <li class="has-dropdown"><a href="#">{{ user.username }}</a>
   <ul class="dropdown">

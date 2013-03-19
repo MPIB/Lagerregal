@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Search{% endblock %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+{% endblock %}
+
+{% block scriptend %}
+$(document).ready(function() {
+    $('#devicetable tr').click(function() {
+        var href = $(this).find("a").attr("href");
+        if(href) {
+            window.location = href;
+        }
+    });
+
+});
+{% endblock %}
