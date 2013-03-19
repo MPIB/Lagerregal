@@ -77,6 +77,8 @@ class Manufacturer(models.Model):
 		return reverse('manufacturer-edit', kwargs={'pk': self.pk})
 
 class Device(models.Model):
+	created_at = models.DateField(auto_now_add = True, blank=True, null=True)
+
 	name = models.CharField(_('Name'), max_length=200)
 	buildnumber = models.CharField(_('Buildnumber'), max_length=50, unique=True)
 	serialnumber = models.CharField(_('Serialnumber'), max_length=50, unique=True)
@@ -88,6 +90,7 @@ class Device(models.Model):
 	room = models.ForeignKey(Room, blank=True, null=True)
 
 	owner = models.ForeignKey(User, blank=True, null=True)
+	duedate = models.DateField(blank=True, null=True)
 
 
 	def __unicode__(self):
