@@ -1,0 +1,29 @@
+<form method="post">{% csrf_token %}
+	<div class="row">
+		<div class="small-3 columns">
+			{{form.searchquery}}
+		</div>
+		<div class="small-3 columns">
+			{{form.type}}
+		</div>
+		<div class="small-3 columns">
+			{{form.manufacturer}}
+		</div>
+		<div class="small-3 columns">
+			{{form.room}}
+		</div>
+	</div>
+	<div class="row">
+		<div class="small-3 columns">
+			{{form.ipaddress}}
+		</div>
+		<div class="small-3 columns">
+			{{form.overdue}}
+		</div>
+		<div class="small-3 columns">
+		</div>
+		<div class="small-3 columns">
+			<input type="submit" value="Search" class="button button-primary small" />
+		</div>
+	</div>
+</form>

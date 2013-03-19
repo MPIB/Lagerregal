@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm
+from devices.forms import IpAddressForm, SearchForm
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -319,17 +319,16 @@ class ManufacturerDelete(DeleteView):
 	success_url = reverse_lazy('manufacturer-list')
 	template_name = 'devices/base_delete.html'
 
-class Search(View):
+class Search(FormView):
+	template_name = 'devices/search.html'
+	form_class = SearchForm
 
-	def post(self, request, *args, **kwargs):
-		searchquery = request.POST["searchquery"]
+	def form_valid(self, form):
+		searchquery = form.cleaned_data["searchquery"]
 		devices = Device.objects.filter(name__icontains=searchquery)
 		context = {
 		"device_list":devices,
-		"searchquery":searchquery
+		"searchquery":searchquery,
+		"form":form
 		}
-		return render_to_response('devices/searchresult.html', context, RequestContext(request))
-
-	def get(self, request, *args, **kwargs):
-		context = {}
-		return render_to_response('devices/search.html', context, RequestContext(request))
+		return render_to_response('devices/searchresult.html', context, RequestContext(self.request))

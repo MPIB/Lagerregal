@@ -5,16 +5,9 @@
 {% block header %}
 {% endblock %}
 {% block content %}
+{% include 'snippets/searchform.html' %}
 {% endblock %}
 
 {% block scriptend %}
-$(document).ready(function() {
-    $('#devicetable tr').click(function() {
-        var href = $(this).find("a").attr("href");
-        if(href) {
-            window.location = href;
-        }
-    });
-
-});
+{% include 'snippets/searchform_js.html' %}
 {% endblock %}
