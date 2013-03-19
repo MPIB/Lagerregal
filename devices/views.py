@@ -15,6 +15,7 @@ from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm
+import datetime
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -324,11 +325,31 @@ class Search(FormView):
 	form_class = SearchForm
 
 	def form_valid(self, form):
-		searchquery = form.cleaned_data["searchquery"]
-		devices = Device.objects.filter(name__icontains=searchquery)
+		search = {}
+		
+		if form.cleaned_data["name"] != "":
+			search["name__icontains"] = form.cleaned_data["name"] 
+
+		if form.cleaned_data["devicetype"] != None:
+			search["devicetype"] = form.cleaned_data["devicetype"] 
+
+		if form.cleaned_data["manufacturer"] != None:
+			search["manufacturer"] = form.cleaned_data["manufacturer"] 
+
+		if form.cleaned_data["room"] != None:
+			search["room"] = form.cleaned_data["room"] 
+
+		#if form.cleaned_data["ipaddress"] != "":
+		#	search["name__icontains"] = form.cleaned_data["name"] 
+
+		if form.cleaned_data["overdue"]=="y":
+			search["duedate__gt"] = datetime.datetime.now()
+		elif form.cleaned_data["overdue"]=="n":
+			search["duedate__lt"] = datetime.datetime.now()
+		print search
+		devices = Device.objects.filter(**search)
 		context = {
 		"device_list":devices,
-		"searchquery":searchquery,
 		"form":form
 		}
 		return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
