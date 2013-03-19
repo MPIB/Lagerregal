@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
+
+{% block title %}Revision for {{device.name}}{% endblock %}
+
 {% block header %}
 Device: {{device.name}}
 {% endblock %}

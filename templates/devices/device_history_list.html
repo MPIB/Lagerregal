@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
+
+{% block title %}History for {{device.name}}{% endblock %}
+
 {% block header %}
 History for <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
 {% endblock %}
