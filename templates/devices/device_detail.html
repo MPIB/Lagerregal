@@ -27,10 +27,27 @@ Device: {{device.name}}
     <ul class="pricing-table">
       <li class="title">IP addresses</li>
       {% for address in ipaddress_list %}
-        <li class="bullet-item">{{address.address}}</li>
+        <li class="bullet-item">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}">x</a></li>
       {% endfor %}
-      <li class="cta-button"><a class="button" href="#">Add new</a></li>
+      <li class="cta-button"><form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
+        <div class="row">
+      <div class="large-12 columns">
+        {{ipaddressform.ipaddresses}}
+      </div>
+    </div>
+        <div class="row"  style="margin-top:10px;">
+      <div class="large-12 columns">
+        
+        <input type="submit" class ="button small right" value="Assign Addresses">
+      </div>
+    </div>
+    <input type="hidden" name="device" value="{{ device.pk }}" />
+      </form></li>
     </ul>
   </div>
 </div>
+{% endblock %}
+
+{% block scriptend %}
+$("#id_ipaddresses").select2();
 {% endblock %}

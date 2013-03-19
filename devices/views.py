@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View, FormView
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy
 from devices.models import *
@@ -13,11 +13,13 @@ from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
+from django.contrib import messages
+from devices.forms import IpAddressForm
 
 @api_view(('GET',))
 def api_root(request, format=None):
-    return Response({
-    })
+	return Response({
+	})
 
 
 class Home(TemplateView):
@@ -45,8 +47,43 @@ class DeviceDetail(DetailView):
 		context = super(DeviceDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
 		context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
+		context['ipaddress_available'] = IpAddress.objects.filter(device=None)
 		context['version_list'] = reversion.get_unique_for_object(context["device"])
+		context['ipaddressform'] = IpAddressForm()
 		return context
+
+class DeviceIpAddressRemove(DeleteView):
+	template_name = 'devices/unassign_ipaddress.html'
+	model=IpAddress
+
+	def get(self, request, *args, **kwargs):
+		context = {}
+		context["device"] = get_object_or_404(Device, pk=kwargs["pk"])
+		context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
+		return render_to_response(self.template_name, context, RequestContext(request))
+
+
+	def post(self, request, *args, **kwargs):
+		device = get_object_or_404(Device, pk=kwargs["pk"])
+		ipaddress = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
+		ipaddress.device = None
+		ipaddress.save()
+
+		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+
+class DeviceIpAddress(FormView):
+	template_name = 'devices/assign_ipaddress.html'
+	form_class = IpAddressForm
+	success_url = "/devices"
+
+	def form_valid(self, form):
+		ipaddresses = form.cleaned_data["ipaddresses"]
+		device = form.cleaned_data["device"]
+		for ipaddress in ipaddresses:
+			ipaddress.device=device
+			ipaddress.save()
+		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistory(View):
 
@@ -65,6 +102,7 @@ class DeviceHistory(View):
 		version = get_object_or_404(Version, pk=revisionid)
 		version.revision.revert()
 		reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
+		messages.success(request, 'Successfully reverted object')
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistoryList(View):

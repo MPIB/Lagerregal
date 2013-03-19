@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{%  load devicetags %}
+{% block header %}
+Assign IP-Addresses
+{% endblock %}
+
+{% block content %}
+<form method="post">{% csrf_token %}
+  {{form}}
+</form>
+{% endblock %}
+
+{% block scriptend %}
+$("#id_ipaddresses").select2();
+{% endblock %}
