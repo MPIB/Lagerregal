@@ -119,9 +119,23 @@ class DeviceCreate(CreateView):
 	model = Device
 	template_name = 'devices/base_form.html'
 
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(DeviceCreate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Create new"
+		return context
+
 class DeviceUpdate(UpdateView):
 	model = Device
 	template_name = 'devices/base_form.html'
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(DeviceUpdate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Update"
+		return context
 
 class DeviceDelete(DeleteView):
 	model = Device
@@ -150,9 +164,23 @@ class TypeCreate(CreateView):
 	model = Type
 	template_name = 'devices/base_form.html'
 
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(TypeCreate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Create new"
+		return context
+
 class TypeUpdate(UpdateView):
 	model = Type
 	template_name = 'devices/base_form.html'
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(TypeUpdate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Update"
+		return context
 
 class TypeDelete(DeleteView):
 	model = Type
@@ -180,9 +208,23 @@ class RoomCreate(CreateView):
 	model = Room
 	template_name = 'devices/base_form.html'
 
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(RoomCreate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Create new"
+		return context
+
 class RoomUpdate(UpdateView):
 	model = Room
 	template_name = 'devices/base_form.html'
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(RoomUpdate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Update"
+		return context
 
 class RoomDelete(DeleteView):
 	model = Room
@@ -209,9 +251,23 @@ class BuildingCreate(CreateView):
 	model = Building
 	template_name = 'devices/base_form.html'
 
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(BuildingCreate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Create new"
+		return context
+
 class BuildingUpdate(UpdateView):
 	model = Building
 	template_name = 'devices/base_form.html'
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(BuildingUpdate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Update"
+		return context
 
 class BuildingDelete(DeleteView):
 	model = Building
@@ -240,9 +296,23 @@ class ManufacturerCreate(CreateView):
 	model = Manufacturer
 	template_name = 'devices/base_form.html'
 
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(ManufacturerCreate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Create new"
+		return context
+
 class ManufacturerUpdate(UpdateView):
 	model = Manufacturer
 	template_name = 'devices/base_form.html'
+
+	def get_context_data(self, **kwargs):
+		# Call the base implementation first to get a context
+		context = super(ManufacturerUpdate, self).get_context_data(**kwargs)
+		# Add in a QuerySet of all the books
+		context['actionstring'] = "Update"
+		return context
 
 class ManufacturerDelete(DeleteView):
 	model = Manufacturer
