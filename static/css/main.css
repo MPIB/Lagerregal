@@ -1,0 +1,9 @@
+.close {
+	color:#ccc;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+.close:hover {
+	color:#c60f13;
+}
