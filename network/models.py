@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 # Create your models here.
 
 class IpAddress(models.Model):
-	address = models.IPAddressField()
+	address = models.IPAddressField(unique=True)
 	device = models.ForeignKey(Device, blank=True, null=True)
 
 	def __unicode__(self):
