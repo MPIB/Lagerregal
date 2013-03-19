@@ -9,6 +9,7 @@ IP addresses
 {% endblock %}
 {% block content %}
 
+{% include "snippets/pagination.html" with listurl='ipaddress-list' %}
     <table width="100%" id="adresstable">
   <thead>
     <tr>
@@ -29,6 +30,7 @@ IP addresses
      {% endfor %}
   </tbody>
 </table>
+{% include "snippets/pagination.html" with listurl='ipaddress-list' %}
 {% endblock %}
 
 {% block scriptend %}

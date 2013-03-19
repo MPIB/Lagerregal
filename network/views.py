@@ -7,6 +7,7 @@ from network.forms import *
 class IpAddressList(ListView):
 	model = IpAddress
 	context_object_name = 'ipaddress_list'
+	paginate_by = 30
 
 class IpAddressDetail(DetailView):
 	model = IpAddress

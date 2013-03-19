@@ -9,11 +9,13 @@ Manufacturers
 {% endblock %}
 
 {% block content %}
+{% include "snippets/pagination.html" with listurl='manufacturer-list' %}
 <ul>
   {% for manufacturer in manufacturer_list %}
   <li><a href="{% url 'manufacturer-detail' manufacturer.id %}">{{manufacturer.name}}</a></li>
   {% endfor %}
 </ul>
+{% include "snippets/pagination.html" with listurl='manufacturer-list' %}
 {% endblock %}
 
 {% block scriptend %}

@@ -9,6 +9,7 @@ Devices
 {% endblock %}
 
 {% block content %}
+{% include "snippets/pagination.html" with listurl='device-list' %}
     <table width="100%" id="devicetable">
   <thead>
     <tr>
@@ -29,6 +30,7 @@ Devices
      {% endfor %}
   </tbody>
 </table>
+{% include "snippets/pagination.html" with listurl='device-list' %}
 {% endblock %}
 
 {% block scriptend %}
