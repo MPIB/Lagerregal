@@ -326,7 +326,6 @@ class Search(FormView):
 
 	def form_valid(self, form):
 		search = {}
-		
 		if form.cleaned_data["name"] != "":
 			search["name__icontains"] = form.cleaned_data["name"] 
 
@@ -346,7 +345,7 @@ class Search(FormView):
 			search["duedate__gt"] = datetime.datetime.now()
 		elif form.cleaned_data["overdue"]=="n":
 			search["duedate__lt"] = datetime.datetime.now()
-		print search
+
 		devices = Device.objects.filter(**search)
 		context = {
 		"device_list":devices,

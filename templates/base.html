@@ -49,7 +49,7 @@
         <form method="post" action="{% url 'search' %}">{% csrf_token %}
                   <div class="row collapse">
             <div class="small-8 columns">
-              <input type="text" placeholder="Search" name="searchquery">
+              <input id="id_name" name="name" placeholder="Search Name" type="text">
             </div>
             <div class="small-3 columns">
               <input type="submit" value="Search" class="button" />
