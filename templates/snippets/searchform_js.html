@@ -15,4 +15,25 @@ placeholder: "Overdue"
 $("#id_available").select2({
 placeholder: "Available"
 });
+
+
+
 });
+
+function clear_form_elements(ele) {
+alert("test")
+    $(ele).find(':input').each(function() {
+        switch(this.type) {
+            case 'password':
+            case 'select-multiple':
+            case 'select-one':
+            case 'text':
+            case 'textarea':
+                $(this).val('');
+                break;
+            case 'checkbox':
+            case 'radio':
+                this.checked = false;
+        }
+    });
+}

@@ -1,6 +1,7 @@
-<form method="post">{% csrf_token %}
+<form method="post" id="searchform">{% csrf_token %}
 	<div class="row">
 		<div class="small-3 columns {{form.name.css_classes}}  {{form.namemodifier.css_classes}}">	
+		<label>Name</label>
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.name}}
@@ -13,6 +14,7 @@
 {% if form.namemodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.namemodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.buildnumber.css_classes}} {{form.buildnumbermodifier.css_classes}}">
+		<label>Buildnumber</label>
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.buildnumber}}
@@ -25,6 +27,7 @@
 {% if form.buildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.buildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}}">
+		<label>Serialumber</label>
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.serialnumber}}
@@ -37,6 +40,7 @@
 {% if form.serialnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.serialnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.macaddress.css_classes}} {{form.macaddressmodifier.css_classes}}">
+		<label>MAC-Address</label>
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.macaddress}}
@@ -51,33 +55,40 @@
 	</div>
 	<div class="row">
 		<div class="small-3 columns {{form.ipaddress.css_classes}}">
+		<label>IP-Address</label>
 			{{form.ipaddress}}
 			  {% if form.ipaddress.errors %}<small style="padding-top:20px">{% for error in form.ipaddress.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.devicetype.css_classes}}">
+		<label>Devicetype</label>
 			{{form.devicetype}}
 			  {% if form.devicetype.errors %}<small style="padding-top:20px">{% for error in form.devicetype.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.manufacturer.css_classes}}">
+			<label>Manufacturer</label>
 			{{form.manufacturer}}
 			  {% if form.manufacturer.errors %}<small style="padding-top:20px">{% for error in form.manufacturer.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.room.css_classes}}">
+			<label>Room</label>
 			{{form.room}}
 			  {% if form.room.errors %}<small style="padding-top:20px">{% for error in form.room.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 	</div>
 	<div class="row">
 		<div class="small-3 columns {{form.overdue.css_classes}}">
+			<label>Overdue</label>
 			{{form.overdue}}
 			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.available.css_classes}}">
+			<label>Available</label>
 			{{form.available}}
 			  {% if form.available.errors %}<small style="padding-top:20px">{% for error in form.available.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns right">
-			<input type="submit" value="Search" class="button button-primary small" />
+			<input type="submit" value="Search" class="button small" />
+			<input type="button" onclick="clear_form_elements('#searchform')" class="button alert small right" value="Clear">
 		</div>
 	</div>
 </form>
