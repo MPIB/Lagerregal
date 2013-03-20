@@ -16,6 +16,7 @@ class IpAddressForm(forms.Form):
     device = forms.ModelChoiceField(Device.objects.all())
 
 class SearchForm(forms.Form):
+	error_css_class = 'error'
 	name= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name"}), required=False)
 	namemodifier=forms.ChoiceField(choices=charmodifier, widget=forms.Select(attrs={"class":"postfix"}))
 

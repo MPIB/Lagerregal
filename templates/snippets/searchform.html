@@ -1,6 +1,6 @@
 <form method="post">{% csrf_token %}
 	<div class="row">
-		<div class="small-3 columns">	
+		<div class="small-3 columns {{form.name.css_classes}}  {{form.namemodifier.css_classes}}">	
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.name}}
@@ -9,8 +9,10 @@
 		      {{form.namemodifier}}
 		    </div>
 		  </div>
+		    {% if form.name.errors %}<small style="padding-top:20px">Name: {% for error in form.name.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+{% if form.namemodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.namemodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.buildnumber.css_classes}} {{form.buildnumbermodifier.css_classes}}">
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.buildnumber}}
@@ -19,8 +21,11 @@
 		      {{form.buildnumbermodifier}}
 		    </div>
 		  </div>
+		  {% if form.buildnumber.errors %}<small style="padding-top:20px">Buildnumber: {% for error in form.buildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+{% if form.buildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.buildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns">
+		<div class="small-3 columns {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}}">
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.serialnumber}}
@@ -29,8 +34,10 @@
 		      {{form.serialnumbermodifier}}
 		    </div>
 		  </div>
+		    {% if form.serialnumber.errors %}<small style="padding-top:20px">Serialnumber: {% for error in form.serialnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+{% if form.serialnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.serialnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.macaddress.css_classes}} {{form.macaddressmodifier.css_classes}}">
 		<div class="row collapse">
 		    <div class="small-8 columns">
 		      {{form.macaddress}}
@@ -39,25 +46,33 @@
 		      {{form.macaddressmodifier}}
 		    </div>
 		  </div>
+		    {% if form.macaddress.errors %}<small style="padding-top:20px">MAC-Address: {% for error in form.macaddressmodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+{% if form.macaddressmodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.macaddressmodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 	</div>
 	<div class="row">
 		<div class="small-3 columns">
+		<div class="small-3 columns {{form.ipaddress.css_classes}}">
 			{{form.ipaddress}}
+			  {% if form.ipaddress.errors %}<small style="padding-top:20px">{% for error in form.ipaddress.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.devicetype.css_classes}}">
 			{{form.devicetype}}
+			  {% if form.devicetype.errors %}<small style="padding-top:20px">{% for error in form.devicetype.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.manufacturer.css_classes}}">
 			{{form.manufacturer}}
+			  {% if form.manufacturer.errors %}<small style="padding-top:20px">{% for error in form.manufacturer.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.room.css_classes}}">
 			{{form.room}}
+			  {% if form.room.errors %}<small style="padding-top:20px">{% for error in form.room.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 	</div>
 	<div class="row">
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.overdue.css_classes}}">
 			{{form.overdue}}
+			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns">
 		</div>
