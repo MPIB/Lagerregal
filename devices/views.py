@@ -355,7 +355,15 @@ class Search(FormView):
 		elif form.cleaned_data["overdue"]=="n":
 			search["duedate__lt"] = datetime.datetime.now()
 
+		
+
 		devices = Device.objects.filter(**search)
+
+		if form.cleaned_data["available"]=="y":
+			devices = devices.filter(owner=None)
+		elif form.cleaned_data["available"]=="n":
+			devices = devices.exclude(owner=None)
+
 		context = {
 		"device_list":devices,
 		"form":form

@@ -24,7 +24,6 @@
 		  {% if form.buildnumber.errors %}<small style="padding-top:20px">Buildnumber: {% for error in form.buildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.buildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.buildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
 		<div class="small-3 columns {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}}">
 		<div class="row collapse">
 		    <div class="small-8 columns">
@@ -51,7 +50,6 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="small-3 columns">
 		<div class="small-3 columns {{form.ipaddress.css_classes}}">
 			{{form.ipaddress}}
 			  {% if form.ipaddress.errors %}<small style="padding-top:20px">{% for error in form.ipaddress.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
@@ -74,7 +72,9 @@
 			{{form.overdue}}
 			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns">
+		<div class="small-3 columns {{form.available.css_classes}}">
+			{{form.available}}
+			  {% if form.available.errors %}<small style="padding-top:20px">{% for error in form.available.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns right">
 			<input type="submit" value="Search" class="button button-primary small" />

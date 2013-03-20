@@ -34,3 +34,5 @@ class SearchForm(forms.Form):
 	room = forms.ModelChoiceField(Room.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 	ipaddress=forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address"}), required=False)
 	overdue=forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
+
+	available=forms.ChoiceField(choices=(('b', 'both'),('y', 'Available'),('n', 'Unavailable'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
