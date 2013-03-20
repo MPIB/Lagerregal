@@ -327,16 +327,16 @@ class Search(FormView):
 	def form_valid(self, form):
 		search = {}
 		if form.cleaned_data["name"] != "":
-			search["name__icontains"] = form.cleaned_data["name"] 
+			search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["name"] 
 
 		if form.cleaned_data["buildnumber"] != "":
-			search["buildnumber__icontains"] = form.cleaned_data["buildnumber"] 
+			search["buildnumber__" + form.cleaned_data["buildnumbermodifier"]] = form.cleaned_data["buildnumber"] 
 
 		if form.cleaned_data["serialnumber"] != "":
-			search["serialnumber__icontains"] = form.cleaned_data["serialnumber"] 
+			search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"] 
 
 		if form.cleaned_data["macaddress"] != "":
-			search["name__icontains"] = form.cleaned_data["macaddress"] 
+			search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"] 
 
 		if form.cleaned_data["devicetype"] != None:
 			search["devicetype"] = form.cleaned_data["devicetype"] 
@@ -348,7 +348,7 @@ class Search(FormView):
 			search["room"] = form.cleaned_data["room"] 
 
 		if form.cleaned_data["ipaddress"] != "":
-			search["ipaddress__address"] = form.cleaned_data["ipaddress"] 
+			search["ipaddress__address__icontains"] = form.cleaned_data["ipaddress"] 
 
 		if form.cleaned_data["overdue"]=="y":
 			search["duedate__gt"] = datetime.datetime.now()

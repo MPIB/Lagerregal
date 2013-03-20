@@ -1,16 +1,44 @@
 <form method="post">{% csrf_token %}
 	<div class="row">
-		<div class="small-3 columns">
-			{{form.name}}
+		<div class="small-3 columns">	
+		<div class="row collapse">
+		    <div class="small-8 columns">
+		      {{form.name}}
+		    </div>
+		    <div class="small-4 columns">
+		      {{form.namemodifier}}
+		    </div>
+		  </div>
 		</div>
 		<div class="small-3 columns">
-			{{form.buildnumber}}
+		<div class="row collapse">
+		    <div class="small-8 columns">
+		      {{form.buildnumber}}
+		    </div>
+		    <div class="small-4 columns">
+		      {{form.buildnumbermodifier}}
+		    </div>
+		  </div>
 		</div>
 		<div class="small-3 columns">
-			{{form.serialnumber}}
+		<div class="row collapse">
+		    <div class="small-8 columns">
+		      {{form.serialnumber}}
+		    </div>
+		    <div class="small-4 columns">
+		      {{form.serialnumbermodifier}}
+		    </div>
+		  </div>
 		</div>
 		<div class="small-3 columns">
-			{{form.macaddress}}
+		<div class="row collapse">
+		    <div class="small-8 columns">
+		      {{form.macaddress}}
+		    </div>
+		    <div class="small-4 columns">
+		      {{form.macaddressmodifier}}
+		    </div>
+		  </div>
 		</div>
 	</div>
 	<div class="row">
