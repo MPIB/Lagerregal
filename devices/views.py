@@ -148,6 +148,7 @@ class DeviceDelete(DeleteView):
 class TypeList(ListView):
 	model = Type
 	context_object_name = 'type_list'
+	paginate_by = 30
 
 class TypeDetail(DetailView):
 	model = Type
@@ -193,6 +194,7 @@ class TypeDelete(DeleteView):
 class RoomList(ListView):
 	model = Room
 	context_object_name = 'room_list'
+	paginate_by = 30
 
 class RoomDetail(DetailView):
 	model = Room
@@ -237,6 +239,7 @@ class RoomDelete(DeleteView):
 class BuildingList(ListView):
 	model = Building
 	context_object_name = 'building_list'
+	paginate_by = 30
 
 class BuildingDetail(DetailView):
 	model = Building
@@ -280,6 +283,7 @@ class BuildingDelete(DeleteView):
 class ManufacturerList(ListView):
 	model = Manufacturer
 	context_object_name = 'manufacturer_list'
+	paginate_by = 30
 
 class ManufacturerDetail(DetailView):
 	model = Manufacturer
