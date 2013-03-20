@@ -10,6 +10,9 @@ class IpAddressForm(forms.Form):
 
 class SearchForm(forms.Form):
 	name= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name"}), required=False)
+	buildnumber= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber"}), required=False)
+	serialnumber= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search serialnumber"}), required=False)
+	macaddress= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search macaddress"}), required=False)
 	devicetype = forms.ModelChoiceField(Type.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 	manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 	room = forms.ModelChoiceField(Room.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))

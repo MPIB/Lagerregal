@@ -329,6 +329,15 @@ class Search(FormView):
 		if form.cleaned_data["name"] != "":
 			search["name__icontains"] = form.cleaned_data["name"] 
 
+		if form.cleaned_data["buildnumber"] != "":
+			search["buildnumber__icontains"] = form.cleaned_data["buildnumber"] 
+
+		if form.cleaned_data["serialnumber"] != "":
+			search["serialnumber__icontains"] = form.cleaned_data["serialnumber"] 
+
+		if form.cleaned_data["macaddress"] != "":
+			search["name__icontains"] = form.cleaned_data["macaddress"] 
+
 		if form.cleaned_data["devicetype"] != None:
 			search["devicetype"] = form.cleaned_data["devicetype"] 
 
