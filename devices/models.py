@@ -110,7 +110,7 @@ class Lending(models.Model):
 	lenddate = models.DateField(auto_now_add=True)
 	duedate = models.DateField(blank=True, null=True)
 	duedate_email = models.DateField(blank=True, null=True)
-
+	returndate = models.DateField(blank=True, null=True)
 	device = models.ForeignKey(Device)
 
 reversion.register(Device)

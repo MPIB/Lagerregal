@@ -165,9 +165,13 @@ class DeviceReturn(View):
 	def get(self, request, *args, **kwargs):
 		deviceid = kwargs["pk"]
 		device = get_object_or_404(Device, pk=deviceid)
+		lending = device.currentlending
+		lending.returndate = datetime.datetime.now()
+		lending.save()
 		device.currentlending = None
 		device.save()
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
 
 class TypeList(ListView):
 	model = Type
