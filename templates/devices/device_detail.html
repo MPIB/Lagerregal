@@ -8,12 +8,17 @@ Device: {{device.name}}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'device-delete' device.id %}" class="button alert right small" style="margin-left:10px">Delete</a>
-<a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">Edit</a>
-{% if device.currentlending != None %}
-<a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">Mark as returned</a>
+{% if device.archived == None %}
+  <a href="{% url 'device-delete' device.id %}" class="button alert right small" style="margin-left:10px">Delete</a>
+  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">Archive</a>
+  <a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">Edit</a>
+  {% if device.currentlending != None %}
+    <a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">Mark as returned</a>
+  {% else %}
+    <a href="{% url 'device-lend' device.id %}" class="button success right small"style="margin-left:10px">Mark as Lendt</a>
+  {% endif %}
 {% else %}
-<a href="{% url 'device-lend' device.id %}" class="button success right small"style="margin-left:10px">Mark as Lendt</a>
+  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">Unarchive</a>
 {% endif %}
 {% endblock %}
 
