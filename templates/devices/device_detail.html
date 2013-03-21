@@ -73,7 +73,7 @@ Device: {{device.name}}
     <ul class="pricing-table">
       <li class="title">IP-Addresses</li>
       {% for address in ipaddress_list %}
-        <li class="bullet-item">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close right">x</a></li>
+        <li class="bullet-item">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">x</a></li>
       {% endfor %}
       <li class="cta-button"><form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         <div class="row">

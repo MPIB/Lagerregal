@@ -7,11 +7,15 @@ Login
 {% endblock %}
 
 {% block content %}
-
+<div class="row">
+	<div class="small-12 large-6 large-centered columns">
 {% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
+<div data-alert class="alert-box alert">
+Your username and password didn't match. Please try again.
+  <a href="#" class="close">&times;</a>
+</div>
 {% endif %}
-
+<div class="panel">
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 {% csrf_token %}
 <label>{{ form.username.label_tag }}</label>
@@ -26,5 +30,7 @@ Login
 	<input type="hidden" name="next" value="{% url 'home' %}" />
 {% endif %}
 </form>
-
+</div>
+</div>
+</div>
 {% endblock %}
