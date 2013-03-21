@@ -1,10 +1,10 @@
-.close {
+.delete {
 	color:#ccc;
 	font-weight: bold;
 	font-size: 1.1em;
 }
 
-.close:hover {
+.delete:hover {
 	color:#c60f13;
 }
 
