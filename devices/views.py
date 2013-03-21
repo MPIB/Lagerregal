@@ -173,6 +173,17 @@ class DeviceReturn(View):
 		device.save()
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+class DeviceArchive(View):
+
+	def get(self, request, *args, **kwargs):
+		deviceid = kwargs["pk"]
+		device = get_object_or_404(Device, pk=deviceid)
+		if device.archived == None:
+			device.archived = datetime.datetime.now()
+		else:
+			device.archived = None
+		device.save()
+		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class TypeList(ListView):
 	model = Type
