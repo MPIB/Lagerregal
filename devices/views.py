@@ -51,6 +51,7 @@ class DeviceDetail(DetailView):
 		context['ipaddress_available'] = IpAddress.objects.filter(device=None)
 		context['version_list'] = reversion.get_unique_for_object(context["device"])
 		context['ipaddressform'] = IpAddressForm()
+		context["lending_list"] = Lending.objects.filter(device=context["device"])
 		return context
 
 class DeviceIpAddressRemove(DeleteView):

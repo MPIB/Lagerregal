@@ -43,7 +43,31 @@ Device: {{device.name}}
     <p>Currently not lent</p>
     {% endif %}
 
-    <a href="{% url 'device-history-list' device.pk %}">View history</a>
+{% if lending_list %}
+<h4>Lending history</h4>
+    <table width="100%">
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Since</th>
+      <th>Duedate</th>
+      <th>Returned</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for lending in lending_list %}
+    <tr>
+      <td>{{lending.owner}}</td>
+      <td>{{lending.lenddate}}</td>
+      <td>{{lending.duedate}}</td>
+      <td>{{lending.returndate}}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+    <a href="{% url 'device-history-list' device.pk %}">View edit-history</a>
   </div>
   <div class="small-6 large-4 columns">
     <ul class="pricing-table">
