@@ -29,7 +29,7 @@ class Home(TemplateView):
 	def get_context_data(self, **kwargs):
 		context = super(Home, self).get_context_data(**kwargs)
 		context['device_all'] = Device.objects.all().count()
-		context['device_available'] = Device.objects.filter(owner=None).count()
+		context['device_available'] = Device.objects.filter(currentlending=None).count()
 		context['ipaddress_all'] = IpAddress.objects.all().count()
 		context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
 		return context
@@ -356,7 +356,7 @@ class Search(FormView):
 		search = {}
 		if form.cleaned_data["name"] != "":
 			search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["name"] 
-		print form.cleaned_data
+
 		if form.cleaned_data["lender"] != "":
 			search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"] 
 
@@ -391,9 +391,9 @@ class Search(FormView):
 		devices = Device.objects.filter(**search)
 
 		if form.cleaned_data["available"]=="y":
-			devices = devices.filter(owner=None)
+			devices = devices.filter(currentlending=None)
 		elif form.cleaned_data["available"]=="n":
-			devices = devices.exclude(owner=None)
+			devices = devices.exclude(currentlending=None)
 
 		context = {
 		"device_list":devices,
