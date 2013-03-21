@@ -15,7 +15,7 @@
       <h1><a href="{% url 'home' %}">Lagerregal</a></h1>
     </li>
     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-    <li class="toggle-topbar menu-icon"><a href="#"></a></li>
+    <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
   </ul>
 
   <section class="top-bar-section">
@@ -78,8 +78,8 @@
 </nav>
 {% if messages %}
     {% for message in messages %}
-    <div class="row">
-	<div class="small-12">
+    <div class="row" style="margin-top:5px">
+	<div class="large-8">
     <div class="alert-box {{message.tags}}">
 			{{message|safe }}
 			<a href="#" class="close">&times;</a>
@@ -89,8 +89,8 @@
     {% endfor %}
 {% endif %}
 <div class="row">
-	<div class="small-6 columns"><h2>{% block header %}{% endblock %}</h2></div>
-  <div class="small-6 columns" style="margin-top:20px">{% block  pullright %}{% endblock %}</div>
+	<div class="large-6 columns"><h2>{% block header %}{% endblock %}</h2></div>
+  <div class="large-6 columns" style="margin-top:20px">{% block  pullright %}{% endblock %}</div>
 </div>
 <div class="row">
 	<div class="small-12 columns">{% block content %}{% endblock %}</div>
