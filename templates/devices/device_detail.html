@@ -8,8 +8,13 @@ Device: {{device.name}}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'device-delete' device.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
-<a href="{% url 'device-edit' device.id %}" class="button success small right">Edit</a>
+<a href="{% url 'device-delete' device.id %}" class="button alert right small" style="margin-left:10px">Delete</a>
+<a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">Edit</a>
+{% if device.currentlending != None %}
+<a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">Mark as returned</a>
+{% else %}
+<a href="{% url 'device-lend' device.id %}" class="button success right small"style="margin-left:10px">Mark as Lendt</a>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -23,9 +28,20 @@ Device: {{device.name}}
         <tr><td>Devicetype</td><td>{{device.devicetype}}</td></tr>
         <tr><td>Manufacturer</td><td>{{device.manufacturer}}</td></tr>
         <tr><td>Room</td><td>{{device.room}}</td></tr>
-        <tr><td>Owner</td><td>{{device.owner}}</td></tr>
       </tbody>
     </table>
+
+    {% if device.currentlending != None %}
+      <h4>Lending information</h4>
+      <table>
+      <tbody>
+        <tr><td>Lendt to</td><td>{{device.currentlending.owner}}</td></tr>
+        <tr><td>Since</td><td>{{device.currentlending.lenddate}}</td></tr>
+        <tr><td>Due to</td><td>{{device.currentlending.duedate}}</td></tr>
+      </tbody>
+    </table>
+    {% endif %}
+
     <a href="{% url 'device-history-list' device.pk %}">View history</a>
   </div>
   <div class="small-6 large-4 columns">

@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm
+from devices.forms import IpAddressForm, SearchForm, LendForm
 import datetime
 
 @api_view(('GET',))
@@ -143,7 +143,31 @@ class DeviceDelete(DeleteView):
 	success_url = reverse_lazy('device-list')
 	template_name = 'devices/base_delete.html'
 
+class DeviceLend(FormView):
+	template_name = 'devices/base_form.html'
+	form_class = LendForm
 
+	def form_valid(self, form):
+		deviceid = self.kwargs["pk"]
+		device = get_object_or_404(Device, pk=deviceid)
+		lending = Lending()
+		lending.owner = get_object_or_404(User, username=form.cleaned_data["owner"])
+		lending.duedate = form.cleaned_data["duedate"]
+		lending.device = device
+		lending.save()
+		device.currentlending = lending
+		device.save()
+		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+
+class DeviceReturn(View):
+
+	def get(self, request, *args, **kwargs):
+		deviceid = kwargs["pk"]
+		device = get_object_or_404(Device, pk=deviceid)
+		device.currentlending = None
+		device.save()
+		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class TypeList(ListView):
 	model = Type
