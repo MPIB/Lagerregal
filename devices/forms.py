@@ -36,3 +36,4 @@ class SearchForm(forms.Form):
 	overdue=forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 
 	available=forms.ChoiceField(choices=(('b', 'both'),('y', 'Available'),('n', 'Unavailable'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
+	lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender"}), required=False)

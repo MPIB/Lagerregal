@@ -89,9 +89,7 @@ class Device(models.Model):
 	devicetype = models.ForeignKey(Type, blank=True, null=True)
 	room = models.ForeignKey(Room, blank=True, null=True)
 
-	owner = models.ForeignKey(User, blank=True, null=True)
-	duedate = models.DateField(blank=True, null=True)
-
+	currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True)
 
 	def __unicode__(self):
 		return self.name
@@ -106,5 +104,13 @@ class Device(models.Model):
 	def get_edit_url(self):
 		return reverse('device-edit', kwargs={'pk': self.pk})
 
+
+class Lending(models.Model):
+	owner = models.ForeignKey(User)
+	lenddate = models.DateField(auto_now_add=True)
+	duedate = models.DateField(blank=True, null=True)
+	duedate_email = models.DateField(blank=True, null=True)
+
+	device = models.ForeignKey(Device)
 
 reversion.register(Device)

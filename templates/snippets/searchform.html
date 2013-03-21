@@ -81,10 +81,18 @@
 			{{form.overdue}}
 			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.available.css_classes}}">
+		<div class="small-3 columns {{form.available.css_classes}} {{form.lender.css_classes}}">
 			<label>Available</label>
-			{{form.available}}
+			<div class="row collapse">
+		    <div class="small-4 columns">
+		      {{form.available}}
+		    </div>
+		    <div class="small-8 columns">
+		      {{form.lender}}
+		    </div>
+		  </div>
 			  {% if form.available.errors %}<small style="padding-top:20px">{% for error in form.available.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+			  {% if form.lender.errors %}<small style="padding-top:20px">{% for error in form.lender.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns right">
 			<input type="submit" value="Search" class="button small" />
