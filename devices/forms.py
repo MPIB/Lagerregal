@@ -37,3 +37,9 @@ class SearchForm(forms.Form):
 
 	available=forms.ChoiceField(choices=(('b', 'both'),('y', 'Available'),('n', 'Unavailable'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 	lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender"}), required=False)
+
+class LendForm(forms.Form):
+	owner = forms.CharField()
+	duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
+'%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
+'%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
