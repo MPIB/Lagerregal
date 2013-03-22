@@ -54,6 +54,7 @@ class DeviceList(ListView):
 	def get_context_data(self, **kwargs):
 		context = super(DeviceList, self).get_context_data(**kwargs)
 		context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
+		context["template_list"] = Template.objects.all()
 		return context
 
 class DeviceDetail(DetailView):
@@ -144,6 +145,13 @@ class DeviceCreate(CreateView):
 	model = Device
 	template_name = 'devices/base_form.html'
 
+	def get_initial(self):
+		super(DeviceCreate, self).get_initial()
+		templateid = self.kwargs.pop("templateid", None)
+		if templateid != None:
+			templatedict = get_object_or_404(Template, pk=templateid).get_as_dict()
+			return templatedict
+
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
 		context = super(DeviceCreate, self).get_context_data(**kwargs)
@@ -229,6 +237,13 @@ class DeviceArchive(View):
 			device.archived = None
 		device.save()
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+
+
+class TemplateCreate(CreateView):
+	model = Template
+	template_name = 'devices/base_form.html'
+
 
 
 class TypeList(ListView):
