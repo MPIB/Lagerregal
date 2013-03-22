@@ -144,6 +144,7 @@ class DeviceHistoryList(View):
 class DeviceCreate(CreateView):
 	model = Device
 	template_name = 'devices/base_form.html'
+	form_class=DeviceForm
 
 	def get_initial(self):
 		super(DeviceCreate, self).get_initial()
