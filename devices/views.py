@@ -174,6 +174,8 @@ class DeviceLend(FormView):
 		lending.device = device
 		lending.save()
 		device.currentlending = lending
+		if form.cleaned_data["room"]:
+			device.room = form.cleaned_data["room"]
 		device.save()
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
