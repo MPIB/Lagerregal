@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm
+from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm
 import datetime
 
 @api_view(('GET',))
@@ -154,6 +154,7 @@ class DeviceCreate(CreateView):
 class DeviceUpdate(UpdateView):
 	model = Device
 	template_name = 'devices/base_form.html'
+	form_class = DeviceForm
 
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
@@ -169,7 +170,7 @@ class DeviceUpdate(UpdateView):
 			messages.error(self.request, "Archived Devices can't be lendt")
 			return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 		else:
-			return super(DeviceUpdate, self).form_valid(self.request, *args, **kwargs)
+			return super(DeviceUpdate, self).form_valid(form)
 
 
 class DeviceDelete(DeleteView):
