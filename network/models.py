@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 
 class IpAddress(models.Model):
 	address = models.IPAddressField(unique=True)
-	device = models.ForeignKey(Device, blank=True, null=True)
+	device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
 
 	def __unicode__(self):
 		return self.address
