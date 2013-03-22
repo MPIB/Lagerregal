@@ -43,3 +43,12 @@ class LendForm(forms.Form):
 	duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
+
+class ViewForm(forms.Form):
+	viewfilter = forms.ChoiceField(choices=(
+		('active', 'Active Devices'),
+		('all', 'All Devices'),
+		('available', 'Available Devices'),
+		('unavailable', 'Unavailable Devices'),
+		('archived', 'Archived Devices'),
+		widget=forms.Select(attrs={"style":"width:200px;margin-right:10px;", "class":"right"}))

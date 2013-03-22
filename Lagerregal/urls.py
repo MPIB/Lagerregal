@@ -16,6 +16,8 @@ urlpatterns = patterns('',
 
     url(r'^devices/$', login_required(DeviceList.as_view()), name="device-list"),
     url(r'^devices/page/(?P<page>[0-9]*)$', login_required(DeviceList.as_view()), name="device-list"),
+    url(r'^devices/filter/(?P<filter>.*)$', login_required(DeviceList.as_view()), name="device-list"),
+    url(r'^devices/filter/(?P<filter>.*)/page/(?P<page>[0-9]*)$', login_required(DeviceList.as_view()), name="device-list"),
     url(r'^devices/add$', login_required(DeviceCreate.as_view()), name="device-add"),
     url(r'^devices/(?P<pk>[0-9]*)$', login_required(DeviceDetail.as_view()), name="device-detail"),
     url(r'^devices/(?P<pk>[0-9]*)/edit/$', login_required(DeviceUpdate.as_view()), name="device-edit"),

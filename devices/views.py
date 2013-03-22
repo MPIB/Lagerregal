@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm
+from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm
 import datetime
 
 @api_view(('GET',))
@@ -35,9 +35,28 @@ class Home(TemplateView):
 		return context
 
 class DeviceList(ListView):
-	model = Device
 	context_object_name = 'device_list'
 	paginate_by = 30
+
+	def get_queryset(self):
+		self.viewfilter = self.kwargs.pop("filter", "active")
+		if self.viewfilter == "active":
+			return Device.objects.filter(archived=None)
+		elif self.viewfilter == "all":
+			return Device.objects.all()
+		elif self.viewfilter == "available":
+			return Device.objects.filter(currentlending=None)
+		elif self.viewfilter == "unavailable":
+			return Device.objects.exclude(currentlending=None)
+		elif self.viewfilter == "archived":
+			return Device.objects.exclude(archived=None)
+		else:
+			return Device.objects.filter(archived=None)
+
+	def get_context_data(self, **kwargs):
+		context = super(DeviceList, self).get_context_data(**kwargs)
+		context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
+		return context
 
 class DeviceDetail(DetailView):
 	model = Device
