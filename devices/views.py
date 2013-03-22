@@ -99,6 +99,9 @@ class DeviceIpAddress(FormView):
 	def form_valid(self, form):
 		ipaddresses = form.cleaned_data["ipaddresses"]
 		device = form.cleaned_data["device"]
+		if device.archived != None:
+			messages.error(self.request, "Archived Devices can't get new IP-Addresses")
+			return HttpResponseRedirect(self.reverse("device-detail", kwargs={"pk":device.pk}))
 		for ipaddress in ipaddresses:
 			ipaddress.device=device
 			ipaddress.save()
@@ -116,12 +119,15 @@ class DeviceHistory(View):
 
 	def post(self, request, *args, **kwargs):
 		deviceid = kwargs["pk"]
+		if device.archived != None:
+			messages.error(self.request, "Archived Devices can't be reverted")
+			return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 		revisionid = kwargs["revision"]
 		device = get_object_or_404(Device, pk=deviceid)
 		version = get_object_or_404(Version, pk=revisionid)
 		version.revision.revert()
 		reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
-		messages.success(request, 'Successfully reverted object')
+		messages.success(request, 'Successfully reverted Device')
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistoryList(View):
@@ -156,6 +162,16 @@ class DeviceUpdate(UpdateView):
 		context['actionstring'] = "Update"
 		return context
 
+	def form_valid(self, form):
+		deviceid = self.kwargs["pk"]
+		device = get_object_or_404(Device, pk=deviceid)
+		if device.archived != None:
+			messages.error(self.request, "Archived Devices can't be lendt")
+			return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+		else:
+			return super(DeviceUpdate, self).form_valid(request, *args, **kwargs)
+
+
 class DeviceDelete(DeleteView):
 	model = Device
 	success_url = reverse_lazy('device-list')
@@ -168,6 +184,9 @@ class DeviceLend(FormView):
 	def form_valid(self, form):
 		deviceid = self.kwargs["pk"]
 		device = get_object_or_404(Device, pk=deviceid)
+		if device.archived != None:
+			messages.error(self.request, "Archived Devices can't be lendt")
+			return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 		lending = Lending()
 		lending.owner = get_object_or_404(User, username=form.cleaned_data["owner"])
 		lending.duedate = form.cleaned_data["duedate"]
@@ -180,11 +199,15 @@ class DeviceLend(FormView):
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
+
 class DeviceReturn(View):
 
 	def get(self, request, *args, **kwargs):
 		deviceid = kwargs["pk"]
 		device = get_object_or_404(Device, pk=deviceid)
+		if device.archived != None:
+			messages.error(request, "Archived Devices can't be returned")
+			return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 		lending = device.currentlending
 		lending.returndate = datetime.datetime.now()
 		lending.save()
