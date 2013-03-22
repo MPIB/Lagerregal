@@ -50,5 +50,5 @@ class ViewForm(forms.Form):
 		('all', 'All Devices'),
 		('available', 'Available Devices'),
 		('unavailable', 'Unavailable Devices'),
-		('archived', 'Archived Devices'),
+		('archived', 'Archived Devices')),
 		widget=forms.Select(attrs={"style":"width:200px;margin-right:10px;", "class":"right"}))
