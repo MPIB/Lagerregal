@@ -439,8 +439,7 @@ class Search(FormView):
 		if form.cleaned_data["room"] != None:
 			search["room"] = form.cleaned_data["room"] 
 
-		if form.cleaned_data["ipaddress"] != "":
-			search["ipaddress__address__icontains"] = form.cleaned_data["ipaddress"] 
+		
 
 		if form.cleaned_data["overdue"]=="y":
 			search["duedate__gt"] = datetime.datetime.now()
@@ -450,6 +449,9 @@ class Search(FormView):
 		
 
 		devices = Device.objects.filter(**search)
+
+		if form.cleaned_data["ipaddress"] != "":
+			devices = devices.filter(ipaddress__address__icontains=form.cleaned_data["ipaddress"]).distinct()
 
 		viewfilter = form.cleaned_data["viewfilter"]
 		if viewfilter == "all":
