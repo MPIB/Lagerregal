@@ -1,5 +1,6 @@
 # Django settings for Lagerregal project.
 import os
+from django.contrib.messages import constants as messages
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -120,6 +121,11 @@ INSTALLED_APPS = (
     'reversion',
     'rest_framework', 
 )
+
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'alert',
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
