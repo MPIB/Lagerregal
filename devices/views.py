@@ -223,6 +223,7 @@ class DeviceArchive(View):
 		if device.archived == None:
 			device.archived = datetime.datetime.now()
 			device.room = None
+			device.currentlending = None
 		else:
 			device.archived = None
 		device.save()
