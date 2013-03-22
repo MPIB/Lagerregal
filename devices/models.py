@@ -89,7 +89,7 @@ class Device(models.Model):
 	devicetype = models.ForeignKey(Type, blank=True, null=True)
 	room = models.ForeignKey(Room, blank=True, null=True)
 
-	currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True)
+	currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)
 
 	archived = models.DateField(null=True)
 
