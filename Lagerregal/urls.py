@@ -32,6 +32,8 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<pk>[0-9]*)/history/(?P<revision>[0-9]*)$', login_required(DeviceHistory.as_view()), name="device-history"),
 
     url(r'^template/add$', login_required(TemplateCreate.as_view()), name="template-add"),
+    url(r'^template/(?P<pk>[0-9]*)/edit/$', login_required(TemplateUpdate.as_view()), name="template-edit"),
+    url(r'^template/(?P<pk>[0-9]*)/delete/$', login_required(TemplateDelete.as_view()), name="template-delete"),
 
     url(r'^types/$', login_required(TypeList.as_view()), name="type-list"),
     url(r'^types/(?P<page>[0-9]*)$', login_required(TypeList.as_view()), name="type-list"),

@@ -245,6 +245,14 @@ class TemplateCreate(CreateView):
 	model = Template
 	template_name = 'devices/base_form.html'
 
+class TemplateUpdate(UpdateView):
+	model = Template
+	template_name = 'devices/base_form.html'
+
+class TemplateDelete(DeleteView):
+	model = Template
+	success_url = reverse_lazy('device-list')
+	template_name = 'devices/base_delete.html'
 
 
 class TypeList(ListView):
