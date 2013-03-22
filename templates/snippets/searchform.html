@@ -82,16 +82,13 @@
 			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns {{form.available.css_classes}} {{form.lender.css_classes}}">
-			<label>Available</label>
-			<div class="row collapse">
-		    <div class="small-4 columns">
-		      {{form.available}}
-		    </div>
-		    <div class="small-8 columns">
+			<label>Filter</label>
+		      {{form.viewfilter}}
+			  {% if form.viewfilter.errors %}<small style="padding-top:20px">{% for error in form.viewfilter.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+		</div>
+		<div class="small-3 columns {{form.available.css_classes}} {{form.lender.css_classes}}">
+			<label>Lender</label>
 		      {{form.lender}}
-		    </div>
-		  </div>
-			  {% if form.available.errors %}<small style="padding-top:20px">{% for error in form.available.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 			  {% if form.lender.errors %}<small style="padding-top:20px">{% for error in form.lender.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 		<div class="small-3 columns right">

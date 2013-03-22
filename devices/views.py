@@ -40,9 +40,7 @@ class DeviceList(ListView):
 
 	def get_queryset(self):
 		self.viewfilter = self.kwargs.pop("filter", "active")
-		if self.viewfilter == "active":
-			return Device.objects.filter(archived=None)
-		elif self.viewfilter == "all":
+		if self.viewfilter == "all":
 			return Device.objects.all()
 		elif self.viewfilter == "available":
 			return Device.objects.filter(currentlending=None)
@@ -425,10 +423,17 @@ class Search(FormView):
 
 		devices = Device.objects.filter(**search)
 
-		if form.cleaned_data["available"]=="y":
+		viewfilter = form.cleaned_data["viewfilter"]
+		if viewfilter == "all":
+			pass
+		elif viewfilter == "available":
 			devices = devices.filter(currentlending=None)
-		elif form.cleaned_data["available"]=="n":
+		elif viewfilter == "unavailable":
 			devices = devices.exclude(currentlending=None)
+		elif viewfilter == "archived":
+			devices = devices.exclude(archived=None)
+		else:
+			devices = devices.filter(archived=None)
 
 		context = {
 		"device_list":devices,

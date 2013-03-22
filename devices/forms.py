@@ -9,6 +9,13 @@ charmodifier = (
 	('iexact','Exact')
 	)
 
+viewfilters = (
+	('active', 'Active Devices'),
+	('all', 'All Devices'),
+	('available', 'Available Devices'),
+	('unavailable', 'Unavailable Devices'),
+	('archived', 'Archived Devices'))
+
 class IpAddressForm(forms.Form):
     ipaddresses = forms.ModelMultipleChoiceField(
     	IpAddress.objects.filter(device=None),
@@ -35,7 +42,7 @@ class SearchForm(forms.Form):
 	ipaddress=forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address"}), required=False)
 	overdue=forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 
-	available=forms.ChoiceField(choices=(('b', 'both'),('y', 'Available'),('n', 'Unavailable'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
+	viewfilter=forms.ChoiceField(choices=viewfilters, required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 	lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender"}), required=False)
 
 class LendForm(forms.Form):
@@ -45,10 +52,5 @@ class LendForm(forms.Form):
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
 
 class ViewForm(forms.Form):
-	viewfilter = forms.ChoiceField(choices=(
-		('active', 'Active Devices'),
-		('all', 'All Devices'),
-		('available', 'Available Devices'),
-		('unavailable', 'Unavailable Devices'),
-		('archived', 'Archived Devices')),
+	viewfilter = forms.ChoiceField(choices=viewfilters,
 		widget=forms.Select(attrs={"style":"width:200px;margin-right:10px;", "class":"right"}))
