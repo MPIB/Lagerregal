@@ -8,6 +8,7 @@ Devices
 
 {% block pullright %}
 <a href="{% url 'device-add' %}" class="button success small right">Add Device</a>
+{{viewform.viewfilter}}
 {% endblock %}
 
 {% block content %}
@@ -43,6 +44,9 @@ $(document).ready(function() {
             window.location = href;
         }
     });
+$('#id_viewfilter').change(function() {
+    window.location = "/devices/filter/" + $(this).val()
+});
 
 });
 {% endblock %}
