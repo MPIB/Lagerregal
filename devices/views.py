@@ -169,7 +169,7 @@ class DeviceUpdate(UpdateView):
 			messages.error(self.request, "Archived Devices can't be lendt")
 			return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 		else:
-			return super(DeviceUpdate, self).form_valid(request, *args, **kwargs)
+			return super(DeviceUpdate, self).form_valid(self.request, *args, **kwargs)
 
 
 class DeviceDelete(DeleteView):
