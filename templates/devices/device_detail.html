@@ -80,6 +80,7 @@ Device: {{device.name}}
       {% for address in ipaddress_list %}
         <li class="bullet-item">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">x</a></li>
       {% endfor %}
+      {% if device.archived == None %}
       <li class="cta-button"><form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         <div class="row">
       <div class="large-12 columns">
@@ -95,6 +96,7 @@ Device: {{device.name}}
     <input type="hidden" name="device" value="{{ device.pk }}" />
       </form></li>
     </ul>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
