@@ -54,7 +54,7 @@ class LendForm(forms.Form):
 
 class ViewForm(forms.Form):
 	viewfilter = forms.ChoiceField(choices=viewfilters,
-		widget=forms.Select(attrs={"style":"width:200px;margin-right:10px;", "class":"right"}))
+		widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"right"}))
 
 class DeviceForm(forms.ModelForm):
 	class Meta:

@@ -7,8 +7,9 @@ Devices
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'device-add' %}" class="button success small right">Add Device</a>
 {{viewform.viewfilter}}
+<a href="{% url 'device-add' %}" class="button success small right split">Add Device<span data-dropdown="template-dropdown"></span></a>
+
 {% endblock %}
 
 {% block content %}
@@ -34,6 +35,9 @@ Devices
   </tbody>
 </table>
 {% include "snippets/pagination.html" with listurl='device-list' %}
+
+
+
 {% endblock %}
 
 {% block scriptend %}
@@ -49,4 +53,17 @@ $('#id_viewfilter').change(function() {
 });
 
 });
+{% endblock %}
+
+{% block htmlend %}
+<div id="template-dropdown" class="f-dropdown content" data-dropdown-content>
+  <h5>Create from Template</h4>
+<ul style="list-style-type:none;">
+      {% for template in template_list %}
+      <li><a href="{% url 'device-add' template.pk %}">{{template.templatename}}</a></li>
+      {% endfor %}
+    </ul>
+    <hr>
+    <a href="{% url 'template-add' %}">New Template</a>
+  </div>
 {% endblock %}

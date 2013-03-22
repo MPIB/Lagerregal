@@ -84,7 +84,7 @@ class Device(models.Model):
 	serialnumber = models.CharField(_('Serialnumber'), max_length=50, unique=True)
 	macaddress = models.CharField(_('MAC Address'), max_length=40, unique=True)
 	manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True)
-	hostname = models.CharField(_('Hostname'), max_length=40, blank=True)
+	hostname = models.CharField(_('Hostname'), max_length=40, blank=True, unique=True)
 	description = models.CharField(_('Description'), max_length=1000, blank=True)
 	devicetype = models.ForeignKey(Type, blank=True, null=True)
 	room = models.ForeignKey(Room, blank=True, null=True)
@@ -114,5 +114,31 @@ class Lending(models.Model):
 	duedate_email = models.DateField(blank=True, null=True)
 	returndate = models.DateField(blank=True, null=True)
 	device = models.ForeignKey(Device)
+
+class Template(models.Model):
+	templatename = models.CharField(_('Templatename'), max_length=200)
+	name = models.CharField(_('Name'), max_length=200)
+	manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True)
+	description = models.CharField(_('Description'), max_length=1000, blank=True)
+	devicetype = models.ForeignKey(Type, blank=True, null=True)
+
+	def __unicode__(self):
+		return self.templatename
+
+	class Meta:
+		verbose_name = _('Template')
+		verbose_name_plural = _('Templates')
+
+	def get_absolute_url(self):
+		return reverse('device-list')
+
+	def get_as_dict(self):
+		d = {}
+		d["name"] = self.name
+		d["description"] = self.description
+		d["manufacturer"] = self.manufacturer
+		d["devicetype"] = self.devicetype
+		return d
+
 
 reversion.register(Device)
