@@ -50,6 +50,7 @@ class LendForm(forms.Form):
 	duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
+	room = forms.ModelChoiceField(Room.objects.all(), required=False)
 
 class ViewForm(forms.Form):
 	viewfilter = forms.ChoiceField(choices=viewfilters,
