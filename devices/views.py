@@ -220,7 +220,7 @@ class TypeDetail(DetailView):
 		# Call the base implementation first to get a context
 		context = super(TypeDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['device_list'] = Device.objects.filter(devicetype=context["object"])
+		context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None)
 		return context
 
 class TypeCreate(CreateView):
@@ -265,7 +265,7 @@ class RoomDetail(DetailView):
 		# Call the base implementation first to get a context
 		context = super(RoomDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['device_list'] = Device.objects.filter(room=context["room"])
+		context['device_list'] = Device.objects.filter(room=context["room"], archived=None)
 		return context
 
 class RoomCreate(CreateView):
@@ -309,7 +309,7 @@ class BuildingDetail(DetailView):
 		# Call the base implementation first to get a context
 		context = super(BuildingDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['device_list'] = Device.objects.filter(room__building=context["building"])
+		context['device_list'] = Device.objects.filter(room__building=context["building"], archived=None)
 		return context
 
 class BuildingCreate(CreateView):
@@ -355,7 +355,7 @@ class ManufacturerDetail(DetailView):
 		# Call the base implementation first to get a context
 		context = super(ManufacturerDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['device_list'] = Device.objects.filter(manufacturer=context["object"])
+		context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None)
 		return context
 
 class ManufacturerCreate(CreateView):
