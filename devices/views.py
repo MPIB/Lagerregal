@@ -199,10 +199,12 @@ class DeviceArchive(View):
 		device = get_object_or_404(Device, pk=deviceid)
 		if device.archived == None:
 			device.archived = datetime.datetime.now()
+			device.room = None
 		else:
 			device.archived = None
 		device.save()
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
 
 class TypeList(ListView):
 	model = Type
