@@ -3,7 +3,7 @@
 {% block title %}Devicetypes{% endblock %}
 
 {% block header %}
-Devicetypes
+Templates
 {% endblock %}
 
 {% block pullright %}
@@ -12,8 +12,8 @@ Devicetypes
 
 {% block content %}
 <ul>
-  {% for type in type_list %}
-  <li><a href="{% url 'type-edit' type.id %}">{{type.name}}</a><a href="{% url 'template-delete' template.pk %}" style="margin-left:20px">X</a></li>
+  {% for template in template_list %}
+  <li><a href="{% url 'template-edit' template.id %}">{{template.name}}</a><a href="{% url 'template-delete' template.pk %}" style="margin-left:20px">X</a></li>
   {% endfor %}
 </ul>
 {% endblock %}
