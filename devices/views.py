@@ -242,7 +242,7 @@ class DeviceArchive(View):
 
 class TemplateList(ListView):
 	model = Template
-	context_object_name = 'type_list'
+	context_object_name = 'template_list'
 	paginate_by = 30
 
 class TemplateCreate(CreateView):
