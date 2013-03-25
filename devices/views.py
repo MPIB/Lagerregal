@@ -240,6 +240,10 @@ class DeviceArchive(View):
 		return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
+class TemplateList(ListView):
+	model = Template
+	context_object_name = 'type_list'
+	paginate_by = 30
 
 class TemplateCreate(CreateView):
 	model = Template
