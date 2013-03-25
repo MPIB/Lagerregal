@@ -8,6 +8,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from django.contrib import admin
 admin.autodiscover()
 
+from dajaxice.core import dajaxice_autodiscover, dajaxice_config
+dajaxice_autodiscover()
+
 urlpatterns = patterns('',
     url(r'^$', Home.as_view(), name="home"),
 
@@ -74,7 +77,8 @@ urlpatterns = patterns('',
     url(r'^search/$', login_required(Search.as_view()), name="search"),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
 )
 
 urlpatterns += format_suffix_patterns(patterns('',
