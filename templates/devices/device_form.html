@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
+
+{% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="small-12 large-6 large-centered columns panel">
+<form action="" method="post" class="form-horizontal">{% csrf_token %}
+{{form}}
+<input type="submit" value="Submit" class="button button-primary" />
+</form>
+
+</div>
+</div>
+{% endblock %}
+
+{% block scriptend %}
+$( "input:text[name=name]" ).autocomplete({
+      minLength: 2,
+      source: function( request, response ) {
+        var term = request.term;
+        Dajaxice.devices.complete_devicenames(response, {'name':term});
+      }
+    });
+{% endblock %}

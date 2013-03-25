@@ -143,7 +143,7 @@ class DeviceHistoryList(View):
 
 class DeviceCreate(CreateView):
 	model = Device
-	template_name = 'devices/base_form.html'
+	template_name = 'devices/device_form.html'
 	form_class=DeviceForm
 
 	def get_initial(self):
@@ -162,7 +162,7 @@ class DeviceCreate(CreateView):
 
 class DeviceUpdate(UpdateView):
 	model = Device
-	template_name = 'devices/base_form.html'
+	template_name = 'devices/device_form.html'
 	form_class = DeviceForm
 
 	def get_context_data(self, **kwargs):
