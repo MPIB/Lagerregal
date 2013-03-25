@@ -51,13 +51,14 @@ $(document).ready(function() {
 $('#id_viewfilter').change(function() {
     window.location = "/devices/filter/" + $(this).val()
 });
-
 });
 {% endblock %}
 
 {% block htmlend %}
 <div id="template-dropdown" class="f-dropdown content" data-dropdown-content>
   <h5>Create from Template</h4>
+    <a href="{% url 'template-list' %}" class="right" style="margin-bottom:10px">edit</a>
+    <hr>
 <ul style="list-style-type:none;">
       {% for template in template_list %}
       <li><a href="{% url 'device-add' template.pk %}">{{template.templatename}}</a></li>

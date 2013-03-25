@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Devicetypes{% endblock %}
+
+{% block header %}
+Devicetypes
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'template-add' %}" class="button success small right">Add Template</a>
+{% endblock %}
+
+{% block content %}
+<ul>
+  {% for type in type_list %}
+  <li><a href="{% url 'type-edit' type.id %}">{{type.name}}</a><a href="{% url 'template-delete' template.pk %}" style="margin-left:20px">X</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
+
+{% block scriptend %}
+{% endblock %}
