@@ -53,6 +53,7 @@ urlpatterns = patterns('',
     url(r'^rooms/edit/(?P<pk>.*)$', login_required(RoomUpdate.as_view()), name="room-edit"),
     url(r'^rooms/delete/(?P<pk>.*)$', login_required(RoomDelete.as_view()), name="room-delete"),
     url(r'^rooms/view/(?P<pk>.*)$', login_required(RoomDetail.as_view()), name="room-detail"),
+    url(r'^rooms/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', login_required(RoomMerge.as_view()), name="room-merge"),
 
     url(r'^buildings/$', login_required(BuildingList.as_view()), name="building-list"),
     url(r'^buildings/(?P<page>[0-9]*)$', login_required(BuildingList.as_view()), name="building-list"),

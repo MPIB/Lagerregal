@@ -9,6 +9,7 @@ Room: {{room.name}}
 {% block pullright %}
 <a href="{% url 'room-delete' room.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
 <a href="{% url 'room-edit' room.id %}" class="button success small right">Edit</a>
+<a href="#" class="button right small dropdown" data-dropdown="mergedropdown">Merge</a>
 {% endblock %}
 
 {% block content %}
@@ -43,4 +44,12 @@ Room: {{room.name}}
   </tbody>
 </table>
 {% endif %}
+{% endblock %}
+
+{% block htmlend%}
+<ul id="mergedropdown" class="f-dropdown">
+{% for merge in merge_list %}
+  <li><a href="{% url 'room-merge' room.pk merge.pk %}">{{ merge.name }}</a></li>
+{% endfor %}
+</ul>
 {% endblock %}
