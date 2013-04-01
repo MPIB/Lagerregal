@@ -112,6 +112,7 @@ class Device(models.Model):
 		d["description"] = self.description
 		d["manufacturer"] = self.manufacturer
 		d["devicetype"] = self.devicetype
+		d["room"] = self.room
 		return d
 
 
