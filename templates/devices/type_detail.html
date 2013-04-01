@@ -7,8 +7,9 @@
 {% get_verbose_name object %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-<a href="#" class="button alert right small"style="margin-left:10px">Delete</a>
-<a href="{{object.get_edit_url}}" class="button success right small" >Edit</a>
+<a href="#" class="button alert right small" style="margin-left:10px">Delete</a>
+<a href="{{object.get_edit_url}}" class="button success right small" style="margin-left:10px">Edit</a>
+<a href="#" class="button right small dropdown" data-dropdown="mergedropdown">Merge</a>
 {% endblock %}
 {% block content %}
 {% if device_list %}
@@ -33,5 +34,15 @@
      {% endfor %}
   </tbody>
 </table>
+
+
 {% endif %}
+{% endblock %}
+
+{% block htmlend%}
+<ul id="mergedropdown" class="f-dropdown">
+{% for merge in merge_list %}
+  <li><a href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
+{% endfor %}
+</ul>
 {% endblock %}

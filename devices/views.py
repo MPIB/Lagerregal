@@ -267,12 +267,13 @@ class TypeList(ListView):
 class TypeDetail(DetailView):
 	model = Type
 	context_object_name = 'object'
-	template_name = "devices/base_detail.html"
+	template_name = "devices/type_detail.html"
 
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
 		context = super(TypeDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
+		context["merge_list"] = Type.objects.exclude(pk=context["object"].pk)
 		context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None)
 		return context
 
@@ -302,6 +303,25 @@ class TypeDelete(DeleteView):
 	model = Type
 	success_url = reverse_lazy('type-list')
 	template_name = 'devices/base_delete.html'
+
+class TypeMerge(View):
+	model = Type
+	
+	def get(self, request, *args, **kwargs):
+		context = {}
+		context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
+		context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+		return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+		
+	def post(self, request, *args, **kwargs):
+		oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
+		newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
+		devices = Device.objects.filter(devicetype=oldobject)
+		for device in devices:
+			device.devicetype = newobject
+			device.save()
+		oldobject.delete()
+		return HttpResponseRedirect(newobject.get_absolute_url())
 
 
 
