@@ -401,6 +401,7 @@ class BuildingDetail(DetailView):
 		# Call the base implementation first to get a context
 		context = super(BuildingDetail, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
+		context["merge_list"] = Building.objects.exclude(pk=context["building"].pk)
 		context['device_list'] = Device.objects.filter(room__building=context["building"], archived=None)
 		return context
 
@@ -431,6 +432,24 @@ class BuildingDelete(DeleteView):
 	success_url = reverse_lazy('building-list')
 	template_name = 'devices/base_delete.html'
 
+class BuildingMerge(View):
+	model = Building
+	
+	def get(self, request, *args, **kwargs):
+		context = {}
+		context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
+		context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+		return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+		
+	def post(self, request, *args, **kwargs):
+		oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
+		newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
+		rooms = Room.objects.filter(building=oldobject)
+		for room in rooms:
+			room.building = newobject
+			room.save()
+		oldobject.delete()
+		return HttpResponseRedirect(newobject.get_absolute_url())
 
 
 class ManufacturerList(ListView):
