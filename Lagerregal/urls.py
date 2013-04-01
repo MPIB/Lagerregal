@@ -69,6 +69,7 @@ urlpatterns = patterns('',
     url(r'^manufacturers/edit/(?P<pk>.*)$', login_required(ManufacturerUpdate.as_view()), name="manufacturer-edit"),
     url(r'^manufacturers/delete/(?P<pk>.*)$', login_required(ManufacturerDelete.as_view()), name="manufacturer-delete"),
     url(r'^manufacturers/view/(?P<pk>.*)$', login_required(ManufacturerDetail.as_view()), name="manufacturer-detail"),
+    url(r'^manufacturers/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', login_required(ManufacturerMerge.as_view()), name="manufacturer-merge"),
 
     url(r'^ipaddresses/$', login_required(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/(?P<page>[0-9]*)$', login_required(IpAddressList.as_view()), name="ipaddress-list"),
