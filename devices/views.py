@@ -526,8 +526,8 @@ class Search(FormView):
 
 	def form_valid(self, form):
 		search = {}
-		if form.cleaned_data["name"] != "":
-			search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["name"] 
+		if form.cleaned_data["searchname"] != "":
+			search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["searchname"] 
 
 		if form.cleaned_data["lender"] != "":
 			search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"] 

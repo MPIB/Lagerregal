@@ -24,7 +24,7 @@ class IpAddressForm(forms.Form):
 
 class SearchForm(forms.Form):
 	error_css_class = 'error'
-	name= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name"}), required=False)
+	searchname= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name"}), required=False)
 	namemodifier=forms.ChoiceField(choices=charmodifier, widget=forms.Select(attrs={"class":"postfix"}))
 
 	buildnumber= forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber"}), required=False)
