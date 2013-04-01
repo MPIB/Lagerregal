@@ -289,7 +289,8 @@ class TypeCreate(CreateView):
 		# Call the base implementation first to get a context
 		context = super(TypeCreate, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['actionstring'] = "Create new"
+		context['actionstring'] = "Create new Devicetype"
+		context['type'] = "type"
 		return context
 
 class TypeUpdate(UpdateView):
@@ -354,7 +355,8 @@ class RoomCreate(CreateView):
 		# Call the base implementation first to get a context
 		context = super(RoomCreate, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['actionstring'] = "Create new"
+		context['actionstring'] = "Create new Room"
+		context['type'] = "room"
 		return context
 
 class RoomUpdate(UpdateView):
@@ -417,7 +419,8 @@ class BuildingCreate(CreateView):
 		# Call the base implementation first to get a context
 		context = super(BuildingCreate, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['actionstring'] = "Create new"
+		context['actionstring'] = "Create new Building"
+		context['type'] = "building"
 		return context
 
 class BuildingUpdate(UpdateView):
@@ -482,7 +485,8 @@ class ManufacturerCreate(CreateView):
 		# Call the base implementation first to get a context
 		context = super(ManufacturerCreate, self).get_context_data(**kwargs)
 		# Add in a QuerySet of all the books
-		context['actionstring'] = "Create new"
+		context['actionstring'] = "Create new Manufacturer"
+		context['type'] = "manufacturer"
 		return context
 
 class ManufacturerUpdate(UpdateView):
