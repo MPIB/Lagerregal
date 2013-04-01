@@ -106,6 +106,14 @@ class Device(models.Model):
 	def get_edit_url(self):
 		return reverse('device-edit', kwargs={'pk': self.pk})
 
+	def get_as_dict(self):
+		d = {}
+		d["name"] = self.name
+		d["description"] = self.description
+		d["manufacturer"] = self.manufacturer
+		d["devicetype"] = self.devicetype
+		return d
+
 
 class Lending(models.Model):
 	owner = models.ForeignKey(User)
