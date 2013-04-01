@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{%  load devicetags %}
 
 {% block title %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 
@@ -13,4 +14,25 @@
 
 </div>
 </div>
+{% endblock %}
+
+{% block scriptend %}
+$( "input:text[name=name]" ).keyup(function() {
+	if($(this).val().length > 1) {
+		Dajaxice.devices.complete_names(Dajax.process,{'classtype':'{{type}}', 'name':$(this).val()})
+	}
+});
+
+function display_alternatives(data){
+	if ($("#alternatives").length == 0){
+		$( "input:text[name=name]" ).after("\
+<div class='alert-box alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?\
+<ul id='alternatives' style='margin-top:10px;'></ul>\
+</div>")
+	}
+	$("#alternatives").empty()
+	for (var i=0; i < data.length; i++) {
+		$("#alternatives").append(data[i])
+	};
+}
 {% endblock %}
