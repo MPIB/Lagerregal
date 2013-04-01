@@ -152,6 +152,10 @@ class DeviceCreate(CreateView):
 		if templateid != None:
 			templatedict = get_object_or_404(Template, pk=templateid).get_as_dict()
 			return templatedict
+		copyid = self.kwargs.pop("copyid", None)
+		if copyid != None:
+			copydict = get_object_or_404(Device, pk=copyid).get_as_dict()
+			return copydict
 
 	def get_context_data(self, **kwargs):
 		# Call the base implementation first to get a context
