@@ -35,7 +35,6 @@ def complete_names(request, classtype, name):
 	if len(objects) > 0:
 		objects = ["<li><a href='{}' style='color:white'>{}</a></li>".format(reverse(urlname, kwargs={"pk":object[0]}), object[1]) 
 			for object in objects.values_list("pk", "name")]
-		print objects
 		dajax.add_data(objects, 'display_alternatives')
 		return dajax.json()
 	else:
