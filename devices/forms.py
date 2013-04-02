@@ -57,6 +57,9 @@ class ViewForm(forms.Form):
         widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"right"}))
 
 class DeviceForm(forms.ModelForm):
+    emailbosses = forms.BooleanField(required=False)
+    emailmanagment = forms.BooleanField(required=False)
+
     class Meta:
         model=Device
         exclude = ("archived", "currentlending")

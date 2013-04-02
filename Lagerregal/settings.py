@@ -130,7 +130,7 @@ INSTALLED_APPS = (
     'devices',
     'network',
     'reversion',
-    'rest_framework', 
+    'rest_framework',
     'dajaxice',
     'dajax',
 )
@@ -139,6 +139,10 @@ INSTALLED_APPS = (
 MESSAGE_TAGS = {
     messages.ERROR: 'alert',
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '{0}/mails'.format(os.getcwd())
+DEFAULT_FROM_EMAIL = 'support@localhost'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
