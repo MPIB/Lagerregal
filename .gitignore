@@ -1,3 +1,11 @@
 *.pyc
 database.db
+<<<<<<< HEAD
 mails/
+=======
+.spyderproject
+
+.spyderworkspace
+
+*.pyo
+>>>>>>> ignore spyder-stuff
