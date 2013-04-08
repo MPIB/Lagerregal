@@ -1,13 +1,12 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View, FormView
 from django.template import RequestContext, loader, Context
 from django.template.loader import render_to_string
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Type, Room, Building, Manufacturer, Lending
 from network.models import IpAddress
 from django.shortcuts import render_to_response
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -19,6 +18,7 @@ import reversion
 from django.contrib.auth.models import User, Permission
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
+
 @api_view(('GET',))
 def api_root(request, format=None):
     return Response({
