@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 import reversion
 
 class Type(models.Model):
-    name = models.CharField(_('Name'), max_length=200, blank=True)
+    name = models.CharField(_('Name'), max_length=200, unique=True)
 
     def __unicode__(self):
         return self.name
@@ -22,7 +22,7 @@ class Type(models.Model):
 
 
 class Building(models.Model):
-    name = models.CharField(_('Name'), max_length=200, blank=True)
+    name = models.CharField(_('Name'), max_length=200, unique=True)
     number = models.CharField(_('Number'), max_length = 30, blank = True)
     street = models.CharField(_('Street'), max_length = 100, blank = True)
     zipcode = models.CharField(_('ZIP code'), max_length = 5, blank = True)
@@ -44,7 +44,7 @@ class Building(models.Model):
 
 
 class Room(models.Model):
-    name = models.CharField(_('Name'), max_length=200, blank=True)
+    name = models.CharField(_('Name'), max_length=200, unique=True)
     building = models.ForeignKey(Building)
 
     def __unicode__(self):
@@ -61,7 +61,7 @@ class Room(models.Model):
         return reverse('room-edit', kwargs={'pk': self.pk})
 
 class Manufacturer(models.Model):
-    name = models.CharField(_('Manufacturer'), max_length=200, blank=True)
+    name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
 
     def __unicode__(self):
         return self.name
@@ -152,7 +152,7 @@ class Template(models.Model):
         dict["description"] = self.description
         dict["manufacturer"] = self.manufacturer
         dict["devicetype"] = self.devicetype
-        return d
+        return dict
 
 
 reversion.register(Device)
