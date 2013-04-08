@@ -60,6 +60,7 @@ class DeviceForm(forms.ModelForm):
     error_css_class = 'error'
     emailbosses = forms.BooleanField(required=False)
     emailmanagment = forms.BooleanField(required=False)
+    description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
 
     class Meta:
         model=Device
