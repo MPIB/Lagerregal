@@ -25,7 +25,7 @@ Device: {{device.name}}
 
 {% block content %}
 <div class="row">
-  <div class="small-12 large-8 columns">
+  <div class="small-12 large-4 columns">
     <table>
       <tbody>
         <tr><td>Buildnumber</td><td>{{device.buildnumber}}</td></tr>
@@ -75,6 +75,9 @@ Device: {{device.name}}
 
     <a href="{% url 'device-history-list' device.pk %}">View edit-history</a>
   </div>
+<div class="small-12 large-4 columns">
+{{device.description}}
+</div>
   <div class="small-12 large-4 columns">
     <ul class="pricing-table">
       <li class="title">IP-Addresses</li>
@@ -90,7 +93,7 @@ Device: {{device.name}}
     </div>
         <div class="row"  style="margin-top:10px;">
       <div class="large-12 columns">
-        
+
         <input type="submit" class ="button small right" value="Assign Addresses">
       </div>
     </div>
