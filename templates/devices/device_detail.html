@@ -36,6 +36,7 @@ Device: {{device.name}}
         <tr><td>Room</td><td>{{device.room}}</td></tr>
       </tbody>
     </table>
+{% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">Go to webinterface</a>{% endif %}
 <h4> Current Lending information</h4>
     {% if device.currentlending != None %}
       <table>
