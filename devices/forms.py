@@ -57,6 +57,7 @@ class ViewForm(forms.Form):
         widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"right"}))
 
 class DeviceForm(forms.ModelForm):
+    error_css_class = 'error'
     emailbosses = forms.BooleanField(required=False)
     emailmanagment = forms.BooleanField(required=False)
 

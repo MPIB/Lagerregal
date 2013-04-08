@@ -7,7 +7,18 @@
 <div class="row">
   <div class="small-12 large-6 large-centered columns panel">
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
-{{form}}
+{% for field in form %}
+<div class="row {{field.css_classes}}">
+        <div class="small-3 columns">
+          <label for="right-label" class="right inline">{{ field.label_tag }}</label>
+        </div>
+        <div class="small-9 columns">
+         {{ field }}
+{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
+        </div>
+      </div>
+
+{% endfor %}
 <input type="submit" value="Submit" class="button button-primary" />
 </form>
 
