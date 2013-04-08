@@ -2,6 +2,7 @@ from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Type, Room, Building, Manufacturer
 from django.utils import simplejson
+from django.core.urlresolvers import reverse
 
 @dajaxice_register
 def complete_devicenames(request, name):
@@ -14,9 +15,9 @@ def complete_devicenames(request, name):
         device_json['value'] = device.name
         results.append(device_json)
     return  simplejson.dumps(results)
-    
+
 @dajaxice_register
-def complete_names(request, classtype, name):    
+def complete_names(request, classtype, name):
     if classtype == "type":
         objects = Type.objects.filter(name__icontains = name )[:20]
         urlname = "type-detail"
@@ -34,7 +35,7 @@ def complete_names(request, classtype, name):
     dajax = Dajax()
     if len(objects) > 0:
         objects = ["<li><a href='{}' style='color:white'>{}</a></li>".format(
-		reverse(urlname, kwargs={"pk":object[0]}), object[1]) 
+		reverse(urlname, kwargs={"pk":object[0]}), object[1])
 		for object in objects.values_list("pk", "name")]
         dajax.add_data(objects, 'display_alternatives')
         return dajax.json()
