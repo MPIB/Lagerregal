@@ -1,4 +1,24 @@
 [
+
+  {
+        "pk": 2, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "testuser", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2013-04-18T15:00:24.247Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$umpHqyE0RseN$Zg2TLBHgSld7Jf/X+rFUlEyTL5xzGpInflZJpG8BRbQ=", 
+        "email": "", 
+        "date_joined": "2013-04-18T15:00:24.247Z"
+    }
+
+    },
   {
     "model": "devices.building",
     "pk": 1,
