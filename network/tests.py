@@ -29,7 +29,7 @@ class DeviceTest(unittest.TestCase):
               "devicetype":"3",
               "room":"3",
               "manufacturer":"3"
-            })
+        })
         self.assertEqual(response.status_code, 302)
 
         response = self.client.get('/devices/')
