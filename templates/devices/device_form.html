@@ -34,4 +34,7 @@ $( "input:text[name=name]" ).autocomplete({
         Dajaxice.devices.complete_devicenames(response, {'name':term});
       }
     });
+{% if object != None %}$('#id_emailbosses').parent().parent().hide();
+$('#id_emailmanagment').parent().parent().hide();
+{% endif %}
 {% endblock %}
