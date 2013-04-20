@@ -46,4 +46,5 @@ function display_alternatives(data){
 		$("#alternatives").append(data[i])
 	};
 }
+{% autoescape off %}{{ form_scripts }}{% endautoescape %}
 {% endblock %}
