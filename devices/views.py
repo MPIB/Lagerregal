@@ -135,6 +135,8 @@ class DeviceDetail(DetailView):
         context['version_list'] = reversion.get_unique_for_object(context["device"])
         context['ipaddressform'] = IpAddressForm()
         context["lending_list"] = Lending.objects.filter(device=context["device"])
+        context["today"] = datetime.date.today()
+        context["weekago"] = context["today"] - datetime.timedelta(days=7)
         return context
 
 class DeviceIpAddressRemove(DeleteView):
