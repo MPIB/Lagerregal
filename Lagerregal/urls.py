@@ -100,4 +100,6 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/buildings/(?P<pk>\d+)/$', BuildingApiDetail.as_view(), name='building-api-detail'),
     url(r'^api/templates/$', TemplateApiList.as_view(), name='template-api-list'),
     url(r'^api/templates/(?P<pk>\d+)/$', TemplateApiDetail.as_view(), name='template-api-detail'),
+    url(r'^api/ipaddresses/$', IpAddressApiList.as_view(), name='ipaddress-api-list'),
+    url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
 ), allowed=["json", "html"])
