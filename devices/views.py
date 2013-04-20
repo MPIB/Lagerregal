@@ -286,6 +286,14 @@ class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
 
+    def get_context_data(self, **kwargs):
+        context = super(DeviceLend, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['actionstring'] = "Mark device as lend"
+        context['form_scripts'] = "$('#id_owner').select2();"
+        return context
+
+
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)

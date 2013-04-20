@@ -1,6 +1,7 @@
 from django import forms
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
+from django.contrib.auth.models import User
 
 CHARMODIFIER = (
     ('icontains','Contains'),
@@ -46,7 +47,7 @@ class SearchForm(forms.Form):
     lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender"}), required=False)
 
 class LendForm(forms.Form):
-    owner = forms.CharField()
+    owner = forms.ModelChoiceField(User.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
