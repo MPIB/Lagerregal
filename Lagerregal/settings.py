@@ -140,6 +140,12 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert',
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '{0}/mails'.format(os.getcwd())
 DEFAULT_FROM_EMAIL = 'support@localhost'
