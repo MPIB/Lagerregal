@@ -7,6 +7,7 @@ from network.models import IpAddress
 from django.shortcuts import render_to_response
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+import rest_framework.reverse
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -24,6 +25,13 @@ from serializers import DeviceSerializer, TypeSerializer, RoomSerializer, Buildi
 @api_view(('GET',))
 def api_root(request, format=None):
     return Response({
+        'devices': rest_framework.reverse.reverse('device-api-list', request=request),
+        'rooms': rest_framework.reverse.reverse('room-api-list', request=request),
+        'buildings': rest_framework.reverse.reverse('building-api-list', request=request),
+        'manufacturers': rest_framework.reverse.reverse('manufacturer-api-list', request=request),
+        'types': rest_framework.reverse.reverse('type-api-list', request=request),
+        'templates': rest_framework.reverse.reverse('template-api-list', request=request),
+        'ipaddresses': rest_framework.reverse.reverse('ipaddress-api-list', request=request),
     })
 
 class DeviceApiList(generics.ListCreateAPIView):
