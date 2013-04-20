@@ -17,12 +17,67 @@ import datetime
 import reversion
 from django.contrib.auth.models import User, Permission
 from django.core.mail import EmailMessage
-from django.core.mail import send_mail
+from rest_framework import generics
+from rest_framework.decorators import api_view
+from serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer
 
 @api_view(('GET',))
 def api_root(request, format=None):
     return Response({
     })
+
+class DeviceApiList(generics.ListCreateAPIView):
+    model = Device
+    serializer_class = DeviceSerializer
+
+class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Device
+    serializer_class = DeviceSerializer
+
+
+class TypeApiList(generics.ListCreateAPIView):
+    model = Type
+    serializer_class = TypeSerializer
+
+class TypeApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Type
+    serializer_class = TypeSerializer
+
+
+class RoomApiList(generics.ListCreateAPIView):
+    model = Room
+    serializer_class = RoomSerializer
+
+class RoomApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Room
+    serializer_class = RoomSerializer
+
+
+class BuildingApiList(generics.ListCreateAPIView):
+    model = Building
+    serializer_class = BuildingSerializer
+
+class BuildingApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Building
+    serializer_class = BuildingSerializer
+
+
+class ManufacturerApiList(generics.ListCreateAPIView):
+    model = Manufacturer
+    serializer_class = ManufacturerSerializer
+
+class ManufacturerApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Manufacturer
+    serializer_class = ManufacturerSerializer
+
+
+class TemplateApiList(generics.ListCreateAPIView):
+    model = Template
+    serializer_class = TemplateSerializer
+
+class TemplateApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Template
+    serializer_class = TemplateSerializer
 
 
 class Home(TemplateView):
