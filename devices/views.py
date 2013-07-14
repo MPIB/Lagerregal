@@ -217,14 +217,18 @@ class DeviceCreate(CreateView):
 
     def get_initial(self):
         super(DeviceCreate, self).get_initial()
+        creator = self.request.user.pk
         templateid = self.kwargs.pop("templateid", None)
         if templateid != None:
             templatedict = get_object_or_404(Template, pk=templateid).get_as_dict()
+            templatedict["creator"] = creator
             return templatedict
         copyid = self.kwargs.pop("copyid", None)
         if copyid != None:
             copydict = get_object_or_404(Device, pk=copyid).get_as_dict()
+            copydict["creator"] = creator
             return copydict
+        return {"creator":creator}
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -258,6 +262,8 @@ class DeviceCreate(CreateView):
                     email.to.append(m.email)
             print email.to
             email.send()
+        form.cleaned_data["creator"] = self.request.user
+        reversion.set_comment("Created")
         return super(DeviceCreate, self).form_valid(form)
 
 class DeviceUpdate(UpdateView):
@@ -276,9 +282,10 @@ class DeviceUpdate(UpdateView):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived != None:
-            messages.error(self.request, "Archived Devices can't be lendt")
+            messages.error(self.request, "Archived Devices can't be edited")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
+            reversion.set_comment("updated")
             return super(DeviceUpdate, self).form_valid(form)
 
 
@@ -345,6 +352,7 @@ class DeviceArchive(View):
         else:
             device.archived = None
         device.save()
+        reversion.set_comment("Archived")
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
