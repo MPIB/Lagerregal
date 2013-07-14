@@ -1,7 +1,7 @@
 from django import forms
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
-from django.contrib.auth.models import User
+from users.models import Lageruser
 
 CHARMODIFIER = (
     ('icontains','Contains'),
@@ -47,7 +47,7 @@ class SearchForm(forms.Form):
     lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender"}), required=False)
 
 class LendForm(forms.Form):
-    owner = forms.ModelChoiceField(User.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}))
+    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}))
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
@@ -63,7 +63,7 @@ class DeviceForm(forms.ModelForm):
     emailmanagment = forms.BooleanField(required=False)
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
-    creator =  forms.ModelChoiceField(queryset=User.objects.all(), widget=forms.HiddenInput())
+    creator =  forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
 
     class Meta:
         model=Device

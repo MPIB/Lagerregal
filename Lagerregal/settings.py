@@ -137,6 +137,9 @@ INSTALLED_APPS = (
 )
 
 
+AUTH_USER_MODEL = 'users.Lageruser'
+
+
 MESSAGE_TAGS = {
     messages.ERROR: 'alert',
 }

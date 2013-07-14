@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 import reversion
@@ -78,7 +78,7 @@ class Manufacturer(models.Model):
 
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add = True, blank=True, null=True)
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(Lageruser)
     name = models.CharField(_('Name'), max_length=200)
     bildnumber = models.CharField(_('Bildnumber'), max_length=50, unique=True)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50, unique=True)
@@ -123,7 +123,7 @@ class Device(models.Model):
 
 
 class Lending(models.Model):
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(Lageruser)
     lenddate = models.DateField(auto_now_add=True)
     duedate = models.DateField(blank=True, null=True)
     duedate_email = models.DateField(blank=True, null=True)
