@@ -16,11 +16,12 @@ from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm
 import datetime
 import reversion
-from django.contrib.auth.models import User, Permission
+from django.contrib.auth.models import Permission
 from django.core.mail import EmailMessage
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer
+from users.models import Lageruser
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -251,12 +252,12 @@ class DeviceCreate(CreateView):
             body = render_to_string("mails/newdevice.html", c)
             email = EmailMessage(subject=subject, body=body)
             if form.cleaned_data["emailbosses"]:
-                bosses = User.objects.filter(
+                bosses = Lageruser.objects.filter(
                     groups__permissions = Permission.objects.get(codename='boss_mail'))
                 for boss in bosses:
                     email.to.append(boss.email)
             if form.cleaned_data["emailmanagment"]:
-                managment = User.objects.filter(
+                managment = Lageruser.objects.filter(
                     groups__permissions = Permission.objects.get(codename='managment_mail'))
                 for m in managment:
                     email.to.append(m.email)
@@ -313,7 +314,7 @@ class DeviceLend(FormView):
             messages.error(self.request, "Archived Devices can't be lendt")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = Lending()
-        lending.owner = get_object_or_404(User, username=form.cleaned_data["owner"])
+        lending.owner = get_object_or_404(Lageruser, username=form.cleaned_data["owner"])
         lending.duedate = form.cleaned_data["duedate"]
         lending.device = device
         lending.save()
