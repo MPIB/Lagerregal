@@ -97,6 +97,7 @@ class Home(TemplateView):
         context['device_available'] = Device.objects.filter(currentlending=None).count()
         context['ipaddress_all'] = IpAddress.objects.all().count()
         context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
+        context['revisions'] = Version.objects.all().order_by("-pk")[:20]
         return context
 
 class DeviceList(ListView):
