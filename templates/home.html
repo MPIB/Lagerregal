@@ -69,8 +69,8 @@ Home
                     <tbody>
                         {% for action in revisions %}
                             <tr>
-                                <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.field_dict.name}}</a></td>
-                                <td>{{action.revision.date_created}}</td>
+                                <td><a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}</a></td>
+                                <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
                                 <td>
                                     {% if action.revision.user %}
                                         {{action.revision.user.username}}
