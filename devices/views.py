@@ -356,6 +356,12 @@ class DeviceArchive(View):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
+class DeviceGlobalhistory(ListView):
+    queryset = Version.objects.order_by('-pk')
+    context_object_name = "revision_list"
+    template_name = 'devices/globalhistory.html'
+    paginate_by = 30
+
 class TemplateList(ListView):
     model = Template
     context_object_name = 'template_list'
