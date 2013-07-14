@@ -241,9 +241,7 @@ class DeviceCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        print form.cleaned_data["emailbosses"], form.cleaned_data["emailmanagment"]
         if form.cleaned_data["emailbosses"] or form.cleaned_data["emailbosses"]:
-            print "test"
             subject = "New device was added"
 
             c = Context({
@@ -261,7 +259,6 @@ class DeviceCreate(CreateView):
                     groups__permissions = Permission.objects.get(codename='managment_mail'))
                 for m in managment:
                     email.to.append(m.email)
-            print email.to
             email.send()
         form.cleaned_data["creator"] = self.request.user
         reversion.set_comment("Created")
@@ -314,7 +311,7 @@ class DeviceLend(FormView):
             messages.error(self.request, "Archived Devices can't be lendt")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = Lending()
-        lending.owner = get_object_or_404(Lageruser, username=form.cleaned_data["owner"])
+        lending.owner = get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)
         lending.duedate = form.cleaned_data["duedate"]
         lending.device = device
         lending.save()

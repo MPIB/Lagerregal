@@ -1,6 +1,7 @@
 from django.views.generic import ListView, DetailView
 from users.models import Lageruser
 from reversion.models import Version
+from devices.models import Device
 
 class ProfileView(DetailView):
     model = Lageruser
@@ -13,4 +14,5 @@ class ProfileView(DetailView):
         context = super(ProfileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['edits'] = Version.objects.filter(revision__user = context["profileuser"])
+        context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
         return context

@@ -11,27 +11,60 @@
 {% endblock %}
 
 {% block content %}
-{% if edits %}
-<h4>Edits</h4>
-<table id="change-history" width="100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Device' %}</th>
-                            <th scope="col">{% trans 'Date/time' %}</th>
-                            <th scope="col">{% trans 'Comment' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for action in edits %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}</a></td>
-                                <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
-                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-{% else %}
-<h5>User hasn't edited anything.</h5>
+<div class="row">
+{% if profileuser.is_staff %}
+  <div class="small-6 columns">
+  <h4>Edits</h4>
+  {% if edits %}
+  <table id="change-history" width="100%">
+                      <thead>
+                          <tr>
+                              <th scope="col">{% trans 'Device' %}</th>
+                              <th scope="col">{% trans 'Date/time' %}</th>
+                              <th scope="col">{% trans 'Comment' %}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for action in edits %}
+                              <tr>
+                                  <td><a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}</a></td>
+                                  <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
+                                  <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+  {% else %}
+  <h5>User hasn't edited anything.</h5>
+  {% endif %}
+</div>
 {% endif %}
+<div class="small-{% if profileuser.is_staff %}6{% else %}12{% endif %} columns">
+  <h4>Owned devices</h4>
+{% if devices %}
+  <table id="change-history" width="100%">
+                      <thead>
+                          <tr>
+                              <th scope="col">{% trans 'Device' %}</th>
+                              <th scope="col">{% trans 'Lendt since' %}</th>
+                              <th scope="col">{% trans 'Duedate' %}</th>
+                              <th scope="col">{% trans 'Room' %}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for device in devices %}
+                              <tr>
+                                  <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
+                                  <td>{{device.currentlending.lenddate}}</td>
+                                  <td>{{device.currentlending.duedate}}</td>
+                                  <td>{{device.room}}</td>
+                              </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+{% else %}
+  <h5>User doesn't own any devices</h5>
+  {% endif %}
+</div>
+</div>
 {% endblock %}
