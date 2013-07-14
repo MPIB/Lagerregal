@@ -129,6 +129,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'devices',
     'network',
+    'users',
     'reversion',
     'rest_framework',
     'dajaxice',

@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from devices.views import *
 from network.views import *
+from users.views import ProfileView
 from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
@@ -78,6 +79,8 @@ urlpatterns = patterns('',
     url(r'^ipaddresses/edit/(?P<pk>.*)$', login_required(IpAddressUpdate.as_view()), name="ipaddress-edit"),
     url(r'^ipaddresses/delete/(?P<pk>.*)$', login_required(IpAddressDelete.as_view()), name="ipaddress-delete"),
     url(r'^ipaddresses/view/(?P<pk>.*)$', login_required(IpAddressDetail.as_view()), name="ipaddress-detail"),
+
+    url(r'^users/(?P<pk>[0-9]*)$', login_required(ProfileView.as_view()), name="userprofile"),
 
     url(r'^search/$', login_required(Search.as_view()), name="search"),
 
