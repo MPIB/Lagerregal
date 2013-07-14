@@ -1,9 +1,9 @@
 from django.views.generic import ListView, DetailView
-from django.contrib.auth.models import User
+from users.models import Lageruser
 from reversion.models import Version
 
 class ProfileView(DetailView):
-    model = User
+    model = Lageruser
     context_object_name = 'user'
 
     template_name = 'users/profile.html'
