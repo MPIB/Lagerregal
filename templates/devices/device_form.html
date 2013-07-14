@@ -10,7 +10,8 @@
 {% for field in form %}
 <div class="row {{field.css_classes}}">
         <div class="small-3 columns">
-          <label for="right-label" class="right inline">{{ field.label_tag }}</label>
+          {{field.required}}
+          <label for="right-label" class="right inline"{% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
         </div>
         <div class="small-9 columns">
          {{ field }}
