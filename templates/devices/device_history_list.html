@@ -22,12 +22,7 @@ History for <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
                         {% for action in version_list %}
                             <tr>
                                 <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}">{{action.revision.date_created}}</a></th>
-                                <td>
-                                    {% if action.revision.user %}
-                                        {{action.revision.user.username}}
-                                        {% if action.revision.user.first_name %} ({{action.revision.user.first_name}} {{action.revision.user.last_name}}){% endif %}
-                                    {% endif %}
-                                </td>
+                                <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
                                 <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
                             </tr>
                         {% endfor %}

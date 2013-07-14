@@ -34,6 +34,7 @@ Device: {{device.name}}
         <tr><td>Devicetype</td><td>{{device.devicetype}}</td></tr>
         <tr><td>Manufacturer</td><td>{{device.manufacturer}}</td></tr>
         <tr><td>Room</td><td>{{device.room}}</td></tr>
+        <tr><td>Created by</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
       </tbody>
     </table>
 {% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">Go to webinterface</a>{% endif %}
