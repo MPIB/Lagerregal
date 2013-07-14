@@ -78,7 +78,6 @@ class Manufacturer(models.Model):
 
 class Device(models.Model):
     created_at = models.DateField(auto_now_add = True, blank=True, null=True)
-
     name = models.CharField(_('Name'), max_length=200)
     buildnumber = models.CharField(_('Buildnumber'), max_length=50, unique=True)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50, unique=True)
