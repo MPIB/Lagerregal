@@ -101,6 +101,8 @@ class Home(TemplateView):
         if self.request.user.is_authenticated():
             context['revisions'] = Version.objects.all().order_by("-pk")[:20]
             context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
+            context["today"] = datetime.date.today()
+            context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
         return context
 
 class DeviceList(ListView):
