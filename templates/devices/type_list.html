@@ -16,6 +16,7 @@ Devicetypes
   <li><a href="{% url 'type-detail' type.id %}">{{type.name}}</a></li>
   {% endfor %}
 </ul>
+{% include "snippets/pagination.html" with listurl='type-list' %}
 {% endblock %}
 
 {% block scriptend %}
