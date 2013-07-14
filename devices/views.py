@@ -99,6 +99,7 @@ class Home(TemplateView):
         context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
         if self.request.user.is_authenticated():
             context['revisions'] = Version.objects.all().order_by("-pk")[:20]
+            context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
         return context
 
 class DeviceList(ListView):
