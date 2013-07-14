@@ -70,7 +70,7 @@ Device: {{device.name}}
   <tbody>
     {% for lending in lending_list %}
     <tr>
-      <td>{{lending.owner}}</td>
+      <td><a href="{% url 'userprofile' lending.owner.pk %}">{{lending.owner}}</a></td>
       <td>{{lending.lenddate}}</td>
       <td>{{lending.duedate|default_if_none:"never"}}</td>
       <td>{{lending.returndate|default_if_none:"not returned"}}</td>
