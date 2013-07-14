@@ -4,7 +4,7 @@
 		<label>Name</label>
 		<div class="row collapse">
 		    <div class="small-8 columns">
-		      {{form.name}}
+		      {{form.searchname}}
 		    </div>
 		    <div class="small-4 columns">
 		      {{form.namemodifier}}
@@ -13,14 +13,14 @@
 		    {% if form.name.errors %}<small style="padding-top:20px">Name: {% for error in form.name.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.namemodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.namemodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.buildnumber.css_classes}} {{form.buildnumbermodifier.css_classes}}">
-		<label>Buildnumber</label>
+		<div class="small-3 columns {{form.bildnumber.css_classes}} {{form.bildnumbermodifier.css_classes}}">
+		<label>Bildnumber</label>
 		<div class="row collapse">
 		    <div class="small-8 columns">
-		      {{form.buildnumber}}
+		      {{form.bildnumber}}
 		    </div>
 		    <div class="small-4 columns">
-		      {{form.buildnumbermodifier}}
+		      {{form.bildnumbermodifier}}
 		    </div>
 		  </div>
 		  {% if form.buildnumber.errors %}<small style="padding-top:20px">Buildnumber: {% for error in form.buildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
