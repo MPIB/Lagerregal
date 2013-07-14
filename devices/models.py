@@ -77,9 +77,10 @@ class Manufacturer(models.Model):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
 
 class Device(models.Model):
-    created_at = models.DateField(auto_now_add = True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+    creator = models.ForeignKey(User)
     name = models.CharField(_('Name'), max_length=200)
-    buildnumber = models.CharField(_('Buildnumber'), max_length=50, unique=True)
+    bildnumber = models.CharField(_('Bildnumber'), max_length=50, unique=True)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50, unique=True)
     macaddress = models.CharField(_('MAC Address'), max_length=40, unique=True)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True)

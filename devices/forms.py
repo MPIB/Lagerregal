@@ -28,8 +28,8 @@ class SearchForm(forms.Form):
     searchname = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name"}), required=False)
     namemodifier =forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}))
 
-    buildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber"}), required=False)
-    buildnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}), required=False)
+    bildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber"}), required=False)
+    bildnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}), required=False)
 
     serialnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search serialnumber"}), required=False)
     serialnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}), required=False)
@@ -63,6 +63,7 @@ class DeviceForm(forms.ModelForm):
     emailmanagment = forms.BooleanField(required=False)
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
+    creator =  forms.ModelChoiceField(queryset=User.objects.all(), widget=forms.HiddenInput())
 
     class Meta:
         model=Device
