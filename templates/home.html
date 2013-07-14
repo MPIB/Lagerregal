@@ -33,8 +33,9 @@ Home
 </div>
 
   <div class="small-7 columns">
-<table id="change-history" width="100%">
+{% if revisions != None %}
   <h3>{% trans 'Edit history' %}</h3>
+<table id="change-history" width="100%">
                     <thead>
                         <tr>
                             <th scope="col">{% trans 'Device' %}</th>
@@ -59,6 +60,7 @@ Home
                         {% endfor %}
                     </tbody>
                 </table>
+{% endif %}
 </div>
 </div>
 {% endblock %}
