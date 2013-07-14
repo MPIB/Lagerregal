@@ -4,7 +4,7 @@ from reversion.models import Version
 
 class ProfileView(DetailView):
     model = Lageruser
-    context_object_name = 'user'
+    context_object_name = 'profileuser'
 
     template_name = 'users/profile.html'
 
@@ -12,5 +12,5 @@ class ProfileView(DetailView):
         # Call the base implementation first to get a context
         context = super(ProfileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['edits'] = Version.objects.filter(revision__user = self.request.user)
+        context['edits'] = Version.objects.filter(revision__user = context["profileuser"])
         return context
