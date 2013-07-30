@@ -1,0 +1,27 @@
+{% extends "snippets/widgets/basewidget.html" %}
+ {% load i18n %}
+
+ {% block title %}
+{% trans 'Newest devices' %}
+ {% endblock %}
+
+ {% block content %}
+<table id="change-history" width="100%">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Name' %}</th>
+                            <th scope="col">{% trans 'Creation date' %}</th>
+                            <th scope="col">{% trans 'Creator' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for device in newest_devices %}
+                            <tr>
+                                <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
+                                <td>{{device.created_at}}</td>
+                                <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+{% endblock %}

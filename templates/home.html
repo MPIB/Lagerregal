@@ -7,100 +7,16 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-5 columns">
-    <h3>{% trans 'Statistics' %}</h3>
-    <table width="100%" id="adresstable">
-  <tbody>
-    <tr>
-      <td>{% trans "Total devices" %}</td>
-      <td>{{device_all}}</td>
-    </tr>
-    <tr>
-      <td>{% trans "Available devices" %}</td>
-      <td>{{device_available}}</td>
-    </tr>
+  <div class="small-6 columns dashboard">
+{% include "snippets/widgets/statistics.html" %}
 
-    <tr>
-      <td>{% trans "Total IP addresses" %}</td>
-      <td>{{ipaddress_all}}</td>
-    </tr>
-    <tr>
-      <td>{% trans "Available IP addresses" %}</td>
-      <td>{{ipaddress_available}}</td>
-    </tr>
-  </tbody>
-</table>
+{% include "snippets/widgets/overdue.html" %}
 
-{% if overdue != None %}
-  <h3>{% trans 'Overdue devices' %}</h3>
-<table id="change-history" width="100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Name' %}</th>
-                            <th scope="col">{% trans 'Duedate' %}</th>
-                            <th scope="col">{% trans 'Owner' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for device in overdue %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                                <td>{{device.currentlending.duedate}}</td>
-                                <td><a href="{% url 'userprofile' device.currentlending.owner.pk %}">{{ device.currentlending.owner }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-{% endif %}
-
-{% if newest_devices != None %}
-  <h3>{% trans 'Newest devices' %}</h3>
-<table id="change-history" width="100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Name' %}</th>
-                            <th scope="col">{% trans 'Creation date' %}</th>
-                            <th scope="col">{% trans 'Creator' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for device in newest_devices %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                                <td>{{device.created_at}}</td>
-                                <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-{% endif %}
+{% include "snippets/widgets/newest-devices.html" %}
 </div>
 
-  <div class="small-7 columns">
-{% if revisions != None %}
-  <h3>{% trans 'Edit history' %}</h3>
-<table id="change-history" width="100%">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Device' %}</th>
-                            <th scope="col">{% trans 'Date/time' %}</th>
-                            <th scope="col">{% trans 'User' %}</th>
-                            <th scope="col">{% trans 'Comment' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for action in revisions %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}</a></td>
-                                <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
-                                <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
-                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <a href="{% url 'device-globalhistory' %}" class="right">{% trans "More…" %}</a>
-{% endif %}
+  <div class="small-6 columns dashboard">
+{% include "snippets/widgets/edithistory.html" %}
 </div>
 </div>
 {% endblock %}
