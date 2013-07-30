@@ -1,0 +1,31 @@
+{% extends "snippets/widgets/basewidget.html" %}
+ {% load i18n %}
+
+ {% block title %}
+ {% trans 'Statistics' %}
+ {% endblock %}
+
+ {% block content %}
+    <table width="100%" id="adresstable">
+  <tbody>
+    <tr>
+      <td>{% trans "Total devices" %}</td>
+      <td>{{device_all}}</td>
+    </tr>
+    <tr>
+      <td>{% trans "Available devices" %}</td>
+      <td>{{device_available}}</td>
+    </tr>
+
+    <tr>
+      <td>{% trans "Total IP addresses" %}</td>
+      <td>{{ipaddress_all}}</td>
+    </tr>
+    <tr>
+      <td>{% trans "Available IP addresses" %}</td>
+      <td>{{ipaddress_available}}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
+
