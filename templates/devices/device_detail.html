@@ -35,6 +35,9 @@
         <tr><td>{% trans "Manufacturer" %}</td><td>{{device.manufacturer}}</td></tr>
         <tr><td>{% trans "Room" %}</td><td>{{device.room}}</td></tr>
         <tr><td>{% trans "Created by" %}</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
+{% for attributevalue in attributevalue_list %}
+        <tr><td>{{attributevalue.typeattribute.name}}</td><td>{{attributevalue}}</td></tr>
+{% endfor %}
       </tbody>
     </table>
 {% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">{% trans "Go to webinterface" %}</a>{% endif %}
