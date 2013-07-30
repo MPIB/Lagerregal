@@ -1,7 +1,9 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView, TemplateView
 from users.models import Lageruser
 from reversion.models import Version
 from devices.models import Device
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse_lazy, reverse
 
 class ProfileView(DetailView):
     model = Lageruser
@@ -16,3 +18,13 @@ class ProfileView(DetailView):
         context['edits'] = Version.objects.filter(revision__user = context["profileuser"])
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
         return context
+
+
+class UsersettingsView(TemplateView):
+    template_name = "users/settings.html"
+
+    def post(self, request):
+        request.user.language = request.POST["language"]
+        request.user.save()
+        request.session['django_language'] =request.POST["language"]
+        return HttpResponseRedirect(reverse("usersettings"))

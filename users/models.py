@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 # Create your models here.
 class Lageruser(AbstractUser):
-    
+    language = models.CharField(max_length=3, null=True)
 
     def __unicode__(self):
         if self.first_name != "" and self.last_name != "":
