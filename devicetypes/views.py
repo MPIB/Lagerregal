@@ -9,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
+from devicetypes.forms import TypeForm
+from django.shortcuts import render
 
 class TypeList(ListView):
     model = Type
@@ -30,8 +32,8 @@ class TypeDetail(DetailView):
         return context
 
 class TypeCreate(CreateView):
-    model = Type
-    template_name = 'devices/base_form.html'
+    form_class = TypeForm
+    template_name = 'devicetypes/type_form.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -41,15 +43,27 @@ class TypeCreate(CreateView):
         context['type'] = "type"
         return context
 
+    def form_valid(self, form):
+        newobject = form.save()
+        print form.cleaned_data
+        for key, value in form.cleaned_data.iteritems():
+            if key.startswith("extra_field_") and value != "":
+                attribute = TypeAttribute()
+                attribute.name = value
+                attribute.devicetype = newobject
+                attribute.save()
+        return HttpResponseRedirect(newobject.get_absolute_url())
+
 class TypeUpdate(UpdateView):
     model = Type
-    template_name = 'devices/base_form.html'
+    template_name = 'devicetypes/type_form.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(TypeUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
+        context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
         return context
 
 class TypeDelete(DeleteView):
