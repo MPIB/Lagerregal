@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'devices',
     'network',
+    'devicetypes',
     'users',
     'reversion',
     'rest_framework',
