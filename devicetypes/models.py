@@ -17,3 +17,27 @@ class Type(models.Model):
 
     def get_edit_url(self):
         return reverse('type-edit', kwargs={'pk': self.pk})
+
+
+class TypeAttribute(models.Model):
+    devicetype = models.ForeignKey(Type)
+    name = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name = _("Type-attribute")
+        verbose_name_plural = _("Type-attributes")
+
+    def __unicode__(self):
+        return self.name
+
+class TypeAttributeValue(models.Model):
+    typeattribute = models.ForeignKey(TypeAttribute)
+    value = models.CharField(max_length=400)
+    device = models.ForeignKey("devices.Device")
+
+    class Meta:
+        verbose_name = _("Type-attribute value")
+        verbose_name_plural = _("Type-attribute values")
+
+    def __unicode__(self):
+        return self.value
