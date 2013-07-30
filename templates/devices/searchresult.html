@@ -1,26 +1,26 @@
 {% extends "base.html" %}
-
+{% load i18n %}
 {% block title %}Searchresult for "{{searchquery}}"{% endblock %}
 
 {% block header %}
-Searchresult
+{% trans "Searchresult" %}
 {% endblock %}
 {% block content %}
 {% include 'snippets/searchform.html' %}
     <table width="100%" id="devicetable">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Buildnumber</th>
-      <th>Devicetype</th>
-      <th>Room</th>
+      <th>{% trans "Name" %}</th>
+      <th>{% trans "Bildnumber" %}</th>
+      <th>{% trans "Devicetype" %}</th>
+      <th>{% trans "Room" %}</th>
     </tr>
   </thead>
   <tbody>
   	{% for device in device_list %}
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-      <td>{{ device.buildnumber }}</td>
+      <td>{{ device.bildnumber }}</td>
       <td>{{ device.devicetype }}</td>
       <td>{{ device.room }} ({{device.room.building}})</td>
     </tr>

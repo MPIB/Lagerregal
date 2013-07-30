@@ -13,6 +13,7 @@
 {% block content %}
 <div class="row">
   <div class="small-6 columns">
+    <h5>{% trans "Set language" %}</h5>
     <form action="{% url 'usersettings' %}" method="post">
 {% csrf_token %}
 <input name="next" type="hidden" value="{{ redirect_to }}" />

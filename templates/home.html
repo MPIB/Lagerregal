@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}Main{% endblock %}
+{% block title %}{% trans "Main" %}{% endblock %}
 
 {% block header %}
-Home
+{% trans "Home" %}
 {% endblock %}
 {% block content %}
 <div class="row">
@@ -12,20 +12,20 @@ Home
     <table width="100%" id="adresstable">
   <tbody>
     <tr>
-      <td>Total devices</td>
+      <td>{% trans "Total devices" %}</td>
       <td>{{device_all}}</td>
     </tr>
     <tr>
-      <td>Available devices</td>
+      <td>{% trans "Available devices" %}</td>
       <td>{{device_available}}</td>
     </tr>
 
     <tr>
-      <td>Total IP addresses</td>
+      <td>{% trans "Total IP addresses" %}</td>
       <td>{{ipaddress_all}}</td>
     </tr>
     <tr>
-      <td>Available IP addresses</td>
+      <td>{% trans "Available IP addresses" %}</td>
       <td>{{ipaddress_available}}</td>
     </tr>
   </tbody>
@@ -99,7 +99,7 @@ Home
                         {% endfor %}
                     </tbody>
                 </table>
-                <a href="{% url 'device-globalhistory' %}" class="right">More…</a>
+                <a href="{% url 'device-globalhistory' %}" class="right">{% trans "More…" %}</a>
 {% endif %}
 </div>
 </div>

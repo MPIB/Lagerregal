@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-
-{% block title %}Login{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Login" %}{% endblock %}
 
 {% block header %}
-Login
+{% trans "Login" %}
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@ Login
 	<div class="small-12 large-6 large-centered columns">
 {% if form.errors %}
 <div data-alert class="alert-box alert">
-Your username and password didn't match. Please try again.
+{% trans "Your username and password didn't match. Please try again." %}
   <a href="#" class="close">&times;</a>
 </div>
 {% endif %}
