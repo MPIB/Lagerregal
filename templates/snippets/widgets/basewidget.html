@@ -2,10 +2,12 @@
  <div class="widget">
   <div class="widget-header">
     <span style="margin:0px;width:50%">{% block title %}{% endblock %}</span>
-    <a href="#" class="right close">X</a>
+    <a href="#" class="right"><i class="icon-remove close"></i></a>
+    <a href="#" class="right"><i class="icon-minus minimize"></i></a>
     </div>
     <div class="widget-content">
 {% block  content %}{% endblock %}
+<div style="clear:both"></div>
 </div>
 </div>
 

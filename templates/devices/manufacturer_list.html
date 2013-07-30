@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}Manufacturers{% endblock %}
+{% block title %}{% trans "Manufacturers" %}{% endblock %}
 
 {% block header %}
-Manufacturers
+{% trans "Manufacturers" %}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'manufacturer-add' %}" class="button success small right">Add Manufacturer</a>
+<a href="{% url 'manufacturer-add' %}" class="button success small right">{% trans "Add Manufacturer" %}</a>
 {% endblock %}
 
 {% block content %}
