@@ -4,22 +4,22 @@
 {% block title %}{{device.name}}{% endblock %}
 
 {% block header %}
-Device: {{device.name}}
+{% trans "Device" %}: {{device.name}}
 {% endblock %}
 
 {% block pullright %}
 {% if device.archived == None %}
-  <a href="{% url 'device-delete' device.id %}" class="button alert right small" style="margin-left:10px">Delete</a>
-  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">Archive</a>
-<a href="{% url 'device-add-copy' device.id %}" class="button small right" style="margin-left:10px">Create Copy</a>
-  <a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">Edit</a>
+  <a href="{% url 'device-delete' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
+  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Archive" %}</a>
+<a href="{% url 'device-add-copy' device.id %}" class="button small right" style="margin-left:10px">{% trans "Create Copy" %}</a>
+  <a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">{% trans "Edit" %}</a>
   {% if device.currentlending != None %}
-    <a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">Mark as returned</a>
+    <a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">{% trans "Mark as returned" %}</a>
   {% else %}
-    <a href="{% url 'device-lend' device.id %}" class="button success right small"style="margin-left:10px">Mark as Lendt</a>
+    <a href="{% url 'device-lend' device.id %}" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% else %}
-  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">Unarchive</a>
+  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Unarchive" %}</a>
 {% endif %}
 {% endblock %}
 
@@ -28,43 +28,43 @@ Device: {{device.name}}
   <div class="small-12 large-4 columns">
     <table>
       <tbody>
-        <tr><td>Bildnumber</td><td>{{device.bildnumber}}</td></tr>
-        <tr><td>Serialnumber</td><td>{{device.serialnumber}}</td></tr>
-        <tr><td>MAC-Address</td><td>{{device.macaddress}}</td></tr>
-        <tr><td>Devicetype</td><td>{{device.devicetype}}</td></tr>
-        <tr><td>Manufacturer</td><td>{{device.manufacturer}}</td></tr>
-        <tr><td>Room</td><td>{{device.room}}</td></tr>
-        <tr><td>Created by</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
+        <tr><td>{% trans "Bildnumber" %}</td><td>{{device.bildnumber}}</td></tr>
+        <tr><td>{% trans "Serialnumber" %}</td><td>{{device.serialnumber}}</td></tr>
+        <tr><td>{% trans "MAC-Address" %}</td><td>{{device.macaddress}}</td></tr>
+        <tr><td>{% trans "Devicetype" %}</td><td>{{device.devicetype}}</td></tr>
+        <tr><td>{% trans "Manufacturer" %}</td><td>{{device.manufacturer}}</td></tr>
+        <tr><td>{% trans "Room" %}</td><td>{{device.room}}</td></tr>
+        <tr><td>{% trans "Created by" %}</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
       </tbody>
     </table>
-{% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">Go to webinterface</a>{% endif %}
-<h4> Current Lending information</h4>
+{% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">{% trans "Go to webinterface" %}</a>{% endif %}
+<h4>{% trans "Current Lending information" %}</h4>
     {% if device.currentlending != None %}
       <table>
       <tbody>
-        <tr><td>Lendt to</td><td>{{device.currentlending.owner}}</td></tr>
-        <tr><td>Since</td><td>{{device.currentlending.lenddate}}</td></tr>
-        <tr><td>Due to</td><td>{{device.currentlending.duedate}}
+        <tr><td>{% trans "Lendt to" %}</td><td>{{device.currentlending.owner}}</td></tr>
+        <tr><td>{% trans "Since" %}</td><td>{{device.currentlending.lenddate}}</td></tr>
+        <tr><td>{% trans "Due to" %}</td><td>{{device.currentlending.duedate}}
 {% if device.currentlending.duedate < weekago %}<span class="error-icon">!</span>
 {% elif device.currentlending.duedate < today %}<span class="warning-icon">!</span>
 {% endif %}
-<tr><td>Overdue notification</td><td>{{device.currentlending.duedate_email|default_if_none:"Not sent"}}</td></tr>
+<tr><td>{% trans "Overdue notification" %}</td><td>{{device.currentlending.duedate_email|default_if_none:"Not sent"}}</td></tr>
 </td></tr>
       </tbody>
     </table>
     {% else %}
-    <p>Currently not lent</p>
+    <p>{% trans "Currently not lent" %}</p>
     {% endif %}
 
 {% if lending_list %}
-<h4>Lending history</h4>
+<h4>{% trans "Lending history" %}</h4>
     <table width="100%">
   <thead>
     <tr>
-      <th>User</th>
-      <th>Since</th>
-      <th>Duedate</th>
-      <th>Returned</th>
+      <th>{% trans "User" %}</th>
+      <th>{% trans "Since" %}</th>
+      <th>{% trans "Duedate" %}</th>
+      <th>{% trans "Returned" %}</th>
     </tr>
   </thead>
   <tbody>
@@ -80,14 +80,14 @@ Device: {{device.name}}
 </table>
 {% endif %}
 
-    <a href="{% url 'device-history-list' device.pk %}">View edit-history</a>
+    <a href="{% url 'device-history-list' device.pk %}">{% trans "View edit-history" %}</a>
   </div>
 <div class="small-12 large-4 columns">
 {{device.description}}
 </div>
   <div class="small-12 large-4 columns">
     <ul class="pricing-table">
-      <li class="title">IP-Addresses</li>
+      <li class="title">{% trans "IP-Addresses" %}</li>
       {% for address in ipaddress_list %}
         <li class="bullet-item">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">x</a></li>
       {% endfor %}
@@ -101,7 +101,7 @@ Device: {{device.name}}
         <div class="row"  style="margin-top:10px;">
       <div class="large-12 columns">
 
-        <input type="submit" class ="button small right" value="Assign Addresses">
+        <input type="submit" class ="button small right" value="{% trans "Assign Addresses" %}">
       </div>
     </div>
     <input type="hidden" name="device" value="{{ device.pk }}" />

@@ -1,5 +1,4 @@
-{% load dajaxice_templatetags %}
-<!DOCTYPE html>
+{% load dajaxice_templatetags %}{% load i18n %}<!DOCTYPE html>
 <!--
     -\-                                                     
     \-- \-                                                  
@@ -85,30 +84,30 @@
       <h1><a href="{% url 'home' %}">Lagerregal</a></h1>
     </li>
     <!-- Remove the class "menu-icon" to get rid of menu icon. Take out "Menu" to just have icon alone -->
-    <li class="toggle-topbar menu-icon"><a href="#">Menu</a></li>
+    <li class="toggle-topbar menu-icon"><a href="#">{% trans "Menu</a></li>
   </ul>
 
   <section class="top-bar-section">
     <!-- Left Nav Section -->
     <ul class="left">
       <li class="divider"></li>
-      <li class="has-dropdown"><a href="{% url 'device-list' %}">Devices</a>
+      <li class="has-dropdown"><a href="{% url 'device-list' %}">{% trans "Devices" %}</a>
 
         <ul class="dropdown">
-          <li><a href="{% url 'type-list' %}">Devicetypes</a></li>
-          <li><a href="{% url 'manufacturer-list' %}">Manufacturers</a></li>
+          <li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>
+          <li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>
         </ul>
       </li>
       <li class="divider"></li>
-      <li class="has-dropdown"><a href="#">Locations</a>
+      <li class="has-dropdown"><a href="#">{% trans "Locations" %}</a>
 
         <ul class="dropdown">
-          <li><a href="{% url 'room-list' %}">Rooms</a></li>
-          <li><a href="{% url 'building-list' %}">Buildings</a></li>
+          <li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>
+          <li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>
         </ul>
       </li>
       <li class="divider"></li>
-      <li><a href="{% url 'ipaddress-list' %}">IP Adresses</a></li>
+      <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>
       <li class="divider"></li>
     </ul>
     <ul class="right">
@@ -119,29 +118,29 @@
         <form method="post" action="{% url 'search' %}">{% csrf_token %}
                   <div class="row collapse">
             <div class="small-8 columns">
-              <input id="id_name" name="searchname" placeholder="Search Name" type="text">
+              <input id="id_name" name="searchname" placeholder="{% trans 'Search Name' %}" type="text">
               <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
             </div>
             <div class="small-3 columns">
-              <input type="submit" class="button" />
+              <input type="submit" class="button" value="{% trans 'Search' %}" />
             </div>
 </div>
         </form>
 
       </li>
-      <li><a href="{% url 'search' %}" class="button">Advanced</a></li>
+      <li><a href="{% url 'search' %}" class="button">{% trans "Advanced" %}</a></li>
       <li class="divider"></li>
   <li class="has-dropdown"><a href="#">{{ user.username }}</a>
   <ul class="dropdown">
-      <li><a href="{% url 'usersettings' %}"><i class="icon-cog"></i>&nbsp; Settings</a></li>
+      <li><a href="{% url 'usersettings' %}"><i class="icon-cog"></i>&nbsp; {% trans "Settings" %}</a></li>
       {% if user.is_staff %}
-      <li><a href="{% url 'admin:index' %}"><i class="icon-lock"></i>&nbsp; Admin</a></li>
+      <li><a href="{% url 'admin:index' %}"><i class="icon-lock"></i>&nbsp; {% trans "Admin" %}</a></li>
       {% endif %}
-  <li><a href="{% url 'django.contrib.auth.views.logout' %}" ><i class="icon-signout"></i>&nbsp; Logout</a></li>
+  <li><a href="{% url 'django.contrib.auth.views.logout' %}" ><i class="icon-signout"></i>&nbsp; {% trans "Logout" %}</a></li>
   </ul>
 </li>
 {% else %}
-    <a href="{% url 'django.contrib.auth.views.login' %}" class="button button-success"><i class="icon-signin"></i> Login</a>
+    <a href="{% url 'django.contrib.auth.views.login' %}" class="button button-success"><i class="icon-signin"></i> {% trans "Login" %}</a>
 {% endif %}
     </ul>
 

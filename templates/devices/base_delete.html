@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {%  load devicetags %}
-
-{% block title %}Delete {{object.name}}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Delete {{object.name}}{% endblock %}
 
 {% block header %}
 {% endblock %}
@@ -10,7 +10,7 @@
   <div class="small-12 large-6 large-centered columns">
   <div class="alert-box alert">Do you really want to delete  the {% get_verbose_name object %}: {{object}}?</div>
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
-<a href="{{object.get_absolute_url}}" class="button small" style="margin-right:10px;">No</a><input type="submit" value="Yes" class="button alert small" />
+<a href="{{object.get_absolute_url}}" class="button small" style="margin-right:10px;">{% trans "No" %}</a><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
 </form>
 
 </div>

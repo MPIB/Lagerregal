@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {%  load devicetags %}
+{% load i18n %}
 
 {% block title %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 
@@ -20,7 +21,7 @@
       </div>
 
 {% endfor %}
-<input type="submit" value="Submit" class="button button-primary" />
+<input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
 </form>
 
 </div>

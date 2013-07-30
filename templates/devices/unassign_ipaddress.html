@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {%  load devicetags %}
-
-{% block title %}Unassign IP-Address{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Unassign IP-Address" %}{% endblock %}
 
 {% block header %}
 {% endblock %}
@@ -10,7 +10,7 @@
   <div class="small-8 center columns">
   <div class="alert-box alert">Do you really want to unassign the IP-Address {{ipaddress}} from {{device}}?</div>
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
-<a href="{{device.get_absolute_url}}" class="button small" style="margin-right:10px;">No</a><input type="submit" value="Yes" class="button alert small" />
+<a href="{{device.get_absolute_url}}" class="button small" style="margin-right:10px;">{% trans "No" %}</a><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
 </form>
 
 </div>

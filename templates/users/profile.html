@@ -14,7 +14,7 @@
 <div class="row">
 {% if profileuser.is_staff %}
   <div class="small-6 columns">
-  <h4>Edits</h4>
+  <h4>{% trans "Edits" %}</h4>
   {% if edits %}
   <table id="change-history" width="100%">
                       <thead>
@@ -35,12 +35,12 @@
                       </tbody>
                   </table>
   {% else %}
-  <h5>User hasn't edited anything.</h5>
+  <h5>{% trans "User hasn't edited anything." %}</h5>
   {% endif %}
 </div>
 {% endif %}
 <div class="small-{% if profileuser.is_staff %}6{% else %}12{% endif %} columns">
-  <h4>Owned devices</h4>
+  <h4>{% trans "Owned devices" %}</h4>
 {% if devices %}
   <table id="change-history" width="100%">
                       <thead>
@@ -65,7 +65,7 @@
                       </tbody>
                   </table>
 {% else %}
-  <h5>User doesn't own any devices</h5>
+  <h5>{% trans "User doesn't own any devices." %}</h5>
   {% endif %}
 </div>
 </div>

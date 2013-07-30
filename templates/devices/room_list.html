@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-
-{% block title %}Rooms{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Rooms" %}{% endblock %}
 
 {% block header %}
-Rooms
+{% trans "Rooms" %}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'room-add' %}" class="button success small right">Add Room</a>
+<a href="{% url 'room-add' %}" class="button success small right">{% trans "Add Room" %}</a>
 {% endblock %}
 
 {% block content %}
@@ -15,8 +15,8 @@ Rooms
     <table width="100%" id="roomtable">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Building</th>
+      <th>{% trans "Name" %}</th>
+      <th>{% trans "Building" %}</th>
     </tr>
   </thead>
   <tbody>

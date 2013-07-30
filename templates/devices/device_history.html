@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block title %}Revision for {{device.name}}{% endblock %}
+{% block title %}{% trans "Revision for" %} {{device.name}}{% endblock %}
 
 {% block header %}
-Device: <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
+{% trans "Device" %}: <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
 {% endblock %}
 
 {% block pullright %}
 <form method="post">{% csrf_token %}
-    <input type="submit" class ="button small right" value="Restore Revision">
+    <input type="submit" class ="button small right" value="{% trans "Restore Revision" %}">
 </form>
 {% endblock %}
 
@@ -19,13 +19,13 @@ Device: <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
     <h4>Revision: {{version.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4>
     <table>
       <tbody>
-        <tr><td>Name</td><td>{{device.name}}</td></tr>
-        <tr><td>Bildnumber</td><td>{{device.bildnumber}}</td></tr>
-        <tr><td>Serialnumber</td><td>{{device.serialnumber}}</td></tr>
-        <tr><td>MAC-Address</td><td>{{device.macaddress}}</td></tr>
-        <tr><td>Devicetype</td><td>{{device.devicetype}}</td></tr>
-        <tr><td>Manufacturer</td><td>{{device.manufacturer}}</td></tr>
-        <tr><td>Room</td><td>{{device.room}}</td></tr>
+        <tr><td>{% trans "Name" %}</td><td>{{device.name}}</td></tr>
+        <tr><td>{% trans "Bildnumber" %}</td><td>{{device.bildnumber}}</td></tr>
+        <tr><td>{% trans "Serialnumber" %}</td><td>{{device.serialnumber}}</td></tr>
+        <tr><td>{% trans "MAC-Address" %}</td><td>{{device.macaddress}}</td></tr>
+        <tr><td>{% trans "Devicetype" %}</td><td>{{device.devicetype}}</td></tr>
+        <tr><td>{% trans "Manufacturer" %}</td><td>{{device.manufacturer}}</td></tr>
+        <tr><td>{% trans "Room" %}</td><td>{{device.room}}</td></tr>
       </tbody>
     </table>
   </div>
