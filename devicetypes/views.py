@@ -3,7 +3,7 @@ from django.template import RequestContext, loader, Context
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending
-from devicetypes.models import Type
+from devicetypes.models import Type, TypeAttribute
 from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -26,6 +26,7 @@ class TypeDetail(DetailView):
         # Add in a QuerySet of all the books
         context["merge_list"] = Type.objects.exclude(pk=context["object"].pk)
         context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None)
+        context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
         return context
 
 class TypeCreate(CreateView):
