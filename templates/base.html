@@ -75,6 +75,7 @@
   <link rel="stylesheet" href="/static/css/select2.css">
   <link rel="stylesheet" href="/static/css/main.css">
   <link rel="stylesheet" href="/static/css/jquery-ui.min.css">
+  <link rel="stylesheet" href="/static/css/font-awesome.min.css">
 </head>
 <body>
 	<nav class="top-bar">
@@ -122,7 +123,7 @@
               <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
             </div>
             <div class="small-3 columns">
-              <input type="submit" value="Search" class="button" />
+              <input type="submit" class="button" />
             </div>
 </div>
         </form>
@@ -132,14 +133,15 @@
       <li class="divider"></li>
   <li class="has-dropdown"><a href="#">{{ user.username }}</a>
   <ul class="dropdown">
+      <li><a href="{% url 'usersettings' %}"><i class="icon-cog"></i>&nbsp; Settings</a></li>
       {% if user.is_staff %}
-      <li><a href="{% url 'admin:index' %}"><i class="icon-lock"></i> Admin</a></li>
+      <li><a href="{% url 'admin:index' %}"><i class="icon-lock"></i>&nbsp; Admin</a></li>
       {% endif %}
-  <li><a href="{% url 'django.contrib.auth.views.logout' %}" >Logout</a></li>
+  <li><a href="{% url 'django.contrib.auth.views.logout' %}" ><i class="icon-signout"></i>&nbsp; Logout</a></li>
   </ul>
 </li>
 {% else %}
-    <a href="{% url 'django.contrib.auth.views.login' %}" class="button button-success">Login</a>
+    <a href="{% url 'django.contrib.auth.views.login' %}" class="button button-success"><i class="icon-signin"></i> Login</a>
 {% endif %}
     </ul>
 
