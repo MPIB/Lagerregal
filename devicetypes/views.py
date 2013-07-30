@@ -55,6 +55,7 @@ class TypeCreate(CreateView):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 class TypeUpdate(UpdateView):
+    form_class = TypeForm
     model = Type
     template_name = 'devicetypes/type_form.html'
 
@@ -64,6 +65,8 @@ class TypeUpdate(UpdateView):
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
+        context["form"].fields.pop("extra_field_0")
+        context["form"]["extra_fieldcount"].initial = context["attribute_list"].count()
         return context
 
 class TypeDelete(DeleteView):

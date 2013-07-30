@@ -24,6 +24,12 @@
       </div>
 {% endif %}
 {% endfor %}
+{% if attribute_list != None %}
+{% for attribute in attribute_list %}
+  <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">Extra Attribute</label></div><div class="small-9 columns"><input class="extra_attribute" type="text" name="extra_field_{{forloop.counter0}}" value="{{attribute}}"></div></div>
+{% endfor %}
+{% endif %}
+
 <input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
 </form>
 </div>
