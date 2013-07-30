@@ -26,13 +26,20 @@ $(function() {
     $( ".dashboard" ).sortable({
       connectWith: ".dashboard",
       placeholder: "dashboard-placeholder",
+      distance: 15
     });
 
     $( ".widget-header .minimize" ).click(function() {
       $( this ).toggleClass( "icon-minus" ).toggleClass( "icon-plus" );
-      $( this ).parents( ".widget:first" ).find( ".widget-content" ).toggle();
+      $( this ).parents( ".widget:first" ).find( ".widget-content" ).slideToggle("fast");
     });
     
+    $(".widget-header .close").click(function() {
+        $(this).parents(".widget:first").slideUp("fast", function() {
+        $(this).remove()
+    });
+    });
+
     $(".widget-header .right").hide();
     
     $(".widget-header").hover(
