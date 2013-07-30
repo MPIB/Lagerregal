@@ -20,3 +20,30 @@
 </div>
 </div>
 {% endblock %}
+
+{% block scriptend %}
+$(function() {
+    $( ".dashboard" ).sortable({
+      connectWith: ".dashboard",
+      placeholder: "dashboard-placeholder",
+    });
+
+    $( ".widget-header .minimize" ).click(function() {
+      $( this ).toggleClass( "icon-minus" ).toggleClass( "icon-plus" );
+      $( this ).parents( ".widget:first" ).find( ".widget-content" ).toggle();
+    });
+    
+    $(".widget-header .right").hide();
+    
+    $(".widget-header").hover(
+      function () {
+        $(this).children(".right").fadeIn();
+      },
+      function () {
+        $(this).children(".right").fadeOut();
+      }
+    );
+
+    $( ".columns" ).disableSelection();
+  });
+  {% endblock %}

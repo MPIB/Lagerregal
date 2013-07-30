@@ -60,11 +60,12 @@
     font-size:1.1em;
 }
 
-.widget-header .close {
+.widget-header .close, .widget-header .minimize {
     color:#999;
+    margin-left:8px;
 }
 
-.widget-header .close:hover {
+.widget-header .close:hover, .widget-header .minimize:hover  {
     color:#000;
 }
 
@@ -77,12 +78,12 @@
 }
 
 .dashboard-placeholder {
-border-style: solid;
-border-width: 1px;
-border-color: #2284a1;
-margin-bottom: 1.25em;
-background: #2ba6cb;
--webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-height:60px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #2284a1;
+    margin-bottom: 1.25em;
+    background: #2ba6cb;
+    -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    height:60px;
 }
