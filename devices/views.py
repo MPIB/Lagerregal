@@ -3,7 +3,7 @@ from django.template import RequestContext, loader, Context
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending
-from devicetypes.models import Type
+from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from django.shortcuts import render_to_response
 from rest_framework.decorators import api_view
@@ -144,6 +144,7 @@ class DeviceDetail(DetailView):
         context["lending_list"] = Lending.objects.filter(device=context["device"])
         context["today"] = datetime.date.today()
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
+        context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         return context
 
 class DeviceIpAddressRemove(DeleteView):
