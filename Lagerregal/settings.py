@@ -69,6 +69,10 @@ STATICFILES_DIRS = (
     '{0}/static'.format(os.getcwd()),
 )
 
+LOCALE_PATHS = (
+    '{0}/locale'.format(os.getcwd()),
+)
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
