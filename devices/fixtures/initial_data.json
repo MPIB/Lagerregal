@@ -54,21 +54,21 @@
   },
 
   {
-    "model": "devices.type",
+    "model": "devicetypes.type",
     "pk": 1,
     "fields": {
       "name": "Laptop"
     }
   },
   {
-    "model": "devices.type",
+    "model": "devicetypes.type",
     "pk": 2,
     "fields": {
       "name": "Workstation"
     }
   },
   {
-    "model": "devices.type",
+    "model": "devicetypes.type",
     "pk": 3,
     "fields": {
       "name": "Printer"
