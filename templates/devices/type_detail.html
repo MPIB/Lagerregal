@@ -7,7 +7,7 @@
 {% trans "Devicetype" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-<a href="#" class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
+  <a  href="#" data-reveal-id="deleteModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
 <a href="{{object.get_edit_url}}" class="button success right small" style="margin-left:10px">{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown">{% trans "Merge" %}</a>
 {% endblock %}
@@ -44,6 +44,15 @@
 
 
 {% endif %}
+
+<div id="deleteModal" class="reveal-modal medium">
+  <div class="alert-box alert">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
+<form action="{% url "type-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}
+<input type="button" value="{% trans "No" %}" onclick="$('#deleteModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
+</form>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
 {% endblock %}
 
 {% block htmlend%}
