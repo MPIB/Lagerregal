@@ -77,7 +77,7 @@ class Device(models.Model):
 
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)
 
-    archived = models.DateField(null=True)
+    archived = models.DateTimeField(null=True)
 
     def __unicode__(self):
         return self.name
