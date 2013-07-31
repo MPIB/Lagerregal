@@ -38,7 +38,10 @@
     margin-right:20px;
     padding:20px 0px;
     border-top:1px #eee solid;
+}
 
+#loginbutton {
+    margin-right:15px;
 }
 
 .widget {
