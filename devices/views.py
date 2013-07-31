@@ -345,7 +345,7 @@ class DeviceReturn(View):
 
 class DeviceArchive(View):
 
-    def get(self, **kwargs):
+    def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived == None:
