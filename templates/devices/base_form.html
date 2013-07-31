@@ -47,5 +47,10 @@ function display_alternatives(data){
 		$("#alternatives").append(data[i])
 	};
 }
+
+
+  $(function() {
+    $( "#id_duedate" ).datepicker();
+  });
 {% autoescape off %}{{ form_scripts }}{% endautoescape %}
 {% endblock %}
