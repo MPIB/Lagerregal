@@ -16,7 +16,7 @@
   {% if device.currentlending != None %}
     <a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">{% trans "Mark as returned" %}</a>
   {% else %}
-    <a href="{% url 'device-lend' device.id %}" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
+    <a  href="#" data-reveal-id="myModal" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% else %}
   <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Unarchive" %}</a>
@@ -112,6 +112,26 @@
     </ul>
     {% endif %}
   </div>
+</div>
+
+<div id="myModal" class="reveal-modal medium">
+  <h3>{% trans "Mark device as lendt" %}</h3>
+  <form action="{% url "device-lend"  device.id %} "method="post" class="form-horizontal">{% csrf_token %}
+{% for field in lendform %}
+<div class="row {{field.css_classes}}">
+        <div class="small-3 columns">
+          <label for="right-label" class="right inline" {% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
+        </div>
+        <div class="small-9 columns">
+         {{ field }}
+{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
+        </div>
+      </div>
+
+{% endfor %}
+<input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
+</form>
+  <a class="close-reveal-modal">&#215;</a>
 </div>
 {% endblock %}
 
