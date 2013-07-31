@@ -138,4 +138,8 @@
 {% block scriptend %}
 $("#id_ipaddresses").select2({
     tokenSeparators: [",", " "]});
+
+  $(function() {
+    $( "#id_duedate" ).datepicker();
+  });
 {% endblock %}
