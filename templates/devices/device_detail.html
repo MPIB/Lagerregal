@@ -9,14 +9,14 @@
 
 {% block pullright %}
 {% if device.archived == None %}
-  <a href="{% url 'device-delete' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
   <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Archive" %}</a>
+  <a  href="#" data-reveal-id="archiveModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
 <a href="{% url 'device-add-copy' device.id %}" class="button small right" style="margin-left:10px">{% trans "Create Copy" %}</a>
   <a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">{% trans "Edit" %}</a>
   {% if device.currentlending != None %}
     <a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">{% trans "Mark as returned" %}</a>
   {% else %}
-    <a  href="#" data-reveal-id="myModal" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
+    <a  href="#" data-reveal-id="lendModal" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% else %}
   <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Unarchive" %}</a>
