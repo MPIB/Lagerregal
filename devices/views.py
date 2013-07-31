@@ -1,4 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View, FormView
+from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
 from django.template import RequestContext, loader, Context
 from django.template.loader import render_to_string
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -343,11 +344,27 @@ class DeviceReturn(View):
         device.save()
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
-class DeviceArchive(View):
+"""class DeviceArchive(View):
 
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
+        if device.archived == None:
+            device.archived = datetime.datetime.now()
+            device.room = None
+            device.currentlending = None
+        else:
+            device.archived = None
+        device.save()
+        reversion.set_comment("Archived")
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))"""
+
+class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
+    model = Device
+    template_name = 'devices/device_archive.html'
+
+    def post(self, request, **kwargs):
+        device = self.get_object()
         if device.archived == None:
             device.archived = datetime.datetime.now()
             device.room = None
