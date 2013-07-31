@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{%  load devicetags %}
 {% load i18n %}
 
 {% block title %}{{device.name}}{% endblock %}
@@ -9,8 +10,8 @@
 
 {% block pullright %}
 {% if device.archived == None %}
-  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Archive" %}</a>
   <a  href="#" data-reveal-id="archiveModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
+  <a   href="#" data-reveal-id="archiveModal" class="button alert right small" style="margin-left:10px">{% trans "Archive" %}</a>
 <a href="{% url 'device-add-copy' device.id %}" class="button small right" style="margin-left:10px">{% trans "Create Copy" %}</a>
   <a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">{% trans "Edit" %}</a>
   {% if device.currentlending != None %}
@@ -19,7 +20,7 @@
     <a  href="#" data-reveal-id="lendModal" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% else %}
-  <a href="{% url 'device-archive' device.id %}" class="button alert right small" style="margin-left:10px">{% trans "Unarchive" %}</a>
+  <a  href="#" data-reveal-id="archiveModal" class="button alert right small" style="margin-left:10px">{% trans "Unarchive" %}</a>
 {% endif %}
 {% endblock %}
 
@@ -114,7 +115,7 @@
   </div>
 </div>
 
-<div id="myModal" class="reveal-modal medium">
+<div id="lendModal" class="reveal-modal medium">
   <h3>{% trans "Mark device as lendt" %}</h3>
   <form action="{% url "device-lend"  device.id %} "method="post" class="form-horizontal">{% csrf_token %}
 {% for field in lendform %}
@@ -132,6 +133,29 @@
 <input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
 </form>
   <a class="close-reveal-modal">&#215;</a>
+</div>
+
+<div id="archiveModal" class="reveal-modal medium">
+  <div class="alert-box">Do you really want to {% if object.archived != None %}un{% endif %}archive  the {% get_verbose_name object %}: {{object}}?</div>
+<form action="{% url "device-archive" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
+<input type="button" value="{% trans "No" %}" onclick="$('#archiveModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
+
+</form>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+</div>
+</div>
+
+<div id="deleteModal" class="reveal-modal medium">
+  <div class="alert-box alert">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
+<form action="{% url "device-archive" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
+<input type="button" value="{% trans "No" %}" onclick="$('#deleteModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
+</form>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
+</div>
 </div>
 {% endblock %}
 
