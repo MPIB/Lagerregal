@@ -1,5 +1,5 @@
 from devices.models import Room, Building, Manufacturer, Device, Template
-from devicetypes.models import Type
+from devicetypes.models import Type, TypeAttribute
 from rest_framework import serializers
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,9 +21,22 @@ class ManufacturerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Manufacturer
 
+class TypeNameSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='type-api-detail')
+    class Meta:
+        model = Type
+
+
+class TypeAttributeSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='typeattribute-api-detail')
+    devicetype = TypeNameSerializer()
+    class Meta:
+        model = TypeAttribute
+
 class TypeSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='type-api-detail')
-
+    typeattribute = serializers.HyperlinkedRelatedField(many=True, read_only=True,
+                                     view_name='typeattribute-detail')
     class Meta:
         model = Type
 
