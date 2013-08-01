@@ -1,4 +1,5 @@
-from models import Room, Building, Manufacturer, Device, Type, Template
+from devices.models import Room, Building, Manufacturer, Device, Template
+from devicetypes.models import Type
 from rest_framework import serializers
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):

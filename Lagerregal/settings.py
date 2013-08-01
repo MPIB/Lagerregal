@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     'network',
     'devicetypes',
     'users',
+    'api',
     'reversion',
     'rest_framework',
     'dajaxice',
