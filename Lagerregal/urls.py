@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from devices.views import *
 from network.views import *
 from devicetypes.views import *
+from main.views import *
 from users.views import ProfileView, UsersettingsView
 from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
