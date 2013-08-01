@@ -593,8 +593,8 @@ class Search(FormView):
         if form.cleaned_data["lender"] != "":
             search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"]
 
-        if form.cleaned_data["buildnumber"] != "":
-            search["buildnumber__" + form.cleaned_data["buildnumbermodifier"]] = form.cleaned_data["buildnumber"]
+        if form.cleaned_data["bildnumber"] != "":
+            search["bildnumber__" + form.cleaned_data["bildnumbermodifier"]] = form.cleaned_data["bildnumber"]
 
         if form.cleaned_data["serialnumber"] != "":
             search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"]

@@ -24,13 +24,8 @@
       </div>
 {% endif %}
 {% endfor %}
-{% if attribute_list != None %}
-{% for attribute in attribute_list %}
-  <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">Extra Attribute</label></div><div class="small-9 columns"><input class="extra_attribute" type="text" name="extra_field_{{forloop.counter0}}" value="{{attribute}}"></div></div>
-{% endfor %}
-{% endif %}
-
 <input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
+<a href="#" id="newattribute" class="right">add new Attribute</a>
 </form>
 </div>
 </div>
@@ -58,23 +53,27 @@ function display_alternatives(data){
 
 form_count = $("[name=extra_fieldcount]").val();
 // get extra form count so we know what index to use for the next item.
-$('body').on('change', ".extra_attribute", function() {
-  if($(this).val() == 0 && form_count > 1) {
+$('body').on('click', ".deleteattribute", function() {
     $(this).parents(".row:first").remove()
 
     form_count --;
     $("[name=extra_field_count]").val(form_count);
-  } else {
-  element = $('<div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">Extra Attribute</label></div><div class="small-9 columns"><input class="extra_attribute" type="text"></div></div>');
+})
+
+$("#newattribute").click(function() {
+    element = $('<div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">Extra Attribute</label></div><div class="small-8 columns"><input class="extra_attribute" type="text"></div><div class="small-1 columns"><a href="#" class="deleteattribute"><i class="icon-remove"></i></a></div></div>');
     element.find(".extra_attribute").attr('name', 'extra_field_' + form_count);
-    $(".extra_attribute:last").parents(".row:first").after(element);
+    if($(".extra_attribute")[0]) {
+      $(".extra_attribute:last").parents(".row:first").after(element);
+    } else {
+      $("#id_name").parents(".row:first").after(element);
+    }
     // build element and append it to our forms container
 
     form_count ++;
     $("[name=extra_fieldcount]").val(form_count);
     // increment form count so our view knows to populate 
     // that many fields for validatio
-}
 })
 
 {% autoescape off %}{{ form_scripts }}{% endautoescape %}

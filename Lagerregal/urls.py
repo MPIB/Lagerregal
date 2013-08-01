@@ -51,6 +51,10 @@ urlpatterns = patterns('',
     url(r'^types/delete/(?P<pk>[0-9]*)$', login_required(TypeDelete.as_view()), name="type-delete"),
     url(r'^types/view/(?P<pk>[0-9]*)$', login_required(TypeDetail.as_view()), name="type-detail"),
     url(r'^types/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', login_required(TypeMerge.as_view()), name="type-merge"),
+    url(r'^types/attribute/add$', login_required(TypeAttributeCreate.as_view()), name="typeattribute-add"),
+    url(r'^types/attribute/edit/(?P<pk>[0-9]*)$', login_required(TypeAttributeUpdate.as_view()), name="typeattribute-edit"),
+    url(r'^types/attribute/delete/(?P<pk>[0-9]*)$', login_required(TypeAttributeDelete.as_view()), name="typeattribute-delete"),
+
 
     url(r'^rooms/$', login_required(RoomList.as_view()), name="room-list"),
     url(r'^rooms/(?P<page>[0-9]*)$', login_required(RoomList.as_view()), name="room-list"),
