@@ -21,7 +21,6 @@ def get_attributes(request, pk):
         </div>
       </div>
         """.format(attribute.name, attribute.pk)
-        print item
         dajax.append("#extra_attributes", "innerHTML", item)
 
     return dajax.json()

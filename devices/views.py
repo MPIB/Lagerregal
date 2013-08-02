@@ -199,11 +199,32 @@ class DeviceUpdate(UpdateView):
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
+        print form.cleaned_data
         if device.archived != None:
             messages.error(self.request, "Archived Devices can't be edited")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
             reversion.set_comment("updated")
+            if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
+                TypeAttributeValue.objects.filter(device = device.pk).delete()
+            for key, value in form.cleaned_data.iteritems():
+                if key.startswith("attribute_") and value != "":
+                    attributenumber = key.split("_")[1]
+                    typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
+                    try:
+                        attribute = TypeAttributeValue.objects.filter(device = device.pk, typeattribute__devicetype=form.cleaned_data["deviceype"]).get(typeattribute=attributenumber)
+                    except:
+                        attribute = TypeAttributeValue()
+                        attribute.device = device
+                        attribute.typeattribute = typeattribute
+                    attribute.value = value
+                    attribute.save()
+                elif key.startswith("attribute_") and value == "":
+                    attributenumber = key.split("_")[1]
+                    try:
+                        TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
+                    except:
+                        pass
             return super(DeviceUpdate, self).form_valid(form)
 
 

@@ -1,6 +1,7 @@
 from django import forms
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
+from devicetypes.models import TypeAttribute
 from users.models import Lageruser
 
 CHARMODIFIER = (
@@ -68,3 +69,15 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model=Device
         exclude = ("archived", "currentlending")
+
+    def __init__(self, *args, **kwargs):
+        super(DeviceForm, self).__init__(*args, **kwargs)
+        if self.data != {}:
+            attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
+        elif "instance" in kwargs:
+            attributes= TypeAttribute.objects.filter(devicetype = kwargs["instance"].devicetype.pk)
+        
+        for attribute in attributes:
+            # generate extra fields in the number specified via extra_fields
+            self.fields['attribute_{index}'.format(index=attribute.pk)] = \
+                forms.CharField(label=attribute.name, widget=forms.TextInput(attrs={"class":"extra_attribute"}), required=False)    
