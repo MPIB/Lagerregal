@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from devices.views import *
 from network.views import *
 from devicetypes.views import *
+from main.views import *
+from api.views import *
 from users.views import ProfileView, UsersettingsView
 from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -51,6 +53,10 @@ urlpatterns = patterns('',
     url(r'^types/delete/(?P<pk>[0-9]*)$', login_required(TypeDelete.as_view()), name="type-delete"),
     url(r'^types/view/(?P<pk>[0-9]*)$', login_required(TypeDetail.as_view()), name="type-detail"),
     url(r'^types/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', login_required(TypeMerge.as_view()), name="type-merge"),
+    url(r'^types/attribute/add$', login_required(TypeAttributeCreate.as_view()), name="typeattribute-add"),
+    url(r'^types/attribute/edit/(?P<pk>[0-9]*)$', login_required(TypeAttributeUpdate.as_view()), name="typeattribute-edit"),
+    url(r'^types/attribute/delete/(?P<pk>[0-9]*)$', login_required(TypeAttributeDelete.as_view()), name="typeattribute-delete"),
+
 
     url(r'^rooms/$', login_required(RoomList.as_view()), name="room-list"),
     url(r'^rooms/(?P<page>[0-9]*)$', login_required(RoomList.as_view()), name="room-list"),
@@ -104,10 +110,12 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/rooms/(?P<pk>\d+)/$', RoomApiDetail.as_view(), name='room-api-detail'),
     url(r'^api/types/$', TypeApiList.as_view(), name='type-api-list'),
     url(r'^api/types/(?P<pk>\d+)/$', TypeApiDetail.as_view(), name='type-api-detail'),
+    url(r'^api/types/attributes/(?P<pk>\d+)/$', TypeAttributeApiDetail.as_view(), name='typeattribute-api-detail'),
     url(r'^api/buildings/$', BuildingApiList.as_view(), name='building-api-list'),
     url(r'^api/buildings/(?P<pk>\d+)/$', BuildingApiDetail.as_view(), name='building-api-detail'),
     url(r'^api/templates/$', TemplateApiList.as_view(), name='template-api-list'),
     url(r'^api/templates/(?P<pk>\d+)/$', TemplateApiDetail.as_view(), name='template-api-detail'),
     url(r'^api/ipaddresses/$', IpAddressApiList.as_view(), name='ipaddress-api-list'),
     url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
+    url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ), allowed=["json", "html"])

@@ -7,8 +7,6 @@ from devices.models import Device, Template, Room, Building, Manufacturer, Lendi
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from django.shortcuts import render_to_response
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
 import rest_framework.reverse
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
@@ -20,92 +18,8 @@ import datetime
 import reversion
 from django.contrib.auth.models import Permission
 from django.core.mail import EmailMessage
-from rest_framework import generics
-from rest_framework.decorators import api_view
-from serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer
 from users.models import Lageruser
 
-@api_view(('GET',))
-def api_root(request, format=None):
-    return Response({
-        'devices': rest_framework.reverse.reverse('device-api-list', request=request),
-        'rooms': rest_framework.reverse.reverse('room-api-list', request=request),
-        'buildings': rest_framework.reverse.reverse('building-api-list', request=request),
-        'manufacturers': rest_framework.reverse.reverse('manufacturer-api-list', request=request),
-        'types': rest_framework.reverse.reverse('type-api-list', request=request),
-        'templates': rest_framework.reverse.reverse('template-api-list', request=request),
-        'ipaddresses': rest_framework.reverse.reverse('ipaddress-api-list', request=request),
-    })
-
-class DeviceApiList(generics.ListCreateAPIView):
-    model = Device
-    serializer_class = DeviceSerializer
-
-class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = Device
-    serializer_class = DeviceSerializer
-
-
-class TypeApiList(generics.ListCreateAPIView):
-    model = Type
-    serializer_class = TypeSerializer
-
-class TypeApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = Type
-    serializer_class = TypeSerializer
-
-
-class RoomApiList(generics.ListCreateAPIView):
-    model = Room
-    serializer_class = RoomSerializer
-
-class RoomApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = Room
-    serializer_class = RoomSerializer
-
-
-class BuildingApiList(generics.ListCreateAPIView):
-    model = Building
-    serializer_class = BuildingSerializer
-
-class BuildingApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = Building
-    serializer_class = BuildingSerializer
-
-
-class ManufacturerApiList(generics.ListCreateAPIView):
-    model = Manufacturer
-    serializer_class = ManufacturerSerializer
-
-class ManufacturerApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = Manufacturer
-    serializer_class = ManufacturerSerializer
-
-
-class TemplateApiList(generics.ListCreateAPIView):
-    model = Template
-    serializer_class = TemplateSerializer
-
-class TemplateApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = Template
-    serializer_class = TemplateSerializer
-
-
-class Home(TemplateView):
-    template_name = "home.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(Home, self).get_context_data(**kwargs)
-        context['device_all'] = Device.objects.all().count()
-        context['device_available'] = Device.objects.filter(currentlending=None).count()
-        context['ipaddress_all'] = IpAddress.objects.all().count()
-        context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
-        if self.request.user.is_authenticated():
-            context['revisions'] = Version.objects.all().order_by("-pk")[:20]
-            context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
-            context["today"] = datetime.date.today()
-            context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
-        return context
 
 class DeviceList(ListView):
     context_object_name = 'device_list'
@@ -611,8 +525,8 @@ class Search(FormView):
         if form.cleaned_data["lender"] != "":
             search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"]
 
-        if form.cleaned_data["buildnumber"] != "":
-            search["buildnumber__" + form.cleaned_data["buildnumbermodifier"]] = form.cleaned_data["buildnumber"]
+        if form.cleaned_data["bildnumber"] != "":
+            search["bildnumber__" + form.cleaned_data["bildnumbermodifier"]] = form.cleaned_data["bildnumber"]
 
         if form.cleaned_data["serialnumber"] != "":
             search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"]

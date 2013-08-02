@@ -27,6 +27,9 @@ class TypeAttribute(models.Model):
         verbose_name = _("Type-attribute")
         verbose_name_plural = _("Type-attributes")
 
+    def get_absolute_url(self):
+        return reverse('type-detail', kwargs={'pk': self.devicetype.pk})
+
     def __unicode__(self):
         return self.name
 
