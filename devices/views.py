@@ -199,7 +199,6 @@ class DeviceUpdate(UpdateView):
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        print form.cleaned_data
         if device.archived != None:
             messages.error(self.request, "Archived Devices can't be edited")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
