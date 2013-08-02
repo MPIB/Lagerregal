@@ -212,7 +212,7 @@ class DeviceUpdate(UpdateView):
                     attributenumber = key.split("_")[1]
                     typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
                     try:
-                        attribute = TypeAttributeValue.objects.filter(device = device.pk, typeattribute__devicetype=form.cleaned_data["deviceype"]).get(typeattribute=attributenumber)
+                        attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
                     except:
                         attribute = TypeAttributeValue()
                         attribute.device = device
