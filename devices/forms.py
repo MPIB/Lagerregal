@@ -72,17 +72,22 @@ class DeviceForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
-        attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
-        print attributevalues
+        print kwargs
         if self.data != {}:
             attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
-        elif "instance" in kwargs:
+        elif kwargs["instance"] != None:
+            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
             attributes= TypeAttribute.objects.filter(devicetype = kwargs["instance"].devicetype.pk)
+        else:
+            attributes = []
         for attribute in attributes:
             # generate extra fields in the number specified via extra_fields
             self.fields['attribute_{index}'.format(index=attribute.pk)] = \
-                forms.CharField(label=attribute.name, widget=forms.TextInput(attrs={"class":"extra_attribute"}), required=False) 
-            try:
-                self.fields['attribute_{index}'.format(index=attribute.pk)].initial = attributevalues.get(typeattribute=attribute.pk)
-            except:
-                pass
+                forms.CharField(label=attribute.name, widget=forms.TextInput(attrs={"class":"extra_attribute"}), required=False)
+            if 'attribute_{index}'.format(index=attribute.pk) in self.data:
+                self.fields['attribute_{index}'.format(index=attribute.pk)].initial = self.data['attribute_{index}'.format(index=attribute.pk)]
+            else:
+                try:
+                    self.fields['attribute_{index}'.format(index=attribute.pk)].initial = attributevalues.get(typeattribute=attribute.pk)
+                except:
+                    pass
