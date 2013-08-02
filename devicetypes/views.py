@@ -20,7 +20,7 @@ class TypeList(ListView):
 class TypeDetail(DetailView):
     model = Type
     context_object_name = 'object'
-    template_name = "devices/type_detail.html"
+    template_name = "devicetypes/type_detail.html"
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -92,3 +92,28 @@ class TypeMerge(View):
             device.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
+
+
+
+class TypeAttributeCreate(CreateView):
+    model = TypeAttribute
+    template_name = 'devices/base_form.html'
+
+
+class TypeAttributeUpdate(UpdateView):
+    model = TypeAttribute
+    template_name = 'devices/base_form.html'
+
+class TypeAttributeDelete(DeleteView):
+    model = TypeAttribute
+    success_url = reverse_lazy('type-list')
+    template_name = 'devices/base_delete.html'
+
+    def post(self, request, **kwargs):
+        self.next = request.POST["next"]
+        return  super(TypeAttributeDelete, self).post(request, **kwargs)
+
+
+    def get_success_url(self):
+        print self.next
+        return self.next

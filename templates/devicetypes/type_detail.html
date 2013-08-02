@@ -7,11 +7,19 @@
 {% trans "Devicetype" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-<a href="#" class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
+  <a  href="#" data-reveal-id="deleteModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
 <a href="{{object.get_edit_url}}" class="button success right small" style="margin-left:10px">{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown">{% trans "Merge" %}</a>
 {% endblock %}
 {% block content %}
+<h4>{% trans "Extra attributes" %}</h4>
+<ul>
+  {% for attribute in attribute_list %}
+  <li><a href="#" class="attribute" data-id="{{attribute.id}}" data-name="{{attribute.name}}">{{attribute.name}}</a></li>
+  {% endfor %}
+  </ul>
+  <a href="#" data-reveal-id="newAttributeModal">{% trans "Add new Attribute" %}</a>
+
 {% if device_list %}
 <h4>{% trans "Devices" %}</h4>
     <table width="100%" id="devicetable">
@@ -24,7 +32,7 @@
     </tr>
   </thead>
   <tbody>
-  	{% for device in device_list %}
+    {% for device in device_list %}
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
       <td>{{ device.bildnumber }}</td>
@@ -37,6 +45,42 @@
 
 
 {% endif %}
+
+<div id="attributeModal" class="reveal-modal small">
+  <h2>{% trans "Edit the Attribute" %}</h2>
+  <div class="row">
+  <form  action="{% url "typeattribute-edit" 0 %}" method="post" id="attribute_editform">{% csrf_token %}
+    <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
+    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Name" %}</label></div><div class="small-9 columns"><input id="id_name" name="name" type="text"></div></div>
+<input type="submit" value="{% trans "Edit" %}" class="button button-primary small right" />
+<a class="close-reveal-modal">&#215;</a>
+  </form>
+</div>
+<div class="row">
+  <div class="alert-box alert">{% blocktrans %}Do you want to delete  the attribute?{% endblocktrans %}</div>
+  <form action="{% url "typeattribute-delete" 0 %}" method="post" class="form-horizontal" id="attribute_deleteform">{% csrf_token %}<input type="submit" value="{% trans "Yes" %}" class="button alert small right" /><input type="hidden" name="next" value="{% url "type-detail" object.id %}">
+</form>
+</div>
+</div>
+
+<div id="newAttributeModal" class="reveal-modal small">
+  <h2>{% trans "New Attribute" %}</h2>
+  <form action="{% url "typeattribute-add" %}" method="post">{% csrf_token %}
+    <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
+    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Name" %}</label></div><div class="small-9 columns"><input id="id_name" name="name" type="text"></div></div>
+<input type="submit" value="{% trans "Submit" %}" class="button button-primary small right" />
+<a class="close-reveal-modal">&#215;</a>
+  </form>
+</div>
+
+<div id="deleteModal" class="reveal-modal medium">
+  <div class="alert-box alert">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
+<form action="{% url "type-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}
+<input type="button" value="{% trans "No" %}" onclick="$('#deleteModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
+</form>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
+
 {% endblock %}
 
 {% block htmlend%}
@@ -45,4 +89,17 @@
   <li><a href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
 {% endfor %}
 </ul>
+{% endblock %}
+
+{% block scriptend %}
+  $('.attribute').click(function() {
+    var editurl = $("#attribute_editform").attr("action")
+    editurl = editurl.replace(new RegExp("0" + '$'), $(this).data("id"))
+    $("#attribute_editform").attr("action", editurl)
+    var deleteurl = $("#attribute_deleteform").attr("action")
+    deleteurl = deleteurl.replace(new RegExp("0" + '$'), $(this).data("id"))
+    $("#attribute_deleteform").attr("action", deleteurl)
+    $("#attributeModal").find("#id_name").val($(this).data("name"));
+    $('#attributeModal').foundation('reveal', 'open');
+})
 {% endblock %}
