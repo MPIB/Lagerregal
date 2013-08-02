@@ -1,6 +1,7 @@
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
-from devices.models import Device, Type, Room, Building, Manufacturer
+from devices.models import Device, Room, Building, Manufacturer
+from devicetypes.models import Type
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 
