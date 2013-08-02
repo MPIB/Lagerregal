@@ -10,10 +10,20 @@
 {% for field in form %}
 {% if field.html_name == "creator" %}
 {{ field }}
-{% else %}
+{% elif field.html_name == "devicetype" %}
 <div class="row {{field.css_classes}}">
         <div class="small-3 columns">
-          {{field.required}}
+          <label for="right-label" class="right inline"{% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
+        </div>
+        <div class="small-9 columns">
+         {{ field }}
+{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
+        </div>
+      </div>
+      <div id="extra_attributes"></div>
+{% else %}
+<div class="row {{field.css_classes}}">
+        <div class="small-3 columns"> 
           <label for="right-label" class="right inline"{% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
         </div>
         <div class="small-9 columns">
@@ -41,4 +51,9 @@ $( "input:text[name=name]" ).autocomplete({
 {% if object != None %}$('#id_emailbosses').parent().parent().hide();
 $('#id_emailmanagment').parent().parent().hide();
 {% endif %}
+
+$("#id_devicetype").change(function() {
+        Dajaxice.devicetypes.get_attributes(Dajax.process, {'pk':$(this).val()});
+});
+
 {% endblock %}
