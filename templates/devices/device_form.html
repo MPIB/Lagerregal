@@ -11,6 +11,7 @@
 {% if field.html_name == "creator" %}
 {{ field }}
 {% else %}
+{% if field.html_name == "room" %}</div>{% endif %}
 <div class="row {{field.css_classes}}">
         <div class="small-3 columns"> 
           <label for="right-label" class="right inline"{% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
@@ -21,9 +22,8 @@
         </div>
       </div>
 {% endif %}
-{% if field.html_name == "emailmanagment" %}<div id="extra_attributes">{% endif %}
+{% if field.html_name == "devicetype" %}<div id="extra_attributes">{% endif %}
 {% endfor %}
-</div>
 <input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
 </form>
 
