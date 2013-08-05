@@ -73,7 +73,10 @@ class DeviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
         if self.data != {}:
-            attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
+            try:
+                attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
+            except:
+                return
         elif kwargs["instance"] != None:
             attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
             attributes= TypeAttribute.objects.filter(devicetype = kwargs["instance"].devicetype.pk)
