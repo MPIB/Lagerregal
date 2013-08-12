@@ -108,14 +108,22 @@ class DeviceHistory(View):
         this_version = get_object_or_404(Version, pk=revisionid)
         try:
             previous_version = Version.objects.filter(object_id=device.pk, revision__date_created__lt=this_version.revision.date_created).order_by("-pk")[0].field_dict
-            previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
-            previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
-            previous_version["room"] = Room.objects.get(pk=previous_version["room"])
+            
+            if previous_version["devicetype"] != None:
+                previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
+            if previous_version["manufacturer"] != None:
+                previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
+            if previous_version["room"] != None:
+                previous_version["room"] = Room.objects.get(pk=previous_version["room"])
         except:
             previous_version = None
-        this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
-        this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
-        this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
+        print this_version.field_dict
+        if this_version.field_dict["devicetype"] != None:
+            this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
+        if this_version.field_dict["manufacturer"] != None:
+            this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
+        if this_version.field_dict["room"] != None:
+            this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
         context = {"version":this_version, "previous":previous_version, "this_version":this_version.field_dict, "current":device}
         return render_to_response('devices/device_history.html', context, RequestContext(request))
 
@@ -227,26 +235,27 @@ class DeviceUpdate(UpdateView):
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
             reversion.set_comment("Updated")
-            if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
-                TypeAttributeValue.objects.filter(device = device.pk).delete()
-            for key, value in form.cleaned_data.iteritems():
-                if key.startswith("attribute_") and value != "":
-                    attributenumber = key.split("_")[1]
-                    typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
-                    try:
-                        attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
-                    except:
-                        attribute = TypeAttributeValue()
-                        attribute.device = device
-                        attribute.typeattribute = typeattribute
-                    attribute.value = value
-                    attribute.save()
-                elif key.startswith("attribute_") and value == "":
-                    attributenumber = key.split("_")[1]
-                    try:
-                        TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
-                    except:
-                        pass
+            if device.devicetype != None:
+                if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
+                    TypeAttributeValue.objects.filter(device = device.pk).delete()
+                for key, value in form.cleaned_data.iteritems():
+                    if key.startswith("attribute_") and value != "":
+                        attributenumber = key.split("_")[1]
+                        typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
+                        try:
+                            attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
+                        except:
+                            attribute = TypeAttributeValue()
+                            attribute.device = device
+                            attribute.typeattribute = typeattribute
+                        attribute.value = value
+                        attribute.save()
+                    elif key.startswith("attribute_") and value == "":
+                        attributenumber = key.split("_")[1]
+                        try:
+                            TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
+                        except:
+                            pass
             messages.success(self.request, _('Device was successfully updated.'))
             return super(DeviceUpdate, self).form_valid(form)
 
@@ -317,7 +326,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         else:
             device.archived = None
         device.save()
-        reversion.set_comment("Archived")
+        #reversion.set_comment("Archived")
         messages.success(request, _("Device was archived."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
