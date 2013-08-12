@@ -52,6 +52,7 @@
   <form  action="{% url "typeattribute-edit" 0 %}" method="post" id="attribute_editform">{% csrf_token %}
     <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
     <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Name" %}</label></div><div class="small-9 columns"><input id="id_name" name="name" type="text"></div></div>
+    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Regular Expression" %}</label></div><div class="small-9 columns"><input id="id_regex" name="regex" type="text"></div></div>
 <input type="submit" value="{% trans "Edit" %}" class="button button-primary small right" />
 <a class="close-reveal-modal">&#215;</a>
   </form>
@@ -68,6 +69,7 @@
   <form action="{% url "typeattribute-add" %}" method="post">{% csrf_token %}
     <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
     <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Name" %}</label></div><div class="small-9 columns"><input id="id_name" name="name" type="text"></div></div>
+    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Regular Expression" %}</label></div><div class="small-9 columns"><input id="id_regex" name="regex" type="text"></div></div>
 <input type="submit" value="{% trans "Submit" %}" class="button button-primary small right" />
 <a class="close-reveal-modal">&#215;</a>
   </form>
