@@ -15,7 +15,7 @@
 <h4>{% trans "Extra attributes" %}</h4>
 <ul>
   {% for attribute in attribute_list %}
-  <li><a href="#" class="attribute" data-id="{{attribute.id}}" data-name="{{attribute.name}}">{{attribute.name}}</a></li>
+  <li><a href="#" class="attribute" data-id="{{attribute.id}}" data-name="{{attribute.name}}" data-regex="{{attribute.regex}}">{{attribute.name}}</a></li>
   {% endfor %}
   </ul>
   <a href="#" data-reveal-id="newAttributeModal">{% trans "Add new Attribute" %}</a>
@@ -102,6 +102,7 @@
     deleteurl = deleteurl.replace(new RegExp("0" + '$'), $(this).data("id"))
     $("#attribute_deleteform").attr("action", deleteurl)
     $("#attributeModal").find("#id_name").val($(this).data("name"));
+    $("#attributeModal").find("#id_regex").val($(this).data("regex"));
     $('#attributeModal').foundation('reveal', 'open');
 })
 {% endblock %}
