@@ -19,11 +19,12 @@
     <h4>Revision: {{version.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4>
     <table>
       <tbody>
+        {% if previous != None %}
         <tr><th></th><th>{% trans "previous revision" %}</th><th>{% trans "this revision" %}</th><th>{% trans "current revision" %}</th>
         <tr><td>{% trans "Name" %}</td>
             <td>{{previous.name}}</td>
-            <td>{{this_version.name}}</td>
-            <td>{{current.name}}</td>
+          <td>{% history_compare previous.name this_version.name %}</td>
+          <td>{% history_compare this_version.name current.name %}</td>
         </tr>
         <tr><td>{% trans "Bildnumber" %}</td>
           <td>{{previous.bildnumber}}</td>
@@ -70,6 +71,50 @@
           <td>{% history_compare previous.description this_version.description %}</td>
           <td>{% history_compare this_version.description current.description %}</td>
         </tr>
+
+        {% else %}
+        <tr><th></th><th>{% trans "this revision" %}</th><th>{% trans "current revision" %}</th>
+          <tr><td>{% trans "Name" %}</td>
+            <td>{{this_version.name}}</td>
+            <td>{% history_compare this_version.name current.name %}</td>
+        </tr>
+        <tr><td>{% trans "Bildnumber" %}</td>
+          <td>{{this_version.bildnumber}}</td>
+          <td>{% history_compare this_version.bildnumber current.bildnumber %}</td>
+        </tr>
+        <tr><td>{% trans "Serialnumber" %}</td>
+          <td>{{this_version.serialnumber}}</td>
+          <td>{% history_compare this_version.serialnumber current.serialnumber %}</td>
+        </tr>
+        <tr><td>{% trans "MAC-Address" %}</td>
+          <td>{{this_version.macaddress}}</td>
+          <td>{% history_compare this_version.macaddress current.macaddress %}</td>
+        </tr>
+        <tr><td>{% trans "Hostname" %}</td>
+          <td>{{this_version.hostname }}</td>
+          <td>{% history_compare this_version.hostname current.hostname %}</td>
+        </tr>
+        <tr><td>{% trans "Webinterface" %}</td>
+          <td>{{this_version.webinterface }}</td>
+          <td>{% history_compare this_version.webinterface current.webinterface %}</td>
+        </tr>
+        <tr><td>{% trans "Devicetype" %}</td>
+          <td>{{this_version.devicetype }}</td>
+          <td>{% history_compare this_version.devicetype current.devicetype %}</td>
+        </tr>
+        <tr><td>{% trans "Manufacturer" %}</td>
+          <td>{{this_version.manufacturer }}</td>
+          <td>{% history_compare this_version.manufacturer current.manufacturer %}</td>
+        </tr>
+        <tr><td>{% trans "Room" %}</td>
+          <td>{{this_version.room }}</td>
+          <td>{% history_compare this_version.room current.room %}</td>
+        </tr>
+        <tr><td>{% trans "Description" %}</td>
+          <td>{{this_version.description }}</td>
+          <td>{% history_compare this_version.description current.description %}</td>
+        </tr>
+        {% endif %}
       </tbody>
     </table>
   </div>
