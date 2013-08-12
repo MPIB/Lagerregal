@@ -90,3 +90,16 @@
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
     height:60px;
 }
+
+.diff {
+    color:#c60f13;
+    font-weight:bold;
+}
+
+.diff.add {
+    color:#5da423;
+}
+
+.diff.remove{
+
+}

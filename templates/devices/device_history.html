@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-
+{% load devicetags %}
 {% block title %}{% trans "Revision for" %} {{device.name}}{% endblock %}
 
 {% block header %}
@@ -20,16 +20,56 @@
     <table>
       <tbody>
         <tr><th></th><th>{% trans "previous revision" %}</th><th>{% trans "this revision" %}</th><th>{% trans "current revision" %}</th>
-        <tr><td>{% trans "Name" %}</td><td>{{previous.name}}</td><td>{{this_version.name}}</td><td>{{current.name}}</td></tr>
-        <tr><td>{% trans "Bildnumber" %}</td><td>{{previous.bildnumber}}</td><td>{{this_version.bildnumber}}</td><td>{{current.bildnumber}}</td></tr>
-        <tr><td>{% trans "Serialnumber" %}</td><td>{{previous.serialnumber}}</td><td>{{this_version.serialnumber}}</td><td>{{current.serialnumber}}</td></tr>
-        <tr><td>{% trans "MAC-Address" %}</td><td>{{previous.macaddress}}</td><td>{{this_version.macaddress}}</td><td>{{current.macaddress}}</td></tr>
-        <tr><td>{% trans "Hostname" %}</td><td>{{previous.hostname}}</td><td>{{this_version.hostname}}</td><td>{{current.hostname}}</td></tr>
-        <tr><td>{% trans "Webinterface" %}</td><td>{{previous.webinterface}}</td><td>{{this_version.webinterface}}</td><td>{{current.webinterface}}</td></tr>
-        <tr><td>{% trans "Devicetype" %}</td><td>{{previous.devicetype}}</td><td>{{this_version.devicetype}}</td><td>{{current.devicetype}}</td></tr>
-        <tr><td>{% trans "Manufacturer" %}</td><td>{{previous.manufacturer}}</td><td>{{this_version.manufacturer}}</td><td>{{current.manufacturer}}</td></tr>
-        <tr><td>{% trans "Room" %}</td><td>{{previous.room}}</td><td>{{this_version.room}}</td><td>{{current.room}}</td></tr>
-        <tr><td>{% trans "Description" %}</td><td>{{previous.description}}</td><td>{{this_version.description}}</td><td>{{current.description}}</td></tr>
+        <tr><td>{% trans "Name" %}</td>
+            <td>{{previous.name}}</td>
+            <td>{{this_version.name}}</td>
+            <td>{{current.name}}</td>
+        </tr>
+        <tr><td>{% trans "Bildnumber" %}</td>
+          <td>{{previous.bildnumber}}</td>
+          <td>{% history_compare previous.bildnumber this_version.bildnumber %}</td>
+          <td>{% history_compare this_version.bildnumber current.bildnumber %}</td>
+        </tr>
+        <tr><td>{% trans "Serialnumber" %}</td>
+          <td>{{previous.serialnumber}}</td>
+          <td>{% history_compare previous.serialnumber this_version.serialnumber %}</td>
+          <td>{% history_compare this_version.serialnumber current.serialnumber %}</td>
+        </tr>
+        <tr><td>{% trans "MAC-Address" %}</td>
+          <td>{{previous.macaddress}}</td>
+          <td>{% history_compare previous.macaddress this_version.macaddress %}</td>
+          <td>{% history_compare this_version.macaddress current.macaddress %}</td>
+        </tr>
+        <tr><td>{% trans "Hostname" %}</td>
+          <td>{{previous.hostname}}</td>
+          <td>{% history_compare previous.hostname this_version.hostname %}</td>
+          <td>{% history_compare this_version.hostname current.hostname %}</td>
+        </tr>
+        <tr><td>{% trans "Webinterface" %}</td>
+          <td>{{previous.webinterface}}</td>
+          <td>{% history_compare previous.webinterface this_version.webinterface %}</td>
+          <td>{% history_compare this_version.webinterface current.webinterface %}</td>
+        </tr>
+        <tr><td>{% trans "Devicetype" %}</td>
+          <td>{{previous.devicetype}}</td>
+          <td>{% history_compare previous.devicetype this_version.devicetype %}</td>
+          <td>{% history_compare this_version.devicetype current.devicetype %}</td>
+        </tr>
+        <tr><td>{% trans "Manufacturer" %}</td>
+          <td>{{previous.manufacturer}}</td>
+          <td>{% history_compare previous.manufacturer this_version.manufacturer %}</td>
+          <td>{% history_compare this_version.manufacturer current.manufacturer %}</td>
+        </tr>
+        <tr><td>{% trans "Room" %}</td>
+          <td>{{previous.room}}</td>
+          <td>{% history_compare previous.room this_version.room %}</td>
+          <td>{% history_compare this_version.room current.room %}</td>
+        </tr>
+        <tr><td>{% trans "Description" %}</td>
+          <td>{{previous.description}}</td>
+          <td>{% history_compare previous.description this_version.description %}</td>
+          <td>{% history_compare this_version.description current.description %}</td>
+        </tr>
       </tbody>
     </table>
   </div>
