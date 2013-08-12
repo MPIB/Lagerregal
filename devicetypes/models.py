@@ -22,6 +22,7 @@ class Type(models.Model):
 class TypeAttribute(models.Model):
     devicetype = models.ForeignKey(Type)
     name = models.CharField(max_length=200)
+    regex = models.CharField(max_length=500, blank=True, null=True)
 
     class Meta:
         verbose_name = _("Type-attribute")
