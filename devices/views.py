@@ -119,7 +119,7 @@ class DeviceHistory(View):
         version = get_object_or_404(Version, pk=revisionid)
         version.revision.revert()
         reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
-        messages.success(request, 'Successfully reverted Device')
+        messages.success(self.request, 'Successfully reverted Device')
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistoryList(View):
@@ -193,7 +193,7 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
-        messages.success(request, _('Device was successfully created.'))
+        messages.success(self.request, _('Device was successfully created.'))
         return r
 
 class DeviceUpdate(UpdateView):
@@ -272,7 +272,7 @@ class DeviceLend(FormView):
         if form.cleaned_data["room"]:
             device.room = form.cleaned_data["room"]
         device.save()
-        messages.success(request, _('Device is marked as lendt to {{0}}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
+        messages.success(self.request, _('Device is marked as lendt to {{0}}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
