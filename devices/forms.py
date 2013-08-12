@@ -3,6 +3,9 @@ from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from users.models import Lageruser
+import re
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
 
 CHARMODIFIER = (
     ('icontains','Contains'),
@@ -69,6 +72,20 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model=Device
         exclude = ("archived", "currentlending")
+
+    def clean(self):
+        cleaned_data = super(DeviceForm, self).clean()
+        unclean_data = []
+        for key, attribute in cleaned_data.iteritems():
+                if key.startswith("attribute_") and attribute != "":
+                    attributenumber = key.split("_")[1]
+                    typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
+                    if re.match(typeattribute.regex, attribute) == None:
+                        self._errors[key] = self.error_class([_("Doesn't match the given regex \"{0}\".".format(typeattribute.regex))])
+                        unclean_data.append(key)
+        for i in unclean_data:
+            del cleaned_data[i]
+        return cleaned_data
 
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)

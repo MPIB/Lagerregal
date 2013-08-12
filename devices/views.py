@@ -19,6 +19,7 @@ import reversion
 from django.contrib.auth.models import Permission
 from django.core.mail import EmailMessage
 from users.models import Lageruser
+from django.utils.translation import ugettext_lazy as _
 
 
 class DeviceList(ListView):
@@ -192,6 +193,7 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
+        messages.success(request, _('Device was successfully created.'))
         return r
 
 class DeviceUpdate(UpdateView):
@@ -234,6 +236,7 @@ class DeviceUpdate(UpdateView):
                         TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
                     except:
                         pass
+            messages.success(self.request, _('Device was successfully updated.'))
             return super(DeviceUpdate, self).form_valid(form)
 
 
@@ -269,6 +272,7 @@ class DeviceLend(FormView):
         if form.cleaned_data["room"]:
             device.room = form.cleaned_data["room"]
         device.save()
+        messages.success(request, _('Device is marked as lendt to {{0}}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
@@ -286,22 +290,8 @@ class DeviceReturn(View):
         lending.save()
         device.currentlending = None
         device.save()
+        messages.success(request, _('Device is marked as returned.'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-
-"""class DeviceArchive(View):
-
-    def get(self, request, **kwargs):
-        deviceid = kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        if device.archived == None:
-            device.archived = datetime.datetime.now()
-            device.room = None
-            device.currentlending = None
-        else:
-            device.archived = None
-        device.save()
-        reversion.set_comment("Archived")
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))"""
 
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
@@ -317,6 +307,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
             device.archived = None
         device.save()
         reversion.set_comment("Archived")
+        messages.success(request, _("Device was archived."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
