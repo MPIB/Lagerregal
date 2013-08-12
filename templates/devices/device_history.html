@@ -4,7 +4,7 @@
 {% block title %}{% trans "Revision for" %} {{device.name}}{% endblock %}
 
 {% block header %}
-{% trans "Device" %}: <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
+{% trans "Device" %}: <a href="{% url 'device-detail' device.pk %}">{{current.name}}</a>
 {% endblock %}
 
 {% block pullright %}
@@ -19,13 +19,17 @@
     <h4>Revision: {{version.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4>
     <table>
       <tbody>
-        <tr><td>{% trans "Name" %}</td><td>{{device.name}}</td></tr>
-        <tr><td>{% trans "Bildnumber" %}</td><td>{{device.bildnumber}}</td></tr>
-        <tr><td>{% trans "Serialnumber" %}</td><td>{{device.serialnumber}}</td></tr>
-        <tr><td>{% trans "MAC-Address" %}</td><td>{{device.macaddress}}</td></tr>
-        <tr><td>{% trans "Devicetype" %}</td><td>{{device.devicetype}}</td></tr>
-        <tr><td>{% trans "Manufacturer" %}</td><td>{{device.manufacturer}}</td></tr>
-        <tr><td>{% trans "Room" %}</td><td>{{device.room}}</td></tr>
+        <tr><th></th><th>{% trans "previous revision" %}</th><th>{% trans "this revision" %}</th><th>{% trans "current revision" %}</th>
+        <tr><td>{% trans "Name" %}</td><td>{{previous.name}}</td><td>{{this_version.name}}</td><td>{{current.name}}</td></tr>
+        <tr><td>{% trans "Bildnumber" %}</td><td>{{previous.bildnumber}}</td><td>{{this_version.bildnumber}}</td><td>{{current.bildnumber}}</td></tr>
+        <tr><td>{% trans "Serialnumber" %}</td><td>{{previous.serialnumber}}</td><td>{{this_version.serialnumber}}</td><td>{{current.serialnumber}}</td></tr>
+        <tr><td>{% trans "MAC-Address" %}</td><td>{{previous.macaddress}}</td><td>{{this_version.macaddress}}</td><td>{{current.macaddress}}</td></tr>
+        <tr><td>{% trans "Hostname" %}</td><td>{{previous.hostname}}</td><td>{{this_version.hostname}}</td><td>{{current.hostname}}</td></tr>
+        <tr><td>{% trans "Webinterface" %}</td><td>{{previous.webinterface}}</td><td>{{this_version.webinterface}}</td><td>{{current.webinterface}}</td></tr>
+        <tr><td>{% trans "Devicetype" %}</td><td>{{previous.devicetype}}</td><td>{{this_version.devicetype}}</td><td>{{current.devicetype}}</td></tr>
+        <tr><td>{% trans "Manufacturer" %}</td><td>{{previous.manufacturer}}</td><td>{{this_version.manufacturer}}</td><td>{{current.manufacturer}}</td></tr>
+        <tr><td>{% trans "Room" %}</td><td>{{previous.room}}</td><td>{{this_version.room}}</td><td>{{current.room}}</td></tr>
+        <tr><td>{% trans "Description" %}</td><td>{{previous.description}}</td><td>{{this_version.description}}</td><td>{{current.description}}</td></tr>
       </tbody>
     </table>
   </div>
