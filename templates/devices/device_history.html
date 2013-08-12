@@ -4,7 +4,7 @@
 {% block title %}{% trans "Revision for" %} {{device.name}}{% endblock %}
 
 {% block header %}
-{% trans "Device" %}: <a href="{% url 'device-detail' device.pk %}">{{current.name}}</a>
+{% trans "Device" %}: <a href="{% url 'device-detail' current.pk %}">{{current.name}}</a>
 {% endblock %}
 
 {% block pullright %}

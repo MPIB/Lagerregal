@@ -107,9 +107,15 @@ class DeviceHistory(View):
         device = get_object_or_404(Device, pk=kwargs["pk"])
         this_version = get_object_or_404(Version, pk=revisionid)
         try:
-            previous_version= Version.objects.filter(object_id=device.pk, revision__date_created__lt=this_version.revision.date_created).order_by("-pk")[0].field_dict
+            previous_version = Version.objects.filter(object_id=device.pk, revision__date_created__lt=this_version.revision.date_created).order_by("-pk")[0].field_dict
+            previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
+            previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
+            previous_version["room"] = Room.objects.get(pk=previous_version["room"])
         except:
             previous_version = None
+        this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
+        this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
+        this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
         context = {"version":this_version, "previous":previous_version, "this_version":this_version.field_dict, "current":device}
         return render_to_response('devices/device_history.html', context, RequestContext(request))
 
