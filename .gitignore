@@ -4,3 +4,5 @@ mails/
 .spyderproject
 .spyderworkspace
 *.pyo
+
+newrelic.ini
