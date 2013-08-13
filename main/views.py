@@ -3,6 +3,7 @@ from devices.models import *
 from network.models import *
 from reversion.models import Version
 import datetime
+from django.contrib.contenttypes.models import ContentType
 
 class Home(TemplateView):
     template_name = "home.html"
@@ -14,7 +15,7 @@ class Home(TemplateView):
         context['ipaddress_all'] = IpAddress.objects.all().count()
         context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
         if self.request.user.is_authenticated():
-            context['revisions'] = Version.objects.all().order_by("-pk")[:20]
+            context['revisions'] = Revision.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:20]
             context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
             context["today"] = datetime.date.today()
             context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")

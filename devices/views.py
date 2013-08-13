@@ -105,7 +105,7 @@ class DeviceHistory(View):
     def get(self, request, **kwargs):
         revisionid = kwargs["revision"]
         device = get_object_or_404(Device, pk=kwargs["pk"])
-        this_version = get_object_or_404(Version, pk=revisionid)
+        this_version = get_object_or_404(Version, revision_id=revisionid, object_id=device.id)
         try:
             previous_version = Version.objects.filter(object_id=device.pk, revision__date_created__lt=this_version.revision.date_created).order_by("-pk")[0].field_dict
             
@@ -135,10 +135,13 @@ class DeviceHistory(View):
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         revisionid = kwargs["revision"]
 
-        version = get_object_or_404(Version, pk=revisionid)
+        version = get_object_or_404(Version, revision_id=revisionid, object_id=deviceid)
+        print version.revision
         version.revision.revert()
+        if version.field_dict["devicetype"] != None:        
+            TypeAttributeValue.objects.filter(device = version.object_id).delete()
         reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
-        messages.success(self.request, 'Successfully reverted Device')
+        messages.success(self.request, 'Successfully reverted Device to revision {0}'.format(version.revision.id))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistoryList(View):
@@ -146,7 +149,7 @@ class DeviceHistoryList(View):
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        version_list = reversion.get_unique_for_object(device)
+        version_list = Version.objects.filter(object_id=device.id).order_by("-pk")
         context = {"version_list":version_list, "device":device}
         return render_to_response('devices/device_history_list.html', context, RequestContext(request))
 
@@ -236,26 +239,28 @@ class DeviceUpdate(UpdateView):
         else:
             reversion.set_comment("Updated")
             if device.devicetype != None:
+                if form.cleaned_data["devicetype"] == None:
+                    TypeAttributeValue.objects.filter(device = device.pk).delete()
                 if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
                     TypeAttributeValue.objects.filter(device = device.pk).delete()
-                for key, value in form.cleaned_data.iteritems():
-                    if key.startswith("attribute_") and value != "":
-                        attributenumber = key.split("_")[1]
-                        typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
-                        try:
-                            attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
-                        except:
-                            attribute = TypeAttributeValue()
-                            attribute.device = device
-                            attribute.typeattribute = typeattribute
-                        attribute.value = value
-                        attribute.save()
-                    elif key.startswith("attribute_") and value == "":
-                        attributenumber = key.split("_")[1]
-                        try:
-                            TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
-                        except:
-                            pass
+            for key, value in form.cleaned_data.iteritems():
+                if key.startswith("attribute_") and value != "":
+                    attributenumber = key.split("_")[1]
+                    typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
+                    try:
+                        attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
+                    except:
+                        attribute = TypeAttributeValue()
+                        attribute.device = device
+                        attribute.typeattribute = typeattribute
+                    attribute.value = value
+                    attribute.save()
+                elif key.startswith("attribute_") and value == "":
+                    attributenumber = key.split("_")[1]
+                    try:
+                        TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
+                    except:
+                        pass
             messages.success(self.request, _('Device was successfully updated.'))
             return super(DeviceUpdate, self).form_valid(form)
 

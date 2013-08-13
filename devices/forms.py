@@ -68,6 +68,7 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
     creator =  forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
+    reason = forms.CharField()
 
     class Meta:
         model=Device

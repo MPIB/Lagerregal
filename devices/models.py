@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import Lageruser
-from devicetypes.models import Type
+from devicetypes.models import Type, TypeAttributeValue
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 import reversion
@@ -106,6 +106,9 @@ class Device(models.Model):
         dict["room"] = self.room
         return dict
 
+reversion.register(Device, follow=["typeattributevalue_set"], exclude=["archived", "currentlending"])
+reversion.register(TypeAttributeValue)
+
 
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser)
@@ -139,6 +142,3 @@ class Template(models.Model):
         dict["manufacturer"] = self.manufacturer
         dict["devicetype"] = self.devicetype
         return dict
-
-
-reversion.register(Device)
