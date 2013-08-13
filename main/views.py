@@ -15,7 +15,7 @@ class Home(TemplateView):
         context['ipaddress_all'] = IpAddress.objects.all().count()
         context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
         if self.request.user.is_authenticated():
-            context['revisions'] = Revision.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:20]
+            context['revisions'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:20]
             context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
             context["today"] = datetime.date.today()
             context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
