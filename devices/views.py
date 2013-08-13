@@ -20,6 +20,7 @@ from django.contrib.auth.models import Permission
 from django.core.mail import EmailMessage
 from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.contenttypes.models import ContentType
 
 
 class DeviceList(ListView):
@@ -105,9 +106,14 @@ class DeviceHistory(View):
     def get(self, request, **kwargs):
         revisionid = kwargs["revision"]
         device = get_object_or_404(Device, pk=kwargs["pk"])
-        this_version = get_object_or_404(Version, revision_id=revisionid, object_id=device.id)
+        this_version = get_object_or_404(Version,
+            revision_id=revisionid,
+            object_id=device.id,
+            content_type_id=ContentType.objects.get(model='device').id)
         try:
-            previous_version = Version.objects.filter(object_id=device.pk, revision__date_created__lt=this_version.revision.date_created).order_by("-pk")[0].field_dict
+            previous_version = Version.objects.filter(object_id=device.pk,
+                revision__date_created__lt=this_version.revision.date_created).order_by("-pk",
+                content_type_id=ContentType.objects.get(model='device').id)[0].field_dict
             
             if previous_version["devicetype"] != None:
                 previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
@@ -135,7 +141,10 @@ class DeviceHistory(View):
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         revisionid = kwargs["revision"]
 
-        version = get_object_or_404(Version, revision_id=revisionid, object_id=deviceid)
+        version = get_object_or_404(Version,
+            revision_id=revisionid,
+            object_id=deviceid,
+            content_type_id=ContentType.objects.get(model='device').id)
         print version.revision
         version.revision.revert()
         if version.field_dict["devicetype"] != None:        
@@ -149,7 +158,7 @@ class DeviceHistoryList(View):
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        version_list = Version.objects.filter(object_id=device.id).order_by("-pk")
+        version_list = Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
         context = {"version_list":version_list, "device":device}
         return render_to_response('devices/device_history_list.html', context, RequestContext(request))
 
