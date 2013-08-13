@@ -213,7 +213,10 @@ class DeviceCreate(CreateView):
                     email.to.append(m.email)
             email.send()
         form.cleaned_data["creator"] = self.request.user
-        reversion.set_comment("Created")
+        if form.cleaned_data["comment"] == "":
+            reversion.set_comment("Created")
+        else:
+            reversion.set_comment(form.cleaned_data["comment"])
         r = super(DeviceCreate, self).form_valid(form)
         for key, value in form.cleaned_data.iteritems():
             if key.startswith("attribute_") and value != "":
@@ -246,7 +249,10 @@ class DeviceUpdate(UpdateView):
             messages.error(self.request, "Archived Devices can't be edited")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
-            reversion.set_comment("Updated")
+            if form.cleaned_data["comment"] == "":
+                reversion.set_comment("Updated")
+            else:
+                reversion.set_comment(form.cleaned_data["comment"])
             if device.devicetype != None:
                 if form.cleaned_data["devicetype"] == None:
                     TypeAttributeValue.objects.filter(device = device.pk).delete()
