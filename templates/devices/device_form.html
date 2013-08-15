@@ -21,7 +21,7 @@
          {{ field }}
 {% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
         </div>
-        {% if field|is_select %}<div class="small-1 columns"><a href="#" class="modalbutton" data-class="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>{% endif %}
+        {% if field|is_select %}<div class="small-1 columns"><a href="#" class="modalbutton" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>{% endif %}
       </div>
 {% endif %}
 {% if field.html_name == "devicetype" %}<div id="extra_attributes">{% endif %}
@@ -36,9 +36,10 @@
   <h2>Create new <span id="modal_header"></span></h2>
   <form action="" method="post" id="addform" accept-charset="utf-8">
     <input type="text" name="name" id="modal_name">
-    <input type="hidden" name="newclass" id="modal_newclass">
-    <p><input type="button" value="Send" onclick="send_form();"></p>
+    <input type="hidden" name="classname" id="modal_classname">
+    <p><input type="submit" value="{% trans "Submit" %}"></p>
 </form>
+<div id="modal_errors"></div>
 <a class="close-reveal-modal">&#215;</a>
 </div>
 {% endblock %}
@@ -59,12 +60,13 @@ $(".modalbutton").click(function() {
     $('#addModal').foundation('reveal', 'open');
     $("#modal_name").val("");
     $("#modal_header").text($(this).data("name"))
-    $("#modal_newclass").val($(this).data("class"));
+    $("#modal_classname").val($(this).data("classname"));
 });
 
 $("select").select2();
 
-function send_form(){
-    Dajaxice.devices.add_device_field(Dajax.process,{'form':$('#addform').serialize(true)});
-}
+$("#addform").submit(function() {
+    Dajaxice.devices.add_device_field(Dajax.process,{'form':$(this).serialize(true)});
+    return false;
+});
 {% endblock %}
