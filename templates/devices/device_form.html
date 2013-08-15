@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load devicetags %}
 {% block title %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 
 {% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
@@ -16,10 +17,11 @@
         <div class="small-3 columns"> 
           <label for="right-label" class="right inline"{% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
         </div>
-        <div class="small-9 columns">
+        <div class="small-{% if field|is_select %}8{% else %}9{% endif %} columns">
          {{ field }}
 {% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
         </div>
+        {% if field|is_select %}<div class="small-1 columns"><a href="#" class="modalbutton" data-class="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>{% endif %}
       </div>
 {% endif %}
 {% if field.html_name == "devicetype" %}<div id="extra_attributes">{% endif %}
@@ -28,6 +30,16 @@
 </form>
 
 </div>
+</div>
+
+<div id="addModal" class="reveal-modal">
+  <h2>Create new <span id="modal_header"></span></h2>
+  <form action="" method="post" id="addform" accept-charset="utf-8">
+    <input type="text" name="name" id="modal_name">
+    <input type="hidden" name="newclass" id="modal_newclass">
+    <p><input type="button" value="Send" onclick="send_form();"></p>
+</form>
+<a class="close-reveal-modal">&#215;</a>
 </div>
 {% endblock %}
 
@@ -43,5 +55,16 @@ $("#id_devicetype").change(function() {
         Dajaxice.devicetypes.get_attributes(Dajax.process, {'pk':$(this).val()});
 });
 
+$(".modalbutton").click(function() {
+    $('#addModal').foundation('reveal', 'open');
+    $("#modal_name").val("");
+    $("#modal_header").text($(this).data("name"))
+    $("#modal_newclass").val($(this).data("class"));
+});
+
 $("select").select2();
+
+function send_form(){
+    Dajaxice.devices.add_device_field(Dajax.process,{'form':$('#addform').serialize(true)});
+}
 {% endblock %}

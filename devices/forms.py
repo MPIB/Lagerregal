@@ -118,3 +118,8 @@ class DeviceForm(forms.ModelForm):
                 except:
                     pass
             self.fields.keyOrder.insert(self.fields.keyOrder.index("room"), self.fields.keyOrder.pop(self.fields.keyOrder.index('attribute_{index}'.format(index=attribute.pk))))
+
+
+class AddForm(forms.Form):
+    name = forms.CharField(max_length=200)
+    newclass = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room")])

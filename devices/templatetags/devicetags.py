@@ -23,3 +23,7 @@ def history_compare(old, new):
             return "<span class='diff'>{0}</span>".format(new)
     else:
         return new
+
+@register.filter("is_select")
+def is_select(form_field_obj):
+    return (form_field_obj.field.widget.__class__.__name__ == "Select")
