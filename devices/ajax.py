@@ -4,6 +4,8 @@ from devices.models import Device, Room, Building, Manufacturer
 from devicetypes.models import Type
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
+from devices.forms import AddForm
+from dajaxice.utils import deserialize_form
 
 @dajaxice_register
 def complete_devicenames(request, name):
@@ -43,3 +45,34 @@ def complete_names(request, classtype, name):
     else:
         dajax.remove("#alternativebox")
         return dajax.json()
+
+
+@dajaxice_register
+def add_device_field(request, form):
+    dajax = Dajax()
+    form = AddForm(deserialize_form(form))
+    if form.is_valid():
+        if request.user.is_staff:
+            classname = form.cleaned_data["newclass"]
+            if classname == "manufacturer":
+                newitem = Manufacturer()
+                newitem.name = form.cleaned_data["name"]
+                newitem.save()
+            elif classname == "devicetype":
+                newitem = ()
+                newitem.name = form.cleaned_data["name"]
+                newitem.save()
+            elif classname == "room":
+                newitem = Room()
+                newitem.name = form.cleaned_data["name"]
+                newitem.save()
+            dajax.append("#id_{0}".format(classname), 
+                "innerHTML", 
+                "<option value='{0}''>{1}</option>".format(newitem.pk, newitem.name))
+            dajax.script("$('#id_{0}').select2('val', '{1}');".format(classname, newitem.pk))
+            dajax.script("$('#addModal').foundation('reveal', 'close');")
+
+    else:
+        print "failed", form
+
+    return dajax.json()
