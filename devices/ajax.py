@@ -53,13 +53,13 @@ def add_device_field(request, form):
     form = AddForm(deserialize_form(form))
     if form.is_valid():
         if request.user.is_staff:
-            classname = form.cleaned_data["newclass"]
+            classname = form.cleaned_data["classname"]
             if classname == "manufacturer":
                 newitem = Manufacturer()
                 newitem.name = form.cleaned_data["name"]
                 newitem.save()
             elif classname == "devicetype":
-                newitem = ()
+                newitem = Type()
                 newitem.name = form.cleaned_data["name"]
                 newitem.save()
             elif classname == "room":
@@ -73,6 +73,6 @@ def add_device_field(request, form):
             dajax.script("$('#addModal').foundation('reveal', 'close');")
 
     else:
-        print "failed", form
+        dajax.assign("#modal_errors", "innerHTML", "Error: {0}".format(form.non_field_errors()))
 
     return dajax.json()

@@ -1,7 +1,7 @@
 from django import forms
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
-from devicetypes.models import TypeAttribute, TypeAttributeValue
+from devicetypes.models import TypeAttribute, TypeAttributeValue, Type
 from users.models import Lageruser
 import re
 from django.shortcuts import get_object_or_404
@@ -122,4 +122,16 @@ class DeviceForm(forms.ModelForm):
 
 class AddForm(forms.Form):
     name = forms.CharField(max_length=200)
-    newclass = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room")])
+    classname = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room")])
+
+    def clean(self):
+        cleaned_data = super(AddForm, self).clean()
+        if cleaned_data["classname"] == "manufacturer":
+            count = Manufacturer.objects.filter(name=cleaned_data["name"]).count()
+        elif cleaned_data["classname"] == "devicetype":
+            count = Type.objects.filter(name=cleaned_data["name"]).count()
+        elif cleaned_data["classname"] == "room":
+            count = Room.objects.filter(name=cleaned_data["name"]).count()
+        if count != 0:
+            raise forms.ValidationError("Object with that Name already exists.")
+        return cleaned_data

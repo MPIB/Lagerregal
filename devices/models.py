@@ -30,7 +30,7 @@ class Building(models.Model):
 
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
-    building = models.ForeignKey(Building)
+    building = models.ForeignKey(Building, null=True)
 
     def __unicode__(self):
         return self.name
