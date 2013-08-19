@@ -103,3 +103,12 @@
 #modal_errors{
     color:#c60f13;
 }
+
+table tr th, table tr td {
+    font-size:0.85em;
+}
+
+.commentcol {
+    width:40%;
+    word-wrap: break-word;
+}

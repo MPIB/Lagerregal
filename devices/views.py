@@ -158,7 +158,6 @@ class DeviceHistory(View):
             revision_id=revisionid,
             object_id=deviceid,
             content_type_id=ContentType.objects.get(model='device').id)
-        print version.revision
         version.revision.revert()
         if version.field_dict["devicetype"] != None:        
             TypeAttributeValue.objects.filter(device = version.object_id).delete()
