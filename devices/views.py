@@ -110,10 +110,11 @@ class DeviceHistory(View):
             revision_id=revisionid,
             object_id=device.id,
             content_type_id=ContentType.objects.get(model='device').id)
+
         try:
             previous_version = Version.objects.filter(object_id=device.pk,
-                revision__date_created__lt=this_version.revision.date_created).order_by("-pk",
-                content_type_id=ContentType.objects.get(model='device').id)[0].field_dict
+                revision__date_created__lt=this_version.revision.date_created,
+                content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[0].field_dict
             
             if previous_version["devicetype"] != None:
                 previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
