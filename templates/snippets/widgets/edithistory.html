@@ -12,7 +12,7 @@
                             <th scope="col">{% trans 'Device' %}</th>
                             <th scope="col">{% trans 'Date/time' %}</th>
                             <th scope="col">{% trans 'User' %}</th>
-                            <th scope="col">{% trans 'Comment' %}</th>
+                            <th scope="col" class="commentcol">{% trans 'Comment' %}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -21,7 +21,7 @@
                                 <td><a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}</a></td>
                                 <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
                                 <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
-                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
+                                <td class="commentcol">{{action.revision.comment|linebreaksbr|default:""}}</td>
                             </tr>
                         {% endfor %}
                     </tbody>

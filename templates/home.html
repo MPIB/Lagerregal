@@ -7,7 +7,8 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-6 columns dashboard">
+  {% if user.is_staff %}
+  <div class="small-5 columns dashboard">
 {% include "snippets/widgets/statistics.html" %}
 
 {% include "snippets/widgets/overdue.html" %}
@@ -15,9 +16,10 @@
 {% include "snippets/widgets/newest-devices.html" %}
 </div>
 
-  <div class="small-6 columns dashboard">
+  <div class="small-7 columns dashboard">
 {% include "snippets/widgets/edithistory.html" %}
 </div>
+{% endif %}
 </div>
 {% endblock %}
 
