@@ -14,9 +14,12 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="row">
   <div class="small-6 large-8 columns">
     <h4>Revision: {{version.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4>
+    {% if previous != None %}<a href="{% url 'device-history' current.pk previous.revisionpk %}"><i class="icon-chevron-left"></i> {% trans 'previous revision' %}</a>{% endif %}
+    {% if next != None %}<a href="{% url 'device-history' current.pk next.revisionpk %}">{% trans 'next revision' %} <i class="icon-chevron-right"></i></a>{% endif %}
     <table>
       <tbody>
         {% if previous != None %}
