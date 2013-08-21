@@ -76,13 +76,13 @@ class TypeDelete(DeleteView):
 class TypeMerge(View):
     model = Type
 
-    def get(self, **kwargs):
+    def get(self,  request, **kwargs):
         context = {}
         context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
         context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    def post(self, **kwargs):
+    def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(devicetype=oldobject)
