@@ -2,11 +2,18 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from users.models import Lageruser
 
+widgets_list = [
+    "edithistory",
+    "newestdevices",
+    "overdue",
+    "statistics"
+]
+
 widgets = [
-    ("edithistory", _("Edit history")),
-    ("newestdevices", _("Newest devices")),
-    ("overdue", _("Overdue devices")),
-    ("statistics", _("Statistics"))
+    (widgets_list[0], _("Edit history")),
+    (widgets_list[1], _("Newest devices")),
+    (widgets_list[2], _("Overdue devices")),
+    (widgets_list[3], _("Statistics"))
 ]
 
 class DashboardWidget(models.Model):
