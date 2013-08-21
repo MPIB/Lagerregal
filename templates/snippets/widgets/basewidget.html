@@ -1,11 +1,11 @@
  {% load i18n %}
- <div class="widget">
+ <div class="widget" id="{% block widgetname %}{% endblock %}">
   <div class="widget-header">
     <span style="margin:0px;width:50%">{% block title %}{% endblock %}</span>
     <a href="#" class="right"><i class="icon-remove close"></i></a>
-    <a href="#" class="right"><i class="icon-minus minimize"></i></a>
+    <a href="#" class="right"><i class="icon-{% if widget.minimized %}plus{% else %}minus{% endif %} minimize"></i></a>
     </div>
-    <div class="widget-content">
+    <div class="widget-content" {% if widget.minimized %}style="display: none;"{% endif %}>
 {% block  content %}{% endblock %}
 <div style="clear:both"></div>
 </div>

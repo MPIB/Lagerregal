@@ -1,4 +1,4 @@
-from models import IpAddress
+from network.models import IpAddress
 from rest_framework import serializers
 
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
