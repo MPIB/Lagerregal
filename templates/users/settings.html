@@ -13,18 +13,15 @@
 {% block content %}
 <div class="row">
   <div class="small-6 columns">
-    <h5>{% trans "Set language" %}</h5>
     <form action="{% url 'usersettings' %}" method="post">
 {% csrf_token %}
-<input name="next" type="hidden" value="{{ redirect_to }}" />
 <select name="language">
 {% get_language_info_list for LANGUAGES as languages %}
 {% for language in languages %}
-<option value="{{ language.code }}"{% if language.code == user.language %} selected="selected"{% endif %}>
-    {{ language.name_local }} ({{ language.code }})
-</option>
+<option value="{{ language.code }}"{% if language.code == user.language %} selected="selected"{% endif %}>{{ language.name_local }} ({{ language.code }})</option>
 {% endfor %}
 </select>
+
 <input type="submit" value="Go" />
 </form>
 </div>
