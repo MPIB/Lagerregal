@@ -78,7 +78,7 @@ $(function() {
 
 <div id="addWidgetModal" class="reveal-modal medium">
   <h2>Add a Widget</h2>
-  <ul style="list-style-type: none;">
+  <ul style="list-style-type: none;" id="widgetlist">
     {% for widget in widgets_list %}
     <li><a href="#" data-name="{{widget.0}}" class="addWidget">{{widget.1}}</a></li>
     {% endfor %}

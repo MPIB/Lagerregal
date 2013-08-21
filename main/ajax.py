@@ -37,6 +37,7 @@ def add_widget(request, widgetname):
                 col = ".dashboard-right"
             dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{}.html'.format(widgetname), context))
             dajax.script("$('#addWidgetModal').foundation('reveal', 'close');")
+            dajax.remove(".addWidget[data-name={0}]".format(widgetname))
     return dajax.json()
 
 @dajaxice_register
@@ -49,6 +50,7 @@ def remove_widget(request, widgetname):
             dajax.script("""$({0}).slideUp("fast", function() {{
                 $(this).remove()
             }});""".format(widgetname))
+            dajax.append("#widgetlist", "innerHTML", """<li><a href="#" data-name="{0}" class="addWidget">{1}</a></li>""".format(widget[0], unicode(widget[1])))
             break
     return dajax.json()
 

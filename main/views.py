@@ -4,7 +4,7 @@ from network.models import *
 from reversion.models import Version
 import datetime
 from django.contrib.contenttypes.models import ContentType
-from main.models import DashboardWidget, widgets
+from main.models import DashboardWidget, widgets_list, widgets
 
 class Home(TemplateView):
     template_name = "home.html"
@@ -22,5 +22,12 @@ class Home(TemplateView):
             context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
             context["widgets_left"] = DashboardWidget.objects.filter(user=self.request.user, column="l").order_by("index")
             context["widgets_right"] = DashboardWidget.objects.filter(user=self.request.user, column="r").order_by("index")
-            context["widgets_list"] = widgets
+            userwidget_list = list(widgets)
+            print userwidget_list
+            for w in context["widgets_left"]:
+                userwidget_list.pop(widgets_list.index(w.widgetname))
+
+            for w in context["widgets_right"]:
+                userwidget_list.pop(widgets_list.index(w.widgetname))
+            context["widgets_list"] = userwidget_list
         return context
