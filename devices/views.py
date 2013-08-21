@@ -110,26 +110,40 @@ class DeviceHistory(View):
             revision_id=revisionid,
             object_id=device.id,
             content_type_id=ContentType.objects.get(model='device').id)
-        try:
-            previous_version = Version.objects.filter(object_id=device.pk,
-                revision__date_created__lt=this_version.revision.date_created).order_by("-pk",
-                content_type_id=ContentType.objects.get(model='device').id)[0].field_dict
-            
+
+        previous_version = Version.objects.filter(object_id=device.pk,
+            revision__date_created__lt=this_version.revision.date_created,
+            content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
+        if len(previous_version) == 0:
+            previous_version = None
+        else:
+            revisionpk = previous_version[0].revision.pk
+            previous_version = previous_version[0].field_dict
+            previous_version["revisionpk"] = revisionpk
             if previous_version["devicetype"] != None:
                 previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
             if previous_version["manufacturer"] != None:
                 previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
             if previous_version["room"] != None:
                 previous_version["room"] = Room.objects.get(pk=previous_version["room"])
-        except:
-            previous_version = None
+
+        next_version = Version.objects.filter(object_id=device.pk,
+            revision__date_created__gt=this_version.revision.date_created,
+            content_type_id=ContentType.objects.get(model='device').id).order_by("pk")
+        if len(next_version) == 0:
+            next_version = None
+        else:
+            revisionpk = next_version[0].revision.pk
+            next_version = next_version[0].field_dict
+            next_version["revisionpk"] = revisionpk
+
         if this_version.field_dict["devicetype"] != None:
             this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
         if this_version.field_dict["manufacturer"] != None:
             this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
         if this_version.field_dict["room"] != None:
             this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
-        context = {"version":this_version, "previous":previous_version, "this_version":this_version.field_dict, "current":device}
+        context = {"version":this_version, "previous":previous_version, "this_version":this_version.field_dict, "current":device, "next":next_version}
         return render_to_response('devices/device_history.html', context, RequestContext(request))
 
     def post(self, request, **kwargs):

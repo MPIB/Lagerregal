@@ -13,7 +13,6 @@ def get_verbose_name_lowercase(object):
 
 @register.simple_tag
 def history_compare(old, new):
-    print old, new
     if old != new:
         if old == "" and new != "":
             return "+ <span class='diff add'>{0}</span>".format(new)

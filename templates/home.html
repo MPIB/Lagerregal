@@ -7,17 +7,24 @@
 {% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-6 columns dashboard">
-{% include "snippets/widgets/statistics.html" %}
-
-{% include "snippets/widgets/overdue.html" %}
-
-{% include "snippets/widgets/newest-devices.html" %}
+  {% if user.is_staff %}
+  <div class="small-5 columns dashboard dashboard-left">
+    {% for widget in widgets_left %}
+      {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
+      {% include template %}
+      {% endwith %}
+{% endfor %}
 </div>
 
-  <div class="small-6 columns dashboard">
-{% include "snippets/widgets/edithistory.html" %}
+  <div class="small-7 columns dashboard dashboard-right">
+    {% for widget in widgets_right %}
+      {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
+      {% include template %}
+      {% endwith %}
+{% endfor %}
 </div>
+
+{% endif %}
 </div>
 {% endblock %}
 
@@ -26,18 +33,29 @@ $(function() {
     $( ".dashboard" ).sortable({
       connectWith: ".dashboard",
       placeholder: "dashboard-placeholder",
-      distance: 15
+      distance: 15,
+      receive: function(event, ui) {
+      widgets = {};
+      $(".dashboard-left").children('.widget').each(function(i) { 
+          widgets[$(this).attr("id")] = {"index": $(this).index(this)+1, "column": "l"};
+      });
+      $(".dashboard-right").children('.widget').each(function(i) { 
+          widgets[$(this).attr("id")] = {"index": $(this).index(this)+1, "column": "r"};
+      });
+        Dajaxice.main.move_widgets(Dajax.process, {'userwidgets':widgets})
+    }
     });
 
-    $( ".widget-header .minimize" ).click(function() {
-      $( this ).toggleClass( "icon-minus" ).toggleClass( "icon-plus" );
-      $( this ).parents( ".widget:first" ).find( ".widget-content" ).slideToggle("fast");
+    $('body').on('click', '.widget-header .minimize', function() {
+        Dajaxice.main.toggle_minimized(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
     });
     
-    $(".widget-header .close").click(function() {
-        $(this).parents(".widget:first").slideUp("fast", function() {
-        $(this).remove()
+    $('body').on('click', '.widget-header .close', function() {
+        Dajaxice.main.remove_widget(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
     });
+
+    $(".addWidget").click(function() {
+        Dajaxice.main.add_widget(Dajax.process,{'widgetname':$( this ).data("name")})
     });
 
     $(".widget-header .right").hide();
@@ -53,4 +71,18 @@ $(function() {
 
     $( ".columns" ).disableSelection();
   });
+  {% endblock %}
+
+  {% block htmlend %}
+<a href="#" data-reveal-id="addWidgetModal" id="addWidgetButton"><i class="icon-plus"></i></a>
+
+<div id="addWidgetModal" class="reveal-modal medium">
+  <h2>Add a Widget</h2>
+  <ul>
+    {% for widget in widgets_list %}
+    <li><a href="#" data-name="{{widget.0}}" class="addWidget">{{widget.1}}</a></li>
+    {% endfor %}
+  </ul>
+  <a class="close-reveal-modal">&#215;</a>
+</div>
   {% endblock %}

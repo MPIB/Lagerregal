@@ -1,4 +1,4 @@
-from serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer, TypeAttributeSerializer
+from api.serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer, TypeAttributeSerializer
 from devices.models import *
 from devicetypes.models import *
 from network.models import *
