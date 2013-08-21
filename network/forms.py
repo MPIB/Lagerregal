@@ -1,9 +1,10 @@
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 VIEWFILTER = (
-    ('all', 'All IP-Addresses'),
-    ('free', 'Free IP-Addresses'),
-    ('used', 'Used IP-Addresses')
+    ('all', _('All IP-Addresses')),
+    ('free', _('Free IP-Addresses')),
+    ('used', _('Used IP-Addresses'))
  )
 
 class AssignForm(forms.Form):
