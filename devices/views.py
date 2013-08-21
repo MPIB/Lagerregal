@@ -22,10 +22,8 @@ from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 
-
 class DeviceList(ListView):
     context_object_name = 'device_list'
-    paginate_by = 30
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "active")
@@ -45,6 +43,13 @@ class DeviceList(ListView):
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
         context["template_list"] = Template.objects.all()
         return context
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class DeviceDetail(DetailView):
     model = Device
