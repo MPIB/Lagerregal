@@ -7,11 +7,12 @@ IP-Addresses
 {% endblock %}
 
 {% block pullright %}
+{{viewform.viewfilter}}
 <a href="{% url 'ipaddress-add' %}" class="button success right small">Add Ip address</a>
 {% endblock %}
 {% block content %}
 
-{% include "snippets/pagination.html" with listurl='ipaddress-list' %}
+{% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
     <table width="100%" id="adresstable">
   <thead>
     <tr>
@@ -32,7 +33,7 @@ IP-Addresses
      {% endfor %}
   </tbody>
 </table>
-{% include "snippets/pagination.html" with listurl='ipaddress-list' %}
+{% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
 {% endblock %}
 
 {% block scriptend %}
@@ -43,6 +44,10 @@ $(document).ready(function() {
             window.location = href;
         }
     });
+
+    $('#id_viewfilter').change(function() {
+    window.location = "/ipaddresses/" + $(this).val()
+});
 
 });
 {% endblock %}

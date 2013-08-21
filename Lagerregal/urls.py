@@ -84,6 +84,8 @@ urlpatterns = patterns('',
 
     url(r'^ipaddresses/$', login_required(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/(?P<page>[0-9]*)$', login_required(IpAddressList.as_view()), name="ipaddress-list"),
+    url(r'^ipaddresses/(?P<page>[0-9]*)/(?P<filter>.*)$', login_required(IpAddressList.as_view()), name="ipaddress-list-filtered"),
+    url(r'^ipaddresses/(?P<filter>.*)$', login_required(IpAddressList.as_view()), name="ipaddress-list-filtered"),
     url(r'^ipaddresses/add$', login_required(IpAddressCreate.as_view()), name="ipaddress-add"),
     url(r'^ipaddresses/edit/(?P<pk>.*)$', login_required(IpAddressUpdate.as_view()), name="ipaddress-edit"),
     url(r'^ipaddresses/delete/(?P<pk>.*)$', login_required(IpAddressDelete.as_view()), name="ipaddress-delete"),
