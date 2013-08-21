@@ -138,7 +138,6 @@ INSTALLED_APPS = (
     'devicetypes',
     'users',
     'api',
-    'mail',
     'reversion',
     'rest_framework',
     'dajaxice',
