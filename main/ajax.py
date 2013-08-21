@@ -35,7 +35,7 @@ def add_widget(request, widgetname):
                 col = ".dashboard-left"
             else:
                 col = ".dashboard-right"
-            dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{}.html'.format(widgetname, context)))
+            dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{}.html'.format(widgetname), context))
             dajax.script("$('#addWidgetModal').foundation('reveal', 'close');")
     return dajax.json()
 
