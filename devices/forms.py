@@ -98,7 +98,6 @@ class DeviceForm(forms.ModelForm):
             except:
                 return
         elif kwargs["instance"] != None:
-            print kwargs["instance"].pk
             attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
             if kwargs["instance"].devicetype != None:
                 attributes= TypeAttribute.objects.filter(devicetype = kwargs["instance"].devicetype.pk)

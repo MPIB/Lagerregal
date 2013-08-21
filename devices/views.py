@@ -123,7 +123,6 @@ class DeviceHistory(View):
                 previous_version["room"] = Room.objects.get(pk=previous_version["room"])
         except:
             previous_version = None
-        print this_version.field_dict
         if this_version.field_dict["devicetype"] != None:
             this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
         if this_version.field_dict["manufacturer"] != None:
@@ -145,7 +144,6 @@ class DeviceHistory(View):
             revision_id=revisionid,
             object_id=deviceid,
             content_type_id=ContentType.objects.get(model='device').id)
-        print version.revision
         version.revision.revert()
         if version.field_dict["devicetype"] != None:        
             TypeAttributeValue.objects.filter(device = version.object_id).delete()

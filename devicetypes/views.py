@@ -45,7 +45,6 @@ class TypeCreate(CreateView):
 
     def form_valid(self, form):
         newobject = form.save()
-        print form.cleaned_data
         for key, value in form.cleaned_data.iteritems():
             if key.startswith("extra_field_") and value != "":
                 attribute = TypeAttribute()
@@ -115,5 +114,4 @@ class TypeAttributeDelete(DeleteView):
 
 
     def get_success_url(self):
-        print self.next
         return self.next
