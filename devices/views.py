@@ -369,7 +369,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
 
 
 class DeviceGlobalhistory(ListView):
-    queryset = Version.objects.order_by('-pk')
+    queryset = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
     context_object_name = "revision_list"
     template_name = 'devices/globalhistory.html'
     paginate_by = 30
