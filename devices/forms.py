@@ -8,18 +8,18 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 
 CHARMODIFIER = (
-    ('icontains','Contains'),
-    ('istartswith', 'Starts with'),
-    ('iendswith','Ends with'),
-    ('iexact','Exact')
+    ('icontains',_('Contains')),
+    ('istartswith', _('Starts with')),
+    ('iendswith',_('Ends with')),
+    ('iexact',_('Exact'))
     )
 
 VIEWFILTER = (
-    ('active', 'Active Devices'),
-    ('all', 'All Devices'),
-    ('available', 'Available Devices'),
-    ('unavailable', 'Unavailable Devices'),
-    ('archived', 'Archived Devices'))
+    ('active', _('Active Devices')),
+    ('all', _('All Devices')),
+    ('available', _('Available Devices')),
+    ('unavailable', _('Unavailable Devices')),
+    ('archived', _('Archived Devices')))
 
 class IpAddressForm(forms.Form):
     ipaddresses = forms.ModelMultipleChoiceField(
