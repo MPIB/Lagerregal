@@ -5,7 +5,6 @@ from network.views import *
 from devicetypes.views import *
 from main.views import *
 from api.views import *
-from mail.views import *
 from users.views import ProfileView, UsersettingsView
 from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
