@@ -76,7 +76,7 @@ class DeviceIpAddressRemove(DeleteView):
         return render_to_response(self.template_name, context, RequestContext(request))
 
 
-    def post(self, **kwargs):
+    def post(self, request, *args, **kwargs):
         device = get_object_or_404(Device, pk=kwargs["pk"])
         ipaddress = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         ipaddress.device = None
