@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{%  load devicetags %}
+{% load i18n %}
+{% block title %}{{mailtemplate.name}}{% endblock %}
+
+{% block header %}
+{% trans "Mailtemplate" %}: {{mailtemplate.name}}
+{% endblock %}
+{% block pullright %}
+  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px">{% trans "Delete" %}</a>
+<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">{% trans "Edit" %}</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-5 col-xs-12">
+    <table class="table table-bordered table-striped">
+      <tbody>
+        <tr><td>Subject</td><td>{{mailtemplate.subject}}</td></tr>
+          <tr><td>Usage</td><td>{{mailtemplate.get_usage_display }}</td></tr>
+          <tr><td>Body</td><td>{{mailtemplate.body}}</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Delete this mailtemplate" %}</h4>
+        </div>
+        <div class="modal-body">
+           <div class="alert-danger alert" style="margin-bottom:0px;">{% blocktrans %}Do you really want to delete the mailtemplate: {{mailtemplate}}?{% endblocktrans %}</div>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url "mail-delete" mailtemplate.id %}" method="post" class="form-horizontal">{% csrf_token %}
+            <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">No</button>
+            <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger" />
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+{% endblock %}

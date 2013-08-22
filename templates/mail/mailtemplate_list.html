@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Mailtemplates" %}{% endblock %}
+
+{% block header %}
+{% trans "Mailtemplates" %}
+{% endblock %}
+
+{% block pullright %}
+<a href="{% url 'mail-add' %}" class="btn btn-success btn-sm pull-right">{% trans "Add Mailtemplate" %}</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-5">
+{% include "snippets/pagination.html" with listurl='type-list' %}
+<div class="list-group">
+  {% for mail in mail_list %}
+<a href="{% url 'mail-detail' mail.id %}" class="list-group-item">{{mail.name}}</a>
+  {% endfor %}
+</div>
+{% include "snippets/pagination.html" with listurl='type-list' %}
+</div>
+</div>
+{% include "snippets/pagination.html" with listurl='type-list' %}
+{% endblock %}
+
+{% block scriptend %}
+{% endblock %}
