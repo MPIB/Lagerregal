@@ -7,17 +7,22 @@
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'building-add' %}" class="button success small right">{% trans "Add Building" %}</a>
+<a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right">{% trans "Add Building" %}</a>
 {% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-5">
 {% include "snippets/pagination.html" with listurl='building-list' %}
-<ul>
+
+<div class="list-group">
   {% for building in building_list %}
-  <li><a href="{% url 'building-detail' building.id %}">{{building.name}}</a></li>
+  <a href="{% url 'building-detail' building.id %}"  class="list-group-item">{{building.name}}</a>
   {% endfor %}
-</ul>
+</div>
 {% include "snippets/pagination.html" with listurl='building-list' %}
+</div>
+</div>
 {% endblock %}
 
 {% block scriptend %}

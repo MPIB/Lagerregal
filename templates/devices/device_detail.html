@@ -10,24 +10,24 @@
 
 {% block pullright %}
 {% if device.archived == None %}
-  <a  href="#" data-reveal-id="deleteModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
-  <a   href="#" data-reveal-id="archiveModal" class="button alert right small" style="margin-left:10px">{% trans "Archive" %}</a>
-<a href="{% url 'device-add-copy' device.id %}" class="button small right" style="margin-left:10px">{% trans "Create Copy" %}</a>
-  <a href="{% url 'device-edit' device.id %}" class="button small right" style="margin-left:10px">{% trans "Edit" %}</a>
+  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px">{% trans "Delete" %}</a>
+  <a   href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px">{% trans "Archive" %}</a>
+<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px">{% trans "Create Copy" %}</a>
+  <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px">{% trans "Edit" %}</a>
   {% if device.currentlending != None %}
-    <a href="{% url 'device-return' device.id %}" class="button success right small"style="margin-left:10px">{% trans "Mark as returned" %}</a>
+    <a href="{% url 'device-return' device.id %}" class="btn btn-success pull-right btn-sm"style="margin-left:10px">{% trans "Mark as returned" %}</a>
   {% else %}
-    <a  href="#" data-reveal-id="lendModal" class="button success right small"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
+    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px">{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% else %}
-  <a  href="#" data-reveal-id="archiveModal" class="button alert right small" style="margin-left:10px">{% trans "Unarchive" %}</a>
+  <a  href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px">{% trans "Unarchive" %}</a>
 {% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="row">
-  <div class="small-12 large-4 columns">
-    <table>
+  <div class="col-xs-12 col-md-4">
+    <table class="table table-bordered table-striped">
       <tbody>
         <tr><td>{% trans "Bildnumber" %}</td><td>{{device.bildnumber}}</td></tr>
         <tr><td>{% trans "Serialnumber" %}</td><td>{{device.serialnumber}}</td></tr>
@@ -44,7 +44,7 @@
 {% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">{% trans "Go to webinterface" %}</a>{% endif %}
 <h4>{% trans "Current Lending information" %}</h4>
     {% if device.currentlending != None %}
-      <table>
+      <table class="table table-bordered table-striped">
       <tbody>
         <tr><td>{% trans "Lendt to" %}</td><td>{{device.currentlending.owner}}</td></tr>
         <tr><td>{% trans "Since" %}</td><td>{{device.currentlending.lenddate}}</td></tr>
@@ -62,7 +62,7 @@
 
 {% if lending_list %}
 <h4>{% trans "Lending history" %}</h4>
-    <table width="100%">
+    <table class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>{% trans "User" %}</th>
@@ -86,77 +86,107 @@
 
     <a href="{% url 'device-history-list' device.pk %}">{% trans "View edit-history" %}</a>
   </div>
-<div class="small-12 large-4 columns">
+<div class="col-xs-12 col-md-4">
 {{device.description}}
 </div>
-  <div class="small-12 large-4 columns">
-    <ul class="pricing-table">
-      <li class="title">{% trans "IP-Addresses" %}</li>
-      {% for address in ipaddress_list %}
-        <li class="bullet-item">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">x</a></li>
+  <div class="col-xs-12 col-md-4">
+<div class="panel panel-primary">
+  <!-- Default panel contents -->
+  <div class="panel-heading">{% trans "IP-Addresses" %}</div>
+  <ul class="list-group">
+    {% for address in ipaddress_list %}
+        <li class="list-group-item ipaddress-list">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="icon-remove"></i></a></li>
       {% endfor %}
-      {% if device.archived == None %}
-      <li class="cta-button"><form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
-        <div class="row">
-      <div class="large-12 columns">
+  </ul>
+  <div class="panel-footer">
+          {% if device.archived == None %}
+      <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         {{ipaddressform.ipaddresses}}
-      </div>
-    </div>
-        <div class="row"  style="margin-top:10px;">
-      <div class="large-12 columns">
-
-        <input type="submit" class ="button small right" value="{% trans "Assign Addresses" %}">
-      </div>
+        <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
+        <input type="submit" class ="btn btn-success btn-sm pull-right" value="{% trans "Assign Addresses" %}">
     </div>
     <input type="hidden" name="device" value="{{ device.pk }}" />
-      </form></li>
-    </ul>
+      </form>
     {% endif %}
   </div>
 </div>
+  </div>
+</div>
 
-<div id="lendModal" class="reveal-modal medium">
-  <h3>{% trans "Mark device as lendt" %}</h3>
-  <form action="{% url "device-lend"  device.id %} "method="post" class="form-horizontal">{% csrf_token %}
+
+  <div class="modal fade" id="lendModal" tabindex="-1" role="dialog" aria-labelledby="lendModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Mark device as lendt" %}</h4>
+        </div>
+          <form action="{% url "device-lend"  device.id %} "method="post" class="form-horizontal">{% csrf_token %}
+        <div class="modal-body">
 {% for field in lendform %}
-<div class="row {{field.css_classes}}">
-        <div class="small-3 columns">
-          <label for="right-label" class="right inline" {% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
-        </div>
-        <div class="small-9 columns">
-         {{ field }}
-{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
-        </div>
-      </div>
-
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-8">
+      {{ field|add_class:'form-control'}}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+  </div>
 {% endfor %}
-<input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
-</form>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" />
+        </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-<div id="archiveModal" class="reveal-modal medium">
-  <div class="alert-box">Do you really want to {% if object.archived != None %}un{% endif %}archive  the {% get_verbose_name object %}: {{object}}?</div>
-<form action="{% url "device-archive" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
-<input type="button" value="{% trans "No" %}" onclick="$('#archiveModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
 
-</form>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
 
-</div>
-</div>
+  <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="archiveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% if object.archived == None %}{% trans "Archive Device" %}{% else %}{% trans "Unarchive Device" %}{% endif %}</h4>
+        </div>
+        <div class="modal-body">
+  <div class="alert alert-info">{% if object.archived == None %}
+    {% blocktrans %}Do you really want to archive  the device: {{object}}?{% endblocktrans %}
+    {% else %}
+    {% blocktrans %}Do you really want to unarchive  the device: {{object}}?{% endblocktrans %}
+    {% endif %}</div>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url "device-archive" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm" />
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-<div id="deleteModal" class="reveal-modal medium">
-  <div class="alert-box alert">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
-<form action="{% url "device-delete" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
-<input type="button" value="{% trans "No" %}" onclick="$('#deleteModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
-</form>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
 
-</div>
-</div>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Delete Device" %}</h4>
+        </div>
+        <div class="modal-body">
+  <div class="alert-danger alert">{% blocktrans %}Do you really want to delete the device: {{object}}?{% endblocktrans %}</div>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url "device-delete" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm" />
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 {% endblock %}
 
 {% block scriptend %}

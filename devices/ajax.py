@@ -6,6 +6,8 @@ from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from devices.forms import AddForm
 from dajaxice.utils import deserialize_form
+from django.forms.models import modelform_factory
+from django.template.loader import render_to_string
 
 @dajaxice_register
 def complete_devicenames(request, name):
@@ -37,7 +39,7 @@ def complete_names(request, classtype, name):
         return None
     dajax = Dajax()
     if len(objects) > 0:
-        objects = ["<li><a href='{}' style='color:white'>{}</a></li>".format(
+        objects = ["<li><a href='{}'  class='alert-link'>{}</a></li>".format(
 		reverse(urlname, kwargs={"pk":object[0]}), object[1])
 		for object in objects.values_list("pk", "name")]
         dajax.add_data(objects, 'display_alternatives')
@@ -50,7 +52,14 @@ def complete_names(request, classtype, name):
 @dajaxice_register
 def add_device_field(request, form):
     dajax = Dajax()
-    form = AddForm(deserialize_form(form))
+    dform = deserialize_form(form)
+    classname = dform["classname"]
+    if classname == "manufacturer":
+        form = modelform_factory(Manufacturer, form=AddForm)(dform)
+    elif classname == "devicetype":
+        form = modelform_factory(Type, form=AddForm)(dform)
+    elif classname == "room":
+        form = modelform_factory(Room, form=AddForm)(dform)
     if form.is_valid():
         if request.user.is_staff:
             classname = form.cleaned_data["classname"]
@@ -70,9 +79,23 @@ def add_device_field(request, form):
                 "innerHTML", 
                 "<option value='{0}''>{1}</option>".format(newitem.pk, newitem.name))
             dajax.script("$('#id_{0}').select2('val', '{1}');".format(classname, newitem.pk))
-            dajax.script("$('#addModal').foundation('reveal', 'close');")
+            dajax.script("$('#addModal').modal('hide');")
 
     else:
         dajax.assign("#modal_errors", "innerHTML", "Error: {0}".format(form.non_field_errors()))
 
+    return dajax.json()
+
+@dajaxice_register
+def load_extraform(request, classname):
+    dajax = Dajax()
+    if classname == "manufacturer":
+        form = modelform_factory(Manufacturer, form=AddForm)()
+    elif classname == "devicetype":
+        form = modelform_factory(Type, form=AddForm)()
+    elif classname == "room":
+        form = modelform_factory(Room, form=AddForm)()
+
+    dajax.assign("#modal-form", "innerHTML", render_to_string('snippets/formfields.html', {"form":form}))
+    dajax.script("$('#addModal').modal('show');")
     return dajax.json()

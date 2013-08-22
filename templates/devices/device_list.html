@@ -8,13 +8,29 @@
 
 {% block pullright %}
 {{viewform.viewfilter}}
-<a href="{% url 'device-add' %}" class="button success small right split">{% trans "Add Device" %}<span data-dropdown="template-dropdown"></span></a>
+<div class="btn-group">
+  <a href="{% url 'device-add' %}" class="btn btn-success btn-sm">{% trans "Add Device" %}</a>
+  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">{% trans "From Template" %}</li>
+    <li><a href="{% url 'template-list' %}" class="right" style="margin-bottom:10px">{% trans "Edit Templates" %}</a></li>
+      {% if template_list %}<li class="divider"></li>
+      {% for template in template_list %}
+      <li><a href="{% url 'device-add' template.pk %}">{{template.templatename}}</a></li>
+      {% endfor %}
+      {% endif %}
+      <li class="divider"></li>
+    <li><a href="{% url 'template-add' %}">{% trans "New Template" %}</a></li>
+  </ul>
+</div>
 
 {% endblock %}
 
 {% block content %}
 {% include "snippets/devicepagination.html" %}
-    <table width="100%" id="devicetable">
+    <table width="100%" id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>{% trans "Name" %}</th>
@@ -55,16 +71,4 @@ $('#id_viewfilter').change(function() {
 {% endblock %}
 
 {% block htmlend %}
-<div id="template-dropdown" class="f-dropdown content" data-dropdown-content>
-  <h5>{% trans "Create from Template" %}</h4>
-    <a href="{% url 'template-list' %}" class="right" style="margin-bottom:10px">{% trans "edit" %}</a>
-    <hr>
-<ul style="list-style-type:none;">
-      {% for template in template_list %}
-      <li><a href="{% url 'device-add' template.pk %}">{{template.templatename}}</a></li>
-      {% endfor %}
-    </ul>
-    <hr>
-    <a href="{% url 'template-add' %}">{% trans "New Template" %}</a>
-  </div>
 {% endblock %}

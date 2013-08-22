@@ -1,27 +1,23 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{{ipaddress.address{% endblock %}
+{% block title %}{{ipaddress.address}}{% endblock %}
 
 {% block header %}
-IP-Adress: {{ipaddress.address}}
+{% trans "IP-Adress" %}: {{ipaddress.address}}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'ipaddress-delete' ipaddress.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
-<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="button success right small">Edit</a>
+<a href="{% url 'ipaddress-delete' ipaddress.id %}" class="btn btn-danger btn-sm pull-right"style="margin-left:10px">Delete</a>
+<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">Edit</a>
 {% endblock %}
 
 {% block content %}
 <div class="row">
-  <div class="small-6 large-8 columns">
-    <table>
+  <div class="col-md-4 col-xs-12">
+    <table class="table table-bordered table-striped">
       <tbody>
         <tr><td>Address</td><td>{{ipaddress.address}}</td></tr>
-        {% if ipaddress.device %}
-          <tr><td>Device</td><td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td></tr>
-          {% else %}
-          <tr><td>Device</td><td><a href="#">Assign device</a></td></tr>
-          {% endif %}
+          <tr><td>Device</td><td>{% if ipaddress.device %}<a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a>{% else %}{% trans "Not assigned" %}{% endif %}</td></tr>
       </tbody>
     </table>
   </div>

@@ -8,12 +8,12 @@ IP-Addresses
 
 {% block pullright %}
 {{viewform.viewfilter}}
-<a href="{% url 'ipaddress-add' %}" class="button success right small">Add Ip address</a>
+<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right">{% trans "Add IP-Address" %}</a>
 {% endblock %}
 {% block content %}
 
 {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
-    <table width="100%" id="adresstable">
+    <table width="100%" id="adresstable" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>IP Address</th>

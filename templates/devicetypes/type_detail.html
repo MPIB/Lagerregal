@@ -7,10 +7,21 @@
 {% trans "Devicetype" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-  <a  href="#" data-reveal-id="deleteModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
-<a href="{{object.get_edit_url}}" class="button success right small" style="margin-left:10px">{% trans "Edit" %}</a>
-<a href="#" class="button right small dropdown" data-dropdown="mergedropdown">{% trans "Merge" %}</a>
+  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px">{% trans "Delete" %}</a>
+<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">{% trans "Edit" %}</a>
+<a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
+<div class="btn-group">
+  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+    {% trans "Merge" %} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+  {% for merge in merge_list %}
+    <li><a href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
 {% endblock %}
+
 {% block content %}
 <h4>{% trans "Extra attributes" %}</h4>
 <ul>
@@ -18,11 +29,12 @@
   <li><a href="#" class="attribute" data-id="{{attribute.id}}" data-name="{{attribute.name}}" data-regex="{{attribute.regex}}">{{attribute.name}}</a></li>
   {% endfor %}
   </ul>
-  <a href="#" data-reveal-id="newAttributeModal">{% trans "Add new Attribute" %}</a>
+
+  <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm">{% trans "Add new Attribute" %}</a>
 
 {% if device_list %}
 <h4>{% trans "Devices" %}</h4>
-    <table width="100%" id="devicetable">
+    <table width="100%" id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>{% trans "Name" %}</th>
@@ -46,51 +58,96 @@
 
 {% endif %}
 
-<div id="attributeModal" class="reveal-modal small">
-  <h2>{% trans "Edit the Attribute" %}</h2>
-  <div class="row">
-  <form  action="{% url "typeattribute-edit" 0 %}" method="post" id="attribute_editform">{% csrf_token %}
-    <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
-    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Name" %}</label></div><div class="small-9 columns"><input id="id_name" name="name" type="text"></div></div>
-    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Regular Expression" %}</label></div><div class="small-9 columns"><input id="id_regex" name="regex" type="text"></div></div>
-<input type="submit" value="{% trans "Edit" %}" class="button button-primary small right" />
-<a class="close-reveal-modal">&#215;</a>
-  </form>
-</div>
-<div class="row">
-  <div class="alert-box alert">{% blocktrans %}Do you want to delete  the attribute?{% endblocktrans %}</div>
-  <form action="{% url "typeattribute-delete" 0 %}" method="post" class="form-horizontal" id="attribute_deleteform">{% csrf_token %}<input type="submit" value="{% trans "Yes" %}" class="button alert small right" /><input type="hidden" name="next" value="{% url "type-detail" object.id %}">
-</form>
-</div>
-</div>
+<div class="modal fade" id="attributeModal" tabindex="-1" role="dialog" aria-labelledby="attributeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Edit the Attribute" %}</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-horizontal" role="form" action="{% url "typeattribute-edit" 0 %}" method="post" id="attribute_editform">{% csrf_token %}
+            <div class="form-group">
+              <label for="id_name" class="col-lg-5 control-label">{% trans "Name" %}</label>
+              <div class="col-lg-7">
+                <input id="id_name" name="name" type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="id_regex" class="col-lg-5 control-label">{% trans "Regular Expression" %}</label>
+              <div class="col-lg-7">
+                <input id="id_regex" name="regex" type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-lg-offset-5 col-lg-7">
+                <input type="submit" value="{% trans "Edit" %}" class="btn btn-primary pull-right" />
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <div class="alert-danger alert" style="text-align:left;">{% blocktrans %}Do you want to delete  the attribute?{% endblocktrans %}</div>
+          <form action="{% url "typeattribute-delete" 0 %}" method="post" class="form-horizontal" id="attribute_deleteform">{% csrf_token %}<input type="submit" value="{% trans "Yes" %}" class="btn btn-danger" /><input type="hidden" name="next" value="{% url "type-detail" object.id %}">
+        </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-<div id="newAttributeModal" class="reveal-modal small">
-  <h2>{% trans "New Attribute" %}</h2>
-  <form action="{% url "typeattribute-add" %}" method="post">{% csrf_token %}
-    <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
-    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Name" %}</label></div><div class="small-9 columns"><input id="id_name" name="name" type="text"></div></div>
-    <div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">{% trans "Regular Expression" %}</label></div><div class="small-9 columns"><input id="id_regex" name="regex" type="text"></div></div>
-<input type="submit" value="{% trans "Submit" %}" class="button button-primary small right" />
-<a class="close-reveal-modal">&#215;</a>
-  </form>
-</div>
+<div class="modal fade" id="newAttributeModal" tabindex="-1" role="dialog" aria-labelledby="newAttributeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "New Attribute" %}</h4>
+        </div>
+        <form action="{% url "typeattribute-add" %}" method="post" class="form-horizontal">{% csrf_token %}
+          <div class="modal-body">
+            <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
+          <div class="form-group">
+              <label for="id_name" class="col-lg-5 control-label">{% trans "Name" %}</label>
+              <div class="col-lg-7">
+                <input id="id_name" name="name" type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="id_regex" class="col-lg-5 control-label">{% trans "Regular Expression" %}</label>
+              <div class="col-lg-7">
+                <input id="id_regex" name="regex" type="text" class="form-control">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" />
+          </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-<div id="deleteModal" class="reveal-modal medium">
-  <div class="alert-box alert">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
-<form action="{% url "type-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}
-<input type="button" value="{% trans "No" %}" onclick="$('#deleteModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
-</form>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
 
-{% endblock %}
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Delete this Type" %}</h4>
+        </div>
+        <div class="modal-body">
+           <div class="alert-danger alert" style="margin-bottom:0px;">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url "type-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}
+            <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">No</button>
+            <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger" />
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-{% block htmlend%}
-<ul id="mergedropdown" class="f-dropdown">
-{% for merge in merge_list %}
-  <li><a href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
-{% endfor %}
-</ul>
 {% endblock %}
 
 {% block scriptend %}
@@ -103,6 +160,6 @@
     $("#attribute_deleteform").attr("action", deleteurl)
     $("#attributeModal").find("#id_name").val($(this).data("name"));
     $("#attributeModal").find("#id_regex").val($(this).data("regex"));
-    $('#attributeModal').foundation('reveal', 'open');
+    $('#attributeModal').modal('show')
 })
 {% endblock %}

@@ -7,14 +7,24 @@
 {% trans "Manufacturer" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-  <a  href="#" data-reveal-id="deleteModal"class="button alert right small" style="margin-left:10px">{% trans "Delete" %}</a>
-<a href="{{object.get_edit_url}}" class="button success right small" style="margin-left:10px">{% trans "Edit" %}</a>
-<a href="#" class="button right small dropdown" data-dropdown="mergedropdown">{% trans "Merge" %}</a>
+  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px">{% trans "Delete" %}</a>
+<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">{% trans "Edit" %}</a>
+<a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
+<div class="btn-group">
+  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+    {% trans "Merge" %} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+  {% for merge in merge_list %}
+  <li><a href="{% url 'manufacturer-merge' manufacturer.pk merge.pk %}">{{ merge.name }}</a></li>
+  {% endfor %}
+  </ul>
+</div>
 {% endblock %}
 {% block content %}
 {% if device_list %}
 <h4>Devices</h4>
-    <table width="100%" id="devicetable">
+    <table width="100%" id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>{% trans "Name" %}</th>
@@ -38,20 +48,24 @@
 
 {% endif %}
 
-<div id="deleteModal" class="reveal-modal medium">
-  <div class="alert-box alert">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
-<form action="{% url "manufacturer-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}
-<input type="button" value="{% trans "No" %}" onclick="$('#deleteModal').foundation('reveal', 'close');" class="button small" style="margin-right:10px;"><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
-</form>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Delete this Manufacturer" %}</h4>
+        </div>
+        <div class="modal-body">
+           <div class="alert-danger alert" style="margin-bottom:0px;">Do you really want to delete the {% get_verbose_name object %}: {{object}}?</div>
+        </div>
+        <div class="modal-footer">
+          <form action="{% url "manufacturer-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}
+            <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">No</button>
+            <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger" />
+          </form>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-{% endblock %}
-
-{% block htmlend%}
-<ul id="mergedropdown" class="f-dropdown">
-{% for merge in merge_list %}
-  <li><a href="{% url 'manufacturer-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
-{% endfor %}
-</ul>
 {% endblock %}

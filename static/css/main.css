@@ -1,5 +1,7 @@
+body { padding-top: 20px; }
+
 .delete {
-	color:#ccc;
+	color:#444;
 	font-weight: bold;
 	font-size: 1.1em;
 }
@@ -34,8 +36,7 @@
 
 #footer {
     margin-top:50px;
-    margin-left:20px;
-    margin-right:20px;
+    margin-left:-15px;
     padding:20px 0px;
     border-top:1px #eee solid;
 }
@@ -44,32 +45,19 @@
     margin-right:15px;
 }
 
-.widget {
-    border-style: solid;
-    border-width: 1px;
-    border-color: #b9b9b9;
-    margin-bottom: 1.25em;
-    background: #f2f2f2;
-}
 
-.widget-header {
-    background: #d9d9d9;
-    margin-top:0px;
-    padding:0.4em 1.25em;
-}
-
-.widget-header span {
-    font-weight:bold;
-    font-size:1.1em;
-}
-
-.widget-header .close, .widget-header .minimize {
-    color:#999;
+.w-close, .w-minimize {
+    color:#fff;
     margin-left:8px;
 }
 
-.widget-header .close:hover, .widget-header .minimize:hover  {
+.w-close:hover, .w-minimize:hover  {
     color:#000;
+    text-decoration: none;
+}
+
+.panel-title .pull-right {
+    text-decoration:none;
 }
 
 .widget-content {
@@ -114,14 +102,21 @@ table tr th, table tr td {
 }
 
 #addWidgetButton {
-    position:absolute;
+    position:fixed;
     top: 70px;
     right: 0px;
-    background:#111;
-    padding:10px;
-    color:#fff;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-right:0px;
+    padding:6px 6px;
+    transition:padding 100ms;
+    -webkit-transition:padding 100ms
 }
 
 #addWidgetButton:hover {
-    color:#2ba6cb;
+    padding:6px 12px;
+}
+
+#addWidgetButton:hover {
+    text-decoration: none;
 }
