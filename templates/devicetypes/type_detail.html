@@ -23,6 +23,8 @@
 {% endblock %}
 
 {% block content %}
+<div class="row">
+  <div class="col-xs-12 col-md-5">
 <h4>{% trans "Extra attributes" %}</h4>
 <ul>
   {% for attribute in attribute_list %}
@@ -31,7 +33,8 @@
   </ul>
 
   <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm">{% trans "Add new Attribute" %}</a>
-
+</div>
+<div class="col-xs-12 col-md-7">
 {% if device_list %}
 <h4>{% trans "Devices" %}</h4>
     <table width="100%" id="devicetable" class="table table-bordered table-striped">
@@ -54,7 +57,8 @@
      {% endfor %}
   </tbody>
 </table>
-
+</div>
+</div>
 
 {% endif %}
 
