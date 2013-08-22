@@ -3,7 +3,7 @@
 {% block title %}{% trans "Settings" %}{% endblock %}
 
 {% block header %}
-{{profileuser}}
+{% trans "Settings" %}
 {% endblock %}
 
 {% block pullright %}
@@ -12,18 +12,30 @@
 
 {% block content %}
 <div class="row">
-  <div class="col-xs-12 col-md-6 col-md-offset-3">
-    <form action="{% url 'usersettings' %}" method="post">
+  <div class="col-xs-12 col-md-3">
+    <h3>{% trans "Language" %}</h3>
+    <form action="{% url 'usersettings' %}" method="post" class="form-horizontal">
 {% csrf_token %}
-<select name="language">
+<div class="form-group">
+<select name="language" class="form-control">
 {% get_language_info_list for LANGUAGES as languages %}
 {% for language in languages %}
 <option value="{{ language.code }}"{% if language.code == user.language %} selected="selected"{% endif %}>{{ language.name_local }} ({{ language.code }})</option>
 {% endfor %}
 </select>
+  </div>
 
-<input type="submit" value="Go" />
+  <button type="submit" class="btn btn-primary pull-right">{% trans "Submit" %}</button>
 </form>
 </div>
+
+  <div class="col-xs-12 col-md-6 col-md-offset-3">
+    <h3>{% trans "Appearance" %}</h3>
+    <form action="{% url 'usersettings' %}" method="post" class="form-horizontal">{% csrf_token %}
+{% include "snippets/formfields.html" with form=appearanceform %}
+  <button type="submit" class="btn btn-primary pull-right">{% trans "Submit" %}</button>
+</form>
+</div>
+
 </div>
 {% endblock %}
