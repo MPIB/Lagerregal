@@ -16,7 +16,7 @@
   </button>
   <ul class="dropdown-menu" role="menu">
   {% for merge in merge_list %}
-  <li><a href="{% url 'manufacturer-merge' manufacturer.pk merge.pk %}">{{ merge.name }}</a></li>
+  <li><a href="{% url 'manufacturer-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
   {% endfor %}
   </ul>
 </div>
