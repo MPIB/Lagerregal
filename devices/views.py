@@ -312,8 +312,8 @@ class DeviceUpdate(UpdateView):
                 template = form.cleaned_data["emailtemplatemanagment"]
                 template.send(recipients=recipients, data={"device":device})
 
-            messages.success(self.request, _('Device was successfully updated.'))
-            return super(DeviceUpdate, self).form_valid(form)
+        messages.success(self.request, _('Device was successfully updated.'))
+        return super(DeviceUpdate, self).form_valid(form)
 
 
 class DeviceDelete(DeleteView):
