@@ -17,10 +17,10 @@ from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceF
 import datetime
 import reversion
 from django.contrib.auth.models import Permission
-from django.core.mail import EmailMessage
 from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 
 class DeviceList(ListView):
     context_object_name = 'device_list'
@@ -210,25 +210,6 @@ class DeviceCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["emailbosses"] or form.cleaned_data["emailbosses"]:
-            subject = "New device was added"
-
-            c = Context({
-                "name", form.cleaned_data["name"]
-            })
-            body = render_to_string("mails/newdevice.html", c)
-            email = EmailMessage(subject=subject, body=body)
-            if form.cleaned_data["emailbosses"]:
-                bosses = Lageruser.objects.filter(
-                    groups__permissions = Permission.objects.get(codename='boss_mail'))
-                for boss in bosses:
-                    email.to.append(boss.email)
-            if form.cleaned_data["emailmanagment"]:
-                managment = Lageruser.objects.filter(
-                    groups__permissions = Permission.objects.get(codename='managment_mail'))
-                for m in managment:
-                    email.to.append(m.email)
-            email.send()
         form.cleaned_data["creator"] = self.request.user
         if form.cleaned_data["comment"] == "":
             reversion.set_comment("Created")
@@ -244,6 +225,25 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
+        
+        if form.cleaned_data["emailbosses"] or form.cleaned_data["emailmanagment"]:
+            if form.cleaned_data["emailbosses"]:
+                perm = Permission.objects.get(codename='boss_mails')
+                bosses = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
+                recipients = []
+                for boss in bosses:
+                    recipients.append(boss.email)
+                template = form.cleaned_data["emailtemplatebosses"]
+                template.send(recipients=recipients, data={"device":self.object})
+            if form.cleaned_data["emailmanagment"]:
+                perm = Permission.objects.get(codename='managment_mails')
+                managment = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
+                recipients = []
+                for m in managment:
+                    recipients.append(m.email)
+                template = form.cleaned_data["emailtemplatemanagment"]
+                template.send(recipients=recipients, data={"device":self.object})
+
         messages.success(self.request, _('Device was successfully created.'))
         return r
 
@@ -265,34 +265,53 @@ class DeviceUpdate(UpdateView):
         if device.archived != None:
             messages.error(self.request, "Archived Devices can't be edited")
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+        if form.cleaned_data["comment"] == "":
+            reversion.set_comment("Updated")
         else:
-            if form.cleaned_data["comment"] == "":
-                reversion.set_comment("Updated")
-            else:
-                reversion.set_comment(form.cleaned_data["comment"])
-            if device.devicetype != None:
-                if form.cleaned_data["devicetype"] == None:
-                    TypeAttributeValue.objects.filter(device = device.pk).delete()
-                if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
-                    TypeAttributeValue.objects.filter(device = device.pk).delete()
-            for key, value in form.cleaned_data.iteritems():
-                if key.startswith("attribute_") and value != "":
-                    attributenumber = key.split("_")[1]
-                    typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
-                    try:
-                        attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
-                    except:
-                        attribute = TypeAttributeValue()
-                        attribute.device = device
-                        attribute.typeattribute = typeattribute
-                    attribute.value = value
-                    attribute.save()
-                elif key.startswith("attribute_") and value == "":
-                    attributenumber = key.split("_")[1]
-                    try:
-                        TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
-                    except:
-                        pass
+            reversion.set_comment(form.cleaned_data["comment"])
+        if device.devicetype != None:
+            if form.cleaned_data["devicetype"] == None:
+                TypeAttributeValue.objects.filter(device = device.pk).delete()
+            if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
+                TypeAttributeValue.objects.filter(device = device.pk).delete()
+        for key, value in form.cleaned_data.iteritems():
+            if key.startswith("attribute_") and value != "":
+                attributenumber = key.split("_")[1]
+                typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
+                try:
+                    attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
+                except:
+                    attribute = TypeAttributeValue()
+                    attribute.device = device
+                    attribute.typeattribute = typeattribute
+                attribute.value = value
+                attribute.save()
+            elif key.startswith("attribute_") and value == "":
+                attributenumber = key.split("_")[1]
+                try:
+                    TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
+                except:
+                    pass
+
+        if form.cleaned_data["emailbosses"] or form.cleaned_data["emailmanagment"]:
+            if form.cleaned_data["emailbosses"]:
+                perm = Permission.objects.get(codename='boss_mails')
+                bosses = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
+                recipients = []
+                for boss in bosses:
+                    recipients.append(boss.email)
+                template = form.cleaned_data["emailtemplatebosses"]
+                template.send(recipients=recipients, data={"device":device})
+            if form.cleaned_data["emailmanagment"]:
+                perm = Permission.objects.get(codename='managment_mails')
+                managment = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
+                recipients = []
+                for m in managment:
+                    recipients.append(m.email)
+                template = form.cleaned_data["emailtemplatemanagment"]
+                template.send(recipients=recipients, data={"device":device})
+
             messages.success(self.request, _('Device was successfully updated.'))
             return super(DeviceUpdate, self).form_valid(form)
 
