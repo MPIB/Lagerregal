@@ -16,7 +16,13 @@ class IpAddressApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class IpAddressList(ListView):
     context_object_name = 'ipaddress_list'
-    paginate_by = 30
+    
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "active")

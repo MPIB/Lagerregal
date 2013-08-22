@@ -15,7 +15,13 @@ from mail.forms import MailTemplateForm
 class MailList(ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
-    paginate_by = 30
+    
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class MailDetail(DetailView):
     model = MailTemplate
