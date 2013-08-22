@@ -25,14 +25,14 @@
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-      <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">{% trans "Devices" %}<b class="caret"></b></a>
+      <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">{% trans "Devices" %} <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="{% url 'device-list' %}">{% trans "Devices" %}</a></li>
           <li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>
           <li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>
         </ul>
       </li>
-      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Locations" %}<b class="caret"></b></a>
+      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Locations" %} <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>
           <li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>
@@ -54,7 +54,7 @@
         </form>
       </li>
       <li><a href="{% url 'search' %}">{% trans "Advanced Search" %}</a></li>
-      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }}<b class="caret"></b></a>
+      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user.username }} <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a href="{% url 'usersettings' %}"><i class="icon-cog"></i>&nbsp; {% trans "Settings" %}</a></li>
           {% if user.is_staff %}
