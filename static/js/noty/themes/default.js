@@ -31,7 +31,6 @@
 				height: '100%',
 				backgroundColor: '#000',
 				zIndex: 10000,
-				opacity: 0.6,
 				display: 'none',
 				left: 0,
 				top: 0
@@ -41,7 +40,6 @@
 
 			this.$bar.css({
 				overflow: 'hidden',
-				background: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAoCAYAAAAPOoFWAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPZJREFUeNq81tsOgjAMANB2ov7/7ypaN7IlIwi9rGuT8QSc9EIDAsAznxvY4pXPKr05RUE5MEVB+TyWfCEl9LZApYopCmo9C4FKSMtYoI8Bwv79aQJU4l6hXXCZrQbokJEksxHo9KMOgc6w1atHXM8K9DVC7FQnJ0i8iK3QooGgbnyKgMDygBWyYFZoqx4qS27KqLZJjA1D0jK6QJcYEQEiWv9PGkTsbqxQ8oT+ZtZB6AkdsJnQDnMoHXHLGKOgDYuCWmYhEERCI5gaamW0bnHdA3k2ltlIN+2qKRyCND0bhqSYCyTB3CAOc4WusBEIpkeBuPgJMAAX8Hs1NfqHRgAAAABJRU5ErkJggg==') repeat-x scroll left top #fff"
 			});
 
 			this.$message.css({
@@ -131,18 +129,18 @@
 				case 'alert': case 'notification':
 					this.$bar.css({backgroundColor: '#FFF', borderColor: '#CCC', color: '#444'}); break;
 				case 'warning':
-					this.$bar.css({backgroundColor: '#FFEAA8', borderColor: '#FFC237', color: '#826200'});
+					this.$bar.css({backgroundColor: '#fcf8e3', borderColor: '#fbeed5', color: '#c09853'});
 					this.$buttons.css({borderTop: '1px solid #FFC237'}); break;
 				case 'error':
-					this.$bar.css({backgroundColor: 'red', borderColor: 'darkred', color: '#FFF'});
+					this.$bar.css({backgroundColor: '#f2dede', borderColor: '#eed3d7', color: '#b94a48'});
 					this.$message.css({fontWeight: 'bold'});
 					this.$buttons.css({borderTop: '1px solid darkred'}); break;
 				case 'information':
-					this.$bar.css({backgroundColor: '#57B7E2', borderColor: '#0B90C4', color: '#FFF'});
+					this.$bar.css({backgroundColor: '#d9edf7', borderColor: '#bce8f1', color: '#3a87ad'});
 					this.$buttons.css({borderTop: '1px solid #0B90C4'}); break;
 				case 'success':
-					this.$bar.css({backgroundColor: 'lightgreen', borderColor: '#50C24E', color: 'darkgreen'});
-					this.$buttons.css({borderTop: '1px solid #50C24E'});break;
+					this.$bar.css({backgroundColor: '#dff0d8', borderColor: '#d6e9c6', color: '#468847'});
+					this.$buttons.css({borderTop: '1px solid #468847'});break;
 				default:
 					this.$bar.css({backgroundColor: '#FFF', borderColor: '#CCC', color: '#444'}); break;
 			}
