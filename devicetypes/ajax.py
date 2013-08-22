@@ -12,14 +12,12 @@ def get_attributes(request, pk):
     attributes = TypeAttribute.objects.filter(devicetype__pk = pk )
     dajax.clear("#extra_attributes", "innerHTML")
     for attribute in attributes:
-        item = u"""<div class="row">
-        <div class="small-3 columns">
-          <label for="right-label" class="right inline">{0}</label>
-        </div>
-        <div class="small-9 columns">
-        <input type="text" id="id_attribute_{1}" name="attribute_{1}" />
-        </div>
+        item = u"""<div class="form-group">
+    <label for="id_attribute_{1}" class="col-lg-4 control-label">{0}</label>
+    <div class="col-lg-8">
+        <input type="text" id="id_attribute_{1}" name="attribute_{1}" class="form-control" />
       </div>
+</div>
         """.format(attribute.name, attribute.pk)
         dajax.append("#extra_attributes", "innerHTML", item)
 

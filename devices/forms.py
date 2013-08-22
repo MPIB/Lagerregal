@@ -110,7 +110,7 @@ class DeviceForm(forms.ModelForm):
         for attribute in attributes:
             # generate extra fields in the number specified via extra_fields
             self.fields['attribute_{index}'.format(index=attribute.pk)] = \
-                forms.CharField(label=attribute.name, widget=forms.TextInput(attrs={"class":"extra_attribute"}), required=False)
+                forms.CharField(label=attribute.name, widget=forms.TextInput(attrs={"class":"extra_attribute form-control"}), required=False)
             if 'attribute_{index}'.format(index=attribute.pk) in self.data:
                 self.fields['attribute_{index}'.format(index=attribute.pk)].initial = self.data['attribute_{index}'.format(index=attribute.pk)]
             else:
