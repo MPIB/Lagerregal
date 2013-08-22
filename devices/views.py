@@ -186,7 +186,12 @@ class DeviceHistory(View):
             revision_id=revisionid,
             object_id=deviceid,
             content_type_id=ContentType.objects.get(model='device').id)
+        currentlending = device.currentlending
+        archived = device.archived
         version.revision.revert()
+        device.currentlending = currentlending
+        device.archived = archived
+        device.save()
         if version.field_dict["devicetype"] != None:        
             TypeAttributeValue.objects.filter(device = version.object_id).delete()
         reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
@@ -711,6 +716,12 @@ class ManufacturerList(ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
     
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(ManufacturerList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
+        return context
+
     def get_paginate_by(self, queryset):
         return self.request.user.pagelength
         if self.request.user.pagelength == None:
