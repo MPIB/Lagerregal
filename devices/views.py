@@ -377,7 +377,14 @@ class DeviceGlobalhistory(ListView):
 class TemplateList(ListView):
     model = Template
     context_object_name = 'template_list'
-    paginate_by = 30
+    
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class TemplateCreate(CreateView):
     model = Template
@@ -400,7 +407,13 @@ class TemplateDelete(DeleteView):
 class RoomList(ListView):
     model = Room
     context_object_name = 'room_list'
-    paginate_by = 30
+    
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class RoomDetail(DetailView):
     model = Room
@@ -465,7 +478,13 @@ class RoomMerge(View):
 class BuildingList(ListView):
     model = Building
     context_object_name = 'building_list'
-    paginate_by = 30
+    
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class BuildingDetail(DetailView):
     model = Building
@@ -529,7 +548,13 @@ class BuildingMerge(View):
 class ManufacturerList(ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
-    paginate_by = 30
+    
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class ManufacturerDetail(DetailView):
     model = Manufacturer

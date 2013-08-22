@@ -15,7 +15,13 @@ from django.shortcuts import render
 class TypeList(ListView):
     model = Type
     context_object_name = 'type_list'
-    paginate_by = 30
+    
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class TypeDetail(DetailView):
     model = Type
