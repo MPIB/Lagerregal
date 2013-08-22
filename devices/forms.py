@@ -22,35 +22,37 @@ VIEWFILTER = (
     ('archived', _('Archived Devices')))
 
 class IpAddressForm(forms.Form):
+    error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None),
         widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     device = forms.ModelChoiceField(Device.objects.all())
 
 class SearchForm(forms.Form):
-    error_css_class = 'error'
-    searchname = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name"}), required=False)
-    namemodifier =forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}))
+    error_css_class = 'has-error'
+    searchname = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name", "class":"form-control input-sm"}), required=False)
+    namemodifier =forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}))
 
-    bildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber"}), required=False)
-    bildnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}), required=False)
+    bildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber", "class":"form-control input-sm"}), required=False)
+    bildnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
 
-    serialnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search serialnumber"}), required=False)
-    serialnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}), required=False)
+    serialnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search serialnumber", "class":"form-control input-sm"}), required=False)
+    serialnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
 
-    macaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search MAC-Address"}), required=False)
-    macaddressmodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"postfix"}), required=False)
+    macaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search MAC-Address", "class":"form-control input-sm"}), required=False)
+    macaddressmodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
 
     devicetype = forms.ModelChoiceField(Type.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
     manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
     room = forms.ModelChoiceField(Room.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
-    ipaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address"}), required=False)
+    ipaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address", "class":"form-control input-sm"}), required=False)
     overdue = forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 
     viewfilter = forms.ChoiceField(choices=VIEWFILTER, required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
-    lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender"}), required=False)
+    lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender", "class":"form-control input-sm"}), required=False)
 
 class LendForm(forms.Form):
+    error_css_class = 'has_error'
     owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}))
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
@@ -59,10 +61,10 @@ class LendForm(forms.Form):
 
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-        widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"right"}))
+        widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
 
 class DeviceForm(forms.ModelForm):
-    error_css_class = 'error'
+    error_css_class = 'has-error'
     emailbosses = forms.BooleanField(required=False)
     emailmanagment = forms.BooleanField(required=False)
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
@@ -119,9 +121,9 @@ class DeviceForm(forms.ModelForm):
             self.fields.keyOrder.insert(self.fields.keyOrder.index("room"), self.fields.keyOrder.pop(self.fields.keyOrder.index('attribute_{index}'.format(index=attribute.pk))))
 
 
-class AddForm(forms.Form):
-    name = forms.CharField(max_length=200)
-    classname = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room")])
+class AddForm(forms.ModelForm):
+    error_css_class = 'has-error'
+    classname = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room")], widget=forms.HiddenInput())
 
     def clean(self):
         cleaned_data = super(AddForm, self).clean()

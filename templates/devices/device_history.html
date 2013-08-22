@@ -9,7 +9,7 @@
 
 {% block pullright %}
 <form method="post">{% csrf_token %}
-    <input type="submit" class ="button small right" value="{% trans "Restore Revision" %}">
+    <input type="submit" class ="btn btn-primary btn-sm pull-right" value="{% trans "Restore Revision" %}">
 </form>
 {% endblock %}
 
@@ -17,10 +17,13 @@
 
 <div class="row">
   <div class="small-6 large-8 columns">
-    <h4>Revision: {{version.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4>
-    {% if previous != None %}<a href="{% url 'device-history' current.pk previous.revisionpk %}"><i class="icon-chevron-left"></i> {% trans 'previous revision' %}</a>{% endif %}
-    {% if next != None %}<a href="{% url 'device-history' current.pk next.revisionpk %}">{% trans 'next revision' %} <i class="icon-chevron-right"></i></a>{% endif %}
-    <table>
+    <h4>Revision: {{version.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4><ul class="pager">
+{% if previous != None %}<li class="previous"><a href="{% url 'device-history' current.pk previous.revisionpk %}"><i class="icon-chevron-left"></i> {% trans 'previous revision' %}</a></li>{% endif %}
+    {% if next != None %}<li class="next"><a href="{% url 'device-history' current.pk next.revisionpk %}">{% trans 'next revision' %} <i class="icon-chevron-right"></i></a></li>{% endif %}
+</ul>
+    
+
+    <table class="table table-bordered table-striped">
       <tbody>
         {% if previous != None %}
         <tr><th></th><th>{% trans "previous revision" %}</th><th>{% trans "this revision" %}</th><th>{% trans "current revision" %}</th>

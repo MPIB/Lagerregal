@@ -7,21 +7,18 @@
 {% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-12 large-6 large-centered columns panel">
+  <div class="col-xs-12 col-md-6 col-md-offset-3 well well-lg">
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
 {% for field in form %}
-<div class="row {{field.css_classes}}">
-        <div class="small-3 columns">
-          <label for="right-label" class="right inline" {% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
-        </div>
-        <div class="small-9 columns">
-         {{ field }}
-{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
-        </div>
-      </div>
-
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-8">
+      {{ field|add_class:'form-control'}}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+  </div>
 {% endfor %}
-<input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
+<input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right" />
 </form>
 
 </div>
@@ -38,8 +35,8 @@ $( "input:text[name=name]" ).keyup(function() {
 function display_alternatives(data){
 	if ($("#alternatives").length == 0){
 		$( "input:text[name=name]" ).after("\
-<div class='alert-box alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?\
-<ul id='alternatives' style='margin-top:10px;'></ul>\
+<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?\
+<ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul>\
 </div>")
 	}
 	$("#alternatives").empty()
@@ -47,7 +44,6 @@ function display_alternatives(data){
 		$("#alternatives").append(data[i])
 	};
 }
-
 
   $(function() {
     $( "#id_duedate" ).datepicker();

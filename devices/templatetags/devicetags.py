@@ -1,6 +1,7 @@
 from django.template import Library, Node, TemplateSyntaxError
 import re
 from django.utils.safestring import mark_safe
+from django.forms import CheckboxInput
 register = Library()
 
 @register.simple_tag 
@@ -27,7 +28,9 @@ def history_compare(old, new):
 def is_select(form_field_obj):
     return (form_field_obj.field.widget.__class__.__name__ == "Select")
 
-
+@register.filter(name='is_checkbox')
+def is_checkbox(field):
+  return field.field.widget.__class__.__name__ == CheckboxInput().__class__.__name__
 
 class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
 @register.filter

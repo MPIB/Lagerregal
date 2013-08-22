@@ -34,8 +34,9 @@ def add_widget(request, widgetname):
             col = ".dashboard-left"
         else:
             col = ".dashboard-right"
+        context["usestable"] = True
         dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{}.html'.format(widgetname), context))
-        dajax.script("$('#addWidgetModal').foundation('reveal', 'close');")
+        dajax.script("$('#addWidgetModal').modal('hide');")
         dajax.remove(".addWidget[data-name={0}]".format(widgetname))
     return dajax.json()
 
@@ -59,8 +60,9 @@ def toggle_minimized(request, widgetname):
         w = DashboardWidget.objects.get(user=request.user, widgetname=widgetname)
         w.minimized = not w.minimized
         w.save()
+        print widgetname
         dajax.script("""$({0}).find( ".minimize" ).toggleClass( "icon-minus" ).toggleClass( "icon-plus" );
-  $({0}).find( ".widget-content" ).slideToggle("fast");""".format(widgetname))
+  $({0}).find(".panel-heading").next().slideToggle("fast");""".format(widgetname))
     return dajax.json()
 
 @dajaxice_register

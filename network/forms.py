@@ -16,4 +16,4 @@ class AssignForm(forms.Form):
 
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-        widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"right"}))
+        widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"pull-right input-sm form-control"}))

@@ -8,18 +8,18 @@
 {% block content %}
 <div class="row">
   {% if user.is_staff %}
-  <div class="small-5 columns dashboard dashboard-left">
+  <div class="col-md-5 dashboard dashboard-left">
     {% for widget in widgets_left %}
       {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
-      {% include template %}
+      {% include template with usestable=True  %}
       {% endwith %}
 {% endfor %}
 </div>
 
-  <div class="small-7 columns dashboard dashboard-right">
+  <div class="col-md-7 dashboard dashboard-right">
     {% for widget in widgets_right %}
       {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
-      {% include template %}
+      {% include template with usestable=True %}
       {% endwith %}
 {% endfor %}
 </div>
@@ -46,11 +46,11 @@ $(function() {
     }
     });
 
-    $('body').on('click', '.widget-header .minimize', function() {
+    $('body').on('click', '.panel-title .w-minimize', function() {
         Dajaxice.main.toggle_minimized(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
     });
     
-    $('body').on('click', '.widget-header .close', function() {
+    $('body').on('click', '.panel-title .w-close', function() {
         Dajaxice.main.remove_widget(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
     });
 
@@ -58,31 +58,40 @@ $(function() {
         Dajaxice.main.add_widget(Dajax.process,{'widgetname':$( this ).data("name")})
     });
 
-    $(".widget-header .right").hide();
+    $(".panel-title .pull-right").hide();
     
-    $(".widget-header").hover(
+    $(".panel-heading").hover(
       function () {
-        $(this).children(".right").fadeIn();
+        $(this).find(".pull-right").fadeIn();
       },
       function () {
-        $(this).children(".right").fadeOut();
+        $(this).find(".pull-right").fadeOut();
       }
     );
 
-    $( ".columns" ).disableSelection();
+    $( ".dashboardq" ).disableSelection();
   });
   {% endblock %}
 
   {% block htmlend %}
-<a href="#" data-reveal-id="addWidgetModal" id="addWidgetButton"><i class="icon-plus"></i></a>
-
-<div id="addWidgetModal" class="reveal-modal medium">
-  <h2>Add a Widget</h2>
-  <ul style="list-style-type: none;" id="widgetlist">
-    {% for widgetname, widgetvalue in widgets_list.iteritems %}
-    <li><a href="#" data-name="{{widgetname}}" class="addWidget">{{widgetvalue}}</a></li>
-    {% endfor %}
-  </ul>
-  <a class="close-reveal-modal">&#215;</a>
-</div>
+<a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success"><i class="icon-plus"></i></a>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog" aria-labelledby="addWidgetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Add a widget" %}</h4>
+        </div>
+        <div class="modal-body">
+          <ul style="list-style-type: none;" id="widgetlist">
+          {% for widgetname, widgetvalue in widgets_list.iteritems %}
+          <li><a href="#" data-name="{{widgetname}}" class="addWidget">{{widgetvalue}}</a></li>
+          {% endfor %}
+        </ul>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
   {% endblock %}

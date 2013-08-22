@@ -7,25 +7,23 @@
 {% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-12 large-6 large-centered columns panel">
+  <div class="col-xs-12 col-md-6 col-md-offset-3 well well-lg">
 <form action="" method="post" class="form-horizontal" id="forms">{% csrf_token %}
 {% for field in form %}
 {% if field.html_name == "extra_fieldcount" %}
 {{field}}
 {% else %}
-<div class="row {{field.css_classes}}">
-        <div class="small-3 columns">
-          <label for="right-label" class="right inline" {% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
-        </div>
-        <div class="small-9 columns">
-         {{ field }}
-{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
-        </div>
-      </div>
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-8">
+      {{ field|add_class:'form-control'}}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+  </div>
 {% endif %}
 {% endfor %}
-<input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
-<a href="#" id="newattribute" class="right">add new Attribute</a>
+<input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right" />
+<a href="#" id="newattribute" class="btn btn-default">add new Attribute</a>
 </form>
 </div>
 </div>
@@ -41,8 +39,8 @@ $( "input:text[name=name]" ).keyup(function() {
 function display_alternatives(data){
     if ($("#alternatives").length == 0){
         $( "input:text[name=name]" ).after("\
-<div class='alert-box alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?\
-<ul id='alternatives' style='margin-top:10px;'></ul>\
+<div class='alert-danger alert' id='alternativebox' style='margin-top:10px;'>There seem to be objects with similar name. Do you maybe mean one of those?\
+<ul id='alternatives' style='margin-top:5px;' class='list-unstyled'></ul>\
 </div>")
     }
     $("#alternatives").empty()
@@ -54,19 +52,19 @@ function display_alternatives(data){
 form_count = $("[name=extra_fieldcount]").val();
 // get extra form count so we know what index to use for the next item.
 $('body').on('click', ".deleteattribute", function() {
-    $(this).parents(".row:first").remove()
+    $(this).parents(".form-group:first").remove()
 
     form_count --;
     $("[name=extra_field_count]").val(form_count);
 })
 
 $("#newattribute").click(function() {
-    element = $('<div class="row "><div class="small-3 columns"><label for="right-label" class="right inline">Extra Attribute</label></div><div class="small-8 columns"><input class="extra_attribute" type="text"></div><div class="small-1 columns"><a href="#" class="deleteattribute"><i class="icon-remove"></i></a></div></div>');
+    element = $('<div class="form-group"><label class="col-lg-4 control-label">Extra Attribute</label><div class="col-lg-7"><input class="extra_attribute form-control" type="text"><p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p></div><div class="col-lg-1"><a href="#" class="deleteattribute"><i class="icon-remove"></i></a></div></div>');
     element.find(".extra_attribute").attr('name', 'extra_field_' + form_count);
     if($(".extra_attribute")[0]) {
-      $(".extra_attribute:last").parents(".row:first").after(element);
+      $(".extra_attribute:last").parents(".form-group:first").after(element);
     } else {
-      $("#id_name").parents(".row:first").after(element);
+      $("#id_name").parents(".form-group:first").after(element);
     }
     // build element and append it to our forms container
 

@@ -6,42 +6,64 @@
 {% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-12 large-6 large-centered columns panel">
+  <div class="col-xs-12 col-md-6 col-md-offset-3 well well-lg">
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
 {% for field in form %}
 {% if field.html_name == "creator" %}
 {{ field }}
+{% elif field|is_checkbox %}
+<div class="form-group">
+    <div class="col-lg-offset-4 col-lg-8">
+      <div class="checkbox">
+        <label>
+          {{field}} {{field.label}}
+        </label>
+      </div>
+    </div>
+  </div>
 {% else %}
 {% if field.html_name == "room" %}</div>{% endif %}
-<div class="row {{field.css_classes}}">
-        <div class="small-3 columns"> 
-          <label for="right-label" class="right inline"{% if field.field.required %}style="font-weight:bold"{% endif %}>{{ field.label }}</label>
-        </div>
-        <div class="small-{% if field|is_select %}8{% else %}9{% endif %} columns">
-         {{ field }}
-{% if field.errors %}<small style="padding-top:20px">{% for error in field.errors %}{{error}}, {% endfor %}</small>{% endif %}
-        </div>
-        {% if field|is_select %}<div class="small-1 columns"><a href="#" class="modalbutton" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>{% endif %}
-      </div>
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-{% if field|is_select %}7{% else %}8{% endif %}">
+      {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+    {% if field|is_select %}<div class="col-lg-1"><a href="#" class="modalbutton" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>{% endif %}
+  </div>
 {% endif %}
+
+
+
 {% if field.html_name == "devicetype" %}<div id="extra_attributes">{% endif %}
+
 {% endfor %}
-<input type="submit" value="{% trans "Submit" %}" class="button button-primary" />
+<input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm pull-right" />
 </form>
 
 </div>
 </div>
 
-<div id="addModal" class="reveal-modal">
-  <h2>Create new <span id="modal_header"></span></h2>
-  <form action="" method="post" id="addform" accept-charset="utf-8">
-    <input type="text" name="name" id="modal_name">
+  <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Create new <span id='modal_header'></span>" %}</h4>
+        </div>
+            <form action="" method="post" id="addform" accept-charset="utf-8" class="form-horizontal">
+        <div class="modal-body">
+          <div id="modal-form"></div>
     <input type="hidden" name="classname" id="modal_classname">
-    <p><input type="submit" value="{% trans "Submit" %}"></p>
-</form>
-<div id="modal_errors"></div>
-<a class="close-reveal-modal">&#215;</a>
-</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+          <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm">
+        </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 {% endblock %}
 
 {% block scriptend %}
@@ -57,10 +79,10 @@ $("#id_devicetype").change(function() {
 });
 
 $(".modalbutton").click(function() {
-    $('#addModal').foundation('reveal', 'open');
     $("#modal_name").val("");
     $("#modal_header").text($(this).data("name"))
     $("#modal_classname").val($(this).data("classname"));
+    Dajaxice.devices.load_extraform(Dajax.process, {'classname':$(this).data("classname")})
 });
 
 $("select").select2();

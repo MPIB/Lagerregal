@@ -1,13 +1,16 @@
  {% load i18n %}
- <div class="widget" id="{% block widgetname %}{% endblock %}">
-  <div class="widget-header">
-    <span style="margin:0px;width:50%">{% block title %}{% endblock %}</span>
-    <a href="#" class="right"><i class="icon-remove close"></i></a>
-    <a href="#" class="right"><i class="icon-{% if widget.minimized %}plus{% else %}minus{% endif %} minimize"></i></a>
+<div class="panel panel-primary widget" id="{% block widgetname %}{% endblock %}">
+  <div class="panel-heading">
+    <h3 class="panel-title">{% block title %}{% endblock %}
+        <a href="#" class="pull-right"><i class="icon-remove w-close"></i></a>
+    <a href="#" class="pull-right"><i class="icon-{% if widget.minimized %}plus{% else %}minus{% endif %} w-minimize"></i></a>
+    </h3>
+  </div>
+  {% if not usestable %}
+    <div class="panel-body" {% if widget.minimized %}style="display: none;"{% endif %}>
+    {% endif %}
+            {% block  content %}{% endblock %} 
+    {% if not usestable %}
     </div>
-    <div class="widget-content" {% if widget.minimized %}style="display: none;"{% endif %}>
-{% block  content %}{% endblock %}
-<div style="clear:both"></div>
+    {% endif %}
 </div>
-</div>
-
