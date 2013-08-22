@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy, reverse
 from users.forms import AppearanceForm
 from django.utils.translation import ugettext_lazy as _
+from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 
 class ProfileView(DetailView):
     model = Lageruser
@@ -17,11 +19,10 @@ class ProfileView(DetailView):
         # Call the base implementation first to get a context
         context = super(ProfileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['edits'] = Version.objects.filter(revision__user = context["profileuser"])
+        context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
         context["breadcrumbs"] = [("", context["profileuser"])]
         return context
-
 
 class UsersettingsView(TemplateView):
     template_name = "users/settings.html"
@@ -46,4 +47,5 @@ class UsersettingsView(TemplateView):
             if request.user.pagelength != request.POST["pagelength"]:
                 request.user.pagelength = request.POST["pagelength"]
                 request.user.save()
+            messages.success(self.request, _('Settings were successfully updated'))
         return HttpResponseRedirect(reverse("usersettings"))
