@@ -71,18 +71,6 @@
 </nav>
 
 <div class="container">
-{% if messages %}
-    {% for message in messages %}
-    <div class="row" style="margin-top:5px">
-	<div class="large-5 large-centered columns">
-    <div class="alert-box {{message.tags}}">
-			{{message|safe }}
-			<a href="#" class="close">&times;</a>
-		</div>
-</div>
-</div>
-    {% endfor %}
-{% endif %}
 <div class="page-header row">
   <h1>{% block header %}{% endblock %}
   <small class="pull-right">{% block  pullright %}{% endblock %}</small></h1>
@@ -103,8 +91,32 @@
   <script src="/static/js/jquery-ui.min.js" type="text/javascript"></script>
   {% dajaxice_js_import %}
   <script src="/static/js/jquery.dajax.core.js"></script>
+  <script type="text/javascript" src="/static/js/noty/jquery.noty.js"></script>
+
+<script type="text/javascript" src="/static/js/noty/layouts/top.js"></script>
+<script type="text/javascript" src="/static/js/noty/layouts/topCenter.js"></script>
+<script type="text/javascript" src="/static/js/noty/layouts/topLeft.js"></script>
+<script type="text/javascript" src="/static/js/noty/layouts/topRight.js"></script>
+<!-- You can add more layouts if you want -->
+
+<script type="text/javascript" src="/static/js/noty/themes/default.js"></script>
 	<script>
   {% block scriptend %}{% endblock %}
+
+
+  {% if messages %}
+
+  $(document).ready(function () {
+    {% for message in messages %}
+  noty({
+    text     : '{{message|safe }}',
+    type     : '{{message.tags}}',
+    layout  : 'topCenter',
+    timeout : 3000
+  });
+    {% endfor %}
+});
+{% endif %}
 </script>
 </body>
 
