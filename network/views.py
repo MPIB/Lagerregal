@@ -5,6 +5,8 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from network.serializers import IpAddressSerializer
 from network.forms import ViewForm
+from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse_lazy, reverse
 
 class IpAddressApiList(generics.ListCreateAPIView):
     model = IpAddress
@@ -38,11 +40,19 @@ class IpAddressList(ListView):
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
+        context["breadcrumbs"] = [("", _("IP-Addresses"))]
         return context
 
 class IpAddressDetail(DetailView):
     model = IpAddress
     context_object_name = 'ipaddress'
+
+    def get_context_data(self, **kwargs):
+        context = super(IpAddressDetail, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("ipaddress-list"), _("IP-Addresses")),
+            (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address)]
+        return context
 
 class IpAddressCreate(CreateView):
     model = IpAddress
@@ -53,6 +63,9 @@ class IpAddressCreate(CreateView):
         context = super(IpAddressCreate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new"
+        context["breadcrumbs"] = [
+            (reverse("ipaddress-list"), _("IP-Addresses")),
+            ("", _("Create new IP-Address"))]
         return context
 
 class IpAddressUpdate(UpdateView):
@@ -64,6 +77,10 @@ class IpAddressUpdate(UpdateView):
         context = super(IpAddressUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
+        context["breadcrumbs"] = [
+            (reverse("ipaddress-list"), _("IP-Addresses")),
+            (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address),
+            ("", _("Edit"))]
         return context
 
 

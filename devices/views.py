@@ -42,6 +42,7 @@ class DeviceList(ListView):
         context = super(DeviceList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
         context["template_list"] = Template.objects.all()
+        context["breadcrumbs"] = [["device-list", _("Devices")]]
         return context
 
     def get_paginate_by(self, queryset):
@@ -68,6 +69,9 @@ class DeviceDetail(DetailView):
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name)]
         return context
 
 class DeviceIpAddressRemove(DeleteView):
@@ -78,6 +82,10 @@ class DeviceIpAddressRemove(DeleteView):
         context = {}
         context["device"] = get_object_or_404(Device, pk=kwargs["pk"])
         context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
+        context["breadcrumbs"] = [
+            (reverse("ipaddress-list"), _("IP-Addresses")),
+            (reverse("ipaddress-detail", kwargs={"pk":context["ipaddress"].pk}), context["ipaddress"].name),
+            ("", _("Unassign IP-Address"))]
         return render_to_response(self.template_name, context, RequestContext(request))
 
 
@@ -95,6 +103,14 @@ class DeviceIpAddress(FormView):
     form_class = IpAddressForm
     success_url = "/devices"
 
+    def get_context_data(self, **kwargs):
+        context = super(DeviceIpAddress, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("ipaddress-list"), _("IP-Addresses")),
+            (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address),
+            ("", _("Assign IP-Address"))]
+        return context
+
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         device = form.cleaned_data["device"]
@@ -104,6 +120,7 @@ class DeviceIpAddress(FormView):
         for ipaddress in ipaddresses:
             ipaddress.device = device
             ipaddress.save()
+        
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistory(View):
@@ -149,6 +166,12 @@ class DeviceHistory(View):
         if this_version.field_dict["room"] != None:
             this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
         context = {"version":this_version, "previous":previous_version, "this_version":this_version.field_dict, "current":device, "next":next_version}
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            (reverse("device-history-list", kwargs={"pk":device.pk}), _("History")),
+            ("", _("Version {}".format(this_version.pk)))
+            ]
         return render_to_response('devices/device_history.html', context, RequestContext(request))
 
     def post(self, request, **kwargs):
@@ -177,6 +200,10 @@ class DeviceHistoryList(View):
         device = get_object_or_404(Device, pk=deviceid)
         version_list = Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
         context = {"version_list":version_list, "device":device}
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            ("", _("History"))]
         return render_to_response('devices/device_history_list.html', context, RequestContext(request))
 
 
@@ -207,6 +234,9 @@ class DeviceCreate(CreateView):
         context['actionstring'] = "Create new Device"
         context['form'].fields['emailbosses'].label = "Notify bosses about new device"
         context['form'].fields['emailmanagment'].label = "Notify managment about new device"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            ("", _("Create new device"))]
         return context
 
     def form_valid(self, form):
@@ -257,6 +287,10 @@ class DeviceUpdate(UpdateView):
         context = super(DeviceUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            ("", _("Edit"))]
         return context
 
     def form_valid(self, form):
@@ -321,6 +355,15 @@ class DeviceDelete(DeleteView):
     success_url = reverse_lazy('device-list')
     template_name = 'devices/base_delete.html'
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DeviceDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Delete"))]
+        return context
+
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
@@ -330,6 +373,10 @@ class DeviceLend(FormView):
         # Add in a QuerySet of all the books
         context['actionstring'] = "Mark device as lend"
         context['form_scripts'] = "$('#id_owner').select2();"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            ("", _("Lend"))]
         return context
 
 
@@ -393,10 +440,23 @@ class DeviceGlobalhistory(ListView):
     template_name = 'devices/globalhistory.html'
     paginate_by = 30
 
+    def get_context_data(self, **kwargs):
+        context = super(DeviceGlobalhistory, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [("", _("Global edit history"))]
+        return context
+
+
+
 class TemplateList(ListView):
     model = Template
     context_object_name = 'template_list'
     
+    def get_context_data(self, **kwargs):
+        context = super(TemplateList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("template-list"), _("Templates")),]
+        return context
 
     def get_paginate_by(self, queryset):
         return self.request.user.pagelength
@@ -409,14 +469,38 @@ class TemplateCreate(CreateView):
     model = Template
     template_name = 'devices/base_form.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(TemplateCreate, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("template-list"), _("Templates")),
+            ("", _("Create new devicetemplate"))]
+        return context
+
 class TemplateUpdate(UpdateView):
     model = Template
     template_name = 'devices/base_form.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TemplateUpdate, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("template-list"), _("Templates")),
+            ("", _("Edit: {}".format(self.object.templatename)))]
+        return context
 
 class TemplateDelete(DeleteView):
     model = Template
     success_url = reverse_lazy('device-list')
     template_name = 'devices/base_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TemplateDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("template-list"), _("Templates")),
+            ("", _("Delete: {}".format(self.object.templatename)))]
+        return context
 
 
 
@@ -427,6 +511,12 @@ class RoomList(ListView):
     model = Room
     context_object_name = 'room_list'
     
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(RoomList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
+        return context
+
     def get_paginate_by(self, queryset):
         return self.request.user.pagelength
         if self.request.user.pagelength == None:
@@ -444,6 +534,9 @@ class RoomDetail(DetailView):
         # Add in a QuerySet of all the books
         context["merge_list"] = Room.objects.exclude(pk=context["room"].pk)
         context['device_list'] = Device.objects.filter(room=context["room"], archived=None)
+        context["breadcrumbs"] = [
+            (reverse("room-list"), _("Rooms")),
+            (reverse("room-detail", kwargs={"pk":context["room"].pk}), context["room"].name)]
         return context
 
 class RoomCreate(CreateView):
@@ -456,6 +549,9 @@ class RoomCreate(CreateView):
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Room"
         context['type'] = "room"
+        context["breadcrumbs"] = [
+            (reverse("room-list"), _("Rooms")),
+            ("", _("Create new room"))]
         return context
 
 class RoomUpdate(UpdateView):
@@ -467,12 +563,25 @@ class RoomUpdate(UpdateView):
         context = super(RoomUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
+        context["breadcrumbs"] = [
+            (reverse("room-list"), _("Rooms")),
+            (reverse("room-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Edit"))]
         return context
 
 class RoomDelete(DeleteView):
     model = Room
     success_url = reverse_lazy('room-list')
     template_name = 'devices/base_delete.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(RoomDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("room-list"), _("Rooms")),
+            (reverse("room-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Delete"))]
+        return context
 
 class RoomMerge(View):
     model = Room
@@ -481,6 +590,10 @@ class RoomMerge(View):
         context = {}
         context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
         context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+        context["breadcrumbs"] = [
+            (reverse("room-list"), _("Rooms")),
+            (reverse("room-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            ("", _("Merge with {}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):
@@ -497,6 +610,12 @@ class RoomMerge(View):
 class BuildingList(ListView):
     model = Building
     context_object_name = 'building_list'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(BuildingList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
+        return context
     
     def get_paginate_by(self, queryset):
         return self.request.user.pagelength
@@ -508,12 +627,16 @@ class BuildingList(ListView):
 class BuildingDetail(DetailView):
     model = Building
     context_object_name = 'building'
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(BuildingDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Building.objects.exclude(pk=context["building"].pk)
         context['device_list'] = Device.objects.filter(room__building=context["building"], archived=None)
+        context["breadcrumbs"] = [
+            (reverse("building-list"), _("Buildings")),
+            (reverse("building-detail", kwargs={"pk":context["building"].pk}), context["building"].name)]
         return context
 
 class BuildingCreate(CreateView):
@@ -526,6 +649,9 @@ class BuildingCreate(CreateView):
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Building"
         context['type'] = "building"
+        context["breadcrumbs"] = [
+            (reverse("building-list"), _("Buildings")),
+            ("", _("Create new building"))]
         return context
 
 class BuildingUpdate(UpdateView):
@@ -537,12 +663,25 @@ class BuildingUpdate(UpdateView):
         context = super(BuildingUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
+        context["breadcrumbs"] = [
+            (reverse("building-list"), _("Buildings")),
+            (reverse("building-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Edit"))]
         return context
 
 class BuildingDelete(DeleteView):
     model = Building
     success_url = reverse_lazy('building-list')
     template_name = 'devices/base_delete.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(BuildingDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("building-list"), _("Buildings")),
+            (reverse("building-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Delete"))]
+        return context
 
 class BuildingMerge(View):
     model = Building
@@ -551,6 +690,10 @@ class BuildingMerge(View):
         context = {}
         context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
         context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+        context["breadcrumbs"] = [
+            (reverse("building-list"), _("Buildings")),
+            (reverse("building-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            ("", _("Merge with {}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):
@@ -586,6 +729,9 @@ class ManufacturerDetail(DetailView):
         # Add in a QuerySet of all the books
         context["merge_list"] = Manufacturer.objects.exclude(pk=context["object"].pk)
         context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None)
+        context["breadcrumbs"] = [
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
         return context
 
 class ManufacturerCreate(CreateView):
@@ -598,6 +744,9 @@ class ManufacturerCreate(CreateView):
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Manufacturer"
         context['type'] = "manufacturer"
+        context["breadcrumbs"] = [
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            ("", _("Create new manufacturer"))]
         return context
 
 class ManufacturerUpdate(UpdateView):
@@ -609,12 +758,25 @@ class ManufacturerUpdate(UpdateView):
         context = super(ManufacturerUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
+        context["breadcrumbs"] = [
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Edit"))]
         return context
 
 class ManufacturerDelete(DeleteView):
     model = Manufacturer
     success_url = reverse_lazy('manufacturer-list')
     template_name = 'devices/base_delete.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(ManufacturerDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            ("", _("Delete"))]
+        return context
 
 class ManufacturerMerge(View):
     model = Manufacturer
@@ -623,6 +785,10 @@ class ManufacturerMerge(View):
         context = {}
         context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
         context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+        context["breadcrumbs"] = [
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            ("", _("Merge with {}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):
@@ -638,6 +804,12 @@ class ManufacturerMerge(View):
 class Search(FormView):
     template_name = 'devices/search.html'
     form_class = SearchForm
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(Search, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [("", _("Search"))]
+        return context
 
     def form_valid(self, form):
         search = {}
