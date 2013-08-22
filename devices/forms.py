@@ -6,6 +6,7 @@ from users.models import Lageruser
 import re
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from mail.models import MailTemplate
 
 CHARMODIFIER = (
     ('icontains',_('Contains')),
@@ -66,7 +67,9 @@ class ViewForm(forms.Form):
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
     emailbosses = forms.BooleanField(required=False)
+    emailtemplatebosses = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
     emailmanagment = forms.BooleanField(required=False)
+    emailtemplatemanagment = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
     creator =  forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
@@ -74,6 +77,7 @@ class DeviceForm(forms.ModelForm):
     devicetype = forms.ModelChoiceField(Type.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
     manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
     room = forms.ModelChoiceField(Room.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
+
     class Meta:
         model=Device
         exclude = ("archived", "currentlending")
