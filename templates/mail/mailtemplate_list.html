@@ -12,13 +12,39 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-xs-12 col-md-5">
+    <div class="col-xs-12 col-md-12">
 {% include "snippets/pagination.html" with listurl='type-list' %}
-<div class="list-group">
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>{% trans "Name" %}</th>
+      <th>{% trans "Subject" %}</th>
+      <th>{% trans "Usage" %}</th>
+    </tr>
+  </thead>
   {% for mail in mail_list %}
-<a href="{% url 'mail-detail' mail.id %}" class="list-group-item">{{mail.name}}</a>
+
+    <tr>
+      <td><a href="{% url 'mail-detail' mail.id %}">{{mail.name}}</a></td>
+          <td>{{mail.subject}}</td>
+          <td>{{mail.get_usage_display}}</td>
+    </tr>
   {% endfor %}
-</div>
+</table>
+
+  <tbody>
+    {% for ipaddress in ipaddress_list %}
+    <tr>
+      <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
+      {% if ipaddress.device %}
+          <td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td>
+          {% else %}
+          <td>Not assigned</td>
+          {% endif %}
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
 {% include "snippets/pagination.html" with listurl='type-list' %}
 </div>
 </div>
