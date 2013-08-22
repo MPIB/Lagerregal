@@ -5,6 +5,7 @@ from devices.models import Device
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy, reverse
 from users.forms import AppearanceForm
+from django.utils.translation import ugettext_lazy as _
 
 class ProfileView(DetailView):
     model = Lageruser
@@ -18,6 +19,7 @@ class ProfileView(DetailView):
         # Add in a QuerySet of all the books
         context['edits'] = Version.objects.filter(revision__user = context["profileuser"])
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context["breadcrumbs"] = [("", context["profileuser"])]
         return context
 
 
@@ -29,6 +31,9 @@ class UsersettingsView(TemplateView):
         context = super(UsersettingsView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['appearanceform'] = AppearanceForm(initial={"pagelength":self.request.user.pagelength})
+        context["breadcrumbs"] = [
+            (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),
+            ("", _("Settings"))]
         return context
 
     def post(self, request):

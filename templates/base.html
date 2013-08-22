@@ -72,8 +72,16 @@
 
 <div class="container">
 <div class="page-header row">
-  <h1>{% block header %}{% endblock %}
-  <small class="pull-right">{% block  pullright %}{% endblock %}</small></h1>
+  <h1 style="font-size:1.9em"><ol class="breadcrumb" style="margin-bottom:0px;">
+    {% for crumb in breadcrumbs %}
+    {% if forloop.last %}
+  <li class="active">{{crumb.1}}</li>
+  {% else %}
+  <li><a href="{{crumb.0}}">{{crumb.1}}</a></li>
+{% endif %}
+  {% endfor %}
+  <small class="pull-right">{% block  pullright %}{% endblock %}</small>
+</ol></h1>
 </div>
 <div class="row">
 	<div class="col-md-12">{% block content %}{% endblock %}</div>
