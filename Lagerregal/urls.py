@@ -5,6 +5,7 @@ from network.views import *
 from devicetypes.views import *
 from main.views import *
 from api.views import *
+from mail.views import *
 from users.views import ProfileView, UsersettingsView
 from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
@@ -81,6 +82,13 @@ urlpatterns = patterns('',
     url(r'^manufacturers/delete/(?P<pk>.*)$', login_required(ManufacturerDelete.as_view()), name="manufacturer-delete"),
     url(r'^manufacturers/view/(?P<pk>.*)$', login_required(ManufacturerDetail.as_view()), name="manufacturer-detail"),
     url(r'^manufacturers/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', login_required(ManufacturerMerge.as_view()), name="manufacturer-merge"),
+
+    url(r'^mails/$', login_required(MailList.as_view()), name="mail-list"),
+    url(r'^mails/(?P<page>[0-9]*)$', login_required(MailList.as_view()), name="mail-list"),
+    url(r'^mails/add$', login_required(MailCreate.as_view()), name="mail-add"),
+    url(r'^mails/edit/(?P<pk>.*)$', login_required(MailUpdate.as_view()), name="mail-edit"),
+    url(r'^mails/view/(?P<pk>.*)$', login_required(MailDetail.as_view()), name="mail-detail"),
+    url(r'^mails/delete/(?P<pk>.*)$', login_required(MailDelete.as_view()), name="mail-delete"),
 
     url(r'^ipaddresses/$', login_required(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)$', login_required(IpAddressList.as_view()), name="ipaddress-list"),

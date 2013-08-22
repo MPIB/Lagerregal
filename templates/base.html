@@ -39,6 +39,7 @@
         </ul>
       </li>
       <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>
+      {% if user.is_staff %}<li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
     </ul>
 
     <ul class="nav navbar-nav navbar-right">
