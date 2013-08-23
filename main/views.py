@@ -31,4 +31,6 @@ class Home(TemplateView):
                 del userwidget_list[w.widgetname]
             context["widgets_list"] = userwidget_list
             context["breadcrumbs"] = [("", _("Dashboard"))]
+        else:
+            context["breadcrumbs"] = [("", _("Home"))]
         return context
