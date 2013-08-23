@@ -443,12 +443,18 @@ class DeviceGlobalhistory(ListView):
     queryset = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
     context_object_name = "revision_list"
     template_name = 'devices/globalhistory.html'
-    paginate_by = 30
 
     def get_context_data(self, **kwargs):
         context = super(DeviceGlobalhistory, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Global edit history"))]
         return context
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 
 
