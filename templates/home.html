@@ -37,10 +37,10 @@ $(function() {
       receive: function(event, ui) {
       widgets = {};
       $(".dashboard-left").children('.widget').each(function(i) { 
-          widgets[$(this).attr("id")] = {"index": $(this).index(this)+1, "column": "l"};
+          widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "l"};
       });
       $(".dashboard-right").children('.widget').each(function(i) { 
-          widgets[$(this).attr("id")] = {"index": $(this).index(this)+1, "column": "r"};
+          widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
       });
         Dajaxice.main.move_widgets(Dajax.process, {'userwidgets':widgets})
     }
