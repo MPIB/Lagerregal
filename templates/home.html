@@ -34,7 +34,7 @@ $(function() {
       connectWith: ".dashboard",
       placeholder: "dashboard-placeholder",
       distance: 15,
-      receive: function(event, ui) {
+      update: function(event, ui) {
       widgets = {};
       $(".dashboard-left").children('.widget').each(function(i) { 
           widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "l"};
