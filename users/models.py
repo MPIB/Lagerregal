@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -11,7 +12,7 @@ class Lageruser(AbstractUser):
         ], default=30)
     def __unicode__(self):
         if self.first_name != "" and self.last_name != "":
-            return "{0} {1}".format(self.first_name, self.last_name)
+            return u"{0} {1}".format(self.first_name, self.last_name)
         else:
             return self.username
 
