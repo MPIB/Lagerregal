@@ -23,8 +23,8 @@ class TypeList(ListView):
         context = super(TypeList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")),]
-            
-        if context["is_paginated"]:
+
+        if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
