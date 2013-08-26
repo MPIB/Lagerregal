@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block pullright %}
-<a href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right"style="margin-left:10px">Delete</a>
-<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">Edit</a>
+<a href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right"style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 {% endblock %}
 
 {% block content %}
