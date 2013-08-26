@@ -86,7 +86,7 @@ class DeviceIpAddressRemove(DeleteView):
         context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
-            (reverse("ipaddress-detail", kwargs={"pk":context["ipaddress"].pk}), context["ipaddress"].name),
+            (reverse("ipaddress-detail", kwargs={"pk":context["ipaddress"].pk}), context["ipaddress"].address),
             ("", _("Unassign IP-Address"))]
         return render_to_response(self.template_name, context, RequestContext(request))
 
