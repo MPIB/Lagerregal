@@ -42,7 +42,7 @@ class IpAddressList(ListView):
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
         context["breadcrumbs"] = [("", _("IP-Addresses"))]
         
-        if context["is_paginated"]:
+        if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
