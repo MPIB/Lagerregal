@@ -59,6 +59,7 @@ class MailCreate(CreateView):
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
             ("", _("Create new mailtemplate"))]
+        context["formhelp"] = "mail/help.html"
         return context
 
 class MailUpdate(UpdateView):
@@ -73,6 +74,7 @@ class MailUpdate(UpdateView):
             (reverse("mail-list"), _("Mailtemplates")),
             (reverse("mail-detail", kwargs={"pk":self.object.pk}), self.object),
             ("", _("Edit"))]
+        context["formhelp"] = "mail/help.html"
         return context
 
 

@@ -6,6 +6,7 @@ import datetime
 from django.contrib.contenttypes.models import ContentType
 from main.models import DashboardWidget, widgets
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.forms import AuthenticationForm
 
 class Home(TemplateView):
     template_name = "home.html"
@@ -31,4 +32,7 @@ class Home(TemplateView):
                 del userwidget_list[w.widgetname]
             context["widgets_list"] = userwidget_list
             context["breadcrumbs"] = [("", _("Dashboard"))]
+        else:
+            context["breadcrumbs"] = [("", _("Home"))]
+            context["form"] = AuthenticationForm()
         return context

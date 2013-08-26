@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
 admin.autodiscover()
 
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
@@ -19,8 +20,8 @@ dajaxice_autodiscover()
 urlpatterns = patterns('',
     url(r'^$', Home.as_view(), name="home"),
 
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html', }),
-    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html'}),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}),
 
     url(r'^devices/$', login_required(DeviceList.as_view()), name="device-list"),
     url(r'^devices/page/(?P<page>[0-9]*)$', login_required(DeviceList.as_view()), name="device-list"),
