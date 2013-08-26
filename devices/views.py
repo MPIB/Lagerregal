@@ -43,6 +43,8 @@ class DeviceList(ListView):
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
         context["template_list"] = Template.objects.all()
         context["breadcrumbs"] = [["device-list", _("Devices")]]
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
     def get_paginate_by(self, queryset):
@@ -448,6 +450,8 @@ class DeviceGlobalhistory(ListView):
     def get_context_data(self, **kwargs):
         context = super(DeviceGlobalhistory, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Global edit history"))]
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
 
@@ -461,6 +465,9 @@ class TemplateList(ListView):
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")),]
+
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
     def get_paginate_by(self, queryset):
@@ -520,6 +527,9 @@ class RoomList(ListView):
         # Call the base implementation first to get a context
         context = super(RoomList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
+
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
     def get_paginate_by(self, queryset):
@@ -720,6 +730,9 @@ class ManufacturerList(ListView):
         # Call the base implementation first to get a context
         context = super(ManufacturerList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
+        
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
     def get_paginate_by(self, queryset):
