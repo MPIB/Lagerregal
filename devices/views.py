@@ -906,6 +906,7 @@ class Search(FormView):
 
         context = {
         "device_list":devices,
-        "form":form
+        "form":form,
+        "breadcrumbs":[["", _("Searchresult")]]
         }
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
