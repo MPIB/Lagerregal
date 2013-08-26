@@ -23,6 +23,9 @@ class TypeList(ListView):
         context = super(TypeList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")),]
+            
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
     def get_paginate_by(self, queryset):

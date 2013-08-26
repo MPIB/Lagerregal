@@ -22,6 +22,9 @@ class MailList(ListView):
         context = super(MailList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates"))]
+        
+        if context["is_paginated"]:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
     def get_paginate_by(self, queryset):
