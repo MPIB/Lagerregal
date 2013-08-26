@@ -140,8 +140,10 @@ class DeviceHistory(View):
             content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
         if len(previous_version) == 0:
             previous_version = None
+            previouscomment=None
         else:
             revisionpk = previous_version[0].revision.pk
+            previouscomment = previous_version[0].revision.comment
             previous_version = previous_version[0].field_dict
             previous_version["revisionpk"] = revisionpk
             if previous_version["devicetype"] != None:
@@ -156,8 +158,10 @@ class DeviceHistory(View):
             content_type_id=ContentType.objects.get(model='device').id).order_by("pk")
         if len(next_version) == 0:
             next_version = None
+            nextcomment=None
         else:
             revisionpk = next_version[0].revision.pk
+            nextcomment = next_version[0].revision.comment
             next_version = next_version[0].field_dict
             next_version["revisionpk"] = revisionpk
 
@@ -167,7 +171,14 @@ class DeviceHistory(View):
             this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
         if this_version.field_dict["room"] != None:
             this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
-        context = {"version":this_version, "previous":previous_version, "this_version":this_version.field_dict, "current":device, "next":next_version}
+        context = {"version":this_version,
+            "previous":previous_version,
+            "previouscomment":previouscomment,
+            "this_version":this_version.field_dict,
+            "thiscomment":this_version.revision.comment,
+            "current":device,
+            "next":next_version,
+            "nextcomment":nextcomment}
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
