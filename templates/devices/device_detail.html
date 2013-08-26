@@ -98,8 +98,9 @@
         <li class="list-group-item ipaddress-list">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="icon-remove"></i></a></li>
       {% endfor %}
   </ul>
-  <div class="panel-footer">
+  
           {% if device.archived == None %}
+  <div class="panel-footer">
       <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         {{ipaddressform.ipaddresses}}
         <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
@@ -107,8 +108,8 @@
     </div>
     <input type="hidden" name="device" value="{{ device.pk }}" />
       </form>
-    {% endif %}
   </div>
+    {% endif %}
 </div>
   </div>
 </div>
