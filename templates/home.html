@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load devicetags %}
 {% block title %}{% trans "Main" %}{% endblock %}
 
 {% block header %}
@@ -23,24 +24,54 @@
       {% endwith %}
 {% endfor %}
 </div>
-
+{% else %}
+  <div class="col-xs-12 col-md-6 col-md-offset-3">
+    <h4>{% trans "You are not logged in. Please do so below." %}</h4>
+{% if form.errors %}
+<div data-alert class="alert-danger alert">
+{% trans "Your username and password didn't match. Please try again." %}
+<a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+</div>
+{% endif %}
+<div class="well">
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+{% csrf_token %}
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ form.username.label_tag }}</label>
+    <div class="col-lg-8">{{ form.username|add_class:"form-control" }}</div>
+</div>
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ form.password.label_tag }}</label>
+    <div class="col-lg-8">{{ form.password|add_class:"form-control" }}</div>
+</div>
+<input type="submit" value="login" class="btn btn-success pull-right" />
+{% if next %}
+  <input type="hidden" name="next" value="{{ next }}" />
+{% else %}
+  <input type="hidden" name="next" value="{% url 'home' %}" />
+{% endif %}
+</form>
+<div class="clearfix"></div>
+</div>
+</div>
 {% endif %}
 </div>
 {% endblock %}
 
 {% block scriptend %}
+  {% if user.is_staff %}
 $(function() {
     $( ".dashboard" ).sortable({
       connectWith: ".dashboard",
       placeholder: "dashboard-placeholder",
       distance: 15,
-      receive: function(event, ui) {
+      update: function(event, ui) {
       widgets = {};
       $(".dashboard-left").children('.widget').each(function(i) { 
-          widgets[$(this).attr("id")] = {"index": $(this).index(this)+1, "column": "l"};
+          widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "l"};
       });
       $(".dashboard-right").children('.widget').each(function(i) { 
-          widgets[$(this).attr("id")] = {"index": $(this).index(this)+1, "column": "r"};
+          widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
       });
         Dajaxice.main.move_widgets(Dajax.process, {'userwidgets':widgets})
     }
@@ -71,6 +102,7 @@ $(function() {
 
     $( ".dashboardq" ).disableSelection();
   });
+  {% endif %}
   {% endblock %}
 
   {% block htmlend %}

@@ -8,8 +8,8 @@ import reversion
 
 class Building(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
-    number = models.CharField(_('Number'), max_length = 30, blank = True)
     street = models.CharField(_('Street'), max_length = 100, blank = True)
+    number = models.CharField(_('Number'), max_length = 30, blank = True)
     zipcode = models.CharField(_('ZIP code'), max_length = 5, blank = True)
     city = models.CharField(_('City'), max_length = 100, blank = True)
     state = models.CharField(_('State'), max_length = 100, blank = True)
