@@ -1,3 +1,4 @@
+{% load i18n %}
 <form method="post" id="searchform" class="form-inline" style="margin-bottom:20px">{% csrf_token %}
 	<div class="row">
 		<div class="col-xs-12 col-md-4 {{form.name.css_classes}}  {{form.namemodifier.css_classes}} form-group" style="margin-bottom:10px;">	
@@ -100,8 +101,8 @@
 		
 	</div>
 	<div class="pull-right">
-			<input type="submit" value="Search" class="btn btn-primary btn-sm" />
-			<input type="button" onclick="clear_form_elements('#searchform')" class="btn btn-default btn-sm" value="Clear">
+			<input type="submit" value="{% trans "Search" %}" class="btn btn-primary btn-sm" />
+			<input type="button" onclick="clear_form_elements('#searchform')" class="btn btn-default btn-sm" value="{% trans "Clear" %}" />
 	</div>
 	<div class="clearfix"></div>
 </form>

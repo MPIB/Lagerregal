@@ -27,6 +27,11 @@
       <tbody>
         {% if previous != None %}
         <tr><th></th><th>{% trans "previous revision" %}</th><th>{% trans "this revision" %}</th><th>{% trans "current revision" %}</th>
+        <tr><td>{% trans "Comment" %}</td>
+            <td>{{previouscomment}}</td>
+          <td>{{thiscomment}}</td>
+          <td></td>
+        </tr>
         <tr><td>{% trans "Name" %}</td>
             <td>{{previous.name}}</td>
           <td>{% history_compare previous.name this_version.name %}</td>
