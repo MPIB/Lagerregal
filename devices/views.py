@@ -183,7 +183,7 @@ class DeviceHistory(View):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
             (reverse("device-history-list", kwargs={"pk":device.pk}), _("History")),
-            ("", _("Version {}".format(this_version.pk)))
+            ("", _("Version {}".format(this_version.revision.pk)))
             ]
         return render_to_response('devices/device_history.html', context, RequestContext(request))
 
