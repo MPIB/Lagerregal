@@ -10,10 +10,6 @@ body { padding-top: 20px; }
 	color:#c60f13;
 }
 
-.row {
-	max-width: 80em;
-}
-
 .warning-icon {
     margin-left:5px;
     background-color:#2ba6cb;
