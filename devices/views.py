@@ -370,6 +370,7 @@ class DeviceUpdate(UpdateView):
         else:
             reversion.set_comment(form.cleaned_data["comment"])
         reversion.set_ignore_duplicates(True)
+
         if device.devicetype != None:
             if form.cleaned_data["devicetype"] == None:
                 TypeAttributeValue.objects.filter(device = device.pk).delete()
