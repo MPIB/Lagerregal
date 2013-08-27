@@ -86,9 +86,9 @@ class Device(models.Model):
         verbose_name = _('Device')
         verbose_name_plural = _('Devices')
         permissions = (
-            ("boss_mails", "Emails for bosses"),
-            ("managment_mails", "Emails for managment"),
-            ("support_mails", "Emails for support")
+            ("boss_mails", _("Emails for bosses")),
+            ("managment_mails", _("Emails for managment")),
+            ("support_mails", _("Emails for support"))
         )
 
     def get_absolute_url(self):
