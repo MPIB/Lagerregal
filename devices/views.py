@@ -147,11 +147,20 @@ class DeviceHistory(View):
             previous_version = previous_version[0].field_dict
             previous_version["revisionpk"] = revisionpk
             if previous_version["devicetype"] != None:
-                previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
+                try:
+                    previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
+                except Type.DoesNotExist:
+                    previous_version["devicetype"] = "[deleted]"
             if previous_version["manufacturer"] != None:
-                previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
+                try:
+                    previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
+                except Type.DoesNotExist:
+                    previous_version["manufacturer"] = "[deleted]"
             if previous_version["room"] != None:
-                previous_version["room"] = Room.objects.get(pk=previous_version["room"])
+                try:
+                    previous_version["room"] = Room.objects.get(pk=previous_version["room"])
+                except Type.DoesNotExist:
+                    previous_version["room"] = "[deleted]"
 
         next_version = Version.objects.filter(object_id=device.pk,
             revision__date_created__gt=this_version.revision.date_created,
@@ -166,11 +175,20 @@ class DeviceHistory(View):
             next_version["revisionpk"] = revisionpk
 
         if this_version.field_dict["devicetype"] != None:
-            this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
+            try:
+                this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
+            except Type.DoesNotExist:
+                this_version.field_dict["devicetype"] = "[deleted]"
         if this_version.field_dict["manufacturer"] != None:
-            this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
+            try:
+                this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
+            except Type.DoesNotExist:
+                this_version.field_dict["manufacturer"] = "[deleted]"
         if this_version.field_dict["room"] != None:
-            this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
+            try:
+                this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
+            except Type.DoesNotExist:
+                this_version.field_dict["room"] = "[deleted]"
         context = {"version":this_version,
             "previous":previous_version,
             "previouscomment":previouscomment,
@@ -205,12 +223,39 @@ class DeviceHistory(View):
         device = get_object_or_404(Device, pk=deviceid)
         device.currentlending = currentlending
         device.archived = archived
+        
+        deleted_keys = []
+
+        try:
+            devicetype = device.devicetype
+        except Type.DoesNotExist:
+            device.devicetype = None
+            deleted_keys.append("Devicetype")
+
+        try:
+            manufacturer = device.manufacturer
+        except Manufacturer.DoesNotExist:
+            device.manufacturer = None
+            deleted_keys.append("Manufacturer")
+
+        try:
+            room = device.room
+        except Room.DoesNotExist:
+            device.room = None
+            deleted_keys.append("Room")
+
         device.save()
         if version.field_dict["devicetype"] != None:        
             TypeAttributeValue.objects.filter(device = version.object_id).delete()
         reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
         reversion.set_ignore_duplicates(True)
-        messages.success(self.request, 'Successfully reverted Device to revision {0}'.format(version.revision.id))
+
+        if deleted_keys == []:
+            messages.success(self.request, 'Successfully reverted Device to revision {0}'.format(version.revision.id))
+        else:
+            print "test"
+            messages.warning(self.request, "Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}".format(version.revision.id, ",".join(deleted_keys)))
+
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistoryList(View):
