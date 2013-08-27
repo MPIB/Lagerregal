@@ -202,6 +202,7 @@ class DeviceHistory(View):
         currentlending = device.currentlending
         archived = device.archived
         version.revision.revert()
+        device = get_object_or_404(Device, pk=deviceid)
         device.currentlending = currentlending
         device.archived = archived
         device.save()
