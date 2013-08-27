@@ -37,8 +37,7 @@ class UsersettingsView(TemplateView):
             ("", _("Settings"))]
         return context
 
-    def post(self, request):
-        print request, request.POST
+    def post(self, request): 
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
