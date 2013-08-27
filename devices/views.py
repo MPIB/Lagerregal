@@ -209,6 +209,7 @@ class DeviceHistory(View):
         if version.field_dict["devicetype"] != None:        
             TypeAttributeValue.objects.filter(device = version.object_id).delete()
         reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
+        reversion.set_ignore_duplicates(True)
         messages.success(self.request, 'Successfully reverted Device to revision {0}'.format(version.revision.id))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
@@ -323,6 +324,7 @@ class DeviceUpdate(UpdateView):
             reversion.set_comment("Updated")
         else:
             reversion.set_comment(form.cleaned_data["comment"])
+        reversion.set_ignore_duplicates(True)
         if device.devicetype != None:
             if form.cleaned_data["devicetype"] == None:
                 TypeAttributeValue.objects.filter(device = device.pk).delete()
@@ -414,6 +416,7 @@ class DeviceLend(FormView):
         if form.cleaned_data["room"]:
             device.room = form.cleaned_data["room"]
         device.save()
+        reversion.set_ignore_duplicates(True)
         messages.success(self.request, _('Device is marked as lendt to {{0}}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
@@ -432,6 +435,7 @@ class DeviceReturn(View):
         lending.save()
         device.currentlending = None
         device.save()
+        reversion.set_ignore_duplicates(True)
         messages.success(request, _('Device is marked as returned.'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
@@ -449,6 +453,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
             device.archived = None
         device.save()
         #reversion.set_comment("Archived")
+        reversion.set_ignore_duplicates(True)
         messages.success(request, _("Device was archived."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
