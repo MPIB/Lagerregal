@@ -19,9 +19,9 @@
 
 <div class="row">
   <div class="small-6 large-8 columns">
-{% if previous != None %}<li class="previous"><a href="{% url 'device-history' current.pk previous.revisionpk %}"><i class="icon-chevron-left"></i> {% trans 'previous revision' %}</a></li>{% endif %}
-    {% if next != None %}<li class="next"><a href="{% url 'device-history' current.pk next.revisionpk %}">{% trans 'next revision' %} <i class="icon-chevron-right"></i></a></li>{% endif %}
     <h4>Revision: {{version.revision.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4><ul class="pager">
+{% if previous != None %}<li class="previous"><a href="{% url 'device-history' current.pk previous.revisionpk %}"><i class="icon-angle-left"></i> {% trans 'previous revision' %}</a></li>{% endif %}
+    {% if next != None %}<li class="next"><a href="{% url 'device-history' current.pk next.revisionpk %}">{% trans 'next revision' %} <i class="icon-angle-right"></i></a></li>{% endif %}
 </ul>
     
 
