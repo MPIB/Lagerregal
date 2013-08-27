@@ -3,15 +3,15 @@
 <div class="pagination-centered">
   <ul class="pager">
         {% if page_obj.has_previous %}
-        <li class="previous"><a href="{% url listurl page_obj.previous_page_number %}">&larr; {% trans "Older" %}</a></li>
+        <li class="previous"><a href="{% url listurl page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Older" %}</a></li>
         {% else %}
-          <li class="previous disabled"><a href="#">&larr; {% trans "Older" %}</a></li>
+          <li class="previous disabled"><a href="#"><i class="icon-angle-left"></i> {% trans "Older" %}</a></li>
         {% endif %}
                 <li class="current">{% blocktrans with pagenumber=page_obj.number numpages=page_obj.paginator.num_pages %}Page {{ pagenumber }} of {{ numpages }} {% endblocktrans %}</li>
         {% if page_obj.has_next %}
-        <li class="next"><a href="{% url listurl page_obj.next_page_number %}">{% trans "Newer" %} &rarr;</a></li>
+        <li class="next"><a href="{% url listurl page_obj.next_page_number %}">{% trans "Newer" %} <i class="icon-angle-right"></i></a></li>
             {% else %}
-          <li class="next disabled"><a href="">{% trans "Newer" %} &rarr;</a></li>
+          <li class="next disabled"><a href="">{% trans "Newer" %} <i class="icon-angle-right"></i></a></li>
         {% endif %}
   </ul>
 {% endif %}

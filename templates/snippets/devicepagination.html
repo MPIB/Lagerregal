@@ -3,22 +3,22 @@
 <ul class="pager">
         {% if page_obj.has_previous %}
          <li class="previous">
-          {% if viewform.viewfilter.value == "active" %}<a href="{% url 'device-list' page_obj.previous_page_number %}">&larr; {% trans "Older" %}</a>
+          {% if viewform.viewfilter.value == "active" %}<a href="{% url 'device-list' page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Older" %}</a>
           {% else %}
-          <a href="{% url 'device-list-filtered' page_obj.previous_page_number viewform.viewfilter.value %}">&larr; {% trans "Older" %}</a>
+          <a href="{% url 'device-list-filtered' page_obj.previous_page_number viewform.viewfilter.value %}"><i class="icon-angle-left"></i> {% trans "Older" %}</a>
           {% endif %}</li>
         {% else %}
-          <li class="previous disabled"><a href="#">&larr; {% trans "Older" %}</a></li>
+          <li class="previous disabled"><a href="#"><i class="icon-angle-left"></i> {% trans "Older" %}</a></li>
         {% endif %}
                 <li class="current">{% blocktrans with pagenumber=page_obj.number numpages=page_obj.paginator.num_pages %}Page {{ pagenumber }} of {{ numpages }} {% endblocktrans %}</li>
         {% if page_obj.has_next %}
           <li class="next">
-          {% if viewform.viewfilter.value == "active" %}<a href="{% url 'device-list' page_obj.next_page_number %}">{% trans "Newer" %} &rarr;</a>
+          {% if viewform.viewfilter.value == "active" %}<a href="{% url 'device-list' page_obj.next_page_number %}">{% trans "Newer" %} <i class="icon-angle-right"></i></a>
           {% else %}
-          <a href="{% url 'device-list-filtered' page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Newer" %} &rarr;</a>
+          <a href="{% url 'device-list-filtered' page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Newer" %} <i class="icon-angle-right"></i></a>
           {% endif %}
             {% else %}
-          <li class="next disabled"><a href="">{% trans "Newer" %} &rarr;</a></li>
+          <li class="next disabled"><a href="">{% trans "Newer" %} <i class="icon-angle-right"></i></a></li>
         {% endif %}
   </ul>
 {% endif %}
