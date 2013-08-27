@@ -91,4 +91,36 @@ $("#addform").submit(function() {
     Dajaxice.devices.add_device_field(Dajax.process,{'form':$(this).serialize(true)});
     return false;
 });
+
+changelist = []
+
+initialdata = {
+{% for field in form %}
+  "{{ field.html_name }}": $("#{{ field.auto_id }}").val(),
+{% endfor %}
+}
+
+commentstring = ""
+
+    $('body').on('change', 'input, select', function() {
+        if (!($(this).attr("id") == "id_emailbosses" ||
+          $(this).attr("id") == "id_emailtemplatebosses" ||
+          $(this).attr("id") == "id_emailmanagment" ||
+          $(this).attr("id") == "id_emailtemplatemanagment" ||
+          $(this).attr("id") == "id_comment")) {
+          if ($(this).val() != initialdata[$(this).attr("name")]) {
+            if (changelist.indexOf($(this).attr("name")) == -1) {
+              changelist.push($(this).attr("name"))
+            }
+          } else {
+              changelist.splice(changelist.indexOf($(this).attr("name")), 1)
+        }
+        if($("#id_comment").val() == commentstring) {
+          commentstring = "Updated: " + changelist.join(", ")
+          $("#id_comment").val(commentstring)
+        }
+      }
+        console.log($("#id_comment").val())
+    });
+
 {% endblock %}
