@@ -117,7 +117,7 @@ class DeviceIpAddress(FormView):
         ipaddresses = form.cleaned_data["ipaddresses"]
         device = form.cleaned_data["device"]
         if device.archived != None:
-            messages.error(self.request, "Archived Devices can't get new IP-Addresses")
+            messages.error(self.request, _("Archived Devices can't get new IP-Addresses"))
             return HttpResponseRedirect(self.reverse("device-detail", kwargs={"pk":device.pk}))
         for ipaddress in ipaddresses:
             ipaddress.device = device
@@ -209,7 +209,7 @@ class DeviceHistory(View):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived != None:
-            messages.error(self.request, "Archived Devices can't be reverted")
+            messages.error(self.request, _("Archived Devices can't be reverted"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         revisionid = kwargs["revision"]
 
@@ -230,19 +230,19 @@ class DeviceHistory(View):
             devicetype = device.devicetype
         except Type.DoesNotExist:
             device.devicetype = None
-            deleted_keys.append("Devicetype")
+            deleted_keys.append(_("Devicetype"))
 
         try:
             manufacturer = device.manufacturer
         except Manufacturer.DoesNotExist:
             device.manufacturer = None
-            deleted_keys.append("Manufacturer")
+            deleted_keys.append(_("Manufacturer"))
 
         try:
             room = device.room
         except Room.DoesNotExist:
             device.room = None
-            deleted_keys.append("Room")
+            deleted_keys.append(_("Room"))
 
         device.save()
         if version.field_dict["devicetype"] != None:        
@@ -251,10 +251,10 @@ class DeviceHistory(View):
         reversion.set_ignore_duplicates(True)
 
         if deleted_keys == []:
-            messages.success(self.request, 'Successfully reverted Device to revision {0}'.format(version.revision.id))
+            messages.success(self.request, _('Successfully reverted Device to revision {0}').format(version.revision.id))
         else:
             print "test"
-            messages.warning(self.request, "Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}".format(version.revision.id, ",".join(deleted_keys)))
+            messages.warning(self.request, _("Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}").format(version.revision.id, ",".join(deleted_keys)))
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
@@ -307,7 +307,7 @@ class DeviceCreate(CreateView):
     def form_valid(self, form):
         form.cleaned_data["creator"] = self.request.user
         if form.cleaned_data["comment"] == "":
-            reversion.set_comment("Created")
+            reversion.set_comment(_("Created"))
         else:
             reversion.set_comment(form.cleaned_data["comment"])
         r = super(DeviceCreate, self).form_valid(form)
@@ -362,11 +362,11 @@ class DeviceUpdate(UpdateView):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived != None:
-            messages.error(self.request, "Archived Devices can't be edited")
+            messages.error(self.request, _("Archived Devices can't be edited"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
         if form.cleaned_data["comment"] == "":
-            reversion.set_comment("Updated")
+            reversion.set_comment(_("Updated"))
         else:
             reversion.set_comment(form.cleaned_data["comment"])
         reversion.set_ignore_duplicates(True)
@@ -450,7 +450,7 @@ class DeviceLend(FormView):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived != None:
-            messages.error(self.request, "Archived Devices can't be lendt")
+            messages.error(self.request, _("Archived Devices can't be lendt"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = Lending()
         lending.owner = get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)
@@ -473,7 +473,7 @@ class DeviceReturn(View):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived != None:
-            messages.error(request, "Archived Devices can't be returned")
+            messages.error(request, _("Archived Devices can't be returned"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = device.currentlending
         lending.returndate = datetime.datetime.now()

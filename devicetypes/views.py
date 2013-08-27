@@ -60,7 +60,7 @@ class TypeCreate(CreateView):
         # Call the base implementation first to get a context
         context = super(TypeCreate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Devicetype"
+        context['actionstring'] = _("Create new Devicetype")
         context['type'] = "type"
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")),
@@ -86,7 +86,7 @@ class TypeUpdate(UpdateView):
         # Call the base implementation first to get a context
         context = super(TypeUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
         context["form"].fields.pop("extra_field_0")
         context["form"]["extra_fieldcount"].initial = context["attribute_list"].count()
