@@ -9,7 +9,9 @@
 
 {% block pullright %}
 <form method="post">{% csrf_token %}
-    <input type="submit" class ="btn btn-primary btn-sm pull-right" value="{% trans "Restore Revision" %}">
+    <button type="submit" class="btn btn-primary btn-sm pull-right">
+  <i class="icon-undo"></i> {% trans "Restore Revision" %}
+</button>
 </form>
 {% endblock %}
 
