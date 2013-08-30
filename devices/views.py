@@ -42,7 +42,7 @@ class DeviceList(ListView):
         context = super(DeviceList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
         context["template_list"] = Template.objects.all()
-        context["breadcrumbs"] = [["device-list", _("Devices")]]
+        context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
