@@ -71,6 +71,11 @@ class IpAddressCreate(CreateView):
             ("", _("Create new IP-Address"))]
         return context
 
+    def form_valid(self, form):
+        form.instance.address = ".".join([x.lstrip("0") for x in form.cleaned_data["address"]])
+        return super(IpAddressCreate, self).form_valid(form)
+
+
 class IpAddressUpdate(UpdateView):
     model = IpAddress
     template_name = 'devices/base_form.html'
@@ -85,6 +90,10 @@ class IpAddressUpdate(UpdateView):
             (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address),
             ("", _("Edit"))]
         return context
+
+    def form_valid(self, form):
+        form.instance.address = ".".join([x.lstrip("0") for x in form.cleaned_data["address"].split(".")])
+        return super(IpAddressUpdate, self).form_valid(form)
 
 
 class IpAddressDelete(DeleteView):
