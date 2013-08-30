@@ -72,7 +72,7 @@ class IpAddressCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.address = ".".join([x.lstrip("0") for x in form.cleaned_data["address"]])
+        form.instance.address = ".".join([x.lstrip("0") for x in form.cleaned_data["address"].split(".")])
         return super(IpAddressCreate, self).form_valid(form)
 
 
