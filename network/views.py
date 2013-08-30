@@ -40,7 +40,7 @@ class IpAddressList(ListView):
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
-        context["breadcrumbs"] = [("", _("IP-Addresses"))]
+        context["breadcrumbs"] = [(reverse("device-list"), _("IP-Addresses"))]
         
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
