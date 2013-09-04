@@ -98,7 +98,6 @@ class DeviceForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
-        print self.data, kwargs
         if self.data != {}:
             try:
                 attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
