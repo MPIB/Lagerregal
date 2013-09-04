@@ -41,7 +41,8 @@ def add_class(value, css_class):
         m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class, 
                                                     css_class, css_class), 
                                                     match.group(1))
-        if not m:
+
+        if m != None:
             return mark_safe(class_re.sub(match.group(1) + " " + css_class, 
                                           string))
     else:
