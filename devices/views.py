@@ -289,6 +289,7 @@ class DeviceCreate(CreateView):
         if copyid != None:
             copydict = get_object_or_404(Device, pk=copyid).get_as_dict()
             copydict["creator"] = creator
+            copydict["deviceid"] = copyid
             return copydict
         return {"creator":creator}
 
