@@ -126,10 +126,16 @@ class TypeMerge(View):
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
+
         devices = Device.objects.filter(devicetype=oldobject)
         for device in devices:
             device.devicetype = newobject
             device.save()
+
+        attributes = TypeAttribute.objects.filter(devicetype=oldobject)
+        for attribute in attributes:
+            attribute.devicetype = newobject
+            attribute.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
 
