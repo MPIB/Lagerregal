@@ -63,7 +63,7 @@
 $(function() {
     $( ".dashboard" ).sortable({
       connectWith: ".dashboard",
-      placeholder: "dashboard-placeholder",
+      placeholder: "alert alert-success dashboard-placeholder",
       distance: 15,
       update: function(event, ui) {
       widgets = {};
@@ -100,7 +100,7 @@ $(function() {
       }
     );
 
-    $( ".dashboardq" ).disableSelection();
+    $( ".dashboard" ).disableSelection();
   });
   {% endif %}
   {% endblock %}
