@@ -31,4 +31,9 @@
 
 {% block scriptend %}
 {% include 'snippets/searchform_js.html' %}
+$(document).ready( function () {
+var oTable = $("#devicetable").dataTable({
+  "sScrollX": "100%",
+});
+} );
 {% endblock %}
