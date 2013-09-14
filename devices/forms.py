@@ -43,9 +43,9 @@ class SearchForm(forms.Form):
     macaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search MAC-Address", "class":"form-control input-sm"}), required=False)
     macaddressmodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
 
-    devicetype = forms.ModelChoiceField(Type.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
-    manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
-    room = forms.ModelChoiceField(Room.objects.all(), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
+    devicetype = forms.ModelMultipleChoiceField(Type.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
+    manufacturer = forms.ModelMultipleChoiceField(Manufacturer.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
+    room = forms.ModelMultipleChoiceField(Room.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     ipaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address", "class":"form-control input-sm"}), required=False)
     overdue = forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
 
