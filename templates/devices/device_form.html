@@ -116,8 +116,13 @@ commentstring = ""
               changelist.splice(changelist.indexOf($(this).attr("name")), 1)
         }
         if($("#id_comment").val() == commentstring) {
-          commentstring = "Updated: " + changelist.join(", ")
-          $("#id_comment").val(commentstring)
+          if (changelist.length === 0) {
+            commentstring = ""
+            $("#id_comment").val("")
+          } else {
+            commentstring = "Updated: " + changelist.join(", ")
+            $("#id_comment").val(commentstring)
+          }
         }
       }
         console.log($("#id_comment").val())
