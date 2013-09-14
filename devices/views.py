@@ -923,14 +923,14 @@ class Search(FormView):
         if form.cleaned_data["macaddress"] != "":
             search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"]
 
-        if form.cleaned_data["devicetype"] != None:
-            search["devicetype"] = form.cleaned_data["devicetype"]
+        if form.cleaned_data["devicetype"].exists():
+            search["devicetype__in"] = form.cleaned_data["devicetype"]
 
-        if form.cleaned_data["manufacturer"] != None:
-            search["manufacturer"] = form.cleaned_data["manufacturer"]
+        if form.cleaned_data["manufacturer"].exists():
+            search["manufacturer__in"] = form.cleaned_data["manufacturer"]
 
-        if form.cleaned_data["room"] != None:
-            search["room"] = form.cleaned_data["room"]
+        if form.cleaned_data["room"].exists():
+            search["room__in"] = form.cleaned_data["room"]
 
 
 
@@ -939,7 +939,7 @@ class Search(FormView):
         elif form.cleaned_data["overdue"] == "n":
             search["duedate__lt"] = datetime.datetime.now()
 
-
+        print search
 
         devices = Device.objects.filter(**search)
 
