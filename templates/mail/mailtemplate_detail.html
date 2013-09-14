@@ -18,7 +18,7 @@
       <tbody>
         <tr><td>Subject</td><td>{{mailtemplate.subject}}</td></tr>
           <tr><td>Usage</td><td>{{mailtemplate.get_usage_display }}</td></tr>
-          <tr><td>Body</td><td>{{mailtemplate.body}}</td></tr>
+          <tr><td>Body</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
       </tbody>
     </table>
   </div>
