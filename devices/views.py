@@ -107,10 +107,11 @@ class DeviceIpAddress(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(DeviceIpAddress, self).get_context_data(**kwargs)
+        device = context["form"].cleaned_data["device"]
         context["breadcrumbs"] = [
-            (reverse("ipaddress-list"), _("IP-Addresses")),
-            (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address),
-            ("", _("Assign IP-Address"))]
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            ("", _("Assign IP-Addresses"))]
         return context
 
     def form_valid(self, form):
