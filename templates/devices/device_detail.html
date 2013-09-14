@@ -104,7 +104,7 @@
       <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         {{ipaddressform.ipaddresses}}
         <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
-        <input type="submit" class ="btn btn-success btn-sm pull-right" value="{% trans "Assign Addresses" %}">
+        <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="icon-plus"></i> {% trans "Assign Addresses" %}</button>
     </div>
     <input type="hidden" name="device" value="{{ device.pk }}" />
       </form>
@@ -192,7 +192,14 @@
 
 {% block scriptend %}
 $("#id_ipaddresses").select2({
-    tokenSeparators: [",", " "]});
+    tokenSeparators: [",", " "]}).
+    on("change", function(e) {
+    if (e.val.length != 0) {
+    $("#submitipaddress").removeClass("disabled")
+  } else {
+    $("#submitipaddress").addClass("disabled")
+  }
+  });
 
   $(function() {
     $( "#id_duedate" ).datepicker();
