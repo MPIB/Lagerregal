@@ -87,7 +87,7 @@
     <a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit-history" %}</a>
   </div>
 <div class="col-xs-12 col-md-4">
-{{device.description}}
+{{device.description|linebreaks}}
 </div>
   <div class="col-xs-12 col-md-4">
 <div class="panel panel-primary">
