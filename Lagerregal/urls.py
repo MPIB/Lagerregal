@@ -6,7 +6,7 @@ from devicetypes.views import *
 from main.views import *
 from api.views import *
 from mail.views import *
-from users.views import ProfileView, UsersettingsView
+from users.views import ProfileView, UsersettingsView, UserprofileView
 from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
@@ -101,6 +101,7 @@ urlpatterns = patterns('',
     url(r'^ipaddresses/view/(?P<pk>.*)$', permission_required("network.read_ipaddress", raise_exception=True)(IpAddressDetail.as_view()), name="ipaddress-detail"),
 
     url(r'^users/(?P<pk>[0-9]*)$', permission_required("devices.read_user", raise_exception=True)(ProfileView.as_view()), name="userprofile"),
+    url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
     url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
 
     url(r'^search/$', permission_required("devices.read_device", raise_exception=True)(Search.as_view()), name="search"),
