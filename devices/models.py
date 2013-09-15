@@ -98,7 +98,8 @@ class Device(models.Model):
             ("boss_mails", _("Emails for bosses")),
             ("managment_mails", _("Emails for managment")),
             ("support_mails", _("Emails for support")),
-            ("read_device", _("Can read Device"))
+            ("read_device", _("Can read Device")),
+            ("lend_device", _("Can lend Device"))
         )
 
     def get_absolute_url(self):
