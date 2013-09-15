@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block pullright %}
-  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>
-<a href="{% url 'room-edit' room.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+{% if perms.devices.delete_room %}<a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_room %}<a href="{% url 'room-edit' room.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
   <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -21,6 +21,7 @@
   {% endfor %}
   </ul>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -35,6 +36,7 @@
     </table>
   </div>
 <div class="col-xs-12 col-md-7">
+  {% if perms.devices.read_device %}
 <h4>{% trans "Device" %}</h4>
 {% if device_list %}
     <table width="100%" id="devicetable" class="table table-bordered table-striped">
@@ -56,9 +58,11 @@
   </tbody>
 </table>
 {% endif %}
+{% endif %}
 </div>
 </div>
 
+{% if perms.devices.delete_room %}
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -78,4 +82,5 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+  {% endif %}
 {% endblock %}

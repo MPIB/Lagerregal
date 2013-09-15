@@ -10,17 +10,20 @@
 
 {% block pullright %}
 {% if device.archived == None %}
-  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>
-  <a   href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-close" style="margin-right:7px"></i>{% trans "Archive" %}</a>
-<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="icon-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>
-  <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+{% if perms.devices.delete_device %}<a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_device %}<a   href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-close" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
+{% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="icon-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
+{% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+{% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
     <a href="{% url 'device-return' device.id %}" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as returned" %}</a>
   {% else %}
     <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as Lendt" %}</a>
   {% endif %}
+{% endif %}
 {% else %}
-  <a  href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>
+{% if perms.devices.change_device %}
+  <a  href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
 {% endif %}
 {% endblock %}
 
@@ -84,7 +87,7 @@
 </table>
 {% endif %}
 
-    <a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit-history" %}</a>
+{% if perms.devices.change_device %}<a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit-history" %}</a>{% endif %}
   </div>
 <div class="col-xs-12 col-md-5">
 {{device.description|linebreaks}}
@@ -99,7 +102,7 @@
       {% endfor %}
   </ul>
   
-          {% if device.archived == None %}
+          {% if device.archived == None and perms.devices.change_device %}
   <div class="panel-footer">
       <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         {{ipaddressform.ipaddresses}}
@@ -114,7 +117,7 @@
   </div>
 </div>
 
-
+{% if perms.devices.lend_device %}
   <div class="modal fade" id="lendModal" tabindex="-1" role="dialog" aria-labelledby="lendModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -178,9 +181,9 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+{% endif %}
 
-
-
+{% if perms.devices.change_device %}
   <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="archiveModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -203,9 +206,9 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+{% endif %}
 
-
-
+{% if perms.devices.delete_device %}
   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -224,6 +227,7 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+{% endif %}
 {% endblock %}
 
 {% block scriptend %}

@@ -7,8 +7,8 @@
 {% trans "Devicetype" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>
-<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+{% if perms.devicetypes.delete_type %}<a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devicetypes.change_type %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
   <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -20,6 +20,7 @@
   {% endfor %}
   </ul>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -28,13 +29,18 @@
 <h4>{% trans "Extra attributes" %}</h4>
 <ul>
   {% for attribute in attribute_list %}
-  <li><a href="#" class="attribute" data-id="{{attribute.id}}" data-name="{{attribute.name}}" data-regex="{{attribute.regex}}">{{attribute.name}}</a></li>
+    {% if perms.devicetypes.change_type %}
+      <li><a href="#" class="attribute" data-id="{{attribute.id}}" data-name="{{attribute.name}}" data-regex="{{attribute.regex}}">{{attribute.name}}</a></li>
+    {% else %}
+      <li>{{attribute.name}}</li>
+    {% endif %}
   {% endfor %}
   </ul>
 
-  <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add new Attribute" %}</a>
+{% if perms.devicetypes.change_type %}<a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add new Attribute" %}</a>{% endif %}
 </div>
 <div class="col-xs-12 col-md-7">
+  {% if perms.devices.read_device %}
 {% if device_list %}
 <h4>{% trans "Devices" %}</h4>
     <table width="100%" id="devicetable" class="table table-bordered table-striped">
@@ -57,11 +63,12 @@
      {% endfor %}
   </tbody>
 </table>
-</div>
-</div>
-
 {% endif %}
+{% endif %}
+</div>
+</div>
 
+{% if perms.devicetypes.change_type %}
 <div class="modal fade" id="attributeModal" tabindex="-1" role="dialog" aria-labelledby="attributeModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -130,8 +137,9 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+{% endif %}
 
-
+{% if perms.devicetypes.delete_type %}
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -151,10 +159,11 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
-
+{% endif %}
 {% endblock %}
 
 {% block scriptend %}
+{% if perms.devicetypes.change_type %}
   $('.attribute').click(function() {
     var editurl = $("#attribute_editform").attr("action")
     editurl = editurl.replace(new RegExp("0" + '$'), $(this).data("id"))
@@ -166,4 +175,5 @@
     $("#attributeModal").find("#id_regex").val($(this).data("regex"));
     $('#attributeModal').modal('show')
 })
+{% endif %}
 {% endblock %}
