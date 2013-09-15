@@ -939,24 +939,26 @@ class Search(FormView):
         elif form.cleaned_data["overdue"] == "n":
             search["duedate__lt"] = datetime.datetime.now()
 
-        print search
-
-        devices = Device.objects.filter(**search)
-
-        if form.cleaned_data["ipaddress"] != "":
-            devices = devices.filter(ipaddress__address__icontains=form.cleaned_data["ipaddress"]).distinct()
-
-        viewfilter = form.cleaned_data["viewfilter"]
-        if viewfilter == "all":
-            pass
-        elif viewfilter == "available":
-            devices = devices.filter(currentlending=None)
-        elif viewfilter == "unavailable":
-            devices = devices.exclude(currentlending=None)
-        elif viewfilter == "archived":
-            devices = devices.exclude(archived=None)
+        if search == {} and form.cleaned_data["ipaddress"] == "":
+            devices = []
         else:
-            devices = devices.filter(archived=None)
+
+            devices = Device.objects.filter(**search)
+
+            if form.cleaned_data["ipaddress"] != "":
+                devices = devices.filter(ipaddress__address__icontains=form.cleaned_data["ipaddress"]).distinct()
+
+            viewfilter = form.cleaned_data["viewfilter"]
+            if viewfilter == "all":
+                pass
+            elif viewfilter == "available":
+                devices = devices.filter(currentlending=None)
+            elif viewfilter == "unavailable":
+                devices = devices.exclude(currentlending=None)
+            elif viewfilter == "archived":
+                devices = devices.exclude(archived=None)
+            else:
+                devices = devices.filter(archived=None)
 
         context = {
         "device_list":devices,
