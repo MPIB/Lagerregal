@@ -42,7 +42,7 @@ class Room(models.Model):
         verbose_name = _('Room')
         verbose_name_plural = _('Rooms')
         permissions = (
-            ("read_rioom", _("Can read Room")),
+            ("read_room", _("Can read Room")),
         )
 
     def get_absolute_url(self):
