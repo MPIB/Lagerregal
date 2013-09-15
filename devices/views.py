@@ -65,7 +65,7 @@ class DeviceDetail(DetailView):
         context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
         context['ipaddress_available'] = IpAddress.objects.filter(device=None)
         context['ipaddressform'] = IpAddressForm()
-        context["lending_list"] = Lending.objects.filter(device=context["device"])
+        context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")
         context["today"] = datetime.date.today()
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
