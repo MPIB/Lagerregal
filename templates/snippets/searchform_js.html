@@ -24,11 +24,13 @@ placeholder: "{% trans "Filter" %}"
 function clear_form_elements(ele) {
     $(ele).find(':input').each(function() {
         switch(this.type) {
-            case 'password':
             case 'select-multiple':
+                $(this).select2("val", "");
+            case 'password':
             case 'select-one':
             case 'text':
             case 'textarea':
+                console.log($(this).val())
                 $(this).val('');
                 break;
             case 'checkbox':
