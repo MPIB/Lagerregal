@@ -22,6 +22,9 @@ class MailTemplate(models.Model):
     class Meta:
         verbose_name = _('Mailtemplate')
         verbose_name_plural = _('Mailtemplates')
+        permissions = (
+            ("read_mailtemplate", _("Can read Mailtemplate")),
+        )
 
     def get_absolute_url(self):
         return reverse('mail-detail', kwargs={'pk': self.pk})
