@@ -109,3 +109,21 @@ table tr th, table tr td {
 #addWidgetButton:hover {
     text-decoration: none;
 }
+
+.progress {
+    position: relative;
+}
+
+.progress-bar {
+    z-index: 1;
+    position: absolute;
+}
+
+.progress span {
+    position: absolute;
+    font-weight:bold;
+    top: 0;
+    z-index: 2;
+    color: white;
+    padding:0px 10px;
+}
