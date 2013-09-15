@@ -118,7 +118,7 @@
 </div>
 
 {% if perms.devices.lend_device %}
-  <div class="modal fade" id="lendModal" tabindex="-1" role="dialog" aria-labelledby="lendModalLabel" aria-hidden="true">
+  <div class="modal fade" id="lendModal" role="dialog" aria-labelledby="lendModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -166,7 +166,7 @@
 <div class="form-group {{field.css_classes}}">
     <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
     <div class="col-lg-8">
-      {{ field|add_class:'form-control'}}
+      {{ field}}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
   </div>
@@ -240,4 +240,7 @@ $("#id_ipaddresses").select2({
     $("#submitipaddress").addClass("disabled")
   }
   });
+
+$("select").select2()
+
 {% endblock %}
