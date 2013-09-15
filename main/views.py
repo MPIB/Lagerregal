@@ -4,7 +4,7 @@ from network.models import *
 from reversion.models import Version
 import datetime
 from django.contrib.contenttypes.models import ContentType
-from main.models import DashboardWidget, widgets
+from main.models import DashboardWidget, widgets, get_progresscolor
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
 
@@ -17,9 +17,11 @@ class Home(TemplateView):
             context['device_all'] = Device.objects.all().count()
             context['device_available'] = Device.objects.filter(currentlending=None).count()
             context["device_percent"] = 100 - ((float(context["device_available"])/context["device_all"])*100)
+            context["device_percentcolor"] = get_progresscolor(context["device_percent"] )
             context['ipaddress_all'] = IpAddress.objects.all().count()
             context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
             context["ipaddress_percent"] = 100 - ((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
+            context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"] )
             context['revisions'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:20]
             context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
             context["today"] = datetime.date.today()
