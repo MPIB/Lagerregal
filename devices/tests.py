@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.utils import unittest
 from django.test.client import Client
 from models import Device
-
+"""
 class DeviceTest(unittest.TestCase):
     def setUp(self):
         self.client = Client()
@@ -40,3 +40,4 @@ class DeviceTest(unittest.TestCase):
 
         Device.objects.get(pk=7).delete()
         
+"""
