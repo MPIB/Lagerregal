@@ -7,8 +7,8 @@
 {% trans "Manufacturer" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-  <a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>
-<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+{% if perms.devices.delete_manufacturer %}<a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_manufacturer %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
   <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -20,9 +20,12 @@
   {% endfor %}
   </ul>
 </div>
+{% endif %}
 {% endblock %}
+
 {% block content %}
 {% if device_list %}
+{% if perms.devices.read_device %}
 <h4>Devices</h4>
     <table width="100%" id="devicetable" class="table table-bordered table-striped">
   <thead>
@@ -44,10 +47,10 @@
      {% endfor %}
   </tbody>
 </table>
-
-
 {% endif %}
 
+{% endif %}
+{% if perms.devices.delete_manufacturer %}
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -67,5 +70,5 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
-
+{% endif %}
 {% endblock %}

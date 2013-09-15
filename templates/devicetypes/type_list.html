@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Devicetype" %}</a>
+{% if perms.devicetypes.create_type %}<a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Devicetype" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
