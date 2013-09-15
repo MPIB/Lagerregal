@@ -2,6 +2,7 @@ from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Room, Building, Manufacturer
 from devicetypes.models import Type
+from network.models import IpAddress
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from main.models import DashboardWidget, widgets
@@ -30,6 +31,12 @@ def add_widget(request, widgetname):
         context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
         context["today"] = datetime.date.today()
         context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
+        context['device_all'] = Device.objects.all().count()
+        context['device_available'] = Device.objects.filter(currentlending=None).count()
+        context["device_percent"] = 100 - ((float(context["device_available"])/context["device_all"])*100)
+        context['ipaddress_all'] = IpAddress.objects.all().count()
+        context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
+        context["ipaddress_percent"] = 100 - ((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
         if widget.column == "l":
             col = ".dashboard-left"
         else:
