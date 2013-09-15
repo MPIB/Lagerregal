@@ -20,3 +20,6 @@ class Lageruser(AbstractUser):
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
+        permissions = (
+            ("read_user", _("Can read User")),
+        )
