@@ -24,6 +24,20 @@ class ProfileView(DetailView):
         context["breadcrumbs"] = [("", context["profileuser"])]
         return context
 
+class UserprofileView(TemplateView):
+    template_name = "users/profile.html"
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(UserprofileView, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context["profileuser"] = self.request.user
+        context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
+        context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context["breadcrumbs"] = [
+            (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),]
+        return context
+
 class UsersettingsView(TemplateView):
     template_name = "users/settings.html"
 
