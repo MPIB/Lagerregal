@@ -86,7 +86,7 @@ $(function() {
         Dajaxice.main.remove_widget(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
     });
 
-    $(".addWidget").click(function() {
+    $('body').on('click', '.addWidget', function() {
         Dajaxice.main.add_widget(Dajax.process,{'widgetname':$( this ).data("name")})
     });
 
