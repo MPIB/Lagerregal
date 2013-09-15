@@ -92,13 +92,14 @@ $(function() {
 
     $(".panel-title .pull-right").hide();
     
-    $(".panel-heading").hover(
-      function () {
+    $('body').on({
+      mouseenter: function () {
         $(this).find(".pull-right").fadeIn();
       },
-      function () {
+      mouseleave: function () {
         $(this).find(".pull-right").fadeOut();
-      }
+      }},
+      '.panel-heading'
     );
 
     $( ".dashboard" ).disableSelection();
