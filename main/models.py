@@ -10,6 +10,14 @@ widgets = {
     "statistics": _("Statistics")
 }
 
+def get_progresscolor(percent):
+    if percent > 90:
+        return "danger"
+    elif percent > 60:
+        return "warning"
+    else:
+        return "success"
+
 class DashboardWidget(models.Model):
     column = models.CharField(max_length=1, choices=[("l", "left"), ("r", "right")])
     index = models.IntegerField()
