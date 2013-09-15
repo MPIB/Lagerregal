@@ -64,7 +64,6 @@ class DeviceDetail(DetailView):
         # Add in a QuerySet of all the books
         context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
         context['ipaddress_available'] = IpAddress.objects.filter(device=None)
-        context['version_list'] = reversion.get_unique_for_object(context["device"])
         context['ipaddressform'] = IpAddressForm()
         context["lending_list"] = Lending.objects.filter(device=context["device"])
         context["today"] = datetime.date.today()
