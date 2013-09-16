@@ -2,23 +2,28 @@
 {% if is_paginated %}
 <ul class="pager">
         {% if page_obj.has_previous %}
-         <li class="previous">
-          {% if viewform.viewfilter.value == "active" %}<a href="{% url 'device-list' page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Older" %}</a>
+         
+          {% if viewform.viewfilter.value == "active" %}
+          <li class="previous"><a href="{% url 'device-list' 1 %}" style="margin-right:5px"><i class="icon-double-angle-left"></i> {% trans "First" %}</a></li>
+          <li class="previous"><a href="{% url 'device-list' page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
           {% else %}
-          <a href="{% url 'device-list-filtered' page_obj.previous_page_number viewform.viewfilter.value %}"><i class="icon-angle-left"></i> {% trans "Older" %}</a>
-          {% endif %}</li>
+        <li class="previous"><a href="{% url 'device-list-filtered'  1 viewform.viewfilter.value %}" style="margin-right:5px"><i class="icon-double-angle-left"></i> {% trans "First" %}</a></li>
+          <li class="previous"><a href="{% url 'device-list-filtered' page_obj.previous_page_number viewform.viewfilter.value %}"><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
+          {% endif %}
         {% else %}
-          <li class="previous disabled"><a href="#"><i class="icon-angle-left"></i> {% trans "Older" %}</a></li>
+          <li class="previous disabled"><a href="#"><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
         {% endif %}
                 <li class="current">{% blocktrans with pagenumber=page_obj.number numpages=page_obj.paginator.num_pages %}Page {{ pagenumber }} of {{ numpages }} {% endblocktrans %}</li>
         {% if page_obj.has_next %}
-          <li class="next">
-          {% if viewform.viewfilter.value == "active" %}<a href="{% url 'device-list' page_obj.next_page_number %}">{% trans "Newer" %} <i class="icon-angle-right"></i></a>
+          {% if viewform.viewfilter.value == "active" %}
+        <li class="next"><a href="{% url 'device-list' page_obj.paginator.num_pages %}" style="margin-left:5px">{% trans "Last" %} <i class="icon-double-angle-right"></i></a></li>
+          <li class="next"><a href="{% url 'device-list' page_obj.next_page_number %}">{% trans "Next" %} <i class="icon-angle-right"></i></a></li>
           {% else %}
-          <a href="{% url 'device-list-filtered' page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Newer" %} <i class="icon-angle-right"></i></a>
+        <li class="next"><a href="{% url 'device-list-filtered' page_obj.paginator.num_pages viewform.viewfilter.value %}" style="margin-left:5px">{% trans "Last" %} <i class="icon-double-angle-right"></i></a></li>
+          <li class="next"><a href="{% url 'device-list-filtered' page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Next" %} <i class="icon-angle-right"></i></a></li>
           {% endif %}
             {% else %}
-          <li class="next disabled"><a href="">{% trans "Newer" %} <i class="icon-angle-right"></i></a></li>
+          <li class="next disabled"><a href="">{% trans "Next" %} <i class="icon-angle-right"></i></a></li>
         {% endif %}
   </ul>
 {% endif %}
