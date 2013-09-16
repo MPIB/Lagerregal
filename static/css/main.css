@@ -127,3 +127,7 @@ table tr th, table tr td {
     color: white;
     padding:0px 10px;
 }
+
+.select2-container {
+    width:100%;
+}
