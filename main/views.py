@@ -16,11 +16,11 @@ class Home(TemplateView):
         if self.request.user.is_authenticated():
             context['device_all'] = Device.objects.all().count()
             context['device_available'] = Device.objects.filter(currentlending=None).count()
-            context["device_percent"] = 100 - ((float(context["device_available"])/context["device_all"])*100)
+            context["device_percent"] = 100 - int((float(context["device_available"])/context["device_all"])*100)
             context["device_percentcolor"] = get_progresscolor(context["device_percent"] )
             context['ipaddress_all'] = IpAddress.objects.all().count()
             context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
-            context["ipaddress_percent"] = 100 - ((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
+            context["ipaddress_percent"] = 100 - int((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
             context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"] )
             context['revisions'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:20]
             context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
