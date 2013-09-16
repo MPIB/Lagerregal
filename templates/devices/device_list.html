@@ -38,6 +38,7 @@
       <th>{% trans "Bildnumber" %}</th>
       <th>{% trans "Devicetype" %}</th>
       <th>{% trans "Room" %}</th>
+      <th style="width:60px">{% trans "Available" %}</th>
     </tr>
   </thead>
   <tbody>
@@ -47,6 +48,7 @@
       <td>{{ device.bildnumber }}</td>
       <td>{{ device.devicetype }}</td>
       <td>{{ device.room }} ({{device.room.building}})</td>
+      <td>{% if device.currentlending == None %}<span class="label label-success" style="text-align:center"><i class="icon-exclamation"></i></span>{% else %}<span class="label label-success" style="text-align:center"><i class="icon-exclamation text-danger"></i></span>{% endif %}
     </tr>
      {% endfor %}
   </tbody>
