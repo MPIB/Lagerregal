@@ -7,7 +7,6 @@ from main.views import *
 from api.views import *
 from mail.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView
-from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin

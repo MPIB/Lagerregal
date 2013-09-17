@@ -1,19 +1,18 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View, FormView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
-from django.template import RequestContext, loader, Context
-from django.template.loader import render_to_string
+from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
+from mail.models import MailTemplate
 from django.shortcuts import render_to_response
-import rest_framework.reverse
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm
+from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm
 import datetime
 import reversion
 from django.contrib.auth.models import Permission
