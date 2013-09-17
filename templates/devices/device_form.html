@@ -151,7 +151,6 @@ commentstring = ""
           }
         }
       }
-        console.log($("#id_comment").val())
     });
 
 $(".previewbutton").click(function() {
@@ -171,5 +170,33 @@ $(".previewbutton").click(function() {
   }
     Dajaxice.devices.load_mailpreview(Dajax.process, {"template":template, "device":device})
 });
+
+$("#id_emailtemplatebosses").change(function() {
+  if ($(this).val() === "") {
+    $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
+});
+
+  if ($("#id_emailtemplatebosses").val() === "") {
+    $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
+
+  $("#id_emailtemplatemanagment").change(function() {
+  if ($(this).val() === "") {
+    $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
+});
+
+  if ($("#id_emailtemplatemanagment").val() === "") {
+    $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
 
 {% endblock %}
