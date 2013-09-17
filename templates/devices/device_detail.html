@@ -59,6 +59,11 @@
 </td></tr>
       </tbody>
     </table>
+
+{% if perms.devices.lend_device %}
+<a href="#" class="btn btn-default" data-target="#mailModal" data-toggle="modal" ><i class="icon-envelope" style="margin-right:7px"></i>{% trans "Send mail to user" %}</a>
+{% endif %}
+
     {% else %}
     <p>{% trans "Currently not lent" %}</p>
     {% endif %}
@@ -228,6 +233,11 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 {% endif %}
+
+{% if perms.devices.lend_device %}
+{% include "snippets/modals/devicemailModal.html" %}
+{% endif %}
+
 {% endblock %}
 
 {% block scriptend %}
