@@ -69,7 +69,6 @@ $('#id_viewfilter').change(function() {
     window.location = "/devices/filter/" + $(this).val()
 });
 });
-{% endblock %}
 
-{% block htmlend %}
+{% include "snippets/pagination_js.html" with pageurl="device-list" %}
 {% endblock %}
