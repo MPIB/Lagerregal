@@ -3,11 +3,12 @@ from users.models import Lageruser
 from reversion.models import Version
 from devices.models import Device
 from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse_lazy, reverse
-from users.forms import AppearanceForm
+from django.core.urlresolvers import reverse
+from users.forms import SettingsForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import render
 
 class ProfileView(DetailView):
     model = Lageruser
@@ -45,7 +46,9 @@ class UsersettingsView(TemplateView):
         # Call the base implementation first to get a context
         context = super(UsersettingsView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['appearanceform'] = AppearanceForm(initial={"pagelength":self.request.user.pagelength})
+        if self.request.method != "POST":
+            print self.request.method 
+            context['settingsform'] = SettingsForm(initial={"pagelength":self.request.user.pagelength})
         context["breadcrumbs"] = [
             (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),
             ("", _("Settings"))]
@@ -56,9 +59,14 @@ class UsersettingsView(TemplateView):
             request.user.language = request.POST["language"]
             request.user.save()
             request.session['django_language'] =request.POST["language"]
+            return HttpResponseRedirect(reverse("usersettings"))
         elif "pagelength" in request.POST:
-            if request.user.pagelength != request.POST["pagelength"]:
-                request.user.pagelength = request.POST["pagelength"]
-                request.user.save()
-            messages.success(self.request, _('Settings were successfully updated'))
-        return HttpResponseRedirect(reverse("usersettings"))
+            form = SettingsForm(request.POST)
+            if form.is_valid():
+                if request.user.pagelength != form.cleaned_data["pagelength"]:
+                    request.user.pagelength = request.POST["pagelength"]
+                    request.user.save()
+                messages.success(self.request, _('Settings were successfully updated'))
+            context = self.get_context_data()
+            context["settingsform"] = form
+            return  render(request, self.template_name, context)
