@@ -149,3 +149,8 @@ class AddForm(forms.ModelForm):
         if count != 0:
             raise forms.ValidationError("Object with that Name already exists.")
         return cleaned_data
+
+class DeviceMailForm(forms.Form):
+    error_css_class = 'has_error'
+    recipient = forms.ModelChoiceField(Lageruser.objects.all())
+    mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
