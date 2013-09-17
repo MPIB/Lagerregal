@@ -1,7 +1,7 @@
 from django import forms
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
-from devicetypes.models import TypeAttribute, TypeAttributeValue, Type
+from devicetypes.models import TypeAttribute, TypeAttributeValue
 from users.models import Lageruser
 import re
 from django.shortcuts import get_object_or_404

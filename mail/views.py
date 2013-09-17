@@ -1,15 +1,6 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View, FormView
-from django.template import RequestContext, loader, Context
-from django.template.loader import render_to_string
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from mail.models import MailTemplate
-from django.shortcuts import render_to_response
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.utils.formats import localize
-from django.contrib import messages
-from django.shortcuts import render
-from django.core.urlresolvers import reverse_lazy, reverse
 from mail.forms import MailTemplateForm
 from django.utils.translation import ugettext_lazy as _
 
