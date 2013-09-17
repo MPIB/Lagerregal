@@ -71,26 +71,7 @@
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 
-    <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Preview for mailtemplate '<span id='previewmodal_header'></span>'" %}</h4>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-2 text-right">Subject</div>
-            <div class="col-md-10" id="previewModalSubject"></div>
-          </div>
-          <div class="row" style="margin-top:20px">
-            <div class="col-md-2 text-right">Body</div>
-          <div class="col-md-10" id="previewModalBody"></div>
-        </div>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+{% include "snippets/modals/mailpreview.html" %}
 {% endblock %}
 
 {% block scriptend %}
