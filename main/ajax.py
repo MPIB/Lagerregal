@@ -33,11 +33,11 @@ def add_widget(request, widgetname):
         context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
         context['device_all'] = Device.objects.all().count()
         context['device_available'] = Device.objects.filter(currentlending=None).count()
-        context["device_percent"] = 100 - ((float(context["device_available"])/context["device_all"])*100)
+        context["device_percent"] = 100 - int((float(context["device_available"])/context["device_all"])*100)
         context["device_percentcolor"] = get_progresscolor(context["device_percent"] )
         context['ipaddress_all'] = IpAddress.objects.all().count()
         context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
-        context["ipaddress_percent"] = 100 - ((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
+        context["ipaddress_percent"] = 100 - int((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
         context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"] )
         if widget.column == "l":
             col = ".dashboard-left"

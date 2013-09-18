@@ -78,6 +78,9 @@ class DeviceDetail(DetailView):
         except:
             pass
         context["mailform"] = DeviceMailForm(initial=mailinitial)
+        versions = reversion.get_for_object(context["device"])
+        if len(versions) != 0:
+            context["lastedit"] = versions[0]
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),

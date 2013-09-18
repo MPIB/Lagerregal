@@ -115,23 +115,23 @@ commentstring = ""
           $(this).attr("id") == "id_emailmanagment" ||
           $(this).attr("id") == "id_emailtemplatemanagment" ||
           $(this).attr("id") == "id_comment")) {
-          if ($(this).val() != initialdata[$(this).attr("name")]) {
-            if (changelist.indexOf($(this).attr("name")) == -1) {
-              changelist.push($(this).attr("name"))
+            if ($(this).val() != initialdata[$(this).attr("name")]) {
+              if (changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()) == -1) {
+                changelist.push($("label[for='"+$(this).attr('name')+"']").html())
+              }
+            } else {
+                changelist.splice(changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()), 1)
             }
-          } else {
-              changelist.splice(changelist.indexOf($(this).attr("name")), 1)
-        }
-        if($("#id_comment").val() == commentstring) {
-          if (changelist.length === 0) {
-            commentstring = ""
-            $("#id_comment").val("")
-          } else {
-            commentstring = "Updated: " + changelist.join(", ")
-            $("#id_comment").val(commentstring)
+          if($("#id_comment").val() == commentstring) {
+            if (changelist.length === 0) {
+              commentstring = ""
+              $("#id_comment").val("")
+            } else {
+              commentstring = "Updated: " + changelist.join(", ")
+              $("#id_comment").val(commentstring)
+            }
           }
         }
-      }
     });
 
 $(".previewbutton").click(function() {
