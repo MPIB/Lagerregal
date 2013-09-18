@@ -66,9 +66,9 @@ class ViewForm(forms.Form):
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
-    emailbosses = forms.BooleanField(required=False)
+    emailbosses = forms.BooleanField(required=False, label=_("Send email to bosses"))
     emailtemplatebosses = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
-    emailmanagment = forms.BooleanField(required=False)
+    emailmanagment = forms.BooleanField(required=False, label=_("Send email to managment"))
     emailtemplatemanagment = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
