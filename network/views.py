@@ -26,7 +26,7 @@ class IpAddressList(ListView):
             return 30
 
     def get_queryset(self):
-        self.viewfilter = self.kwargs.pop("filter", "active")
+        self.viewfilter = self.kwargs.pop("filter", "all")
         if self.viewfilter == "all":
             return IpAddress.objects.all()
         elif self.viewfilter == "free":
