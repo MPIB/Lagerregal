@@ -1,5 +1,4 @@
 from django import forms
-from django.forms.formsets import formset_factory
 from mail.models import MailTemplate
 
 class MailTemplateForm(forms.ModelForm):

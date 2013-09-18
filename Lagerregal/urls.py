@@ -7,7 +7,6 @@ from main.views import *
 from api.views import *
 from mail.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView
-from django.views.generic import TemplateView
 from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -38,6 +37,7 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<pk>[0-9]*)/archive/$', permission_required("devices.change_device", raise_exception=True)(DeviceArchive.as_view()), name="device-archive"),
     url(r'^devices/(?P<pk>[0-9]*)/lend/$', permission_required("devices.lend_device", raise_exception=True)(DeviceLend.as_view()), name="device-lend"),
     url(r'^devices/(?P<pk>[0-9]*)/return/$', permission_required("devices.lend_device", raise_exception=True)(DeviceReturn.as_view()), name="device-return"),
+    url(r'^devices/(?P<pk>[0-9]*)/mail/$', permission_required("devices.lend_device", raise_exception=True)(DeviceMail.as_view()), name="device-mail"),
     url(r'^devices/(?P<pk>[0-9]*)/ipaddress/$', permission_required("devices.change_device", raise_exception=True)(DeviceIpAddress.as_view()), name="device-ipaddress"),
     url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)$', permission_required("devices.change_device", raise_exception=True)(DeviceIpAddressRemove.as_view()), name="device-ipaddress-remove"),
     url(r'^devices/(?P<pk>[0-9]*)/history/$', permission_required("devices.change_device", raise_exception=True)(DeviceHistoryList.as_view()), name="device-history-list"),

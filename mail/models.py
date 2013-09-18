@@ -1,12 +1,14 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.template import Context, Template
 usages = {
     "new":_("New Device is created"),
-    "room":_("Room the device is in is changed"),
-    "owner":_("person currently lending is changed")
+    "room_changed":_("Room the device is in is changed"),
+    "owner_changed":_("person currently lending is changed"),
+    "reminder":_("Reminder for current owner that device is still owned"),
+    "overdue":_("Reminder for current owner that device is overdue")
 }
 
 class MailTemplate(models.Model):
@@ -35,6 +37,5 @@ class MailTemplate(models.Model):
     def send(self, recipients=None, data=None):
         t = Template(self.body)
         body = t.render(Context(data))
-        print body, recipients
         email = EmailMessage(subject=self.subject, body=body, to=recipients)
         email.send()
