@@ -25,11 +25,17 @@
 {% if field.html_name == "room" %}</div>{% endif %}
 <div class="form-group {{field.css_classes}}">
     <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
-    <div class="col-lg-{% if field|is_select %}7{% else %}8{% endif %}">
+    <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}6{% else %}7{% endif %}{% else %}8{% endif %}">
       {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
-    {% if field|is_select %}<div class="col-lg-1"><a href="#" class="modalbutton" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>{% endif %}
+    {% if field|is_select %}
+      {% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}
+      <div class="col-lg-2" style="padding-left:0px"><a class="previewbutton btn btn-default btn-sm pull-right" data-name="{{field.label}}">{% trans "Preview" %}</a></div>
+      {% else %}
+        <div class="col-lg-1" style="padding-left:0px"><a class="modalbutton btn btn-default btn-sm pull-right" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>
+      {% endif %}
+    {% endif %}
   </div>
 {% endif %}
 
@@ -49,12 +55,12 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Create new <span id='modal_header'></span>" %}</h4>
+          <h4 class="modal-title">{% trans "Create new <span id='addmodal_header'></span>" %}</h4>
         </div>
             <form action="" method="post" id="addform" accept-charset="utf-8" class="form-horizontal">
         <div class="modal-body">
           <div id="modal-form"></div>
-    <input type="hidden" name="classname" id="modal_classname">
+    <input type="hidden" name="classname" id="addmodal_classname">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
@@ -64,6 +70,8 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+
+{% include "snippets/modals/mailpreview.html" %}
 {% endblock %}
 
 {% block scriptend %}
@@ -79,9 +87,8 @@ $("#id_devicetype").change(function() {
 });
 
 $(".modalbutton").click(function() {
-    $("#modal_name").val("");
-    $("#modal_header").text($(this).data("name"))
-    $("#modal_classname").val($(this).data("classname"));
+    $("#addmodal_header").text($(this).data("name"))
+    $("#addmodal_classname").val($(this).data("classname"));
     Dajaxice.devices.load_extraform(Dajax.process, {'classname':$(this).data("classname")})
 });
 
@@ -125,7 +132,53 @@ commentstring = ""
             }
           }
         }
-        console.log($("#id_comment").val())
+      }
     });
+
+$(".previewbutton").click(function() {
+    $("#previewmodal_header").text($(this).parents(".form-group:first").find("select option:selected").text());
+    template = $(this).parents(".form-group:first").find("select").val()
+    device = {
+      "name": $("#id_name").val(),
+      "bildnumber": $("#id_bildnumber").val(),
+      "serialnumber": $("#id_serialnumber").val(),
+      "macaddress": $("#id_macaddress").val(),
+      "manufacturer": $("#id_manufacturer").val(),
+      "hostname": $("#id_hostname").val(),
+      "description": $("#id_description").val(),
+      "devicetype": $("#id_devicetype").val(),
+      "room": $("#id_room").val(),
+      "webinterface": $("#id_webinterface").val()
+  }
+    Dajaxice.devices.load_mailpreview(Dajax.process, {"template":template, "device":device})
+});
+
+$("#id_emailtemplatebosses").change(function() {
+  if ($(this).val() === "") {
+    $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
+});
+
+  if ($("#id_emailtemplatebosses").val() === "") {
+    $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
+
+  $("#id_emailtemplatemanagment").change(function() {
+  if ($(this).val() === "") {
+    $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
+});
+
+  if ($("#id_emailtemplatemanagment").val() === "") {
+    $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  }
 
 {% endblock %}

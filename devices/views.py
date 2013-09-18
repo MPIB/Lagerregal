@@ -1,19 +1,18 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView, View, FormView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
-from django.template import RequestContext, loader, Context
-from django.template.loader import render_to_string
+from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
+from mail.models import MailTemplate
 from django.shortcuts import render_to_response
-import rest_framework.reverse
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm
+from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm
 import datetime
 import reversion
 from django.contrib.auth.models import Permission
@@ -70,6 +69,16 @@ class DeviceDetail(DetailView):
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
+        
+        mailinitial = {}
+        if context["device"].currentlending != None:
+            mailinitial["recipient"] = context["device"].currentlending.owner
+        try:
+            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder")
+        except:
+            pass
+        context["mailform"] = DeviceMailForm(initial=mailinitial)
+
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name)]
@@ -449,7 +458,6 @@ class DeviceLend(FormView):
             ("", _("Lend"))]
         return context
 
-
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
@@ -469,8 +477,6 @@ class DeviceLend(FormView):
         messages.success(self.request, _('Device is marked as lendt to {{0}}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
-
-
 class DeviceReturn(View):
 
     def get(self, request, **kwargs):
@@ -488,6 +494,30 @@ class DeviceReturn(View):
         messages.success(request, _('Device is marked as returned.'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+class DeviceMail(FormView):
+    template_name = 'devices/base_form.html'
+    form_class = DeviceMailForm
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceLend, self).get_context_data(**kwargs)
+        deviceid = self.kwargs["pk"]
+        device = get_object_or_404(Device, pk=deviceid)
+        # Add in a QuerySet of all the books
+        context['form_scripts'] = "$('#id_owner').select2();"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            ("", _("Send Mail"))]
+        return context
+
+    def form_valid(self, form):
+        deviceid = self.kwargs["pk"]
+        device = get_object_or_404(Device, pk=deviceid)
+        template = form.cleaned_data["mailtemplate"]
+        recipient = form.cleaned_data["recipient"]
+        template.send([recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
+        messages.success(self.request, _('Mail sent to {0}').format(recipient))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_archive.html'

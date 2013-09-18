@@ -1,0 +1,27 @@
+ {% load i18n %}
+  <div class="modal fade" id="mailModal" tabindex="-1" role="dialog" aria-labelledby="mailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          {% trans "Send mail to user" %}
+        </div>
+        <form action="{% url "device-mail"  device.id %} "method="post" class="form-horizontal">{% csrf_token %}
+        <div class="modal-body">
+{% for field in mailform %}
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-8">
+      {{ field}}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+  </div>
+{% endfor %}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          <input type="submit" value="{% trans "Send" %}" class="btn btn-success" />
+        </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->

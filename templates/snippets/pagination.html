@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load devicetags %}
 {% if is_paginated %}
 <div class="pagination-centered">
   <ul class="pager">
@@ -8,7 +9,16 @@
         {% else %}
           <li class="previous disabled"><a><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
         {% endif %}
-                <li class="current">{% blocktrans with pagenumber=page_obj.number numpages=page_obj.paginator.num_pages %}Page {{ pagenumber }} of {{ numpages }} {% endblocktrans %}</li>
+                <li class="current">{% trans "Page" %}
+                  <select class="pageselect">
+                    {% for pagenumber in  page_obj.paginator.num_pages|get_range %}
+                    {% if pagenumber|add:"1" == page_obj.number %} 
+                    <option selected>{{pagenumber|add:"1"}}</option>
+                    {% else %}
+                    <option>{{pagenumber|add:"1"}}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select> {% trans "of" %} {{ page_obj.paginator.num_pages }}</li>
         {% if page_obj.has_next %}
         <li class="next"><a href="{% url listurl page_obj.paginator.num_pages %}" style="margin-left:5px">{% trans "Last" %} <i class="icon-double-angle-right"></i></a></li>
         <li class="next"><a href="{% url listurl page_obj.next_page_number %}">{% trans "Next" %} <i class="icon-angle-right"></i></a></li>

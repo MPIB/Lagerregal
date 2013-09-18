@@ -48,8 +48,8 @@
 {% include "snippets/pagination.html" with listurl='type-list' %}
 </div>
 </div>
-{% include "snippets/pagination.html" with listurl='type-list' %}
 {% endblock %}
 
 {% block scriptend %}
+{% include "snippets/pagination_js.html" with pageurl="mail-list" %}
 {% endblock %}

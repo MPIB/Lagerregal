@@ -1,6 +1,8 @@
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Room, Building, Manufacturer
+from mail.models import MailTemplate
+from django.shortcuts import get_object_or_404
 from devicetypes.models import Type
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
@@ -8,6 +10,7 @@ from devices.forms import AddForm
 from dajaxice.utils import deserialize_form
 from django.forms.models import modelform_factory
 from django.template.loader import render_to_string
+from django.template import Template, Context
 
 @dajaxice_register
 def complete_devicenames(request, name):
@@ -98,4 +101,34 @@ def load_extraform(request, classname):
 
     dajax.assign("#modal-form", "innerHTML", render_to_string('snippets/formfields.html', {"form":form}))
     dajax.script("$('#addModal').modal('show');")
+    return dajax.json()
+
+
+@dajaxice_register
+def load_mailpreview(request, template, device, owner=None):
+    dajax = Dajax()
+    if template == "":
+        return dajax.json()
+
+    if device["manufacturer"] != "":
+        device["manufacturer"] = get_object_or_404(Manufacturer, pk=device["manufacturer"])
+    else:
+        del device["room"]
+
+    if device["devicetype"] != "":
+        device["devicetype"] = get_object_or_404(Type, pk=device["devicetype"])
+    else:
+        del device["devicetype"]
+
+    if device["room"] != "":
+        device["room"] = get_object_or_404(Room, pk=device["room"])
+    else:
+        del device["room"]
+
+    device = Device(**device)
+    template = get_object_or_404(MailTemplate, pk=template)
+    rendered_template  = Template(template.body).render(Context({"device":device, "user":request.user}))
+    dajax.assign("#previewModalSubject", "innerHTML", template.subject)
+    dajax.assign("#previewModalBody", "innerHTML", rendered_template.replace("\n", "<br />"))
+    dajax.script("$('#previewModal').modal('show');")
     return dajax.json()
