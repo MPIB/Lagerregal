@@ -474,7 +474,7 @@ class DeviceLend(FormView):
             device.room = form.cleaned_data["room"]
         device.save()
         reversion.set_ignore_duplicates(True)
-        messages.success(self.request, _('Device is marked as lendt to {{0}}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
+        messages.success(self.request, _('Device is marked as lendt to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceReturn(View):
