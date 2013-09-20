@@ -12,11 +12,52 @@
 
 {% block content %}
 <div class="row">
-{% if profileuser.is_staff %}
-  <div class="col-xs-12 col-md-6">
+{% if perms.devices.read_user %}
+  <ul class="nav nav-tabs" id="myTab">
+  <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+  <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="devices">
+{% endif %}
+    <div class="col-xs-12 col-md-12">
+      <h4>{% trans "Owned devices" %}</h4>
+    {% if devices %}
+      <table id="devicetable" class="table table-bordered table-striped">
+                          <thead>
+                              <tr>
+                                  <th scope="col">{% trans 'Device' %}</th>
+                                  <th scope="col">{% trans 'Lendt since' %}</th>
+                                  <th scope="col">{% trans 'Duedate' %}</th>
+                                  <th scope="col">{% trans 'Room' %}</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {% for device in devices %}
+                                  <tr>
+                                      <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
+                                      <td>{{device.currentlending.lenddate}}</td>
+                                      <td>{{device.currentlending.duedate}}{% if device.currentlending.duedate < weekago %}<span class="error-icon">!</span>
+    {% elif device.currentlending.duedate < today %}<span class="warning-icon">!</span>
+    {% endif %}</td>
+                                      <td>{{device.room}}</td>
+                                  </tr>
+                              {% endfor %}
+                          </tbody>
+                      </table>
+    {% else %}
+      <h5>{% trans "User doesn't own any devices." %}</h5>
+      {% endif %}
+    </div>
+
+{% if perms.devices.read_user %}
+  </div>
+  <div class="tab-pane" id="edits">
+<div class="col-xs-12 col-md-12">
   <h4>{% trans "Edits" %}</h4>
   {% if edits %}
-  <table id="change-history" class="table table-bordered table-striped">
+  <table id="changehistory" class="table table-bordered table-striped" style="">
                       <thead>
                           <tr>
                               <th scope="col">{% trans 'Device' %}</th>
@@ -38,35 +79,31 @@
   <h5>{% trans "User hasn't edited anything." %}</h5>
   {% endif %}
 </div>
+  </div>
+</div>
 {% endif %}
-<div class="col-xs-12 col-md-{% if profileuser.is_staff %}6{% else %}12{% endif %}">
-  <h4>{% trans "Owned devices" %}</h4>
-{% if devices %}
-  <table id="change-history" class="table table-bordered table-striped">
-                      <thead>
-                          <tr>
-                              <th scope="col">{% trans 'Device' %}</th>
-                              <th scope="col">{% trans 'Lendt since' %}</th>
-                              <th scope="col">{% trans 'Duedate' %}</th>
-                              <th scope="col">{% trans 'Room' %}</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {% for device in devices %}
-                              <tr>
-                                  <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                                  <td>{{device.currentlending.lenddate}}</td>
-                                  <td>{{device.currentlending.duedate}}{% if device.currentlending.duedate < weekago %}<span class="error-icon">!</span>
-{% elif device.currentlending.duedate < today %}<span class="warning-icon">!</span>
-{% endif %}</td>
-                                  <td>{{device.room}}</td>
-                              </tr>
-                          {% endfor %}
-                      </tbody>
-                  </table>
-{% else %}
-  <h5>{% trans "User doesn't own any devices." %}</h5>
-  {% endif %}
 </div>
-</div>
+{% endblock %}
+
+{% block scriptend %}
+var device_initialized = false;
+{% if perms.devices.read_user %}
+var change_initialized = false;
+
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+   e.target // activated tab
+   e.relatedTarget // previous tab
+   console.log($(e.target).data("tab"))
+   if ($(e.target).data("tab") === "edits") {
+      if (!change_initialized) {
+        $('#changehistory').dataTable({});
+        change_initialized = true;
+      }
+   }
+});
+{% endif %}
+ if (!device_initialized) {
+         $('#devicetable').dataTable({});
+         device_initialized = true;
+      }
 {% endblock %}
