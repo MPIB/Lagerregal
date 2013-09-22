@@ -113,7 +113,11 @@ commentstring = ""
           $(this).attr("id") == "id_emailtemplatebosses" ||
           $(this).attr("id") == "id_emailmanagment" ||
           $(this).attr("id") == "id_emailtemplatemanagment" ||
-          $(this).attr("id") == "id_comment")) {
+          $(this).attr("id") == "id_comment" ||
+          $(this).attr("id") == "id_emailsubject_bosses" ||
+          $(this).attr("id") == "id_emailbody_bosses" ||
+          $(this).attr("id") == "id_emailsubject_managment" ||
+          $(this).attr("id") == "id_emailbody_managment")) {
             if ($(this).val() != initialdata[$(this).attr("name")]) {
               if (changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()) == -1) {
                 changelist.push($("label[for='"+$(this).attr('name')+"']").html())
