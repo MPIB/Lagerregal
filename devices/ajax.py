@@ -134,11 +134,20 @@ def load_mailpreview(request, template, device, owner=None):
     return dajax.json()
 
 @dajaxice_register
-def load_mailtemplate(request, template, fieldtype):
+def load_mailtemplate(request, template, fieldtype=None):
     dajax = Dajax()
     if template == "":
         return dajax.json()
     template = get_object_or_404(MailTemplate, pk=template)
-    dajax.assign("#id_emailsubject_{}".format(fieldtype), "value", template.subject)
-    dajax.assign("#id_emailbody_{}".format(fieldtype), "innerHTML", template.body)
+
+    if fieldtype == None:
+        dajax.assign("#id_emailsubject", "value", template.subject)
+    else:
+        dajax.assign("#id_emailsubject_{}".format(fieldtype), "value", template.subject)
+    
+
+    if fieldtype == None:
+        dajax.assign("#id_emailbody", "innerHTML", template.body)
+    else:
+        dajax.assign("#id_emailbody_{}".format(fieldtype), "innerHTML", template.body)
     return dajax.json()

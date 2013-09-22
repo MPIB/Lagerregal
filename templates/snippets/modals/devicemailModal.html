@@ -1,4 +1,4 @@
- {% load i18n %}
+ {% load i18n %}{% load devicetags %}
   <div class="modal fade" id="mailModal" tabindex="-1" role="dialog" aria-labelledby="mailModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -11,7 +11,7 @@
 <div class="form-group {{field.css_classes}}">
     <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
     <div class="col-lg-8">
-      {{ field}}
+      {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
   </div>
