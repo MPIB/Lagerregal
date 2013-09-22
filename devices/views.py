@@ -75,6 +75,8 @@ class DeviceDetail(DetailView):
             mailinitial["recipient"] = context["device"].currentlending.owner
         try:
             mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder")
+            mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
+            mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
             pass
         context["mailform"] = DeviceMailForm(initial=mailinitial)
@@ -530,9 +532,12 @@ class DeviceMail(FormView):
         device = get_object_or_404(Device, pk=deviceid)
         template = form.cleaned_data["mailtemplate"]
         recipient = form.cleaned_data["recipient"]
+        template.subject = form.cleaned_data["emailsubject"]
+        template.body = form.cleaned_data["emailbody"]
         template.send([recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_archive.html'

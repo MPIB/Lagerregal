@@ -256,4 +256,11 @@ $("#id_ipaddresses").select2({
 
 $("select").select2()
 
+  $("#id_mailtemplate").change(function() {
+  if ($(this).val() === "") {
+  } else {
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val()})
+  }
+});
+
 {% endblock %}

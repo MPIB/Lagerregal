@@ -163,3 +163,5 @@ class DeviceMailForm(forms.Form):
     error_css_class = 'has_error'
     recipient = forms.ModelChoiceField(Lageruser.objects.all())
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
+    emailsubject = forms.CharField(required=False, label=_("Subject"))
+    emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
