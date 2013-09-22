@@ -23,7 +23,10 @@
   </div>
 {% else %}
 {% if field.html_name == "room" %}</div>{% endif %}
-<div class="form-group {{field.css_classes}}">
+<div class="form-group {{field.css_classes}}"
+{% if field.html_name == "emailsubject_bosses" or field.html_name == "emailbody_bosses" or field.html_name == "emailsubject_managment" or field.html_name == "emailbody_managment"%}
+style="display:none;"
+{% endif %}>
     <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
     <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}6{% else %}7{% endif %}{% else %}8{% endif %}">
       {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
@@ -38,11 +41,7 @@
     {% endif %}
   </div>
 {% endif %}
-
-
-
 {% if field.html_name == "devicetype" %}<div id="extra_attributes">{% endif %}
-
 {% endfor %}
 <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm pull-right" />
 </form>
@@ -157,27 +156,49 @@ $("#id_emailtemplatebosses").change(function() {
     $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
   } else {
     $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val(), "fieldtype":"bosses"})
   }
 });
 
-  if ($("#id_emailtemplatebosses").val() === "") {
-    $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").addClass("disabled")
-  } else {
-    $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
-  }
+if ($("#id_emailtemplatebosses").val() === "") {
+  $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+} else {
+  $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+}
 
   $("#id_emailtemplatemanagment").change(function() {
   if ($(this).val() === "") {
     $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
   } else {
     $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val(), "fieldtype":"managment"})
   }
 });
 
-  if ($("#id_emailtemplatemanagment").val() === "") {
-    $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+if ($("#id_emailtemplatemanagment").val() === "") {
+  $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+} else {
+  $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+}
+
+  $("#id_emailedit_bosses").change(function() {
+  if ($(this).val()) {
+    $("#id_emailsubject_bosses").parents(".form-group:first").fadeIn();
+    $("#id_emailbody_bosses").parents(".form-group:first").fadeIn();
   } else {
-    $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+    $("#id_emailsubject_bosses").parents(".form-group:first").fadeOut();
+    $("#id_emailbody_bosses").parents(".form-group:first").fadeOut();
   }
+});
+
+  $("#id_emailedit_managment").change(function() {
+  if ($(this).val()) {
+    $("#id_emailsubject_managment").parents(".form-group:first").fadeIn();
+    $("#id_emailbody_managment").parents(".form-group:first").fadeIn();
+  } else {
+    $("#id_emailsubject_managment").parents(".form-group:first").fadeOut();
+    $("#id_emailbody_managment").parents(".form-group:first").fadeOut();
+  }
+});
 
 {% endblock %}
