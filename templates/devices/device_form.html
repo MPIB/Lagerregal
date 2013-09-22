@@ -6,14 +6,14 @@
 {% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 {% block content %}
 <div class="row">
-  <div class="col-xs-12 col-md-6 col-md-offset-3 well well-lg">
+  <div class="col-xs-12 col-md-8 col-md-offset-2 well well-lg">
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
 {% for field in form %}
 {% if field.html_name == "creator" %}
 {{ field }}
 {% elif field|is_checkbox %}
 <div class="form-group">
-    <div class="col-lg-offset-4 col-lg-8">
+    <div class="col-lg-offset-3 col-lg-9">
       <div class="checkbox">
         <label>
           {{field}} {{field.label}}
@@ -27,8 +27,8 @@
 {% if field.html_name == "emailsubject_bosses" or field.html_name == "emailbody_bosses" or field.html_name == "emailsubject_managment" or field.html_name == "emailbody_managment"%}
 style="display:none;"
 {% endif %}>
-    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
-    <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}6{% else %}7{% endif %}{% else %}8{% endif %}">
+    <label for="{{field.html_name}}" class="col-lg-3 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}7{% else %}8{% endif %}{% else %}9{% endif %}">
       {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
