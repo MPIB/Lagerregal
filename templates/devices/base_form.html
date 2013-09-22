@@ -10,8 +10,8 @@
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
 {% for field in form %}
 <div class="form-group {{field.css_classes}}">
-    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
-    <div class="col-lg-8">
+    <label for="{{field.html_name}}" class="col-lg-3 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-9">
       {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
