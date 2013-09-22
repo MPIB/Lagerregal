@@ -342,6 +342,9 @@ class DeviceCreate(CreateView):
                 for boss in bosses:
                     recipients.append(boss.email)
                 template = form.cleaned_data["emailtemplatebosses"]
+                if form.cleaned_data["emailedit_bosses"]:
+                    template.subject = form.cleaned_data["emailsubject_bosses"]
+                    template.body = form.cleaned_data["emailbody_bosses"]
                 template.send(recipients=recipients, data={"device":self.object})
             if form.cleaned_data["emailmanagment"]:
                 perm = Permission.objects.get(codename='managment_mails')
@@ -350,6 +353,9 @@ class DeviceCreate(CreateView):
                 for m in managment:
                     recipients.append(m.email)
                 template = form.cleaned_data["emailtemplatemanagment"]
+                if form.cleaned_data["emailedit_managment"]:
+                    template.subject = form.cleaned_data["emailsubject_managment"]
+                    template.body = form.cleaned_data["emailbody_managment"]
                 template.send(recipients=recipients, data={"device":self.object})
 
         messages.success(self.request, _('Device was successfully created.'))
@@ -416,6 +422,9 @@ class DeviceUpdate(UpdateView):
                 for boss in bosses:
                     recipients.append(boss.email)
                 template = form.cleaned_data["emailtemplatebosses"]
+                if form.cleaned_data["emailedit_bosses"]:
+                    template.subject = form.cleaned_data["emailsubject_bosses"]
+                    template.body = form.cleaned_data["emailbody_bosses"]
                 template.send(recipients=recipients, data={"device":device})
             if form.cleaned_data["emailmanagment"]:
                 perm = Permission.objects.get(codename='managment_mails')
@@ -424,6 +433,9 @@ class DeviceUpdate(UpdateView):
                 for m in managment:
                     recipients.append(m.email)
                 template = form.cleaned_data["emailtemplatemanagment"]
+                if form.cleaned_data["emailedit_managment"]:
+                    template.subject = form.cleaned_data["emailsubject_managment"]
+                    template.body = form.cleaned_data["emailbody_managment"]
                 template.send(recipients=recipients, data={"device":device})
 
         messages.success(self.request, _('Device was successfully updated.'))

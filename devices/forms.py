@@ -68,8 +68,16 @@ class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
     emailbosses = forms.BooleanField(required=False, label=_("Send email to bosses"))
     emailtemplatebosses = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
+    emailedit_bosses = forms.BooleanField(required=False, label=_("Edit template"))
+    emailsubject_bosses = forms.CharField(required=False, label=_("Subject"))
+    emailbody_bosses = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
+
     emailmanagment = forms.BooleanField(required=False, label=_("Send email to managment"))
     emailtemplatemanagment = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
+    emailedit_managment = forms.BooleanField(required=False, label=_("Edit template"))
+    emailsubject_managment = forms.CharField(required=False, label=_("Subject"))
+    emailbody_managment = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
+
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
     creator =  forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
