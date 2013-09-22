@@ -535,6 +535,8 @@ class DeviceMail(FormView):
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
         template.send([recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
+        device.currentlending.duedate_email = datetime.datetime.today()
+        device.currentlending.save()
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
