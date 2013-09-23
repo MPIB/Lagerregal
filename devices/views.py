@@ -14,6 +14,7 @@ from django.utils.formats import localize
 from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm
 import datetime
+from django.utils.timezone import utc
 import reversion
 from django.contrib.auth.models import Permission
 from users.models import Lageruser
@@ -65,7 +66,7 @@ class DeviceDetail(DetailView):
         context['ipaddress_available'] = IpAddress.objects.filter(device=None)
         context['ipaddressform'] = IpAddressForm()
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")
-        context["today"] = datetime.date.today()
+        context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
@@ -503,7 +504,7 @@ class DeviceReturn(View):
             messages.error(request, _("Archived Devices can't be returned"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = device.currentlending
-        lending.returndate = datetime.datetime.now()
+        lending.returndate = datetime.datetime.utcnow().replace(tzinfo=utc)
         lending.save()
         device.currentlending = None
         device.save()
@@ -535,7 +536,7 @@ class DeviceMail(FormView):
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
         template.send([recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
-        device.currentlending.duedate_email = datetime.datetime.today()
+        device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
         device.currentlending.save()
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
@@ -547,7 +548,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     def post(self, request, **kwargs):
         device = self.get_object()
         if device.archived == None:
-            device.archived = datetime.datetime.now()
+            device.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
             device.currentlending = None
         else:
@@ -988,9 +989,9 @@ class Search(FormView):
 
 
         if form.cleaned_data["overdue"] == "y":
-            search["duedate__gt"] = datetime.datetime.now()
+            search["duedate__gt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         elif form.cleaned_data["overdue"] == "n":
-            search["duedate__lt"] = datetime.datetime.now()
+            search["duedate__lt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
 
         if search == {} and form.cleaned_data["ipaddress"] == "":
             devices = []
