@@ -54,10 +54,10 @@ class SearchForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has_error'
-    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}))
+    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Lendt to"))
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
-'%B %d, %Y', '%d %B %Y', '%d %B, %Y'))
+'%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y', '%d.%m.%y'))
     room = forms.ModelChoiceField(Room.objects.all(), required=False)
 
 class ViewForm(forms.Form):
