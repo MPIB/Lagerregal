@@ -273,7 +273,30 @@ class DeviceHistory(View):
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
-class DeviceHistoryList(View):
+class DeviceHistoryList(ListView):
+    context_object_name = 'version_list'
+    template_name = 'devices/device_history_list.html'
+
+    def get_queryset(self):
+        deviceid = self.kwargs["pk"]
+        device = get_object_or_404(Device, pk=deviceid)
+        return Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceHistoryList, self).get_context_data(**kwargs)
+        context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            ("", _("History"))]
+        return context
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
