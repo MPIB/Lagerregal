@@ -65,7 +65,8 @@ class DeviceDetail(DetailView):
         context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
         context['ipaddress_available'] = IpAddress.objects.filter(device=None)
         context['ipaddressform'] = IpAddressForm()
-        context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")
+        context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
+        context["version_list"] = Version.objects.filter(object_id=context["device"].id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:10]
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
@@ -298,17 +299,30 @@ class DeviceHistoryList(ListView):
         else:
             return 30
 
-    def get(self, request, **kwargs):
-        deviceid = kwargs["pk"]
+class DeviceLendingList(ListView):
+    context_object_name = 'lending_list'
+    template_name = 'devices/device_lending_list.html'
+
+    def get_queryset(self):
+        deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        version_list = Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
-        context = {"version_list":version_list, "device":device}
+        return Lending.objects.filter(device=device).order_by("-pk")
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceLendingList, self).get_context_data(**kwargs)
+        context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
-            ("", _("History"))]
-        return render_to_response('devices/device_history_list.html', context, RequestContext(request))
+            ("", _("Lending"))]
+        return context
 
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class DeviceCreate(CreateView):
     model = Device
