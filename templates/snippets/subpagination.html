@@ -5,7 +5,7 @@
   <ul class="pager">
         {% if page_obj.has_previous %}
         <li class="previous"><a href="{% url listurl parent 1 %}" style="margin-right:5px"><i class="icon-double-angle-left"></i> {% trans "First" %}</a></li>
-        <li class="previous"><a href="{% url listurl page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
+        <li class="previous"><a href="{% url listurl parent page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
         {% else %}
           <li class="previous disabled"><a><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
         {% endif %}
