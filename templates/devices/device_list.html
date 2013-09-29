@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block pullright %}
+{{viewform.viewsorting}}
 {{viewform.viewfilter}}
 {% if perms.devices.create_device %}
 <div class="btn-group">
@@ -68,7 +69,11 @@ $(document).ready(function() {
         }
     });
 $('#id_viewfilter').change(function() {
-    window.location = "/devices/filter/" + $(this).val()
+    window.location = "/devices/filter/" + $(this).val() + "/sorting/" + $("#id_viewsorting").val()
+});
+
+$('#id_viewsorting').change(function() {
+    window.location = "/devices/filter/" + $("#id_viewfilter").val() + "/sorting/" + $(this).val()
 });
 });
 
