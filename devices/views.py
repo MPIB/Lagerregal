@@ -14,6 +14,7 @@ from django.utils.formats import localize
 from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm
 import datetime
+from django.utils.timezone import utc
 import reversion
 from django.contrib.auth.models import Permission
 from users.models import Lageruser
@@ -67,8 +68,9 @@ class DeviceDetail(DetailView):
         context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
         context['ipaddress_available'] = IpAddress.objects.filter(device=None)
         context['ipaddressform'] = IpAddressForm()
-        context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")
-        context["today"] = datetime.date.today()
+        context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
+        context["version_list"] = Version.objects.filter(object_id=context["device"].id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:10]
+        context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
@@ -275,19 +277,55 @@ class DeviceHistory(View):
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
-class DeviceHistoryList(View):
+class DeviceHistoryList(ListView):
+    context_object_name = 'version_list'
+    template_name = 'devices/device_history_list.html'
 
-    def get(self, request, **kwargs):
-        deviceid = kwargs["pk"]
+    def get_queryset(self):
+        deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        version_list = Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
-        context = {"version_list":version_list, "device":device}
+        return Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceHistoryList, self).get_context_data(**kwargs)
+        context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
             ("", _("History"))]
-        return render_to_response('devices/device_history_list.html', context, RequestContext(request))
+        return context
 
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
+
+class DeviceLendingList(ListView):
+    context_object_name = 'lending_list'
+    template_name = 'devices/device_lending_list.html'
+
+    def get_queryset(self):
+        deviceid = self.kwargs["pk"]
+        device = get_object_or_404(Device, pk=deviceid)
+        return Lending.objects.filter(device=device).order_by("-pk")
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceLendingList, self).get_context_data(**kwargs)
+        context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            ("", _("Lending"))]
+        return context
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class DeviceCreate(CreateView):
     model = Device
@@ -506,7 +544,7 @@ class DeviceReturn(View):
             messages.error(request, _("Archived Devices can't be returned"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = device.currentlending
-        lending.returndate = datetime.datetime.now()
+        lending.returndate = datetime.datetime.utcnow().replace(tzinfo=utc)
         lending.save()
         device.currentlending = None
         device.save()
@@ -538,7 +576,7 @@ class DeviceMail(FormView):
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
         template.send([recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
-        device.currentlending.duedate_email = datetime.datetime.today()
+        device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
         device.currentlending.save()
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
@@ -550,7 +588,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     def post(self, request, **kwargs):
         device = self.get_object()
         if device.archived == None:
-            device.archived = datetime.datetime.now()
+            device.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
             device.currentlending = None
         else:
@@ -991,9 +1029,9 @@ class Search(FormView):
 
 
         if form.cleaned_data["overdue"] == "y":
-            search["duedate__gt"] = datetime.datetime.now()
+            search["duedate__gt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         elif form.cleaned_data["overdue"] == "n":
-            search["duedate__lt"] = datetime.datetime.now()
+            search["duedate__lt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
 
         if search == {} and form.cleaned_data["ipaddress"] == "":
             devices = []
