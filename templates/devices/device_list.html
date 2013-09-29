@@ -49,7 +49,7 @@
       <td>{{ device.bildnumber }}</td>
       <td>{{ device.devicetype }}</td>
       <td>{{ device.room }} ({{device.room.building}})</td>
-      <td>{% if device.currentlending == None %}<span class="label label-success" style="text-align:center"><i class="icon-exclamation"></i></span>{% else %}<span class="label label-danger" style="text-align:center"><i class="icon-exclamation"></i></span>{% endif %}
+      <td>{% if device.currentlending == None %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}
     </tr>
      {% endfor %}
   </tbody>

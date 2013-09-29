@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+{% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
 <div class="module">
             {% if version_list %}
                 <table id="change-history" class="table table-bordered table-striped">
@@ -32,4 +33,5 @@
                 <p>{% trans "This object doesn't have a change history." %}</p>
             {% endif %}
         </div>
+{% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
 {% endblock %}

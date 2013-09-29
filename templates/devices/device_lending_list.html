@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Lendinghistory for" %} {{device.name}}{% endblock %}
+
+{% block header %}
+{% trans "Lendinghistory for" %} <a href="{% url 'device-detail' device.pk %}">{{device.name}}</a>
+{% endblock %}
+
+{% block content %}
+{% include "snippets/subpagination.html" with parent=device.pk listurl='device-lending-list' %}
+    <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>{% trans "User" %}</th>
+      <th>{% trans "Since" %}</th>
+      <th>{% trans "Duedate" %}</th>
+      <th>{% trans "Returned" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for lending in lending_list %}
+    <tr>
+      <td><a href="{% url 'userprofile' lending.owner.pk %}">{{lending.owner}}</a></td>
+      <td>{{lending.lenddate}}</td>
+      <td>{{lending.duedate|default_if_none:"never"}}</td>
+      <td>{{lending.returndate|default_if_none:"not returned"}}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+{% include "snippets/subpagination.html" with parent=device.pk listurl='device-lending-list' %}
+{% endblock %}

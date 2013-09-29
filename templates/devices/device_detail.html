@@ -72,30 +72,6 @@
     <p>{% trans "Currently not lent" %}</p>
     {% endif %}
 
-{% if lending_list %}
-<h4>{% trans "Lending history" %}</h4>
-    <table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "User" %}</th>
-      <th>{% trans "Since" %}</th>
-      <th>{% trans "Duedate" %}</th>
-      <th>{% trans "Returned" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for lending in lending_list %}
-    <tr>
-      <td><a href="{% url 'userprofile' lending.owner.pk %}">{{lending.owner}}</a></td>
-      <td>{{lending.lenddate}}</td>
-      <td>{{lending.duedate|default_if_none:"never"}}</td>
-      <td>{{lending.returndate|default_if_none:"not returned"}}</td>
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-{% endif %}
-
   </div>
 <div class="col-xs-12 col-md-5">
 {{device.description|linebreaks}}
@@ -123,6 +99,69 @@
     {% endif %}
 </div>
   </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+<ul class="nav nav-tabs" style="margin-top:20px">
+  {% if perms.devices.lend_device %}<li class="active"><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endif %}
+  {% if perms.devices.change_device %}<li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endif %}
+</ul>
+
+<div class="tab-content">
+  {% if perms.devices.lend_device %}
+  <div class="tab-pane active" id="lending">
+<h4>{% trans "10 last lendings" %}</h4>
+    <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>{% trans "User" %}</th>
+      <th>{% trans "Since" %}</th>
+      <th>{% trans "Duedate" %}</th>
+      <th>{% trans "Returned" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for lending in lending_list %}
+    <tr>
+      <td><a href="{% url 'userprofile' lending.owner.pk %}">{{lending.owner}}</a></td>
+      <td>{{lending.lenddate}}</td>
+      <td>{{lending.duedate|default_if_none:"never"}}</td>
+      <td>{{lending.returndate|default_if_none:"not returned"}}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View lending-history" %}</a>
+</div>
+{% endif %}
+
+  {% if perms.devices.change_device %}
+  <div class="tab-pane" id="edit">
+<h4>{% trans "10 last edits" %}</h4>
+    <table id="change-history" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Date/time' %}</th>
+                            <th scope="col">{% trans 'User' %}</th>
+                            <th scope="col">{% trans 'Comment' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in version_list %}
+                            <tr>
+                                <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}">{{action.revision.date_created}}</a></th>
+                                <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
+                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+<a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit-history" %}</a>
+</div>
+{% endif %}
+</div>
+</div>
 </div>
 
 {% if perms.devices.lend_device %}
@@ -188,4 +227,7 @@ content : "<form action='{% url "device-return" object.id %}' method='post' clas
           })
 {% endif %}
 {% endif %}
+  $(function() {
+    $( "#id_duedate" ).datepicker();
+  });
 {% endblock %}
