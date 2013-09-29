@@ -111,23 +111,6 @@ $(function() {
   {% if user.is_staff %}
 <a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success"><i class="icon-plus"></i></a>
   
-  <!-- Modal -->
-  <div class="modal fade" id="addWidgetModal" tabindex="-1" role="dialog" aria-labelledby="addWidgetModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Add a widget" %}</h4>
-        </div>
-        <div class="modal-body">
-          <ul style="list-style-type: none;" id="widgetlist">
-          {% for widgetname, widgetvalue in widgets_list.iteritems %}
-          <li><a href="#" data-name="{{widgetname}}" class="addWidget">{{widgetvalue}}</a></li>
-          {% endfor %}
-        </ul>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+{% include "snippets/modals/addwidget.html" with modalname="addWidgetModal" %}
   {% endif %}
   {% endblock %}
