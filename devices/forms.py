@@ -22,6 +22,18 @@ VIEWFILTER = (
     ('unavailable', _('Unavailable Devices')),
     ('archived', _('Archived Devices')))
 
+VIEWSORTING = (
+    ('name', _('Name ascending')),
+    ('-name', _('Name descending')),
+    ('created_at', _('Age ascending')),
+    ('-created_at', _('Age descending')),
+    ('bildnumber', _('Bildnumber ascending')),
+    ('-bildnumber', _('Bildnumber descending')),
+    ('devicetype__name', _('Devicetype ascending')),
+    ('-devicetype__name', _('Devicetype descending')),
+    ('room__name', _('Room ascending')),
+    ('-room__name', _('Room descending'))
+    )
 class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
@@ -62,7 +74,9 @@ class LendForm(forms.Form):
 
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-        widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
+        widget=forms.Select(attrs={"style":"width:150px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
+    viewsorting = forms.ChoiceField(choices=VIEWSORTING,
+        widget=forms.Select(attrs={"style":"width:150px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'

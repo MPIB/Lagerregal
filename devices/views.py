@@ -27,19 +27,22 @@ class DeviceList(ListView):
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "active")
         if self.viewfilter == "all":
-            return Device.objects.all()
+            devices = Device.objects.all()
         elif self.viewfilter == "available":
-            return Device.objects.filter(currentlending=None)
+            devices = Device.objects.filter(currentlending=None)
         elif self.viewfilter == "unavailable":
-            return Device.objects.exclude(currentlending=None)
+            devices = Device.objects.exclude(currentlending=None)
         elif self.viewfilter == "archived":
-            return Device.objects.exclude(archived=None)
+            devices = Device.objects.exclude(archived=None)
         else:
-            return Device.objects.filter(archived=None)
+            devices = Device.objects.filter(archived=None)
+
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        return devices.order_by(self.viewsorting)
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
-        context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
+        context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter, "viewsorting":self.viewsorting})
         context["template_list"] = Template.objects.all()
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
         if context["is_paginated"] and context["page_obj"].number > 1:
