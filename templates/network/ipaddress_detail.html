@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block pullright %}
-{% if perms.network.delete_ipaddress %}<a href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger btn-sm pull-right"style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.network.delete_ipaddress %}<a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
 {% if perms.network.change_ipaddress %}<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% endblock %}
 
@@ -22,26 +22,18 @@
     </table>
   </div>
 </div>
+{% endblock %}
 
+{% block scriptend %}
 {% if perms.network.delete_ipaddress %}
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Delete this IP-Address" %}</h4>
-        </div>
-        <div class="modal-body">
-           <div class="alert-danger alert" style="margin-bottom:0px;">{% blocktrans %}Do you really want to delete the IP-Address: {{object}}?{% endblocktrans %}</div>
-        </div>
-        <div class="modal-footer">
-          <form action="{% url "ipaddress-delete" ipaddress.id %}" method="post" class="form-horizontal">{% csrf_token %}
-            <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">No</button>
-            <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger" />
-          </form>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-  {% endif %}
+$("#deletebutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "ipaddress-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
+{% endif %}
 {% endblock %}

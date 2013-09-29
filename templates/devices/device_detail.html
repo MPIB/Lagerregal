@@ -10,20 +10,20 @@
 
 {% block pullright %}
 {% if device.archived == None %}
-{% if perms.devices.delete_device %}<a  href="#" data-target="#deleteModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.devices.change_device %}<a   href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-close" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
+{% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_device %}<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-close" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
 {% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="icon-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
 {% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
-    <a href="{% url 'device-return' device.id %}" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as returned" %}</a>
+    <a href="#"  id="returnbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as returned" %}</a>
   {% else %}
     <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% endif %}
 {% else %}
 {% if perms.devices.change_device %}
-  <a  href="#" data-target="#archiveModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
+  <a  href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
 {% endif %}
 {% endblock %}
 
@@ -126,119 +126,11 @@
 </div>
 
 {% if perms.devices.lend_device %}
-  <div class="modal fade" id="lendModal" role="dialog" aria-labelledby="lendModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Mark device as lendt" %}</h4>
-        </div>
-          <form action="{% url "device-lend"  device.id %} "method="post" class="form-horizontal">{% csrf_token %}
-        <div class="modal-body">
-{% for field in lendform %}
-{% if field.html_name == "duedate" %}
-<div class="form-group {{field.css_classes}}">
-    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
-    <div class="col-lg-8">
-<div class="bfh-datepicker">
-  <div class="bfh-datepicker-toggle" data-toggle="bfh-datepicker">
-    <input type="text" class="form-control">
-  </div>
-  <div class="bfh-datepicker-calendar">
-    <table class="calendar table table-bordered">
-      <thead>
-        <tr class="months-header">
-          <th class="month" colspan="4">
-            <a class="previous" href="#"><i class="icon-chevron-left"></i></a>
-            <span></span>
-            <a class="next" href="#"><i class="icon-chevron-right"></i></a>
-          </th>
-          <th class="year" colspan="3">
-            <a class="previous" href="#"><i class="icon-chevron-left"></i></a>
-            <span></span>
-            <a class="next" href="#"><i class="icon-chevron-right"></i></a>
-          </th>
-        </tr>
-        <tr class="days-header">
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-  </div>
-</div>
-      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
-    </div>
-  </div>
-{% else %}
-<div class="form-group {{field.css_classes}}">
-    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
-    <div class="col-lg-8">
-      {{ field}}
-      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
-    </div>
-  </div>
-  {% endif %}
-{% endfor %}
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
-          <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" />
-        </div>
-        </form>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-{% endif %}
-
-{% if perms.devices.change_device %}
-  <div class="modal fade" id="archiveModal" tabindex="-1" role="dialog" aria-labelledby="archiveModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% if object.archived == None %}{% trans "Archive Device" %}{% else %}{% trans "Unarchive Device" %}{% endif %}</h4>
-        </div>
-        <div class="modal-body">
-  <div class="alert alert-info">{% if object.archived == None %}
-    {% blocktrans %}Do you really want to archive  the device: {{object}}?{% endblocktrans %}
-    {% else %}
-    {% blocktrans %}Do you really want to unarchive  the device: {{object}}?{% endblocktrans %}
-    {% endif %}</div>
-        </div>
-        <div class="modal-footer">
-          <form action="{% url "device-archive" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
-          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm" />
-          </form>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-{% endif %}
-
-{% if perms.devices.delete_device %}
-  <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Delete Device" %}</h4>
-        </div>
-        <div class="modal-body">
-  <div class="alert-danger alert">{% blocktrans %}Do you really want to delete the device: {{object}}?{% endblocktrans %}</div>
-        </div>
-        <div class="modal-footer">
-          <form action="{% url "device-delete" device.id %}" method="post" class="form-horizontal">{% csrf_token %}
-          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm" />
-          </form>
-        </div>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+{% include "snippets/modals/lending.html" with modalname="lendModal" %}
 {% endif %}
 
 {% if perms.devices.lend_device %}
-{% include "snippets/modals/devicemailModal.html" %}
+{% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
 {% endif %}
 
 {% endblock %}
@@ -262,5 +154,38 @@ $("select").select2()
     Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val()})
   }
 });
+{% if perms.devices.delete_device %}
+$("#deletebutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
+{% endif %}
+{% if perms.devices.chang_edevice %}
+$("#archivebutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#archivebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
 
+{% if perms.devices.lend_device and device.currentlending != None %}
+$("#returnbutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
+{% endif %}
+{% endif %}
 {% endblock %}
