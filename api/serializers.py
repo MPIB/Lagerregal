@@ -1,4 +1,4 @@
-from devices.models import Room, Building, Manufacturer, Device, Template
+from devices.models import Room, Building, Manufacturer, Device, Template, Lending
 from devicetypes.models import Type, TypeAttribute
 from rest_framework import serializers
 
@@ -26,17 +26,8 @@ class TypeNameSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Type
 
-
-class TypeAttributeSerializer(serializers.HyperlinkedModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='typeattribute-api-detail')
-    devicetype = TypeNameSerializer()
-    class Meta:
-        model = TypeAttribute
-
 class TypeSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='type-api-detail')
-    typeattribute = serializers.HyperlinkedRelatedField(many=True, read_only=True,
-                                     view_name='typeattribute-detail')
     class Meta:
         model = Type
 
@@ -46,12 +37,20 @@ class TemplateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Template
 
+class LendingSerializer(serializers.ModelSerializer):
+    owner = serializers.SlugRelatedField(slug_field="username")
+
+    class Meta:
+        model = Lending
+
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     manufacturer = serializers.SlugRelatedField(slug_field="name")
     room = serializers.SlugRelatedField(slug_field="name")
     devicetype = serializers.SlugRelatedField(slug_field="name")
     ip_addresses = serializers.SlugRelatedField(many=True, source='ipaddress_set', slug_field="address")
+    creator = serializers.SlugRelatedField(slug_field="username")
+    currentlending = LendingSerializer()
 
     class Meta:
         model = Device
