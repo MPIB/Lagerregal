@@ -1,4 +1,4 @@
-from api.serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer, TypeAttributeSerializer
+from api.serializers import DeviceSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer
 from devices.models import *
 from devicetypes.models import *
 from network.models import *
@@ -34,11 +34,7 @@ class TypeApiList(generics.ListCreateAPIView):
 
 class TypeApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Type
-    serializer_class = TypeSerializer
-
-class TypeAttributeApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = TypeAttribute
-    serializer_class = TypeAttributeSerializer
+    serializer_class = TypeSerializer       
 
 class RoomApiList(generics.ListCreateAPIView):
     model = Room
