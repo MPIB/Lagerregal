@@ -6,6 +6,7 @@ from devicetypes.views import *
 from main.views import *
 from api.views import *
 from mail.views import *
+from devicegroups.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView
 from rest_framework.urlpatterns import format_suffix_patterns
 # Uncomment the next two lines to enable the admin:
@@ -93,6 +94,14 @@ urlpatterns = patterns('',
     url(r'^mails/edit/(?P<pk>.*)$', permission_required("mail.change_mailtemplate", raise_exception=True)(MailUpdate.as_view()), name="mail-edit"),
     url(r'^mails/view/(?P<pk>.*)$', permission_required("mail.read_mailtemplate", raise_exception=True)(MailDetail.as_view()), name="mail-detail"),
     url(r'^mails/delete/(?P<pk>.*)$', permission_required("mail.delete_mailtemplate", raise_exception=True)(MailDelete.as_view()), name="mail-delete"),
+
+    url(r'^devicegroups/$', permission_required("devicegroups.read_devicegroup", raise_exception=True)(DevicegroupList.as_view()), name="devicegroup-list"),
+    url(r'^devicegroups/(?P<page>[0-9]*)$', permission_required("devicegroups.read_devicegroup", raise_exception=True)(DevicegroupList.as_view()), name="devicegroup-list"),
+    url(r'^devicegroups/add$', permission_required("devicegroups.create_devicegroup", raise_exception=True)(DevicegroupCreate.as_view()), name="devicegroup-add"),
+    url(r'^devicegroups/edit/(?P<pk>.*)$', permission_required("devicegroups.change_devicegroup", raise_exception=True)(DevicegroupUpdate.as_view()), name="devicegroup-edit"),
+    url(r'^devicegroups/view/(?P<pk>.*)$', permission_required("devicegroups.read_devicegroup", raise_exception=True)(DevicegroupDetail.as_view()), name="devicegroup-detail"),
+    url(r'^devicegroups/delete/(?P<pk>.*)$', permission_required("devicegroups.delete_devicegroup", raise_exception=True)(DevicegroupDelete.as_view()), name="devicegroup-delete"),
+
 
     url(r'^ipaddresses/$', permission_required("network.read_ipaddress", raise_exception=True)(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)$', permission_required("network.read_ipaddress", raise_exception=True)(IpAddressList.as_view()), name="ipaddress-list"),
