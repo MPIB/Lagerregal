@@ -79,15 +79,21 @@
 			  {% if form.room.errors %}<small style="padding-top:20px">{% for error in form.room.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 
+		<div class="col-xs-12 col-md-4 {{form.devicegroup.css_classes}} form-group">
+			<label>Devicegroup</label>
+			{{form.devicegroup}}
+			  {% if form.devicegroup.errors %}<small style="padding-top:20px">{% for error in form.devicegroup.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+		</div>
+
+		</div>
+		<div class="row">
+			
 		<div class="col-xs-12 col-md-4{{form.overdue.css_classes}} form-group">
 			<label>Overdue</label>
 			{{form.overdue}}
 			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 
-		</div>
-		<div class="row">
-			
 		<div class="col-xs-12 col-md-4 {{form.available.css_classes}} {{form.lender.css_classes}} form-group">
 			<label>Filter</label>
 		      {{form.viewfilter}}
@@ -100,7 +106,7 @@
 		</div>
 		
 	</div>
-	<div class="pull-right">
+	<div class="pull-right" style="margin-top:10px">
 			<input type="submit" value="{% trans "Search" %}" class="btn btn-primary btn-sm" />
 			<input type="button" onclick="clear_form_elements('#searchform')" class="btn btn-default btn-sm" value="{% trans "Clear" %}" />
 	</div>

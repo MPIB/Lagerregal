@@ -58,6 +58,7 @@ class SearchForm(forms.Form):
 
     devicetype = forms.ModelMultipleChoiceField(Type.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     manufacturer = forms.ModelMultipleChoiceField(Manufacturer.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
+    devicegroup = forms.ModelMultipleChoiceField(Devicegroup.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     room = forms.ModelMultipleChoiceField(Room.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     ipaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address", "class":"form-control input-sm"}), required=False)
     overdue = forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
