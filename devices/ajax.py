@@ -63,6 +63,8 @@ def add_device_field(request, form):
         form = modelform_factory(Type, form=AddForm)(dform)
     elif classname == "room":
         form = modelform_factory(Room, form=AddForm)(dform)
+    else:
+        return dajax.json()
     if form.is_valid():
         if request.user.is_staff:
             classname = form.cleaned_data["classname"]
@@ -98,6 +100,8 @@ def load_extraform(request, classname):
         form = modelform_factory(Type, form=AddForm)()
     elif classname == "room":
         form = modelform_factory(Room, form=AddForm)()
+    else:
+        return dajax.json()
 
     dajax.assign("#modal-form", "innerHTML", render_to_string('snippets/formfields.html', {"form":form}))
     dajax.script("$('#addModal').modal('show');")
