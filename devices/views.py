@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
-from mail.models import MailTemplate
+from mail.models import MailTemplate, MailHistory
 from django.shortcuts import render_to_response
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
@@ -77,6 +77,7 @@ class DeviceDetail(DetailView):
         context['ipaddressform'] = IpAddressForm()
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
         context["version_list"] = Version.objects.filter(object_id=context["device"].id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:10]
+        context["mail_list"] = MailHistory.objects.filter(device=context["device"]).order_by("-pk")[:10]
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
