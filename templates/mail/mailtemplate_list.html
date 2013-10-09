@@ -13,7 +13,7 @@
 {% block content %}
 <div class="row">
     <div class="col-xs-12 col-md-12">
-{% include "snippets/pagination.html" with listurl='type-list' %}
+{% include "snippets/pagination.html" with listurl='mail-list' %}
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -31,21 +31,7 @@
     </tr>
   {% endfor %}
 </table>
-
-  <tbody>
-    {% for ipaddress in ipaddress_list %}
-    <tr>
-      <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
-      {% if ipaddress.device %}
-          <td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td>
-          {% else %}
-          <td>Not assigned</td>
-          {% endif %}
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-{% include "snippets/pagination.html" with listurl='type-list' %}
+{% include "snippets/pagination.html" with listurl='mail-list' %}
 </div>
 </div>
 {% endblock %}
