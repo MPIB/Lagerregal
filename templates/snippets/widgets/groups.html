@@ -9,19 +9,19 @@
 
  {% block content %}
 <table class="table table-bordered"{% if widget.minimized and usestable %}style="display: none;"{% endif %}>
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Name' %}</th>
-                            <th scope="col">{% trans 'Devices' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for group in groups %}
-                            <tr>
-                                <td><a href="{% url 'devicegroup-detail' group.pk %}">{{group.name}}</a></td>
-                                <td>{{group.devices.count}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+    <thead>
+        <tr>
+            <th scope="col">{% trans 'Name' %}</th>
+            <th scope="col">{% trans 'Devices' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for group in groups %}
+            <tr>
+                <td><a href="{% url 'devicegroup-detail' group.pk %}">{{group.name}}</a></td>
+                <td>{{group.devices.count}}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
