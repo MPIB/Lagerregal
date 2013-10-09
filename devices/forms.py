@@ -34,8 +34,12 @@ VIEWSORTING = (
     ('devicetype__name', _('Devicetype ascending')),
     ('-devicetype__name', _('Devicetype descending')),
     ('room__name', _('Room ascending')),
-    ('-room__name', _('Room descending'))
+    ('-room__name', _('Room descending')),
+    ('group__name', _('Devicegroup ascending')),
+    ('-group__name', _('Devicegroup descending')),
+    ('currentlending', _('Availability')),
     )
+
 class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
