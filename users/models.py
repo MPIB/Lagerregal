@@ -7,7 +7,7 @@ from django.conf import settings
 
 # Create your models here.
 class Lageruser(AbstractUser):
-    language = models.CharField(max_length=10, null=True, choices=settings.LANGUAGES, default=settings.LANGUAGES[0])
+    language = models.CharField(max_length=10, null=True, choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
     pagelength = models.IntegerField(validators=[
             MaxValueValidator(250)
         ], default=30)
