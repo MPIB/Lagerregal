@@ -124,7 +124,7 @@ reversion.register(TypeAttributeValue)
 
 
 class Lending(models.Model):
-    owner = models.ForeignKey(Lageruser)
+    owner = models.ForeignKey(Lageruser, verbose_name=_("Lendt to"))
     lenddate = models.DateField(auto_now_add=True)
     duedate = models.DateField(blank=True, null=True)
     duedate_email = models.DateField(blank=True, null=True)
