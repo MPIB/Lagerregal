@@ -395,7 +395,7 @@ class DeviceCreate(CreateView):
                 if form.cleaned_data["emailedit_bosses"]:
                     template.subject = form.cleaned_data["emailsubject_bosses"]
                     template.body = form.cleaned_data["emailbody_bosses"]
-                template.send(recipients=recipients, data={"device":self.object})
+                template.send(request=self.request, recipients=recipients, data={"device":self.object})
             if form.cleaned_data["emailmanagment"]:
                 perm = Permission.objects.get(codename='managment_mails')
                 managment = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
@@ -406,7 +406,7 @@ class DeviceCreate(CreateView):
                 if form.cleaned_data["emailedit_managment"]:
                     template.subject = form.cleaned_data["emailsubject_managment"]
                     template.body = form.cleaned_data["emailbody_managment"]
-                template.send(recipients=recipients, data={"device":self.object})
+                template.send(request=self.request, recipients=recipients, data={"device":self.object})
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
@@ -475,7 +475,7 @@ class DeviceUpdate(UpdateView):
                 if form.cleaned_data["emailedit_bosses"]:
                     template.subject = form.cleaned_data["emailsubject_bosses"]
                     template.body = form.cleaned_data["emailbody_bosses"]
-                template.send(recipients=recipients, data={"device":device})
+                template.send(request=self.request, recipients=recipients, data={"device":device})
             if form.cleaned_data["emailmanagment"]:
                 perm = Permission.objects.get(codename='managment_mails')
                 managment = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
@@ -486,7 +486,7 @@ class DeviceUpdate(UpdateView):
                 if form.cleaned_data["emailedit_managment"]:
                     template.subject = form.cleaned_data["emailsubject_managment"]
                     template.body = form.cleaned_data["emailbody_managment"]
-                template.send(recipients=recipients, data={"device":device})
+                template.send(request=self.request, recipients=recipients, data={"device":device})
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
@@ -585,7 +585,7 @@ class DeviceMail(FormView):
         recipient = form.cleaned_data["recipient"]
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
-        template.send([recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
+        template.send(self.request, [recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
         device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
         device.currentlending.save()
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
