@@ -21,7 +21,8 @@ VIEWFILTER = (
     ('all', _('All Devices')),
     ('available', _('Available Devices')),
     ('unavailable', _('Unavailable Devices')),
-    ('archived', _('Archived Devices')))
+    ('archived', _('Archived Devices')),
+    ('overdue', _('Overdue Devices')))
 
 VIEWSORTING = (
     ('name', _('Name ascending')),
