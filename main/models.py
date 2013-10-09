@@ -7,7 +7,8 @@ widgets = {
     "edithistory": _("Edit history"),
     "newestdevices": _("Newest devices"),
     "overdue": _("Overdue devices"),
-    "statistics": _("Statistics")
+    "statistics": _("Statistics"),
+    "groups": _("Groups")
 }
 
 def get_progresscolor(percent):

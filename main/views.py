@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from devices.models import *
 from network.models import *
+from devicegroups.models import Devicegroup
 from reversion.models import Version
 import datetime
 from django.contrib.contenttypes.models import ContentType
@@ -22,6 +23,7 @@ def get_widget_data():
     context['newest_devices'] = Device.objects.all().order_by("-pk")[:10]
     context["today"] = datetime.date.today()
     context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
+    context["groups"] = Devicegroup.objects.all()
     return context
 
 class Home(TemplateView):
