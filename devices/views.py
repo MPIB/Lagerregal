@@ -35,6 +35,8 @@ class DeviceList(ListView):
             devices = Device.objects.exclude(currentlending=None)
         elif self.viewfilter == "archived":
             devices = Device.objects.exclude(archived=None)
+        elif self.viewfilter == "overdue":
+            devices = Device.objects.filter(currentlending__duedate__lt = datetime.date.today())
         else:
             devices = Device.objects.filter(archived=None)
 
