@@ -28,11 +28,17 @@ function clear_form_elements(ele) {
         switch(this.type) {
             case 'select-multiple':
                 $(this).select2("val", "");
+                break;
             case 'password':
             case 'select-one':
+                if ($(this).attr("id") == "id_overdue" || $(this).attr("id") == "id_viewfilter") {
+                    $(this).select2("val", $(this).children("option:first").val());
+                    break;
+                }
+                $(this).val($(this).children("option:first").val());
+                break;
             case 'text':
             case 'textarea':
-                console.log($(this).val())
                 $(this).val('');
                 break;
             case 'checkbox':
