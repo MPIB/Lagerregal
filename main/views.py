@@ -24,6 +24,7 @@ def get_widget_data():
     context["today"] = datetime.date.today()
     context["overdue"] = Device.objects.filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")
     context["groups"] = Devicegroup.objects.all()
+    context["recentlendings"] = Lending.objects.all().order_by("-pk")[:10]
     return context
 
 class Home(TemplateView):
