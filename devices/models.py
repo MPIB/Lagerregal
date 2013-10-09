@@ -85,7 +85,8 @@ class Device(models.Model):
     room = models.ForeignKey(Room, blank=True, null=True)
     group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices")
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
-
+    
+    templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)
 
     archived = models.DateTimeField(null=True)
