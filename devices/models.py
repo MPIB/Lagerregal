@@ -1,6 +1,7 @@
 from django.db import models
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
+from devicegroups.models import Devicegroup
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 import reversion
@@ -82,6 +83,7 @@ class Device(models.Model):
     description = models.CharField(_('Description'), max_length=1000, blank=True)
     devicetype = models.ForeignKey(Type, blank=True, null=True)
     room = models.ForeignKey(Room, blank=True, null=True)
+    group = models.ForeignKey(Devicegroup, blank=True, null=True)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
 
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)

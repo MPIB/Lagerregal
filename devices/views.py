@@ -1027,6 +1027,8 @@ class Search(FormView):
             search["room__in"] = form.cleaned_data["room"]
 
 
+        if form.cleaned_data["devicegroup"].exists():
+            search["group__in"] = form.cleaned_data["devicegroup"]
 
         if form.cleaned_data["overdue"] == "y":
             search["duedate__gt"] = datetime.datetime.utcnow().replace(tzinfo=utc)

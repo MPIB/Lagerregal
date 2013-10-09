@@ -2,6 +2,7 @@ from django import forms
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
 from devicetypes.models import TypeAttribute, TypeAttributeValue
+from devicegroups.models import Devicegroup
 from users.models import Lageruser
 import re
 from django.shortcuts import get_object_or_404
@@ -57,6 +58,7 @@ class SearchForm(forms.Form):
 
     devicetype = forms.ModelMultipleChoiceField(Type.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     manufacturer = forms.ModelMultipleChoiceField(Manufacturer.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
+    devicegroup = forms.ModelMultipleChoiceField(Devicegroup.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     room = forms.ModelMultipleChoiceField(Room.objects.all(), required=False, widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     ipaddress = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search IP-Address", "class":"form-control input-sm"}), required=False)
     overdue = forms.ChoiceField(choices=(('b', 'both'),('y', 'Yes'),('n', 'No'),), required=False, widget=forms.Select(attrs={"style":"width:100%;"}))
@@ -159,7 +161,7 @@ class DeviceForm(forms.ModelForm):
 
 class AddForm(forms.ModelForm):
     error_css_class = 'has-error'
-    classname = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room")], widget=forms.HiddenInput())
+    classname = forms.ChoiceField(choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room"), ("group", "group")], widget=forms.HiddenInput())
 
     def clean(self):
         cleaned_data = super(AddForm, self).clean()
@@ -169,6 +171,8 @@ class AddForm(forms.ModelForm):
             count = Type.objects.filter(name=cleaned_data["name"]).count()
         elif cleaned_data["classname"] == "room":
             count = Room.objects.filter(name=cleaned_data["name"]).count()
+        elif cleaned_data["classname"] == "group":
+            count = Devicegroup.objects.filter(name=cleaned_data["name"]).count()
         if count != 0:
             raise forms.ValidationError("Object with that Name already exists.")
         return cleaned_data

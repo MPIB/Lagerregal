@@ -37,6 +37,7 @@
           {% if perms.devices.read_device %}<li><a href="{% url 'device-list' %}">{% trans "Devices" %}</a></li>{% endif %}
           {% if perms.devicetypes.read_type %}<li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>{% endif %}
           {% if perms.devices.read_manufacturer %}<li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>{% endif %}
+          {% if perms.devicegroups.read_devicegroup %}<li><a href="{% url 'devicegroup-list' %}">{% trans "Devicegroups" %}</a></li>{% endif %}
         </ul>
       </li>
       {% endif %}
