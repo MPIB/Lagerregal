@@ -1,8 +1,10 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from users.models import Lageruser
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.template import Context, Template
+
 usages = {
     "new":_("New Device is created"),
     "room_changed":_("Room the device is in is changed"),
@@ -34,8 +36,25 @@ class MailTemplate(models.Model):
     def get_edit_url(self):
         return reverse('mail-edit', kwargs={'pk': self.pk})
 
-    def send(self, recipients=None, data=None):
+    def send(self, request, recipients=None, data=None):
         t = Template(self.body)
         body = t.render(Context(data))
         email = EmailMessage(subject=self.subject, body=body, to=recipients)
         email.send()
+        mailhistory = MailHistory()
+        mailhistory.mailtemplate = self
+        mailhistory.subject = self.subject
+        mailhistory.body = body
+        mailhistory.sent_by = request.user
+        mailhistory.save()
+
+class MailHistory(models.Model):
+    mailtemplate = models.ForeignKey(MailTemplate)
+    subject = models.CharField(_('Subject'), max_length=500)
+    body = models.CharField(_('Body'), max_length=10000)
+    sent_by = models.ForeignKey(Lageruser)
+    sent_at = models.DateTimeField(auto_now_add=True)
+
+
+    def get_absolute_url(self):
+        return reverse('mailhistory-detail', kwargs={'pk': self.pk})
