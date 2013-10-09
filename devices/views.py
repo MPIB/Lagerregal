@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm
+from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING
 import datetime
 from django.utils.timezone import utc
 import reversion
@@ -31,7 +31,7 @@ class DeviceList(ListView):
             devices = Device.objects.all()
         elif self.viewfilter == "available":
             devices = Device.objects.filter(currentlending=None)
-        elif self.viewfilter == "unavailable":
+        elif self.viewfilter == "lendt":
             devices = Device.objects.exclude(currentlending=None)
         elif self.viewfilter == "archived":
             devices = Device.objects.exclude(archived=None)
@@ -41,7 +41,10 @@ class DeviceList(ListView):
             devices = Device.objects.filter(archived=None)
 
         self.viewsorting = self.kwargs.pop("sorting", "name")
-        return devices.order_by(self.viewsorting)
+        if self.viewsorting in VIEWSORTING:
+            return devices.order_by(self.viewsorting)
+        else:
+            return devices
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
