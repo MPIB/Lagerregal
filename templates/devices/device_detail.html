@@ -47,8 +47,6 @@
       </tbody>
     </table>
 
-{% if perms.devices.change_device %}<a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit-history" %}</a>{% endif %}
-
 {% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">{% trans "Go to webinterface" %}</a>{% endif %}
 <h4>{% trans "Current Lending information" %}</h4>
     {% if device.currentlending != None %}
@@ -107,6 +105,7 @@
 <ul class="nav nav-tabs" style="margin-top:20px">
   {% if perms.devices.lend_device %}<li class="active"><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endif %}
   {% if perms.devices.change_device %}<li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endif %}
+  {% if perms.devices.lend_device %}<li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endif %}
 </ul>
 
 <div class="tab-content">
@@ -137,7 +136,7 @@
 </div>
 {% endif %}
 
-  {% if perms.devices.change_device %}
+{% if perms.devices.change_device %}
   <div class="tab-pane" id="edit">
 <h4>{% trans "10 last edits" %}</h4>
     <table id="change-history" class="table table-bordered table-striped">
@@ -161,15 +160,39 @@
 <a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit-history" %}</a>
 </div>
 {% endif %}
+
+  {% if perms.devices.lend_device %}
+  <div class="tab-pane" id="mail">
+<h4>{% trans "10 last sent mails" %}</h4>
+    <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>{% trans "Mailtemplate" %}</th>
+      <th>{% trans "Subject" %}</th>
+      <th>{% trans "Sent by" %}</th>
+      <th>{% trans "Sent at" %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for mail in mail_list %}
+    <tr>
+      <td>{{mail.mailtemplate.name}}</td>
+      <td>{{mail.subject}}</td>
+      <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{mail.sent_by}}</a></td>
+      <td>{{mail.sent_at}}</td>
+    </tr>
+     {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
 </div>
 </div>
 </div>
 
 {% if perms.devices.lend_device %}
 {% include "snippets/modals/lending.html" with modalname="lendModal" %}
-{% endif %}
 
-{% if perms.devices.lend_device %}
 {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
 {% endif %}
 

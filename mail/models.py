@@ -4,7 +4,6 @@ from users.models import Lageruser
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.template import Context, Template
-
 usages = {
     "new":_("New Device is created"),
     "room_changed":_("Room the device is in is changed"),
@@ -46,6 +45,8 @@ class MailTemplate(models.Model):
         mailhistory.subject = self.subject
         mailhistory.body = body
         mailhistory.sent_by = request.user
+        if "device" in data:
+            mailhistory.device = data["device"]
         mailhistory.save()
 
 class MailHistory(models.Model):
@@ -54,6 +55,7 @@ class MailHistory(models.Model):
     body = models.CharField(_('Body'), max_length=10000)
     sent_by = models.ForeignKey(Lageruser)
     sent_at = models.DateTimeField(auto_now_add=True)
+    device = models.ForeignKey("devices.Device", null=True)
 
 
     def get_absolute_url(self):
