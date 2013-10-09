@@ -9,7 +9,8 @@ widgets = {
     "overdue": _("Overdue devices"),
     "statistics": _("Statistics"),
     "groups": _("Groups"),
-    "recentlendings": _("Recent lendings")
+    "recentlendings": _("Recent lendings"),
+    "shorttermdevices": _("Devices for short term lending")
 }
 
 def get_progresscolor(percent):
