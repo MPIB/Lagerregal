@@ -557,6 +557,9 @@ class DeviceReturn(View):
         messages.success(request, _('Device is marked as returned.'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+    def post(self, request, **kwargs):
+        return self.get(request, **kwargs)
+
 class DeviceMail(FormView):
     template_name = 'devices/base_form.html'
     form_class = DeviceMailForm
