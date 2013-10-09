@@ -41,7 +41,7 @@ class DeviceList(ListView):
             devices = Device.objects.filter(archived=None)
 
         self.viewsorting = self.kwargs.pop("sorting", "name")
-        if self.viewsorting in VIEWSORTING:
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
             return devices.order_by(self.viewsorting)
         else:
             return devices
