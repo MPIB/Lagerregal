@@ -47,7 +47,6 @@ class UsersettingsView(TemplateView):
         context = super(UsersettingsView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         if self.request.method != "POST":
-            print self.request.method 
             context['settingsform'] = SettingsForm(initial={"pagelength":self.request.user.pagelength})
         context["breadcrumbs"] = [
             (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),
