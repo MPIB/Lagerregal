@@ -8,7 +8,7 @@ IP-Addresses
 
 {% block pullright %}
 {{viewform.viewfilter}}
-{% if perms.network.create_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
+{% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
 {% endblock %}
 {% block content %}
 

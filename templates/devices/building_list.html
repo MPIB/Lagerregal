@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block pullright %}
-{% if perms.devices.create_building %}<a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Building" %}</a>{% endif %}
+{% if perms.devices.add_building %}<a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Building" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
