@@ -280,7 +280,6 @@ class DeviceHistory(View):
         if deleted_keys == []:
             messages.success(self.request, _('Successfully reverted Device to revision {0}').format(version.revision.id))
         else:
-            print "test"
             messages.warning(self.request, _("Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}").format(version.revision.id, ",".join(deleted_keys)))
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))

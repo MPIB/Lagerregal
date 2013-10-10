@@ -144,13 +144,11 @@ class DeviceForm(forms.ModelForm):
                 return
 
         elif kwargs["initial"] != None:
-            print kwargs["initial"]
             if "devicetype" in kwargs["initial"]:
                 attributes = TypeAttribute.objects.filter(devicetype = kwargs["initial"]["devicetype"].pk)
             else:
                 return
             attributevalues = TypeAttributeValue.objects.filter(device = kwargs["initial"]["deviceid"])
-            print attributevalues
         else:
             attributes = []
         for attribute in attributes:
