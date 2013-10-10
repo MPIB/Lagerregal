@@ -9,7 +9,7 @@
 {% block pullright %}
 {{viewform.viewsorting}}
 {{viewform.viewfilter}}
-{% if perms.devices.create_device %}
+{% if perms.devices.add_device %}
 <div class="btn-group">
 <a href="{% url 'device-add' %}" class="btn btn-success btn-sm"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Device" %}</a>
   <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
