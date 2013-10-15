@@ -21,8 +21,8 @@
      			      	<div class="form-group col-md-4" style="padding:0px">
 		      {{form.bildnumbermodifier}}
 		  </div>
-		  {% if form.buildnumber.errors %}<small style="padding-top:20px">Buildnumber: {% for error in form.buildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
-{% if form.buildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.buildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+		  {% if form.bildnumber.errors %}<small style="padding-top:20px">Bildnumber: {% for error in form.bildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+{% if form.bildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.bildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 
 		<div class="col-xs-12 col-md-4 {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
