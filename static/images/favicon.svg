@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: IcoMoon.io -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="896"
+   height="896"
+   viewBox="0 0 896 896"
+   data-du=""
+   data-tags="archive, box"
+   style="margin-left: 9px; margin-top: 9px;"
+   id="svg4085"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="archive.svg">
+  <metadata
+     id="metadata4149">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs4147" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1366"
+     inkscape:window-height="731"
+     id="namedview4145"
+     showgrid="false"
+     inkscape:zoom="0.26339286"
+     inkscape:cx="448"
+     inkscape:cy="448"
+     inkscape:window-x="0"
+     inkscape:window-y="1098"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg4085" />
+  <path
+     d="M 544,416q0-13 -9.5-22.5t-22.5-9.5l-128,0 q-13,0 -22.5,9.5t-9.5,22.5t 9.5,22.5t 22.5,9.5l 128,0 q 13,0 22.5-9.5t 9.5-22.5zM 832,320l0,480 q0,13 -9.5,22.5t-22.5,9.5l-704,0 q-13,0 -22.5-9.5t-9.5-22.5l0-480 q0-13 9.5-22.5t 22.5-9.5l 704,0 q 13,0 22.5,9.5t 9.5,22.5zM 864,96l0,128 q0,13 -9.5,22.5t-22.5,9.5l-768,0 q-13,0 -22.5-9.5t-9.5-22.5l0-128 q0-13 9.5-22.5t 22.5-9.5l 768,0 q 13,0 22.5,9.5t 9.5,22.5z"
+     id="path4143" />
+</svg>

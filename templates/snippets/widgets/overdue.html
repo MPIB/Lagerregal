@@ -1,0 +1,33 @@
+{% extends "snippets/widgets/basewidget.html" %}
+ {% load i18n %}
+
+ {% block title %}
+ {% trans 'Overdue devices' %}
+ {% endblock %}
+
+{% block widgetname %}overdue{% endblock %}
+
+ {% block content %}
+<table class="table table-bordered"{% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+    <thead>
+        <tr>
+            <th scope="col">{% trans 'Name' %}</th>
+            <th scope="col">{% trans 'Duedate' %}</th>
+            <th scope="col">{% trans 'Lendt to' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for device in overdue %}
+            <tr>
+                <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
+                <td>{{device.currentlending.duedate}}</td>
+                <td><a href="{% url 'userprofile' device.currentlending.owner.pk %}">{{ device.currentlending.owner }}</a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<div class="panel-footer">
+    <a href="{% url 'device-list' filter='overdue' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
+    <div class="clearfix"></div>
+</div>
+{% endblock %}

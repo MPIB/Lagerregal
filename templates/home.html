@@ -1,34 +1,116 @@
 {% extends "base.html" %}
-
-{% block title %}Main{% endblock %}
+{% load i18n %}
+{% load devicetags %}
+{% block title %}{% trans "Main" %}{% endblock %}
 
 {% block header %}
-Home
+{% trans "Home" %}
 {% endblock %}
 {% block content %}
 <div class="row">
-  <div class="small-6 columns">
-    <table width="100%" id="adresstable">
-  <tbody>
-    <tr>
-      <td>Total devices</td>
-      <td>{{device_all}}</td>
-    </tr>
-    <tr>
-      <td>Available devices</td>
-      <td>{{device_available}}</td>
-    </tr>
+{% if user.is_staff %}
+      <div class="col-md-5 dashboard dashboard-left">
+        {% for widget in widgets_left %}
+          {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
+          {% include template with usestable=True  %}
+          {% endwith %}
+    {% endfor %}
+    </div>
 
-    <tr>
-      <td>Total IP addresses</td>
-      <td>{{ipaddress_all}}</td>
-    </tr>
-    <tr>
-      <td>Available IP addresses</td>
-      <td>{{ipaddress_available}}</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+      <div class="col-md-7 dashboard dashboard-right">
+        {% for widget in widgets_right %}
+          {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
+          {% include template with usestable=True %}
+          {% endwith %}
+    {% endfor %}
+    </div>
+{% elif user.is_authenticated %}
+{% else %}
+      <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <h4>{% trans "You are not logged in. Please do so below." %}</h4>
+    {% if form.errors %}
+    <div data-alert class="alert-danger alert">
+    {% trans "Your username and password didn't match. Please try again." %}
+    <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+    </div>
+    {% endif %}
+    <div class="well">
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+    {% csrf_token %}
+    <div class="form-group {{field.css_classes}}">
+        <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ form.username.label_tag }}</label>
+        <div class="col-lg-8">{{ form.username|add_class:"form-control" }}</div>
+    </div>
+    <div class="form-group {{field.css_classes}}">
+        <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ form.password.label_tag }}</label>
+        <div class="col-lg-8">{{ form.password|add_class:"form-control" }}</div>
+    </div>
+    <input type="submit" value="login" class="btn btn-success pull-right" />
+    {% if next %}
+      <input type="hidden" name="next" value="{{ next }}" />
+    {% else %}
+      <input type="hidden" name="next" value="{% url 'home' %}" />
+    {% endif %}
+    </form>
+    <div class="clearfix"></div>
+    </div>
+    </div>
+{% endif %}
 </div>
 {% endblock %}
+
+{% block scriptend %}
+  {% if user.is_staff %}
+$(function() {
+    $( ".dashboard" ).sortable({
+      connectWith: ".dashboard",
+      placeholder: "alert alert-success dashboard-placeholder",
+      distance: 15,
+      update: function(event, ui) {
+      widgets = {};
+      $(".dashboard-left").children('.widget').each(function(i) { 
+          widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "l"};
+      });
+      $(".dashboard-right").children('.widget').each(function(i) { 
+          widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
+      });
+        Dajaxice.main.move_widgets(Dajax.process, {'userwidgets':widgets})
+    }
+    });
+
+    $('body').on('click', '.panel-title .w-minimize', function() {
+        Dajaxice.main.toggle_minimized(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
+    });
+    
+    $('body').on('click', '.panel-title .w-close', function() {
+        Dajaxice.main.remove_widget(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
+    });
+
+    $('body').on('click', '.addWidget', function() {
+        Dajaxice.main.add_widget(Dajax.process,{'widgetname':$( this ).data("name")})
+    });
+
+    $(".panel-title .pull-right").hide();
+    
+    $('body').on({
+      mouseenter: function () {
+        $(this).find(".pull-right").fadeIn();
+      },
+      mouseleave: function () {
+        $(this).find(".pull-right").fadeOut();
+      }},
+      '.panel-heading'
+    );
+
+    $( ".dashboard" ).disableSelection();
+  });
+  {% endif %}
+  {% endblock %}
+
+  {% block htmlend %}
+  {% if user.is_staff %}
+<a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success"><i class="icon-plus"></i></a>
+  
+{% include "snippets/modals/addwidget.html" with modalname="addWidgetModal" %}
+  {% endif %}
+  {% endblock %}

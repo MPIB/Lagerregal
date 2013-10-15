@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load i18n %}
 {% block title %}IP-Addresses{% endblock %}
 
 {% block header %}
@@ -7,12 +7,13 @@ IP-Addresses
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'ipaddress-add' %}" class="button success right small">Add Ip address</a>
+{{viewform.viewfilter}}
+{% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
 {% endblock %}
 {% block content %}
 
-{% include "snippets/pagination.html" with listurl='ipaddress-list' %}
-    <table width="100%" id="adresstable">
+{% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+    <table width="100%" id="adresstable" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>IP Address</th>
@@ -32,7 +33,7 @@ IP-Addresses
      {% endfor %}
   </tbody>
 </table>
-{% include "snippets/pagination.html" with listurl='ipaddress-list' %}
+{% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
 {% endblock %}
 
 {% block scriptend %}
@@ -44,5 +45,11 @@ $(document).ready(function() {
         }
     });
 
+    $('#id_viewfilter').change(function() {
+    window.location = "/ipaddresses/filter/" + $(this).val()
 });
+
+});
+
+{% include "snippets/pagination_js.html" with pageurl="ipaddress-list" %}
 {% endblock %}

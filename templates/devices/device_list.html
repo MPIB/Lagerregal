@@ -1,38 +1,65 @@
 {% extends "base.html" %}
-
-{% block title %}Devices{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Devices" %}{% endblock %}
 
 {% block header %}
-Devices
+{% trans "Devices" %}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'device-add' %}" class="button success small right">Add Device</a>
+{{viewform.viewsorting}}
+{{viewform.viewfilter}}
+{% if perms.devices.add_device %}
+<div class="btn-group">
+<a href="{% url 'device-add' %}" class="btn btn-success btn-sm"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Device" %}</a>
+  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">{% trans "From Template" %}</li>
+    <li><a href="{% url 'template-list' %}" class="right" style="margin-bottom:10px">{% trans "Edit Templates" %}</a></li>
+      {% if template_list %}<li class="divider"></li>
+      {% for template in template_list %}
+      <li><a href="{% url 'device-add' template.pk %}">{{template.templatename}}</a></li>
+      {% endfor %}
+      {% endif %}
+      <li class="divider"></li>
+      {% if perms.devices.create_template %}<li><a href="{% url 'template-add' %}">{% trans "New Template" %}</a></li>{% endif %}
+  </ul>
+</div>
+{% endif %}
 {% endblock %}
 
 {% block content %}
-{% include "snippets/pagination.html" with listurl='device-list' %}
-    <table width="100%" id="devicetable">
+{% include "snippets/devicepagination.html" %}
+    <table width="100%" id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Buildnumber</th>
-      <th>Devicetype</th>
-      <th>Room</th>
+      <th>{% trans "Name" %}</th>
+      <th>{% trans "Bildnumber" %}</th>
+      <th>{% trans "Devicetype" %}</th>
+      <th>{% trans "Room" %}</th>
+      <th>{% trans "Devicegroup" %}</th>
+      <th style="width:60px">{% trans "Available" %}</th>
     </tr>
   </thead>
   <tbody>
   	{% for device in device_list %}
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-      <td>{{ device.buildnumber }}</td>
+      <td>{{ device.bildnumber }}</td>
       <td>{{ device.devicetype }}</td>
       <td>{{ device.room }} ({{device.room.building}})</td>
+      <td>{{ device.devicegroup }}</td>
+      <td>{% if device.currentlending == None %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
     </tr>
      {% endfor %}
   </tbody>
 </table>
-{% include "snippets/pagination.html" with listurl='device-list' %}
+{% include "snippets/devicepagination.html" %}
+
+
+
 {% endblock %}
 
 {% block scriptend %}
@@ -43,6 +70,14 @@ $(document).ready(function() {
             window.location = href;
         }
     });
-
+$('#id_viewfilter').change(function() {
+    window.location = "/devices/filter/" + $(this).val() + "/sorting/" + $("#id_viewsorting").val()
 });
+
+$('#id_viewsorting').change(function() {
+    window.location = "/devices/filter/" + $("#id_viewfilter").val() + "/sorting/" + $(this).val()
+});
+});
+
+{% include "snippets/pagination_js.html" with pageurl="device-list" %}
 {% endblock %}

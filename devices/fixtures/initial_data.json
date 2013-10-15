@@ -1,4 +1,24 @@
 [
+
+  {
+        "pk": 2, 
+    "model": "users.lageruser", 
+    "fields": {
+        "username": "testuser", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2013-04-18T15:00:24.247Z", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "pbkdf2_sha256$10000$umpHqyE0RseN$Zg2TLBHgSld7Jf/X+rFUlEyTL5xzGpInflZJpG8BRbQ=", 
+        "email": "", 
+        "date_joined": "2013-04-18T15:00:24.247Z"
+    }
+
+    },
   {
     "model": "devices.building",
     "pk": 1,
@@ -34,21 +54,21 @@
   },
 
   {
-    "model": "devices.type",
+    "model": "devicetypes.type",
     "pk": 1,
     "fields": {
       "name": "Laptop"
     }
   },
   {
-    "model": "devices.type",
+    "model": "devicetypes.type",
     "pk": 2,
     "fields": {
       "name": "Workstation"
     }
   },
   {
-    "model": "devices.type",
+    "model": "devicetypes.type",
     "pk": 3,
     "fields": {
       "name": "Printer"
@@ -83,12 +103,14 @@
     "pk": 1,
     "fields": {
       "name": "Thinkpad x230",
-      "buildnumber":"124376543",
+      "bildnumber":"124376543",
       "serialnumber":"1234",
       "macaddress":"1234",
+      "hostname":"1234",
       "devicetype":"1",
       "room":"1",
-      "manufacturer":"1"
+      "manufacturer":"1",
+      "creator":"1"
     }
   },
   {
@@ -96,12 +118,14 @@
     "pk": 2,
     "fields": {
       "name": "MacPro",
-      "buildnumber":"653647645",
+      "bildnumber":"653647645",
       "serialnumber":"12345",
       "macaddress":"12345",
       "devicetype":"2",
+      "hostname":"12345",
       "room":"1",
-      "manufacturer":"2"
+      "manufacturer":"2",
+      "creator":"1"
     }
   },
   {
@@ -109,12 +133,14 @@
     "pk": 3,
     "fields": {
       "name": "MacPro",
-      "buildnumber":"99038503245",
+      "bildnumber":"99038503245",
       "serialnumber":"123456",
       "macaddress":"123456",
+      "hostname":"123456",
       "devicetype":"2",
       "room":"2",
-      "manufacturer":"2"
+      "manufacturer":"2",
+      "creator":"1"
     }
   },
   {
@@ -122,12 +148,14 @@
     "pk": 4,
     "fields": {
       "name": "Macbook Pro",
-      "buildnumber":"123123123",
+      "bildnumber":"123123123",
       "serialnumber":"532143523",
       "macaddress":"124475",
+      "hostname":"1234435",
       "devicetype":"1",
       "room":"1",
-      "manufacturer":"2"
+      "manufacturer":"2",
+      "creator":"1"
     }
   },
   {
@@ -135,12 +163,14 @@
     "pk": 5,
     "fields": {
       "name": "Macbook Pro",
-      "buildnumber":"94343434",
+      "bildnumber":"94343434",
       "serialnumber":"1234562323",
       "macaddress":"123456223",
+      "hostname":"1234432",
       "devicetype":"1",
       "room":"2",
-      "manufacturer":"3"
+      "manufacturer":"3",
+      "creator":"1"
     }
   },
   {
@@ -148,12 +178,14 @@
     "pk": 6,
     "fields": {
       "name": "HP Printer",
-      "buildnumber":"123435315",
+      "bildnumber":"123435315",
       "serialnumber":"1232362345",
       "macaddress":"321253256",
+      "hostname":"1234976",
       "devicetype":"3",
       "room":"3",
-      "manufacturer":"3"
+      "manufacturer":"3",
+      "creator":"1"
     }
   },
 

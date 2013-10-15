@@ -1,24 +1,30 @@
 {% extends "base.html" %}
-
-{% block title %}Buildings{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Buildings" %}{% endblock %}
 
 {% block header %}
-Buildings
+{% trans "Buildings" %}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'building-add' %}" class="button success small right">Add Building</a>
+{% if perms.devices.add_building %}<a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Building" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-5">
 {% include "snippets/pagination.html" with listurl='building-list' %}
-<ul>
+
+<div class="list-group">
   {% for building in building_list %}
-  <li><a href="{% url 'building-detail' building.id %}">{{building.name}}</a></li>
+  <a href="{% url 'building-detail' building.id %}"  class="list-group-item">{{building.name}}</a>
   {% endfor %}
-</ul>
+</div>
 {% include "snippets/pagination.html" with listurl='building-list' %}
+</div>
+</div>
 {% endblock %}
 
 {% block scriptend %}
+{% include "snippets/pagination_js.html" with pageurl="building-list" %}
 {% endblock %}

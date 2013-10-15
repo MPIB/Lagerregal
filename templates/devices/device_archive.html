@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{%  load devicetags %}
+{% load i18n %}
+{% block title %}{% trans "Archive" %} {{object.name}}{% endblock %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="small-12 large-6 large-centered columns">
+  <div class="alert-box">Do you really want to {% if object.archived != None %}un{% endif %}archive  the {% get_verbose_name object %}: {{object}}?</div>
+<form action="" method="post" class="form-horizontal">{% csrf_token %}
+<a href="{{object.get_absolute_url}}" class="button small" style="margin-right:10px;">{% trans "No" %}</a><input type="submit" value="{% trans "Yes" %}" class="button alert small" />
+</form>
+
+</div>
+</div>
+{% endblock %}

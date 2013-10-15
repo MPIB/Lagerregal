@@ -1,5 +1,6 @@
 # Django settings for Lagerregal project.
 import os
+from django.contrib.messages import constants as messages
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -68,12 +69,17 @@ STATICFILES_DIRS = (
     '{0}/static'.format(os.getcwd()),
 )
 
+LOCALE_PATHS = (
+    '{0}/locale'.format(os.getcwd()),
+)
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+'dajaxice.finders.DajaxiceFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -83,12 +89,13 @@ SECRET_KEY = '@w_%5@z0kf8c@^=a++-awtkf^44)fk3r2qv2^m@9l+z5gm#vwo'
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+     'django.template.loaders.eggs.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+   'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -106,6 +113,16 @@ TEMPLATE_DIRS = (
     '{0}/templates'.format(os.getcwd())
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages'
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -115,11 +132,41 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'main',
     'devices',
     'network',
+    'devicetypes',
+    'devicegroups',
+    'users',
+    'api',
+    'mail',
     'reversion',
-    'rest_framework', 
+    'rest_framework',
+    'dajaxice',
+    'dajax',
 )
+
+LANGUAGES = (
+  ('de', 'German'),
+  ('en', 'English'),
+)
+
+AUTH_USER_MODEL = 'users.Lageruser'
+
+
+MESSAGE_TAGS = {
+    messages.ERROR: 'alert',
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    )
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = '{0}/mails'.format(os.getcwd())
+DEFAULT_FROM_EMAIL = 'support@localhost'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

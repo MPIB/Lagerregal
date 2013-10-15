@@ -1,32 +1,42 @@
+{% load i18n %}
  $(document).ready(function() {
 
 $("#id_devicetype").select2({
-placeholder: "Devicetype"
+placeholder: "{% trans "Devicetype" %}"
 });
 $("#id_manufacturer").select2({
-placeholder: "Manufacturer"
+placeholder: "{% trans "Manufacturer" %}"
 });
 $("#id_room").select2({
-placeholder: "Room"
+placeholder: "{% trans "Room" %}"
 });
 $("#id_overdue").select2({
-placeholder: "Overdue"
+placeholder: "{% trans "Overdue" %}"
 });
-$("#id_available").select2({
-placeholder: "Available"
+$("#id_viewfilter").select2({
+placeholder: "{% trans "Filter" %}"
 });
 
-
+$("#id_devicegroup").select2({
+placeholder: "{% trans "Devicegroup" %}"
+});
 
 });
 
 function clear_form_elements(ele) {
-alert("test")
     $(ele).find(':input').each(function() {
         switch(this.type) {
-            case 'password':
             case 'select-multiple':
+                $(this).select2("val", "");
+                break;
+            case 'password':
             case 'select-one':
+                if ($(this).attr("id") == "id_overdue" || $(this).attr("id") == "id_viewfilter") {
+                    $(this).select2("val", $(this).children("option:first").val());
+                    break;
+                }
+                $(this).val($(this).children("option:first").val());
+                break;
             case 'text':
             case 'textarea':
                 $(this).val('');

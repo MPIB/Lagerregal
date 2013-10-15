@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Settings" %}{% endblock %}
+
+{% block header %}
+{% trans "Settings" %}
+{% endblock %}
+
+{% block pullright %}
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-md-6 col-md-offset-3 well">
+    <h3>{% trans "Language" %}</h3>
+    <form action="{% url 'usersettings' %}" method="post" class="form-inline">
+{% csrf_token %}
+  <button type="submit" class="btn btn-primary pull-right" style="margin-left:20px">{% trans "Set Language" %}</button>
+<div class="form-group pull-right">
+<select name="language" class="form-control">
+{% get_language_info_list for LANGUAGES as languages %}
+{% for language in languages %}
+<option value="{{ language.code }}"{% if language.code == user.language %} selected="selected"{% endif %}>{{ language.name_local }} ({{ language.code }})</option>
+{% endfor %}
+</select>
+  </div>
+</form>
+<hr>
+    <h3>{% trans "Appearance" %}</h3>
+    <form action="{% url 'usersettings' %}" method="post" class="form-horizontal">{% csrf_token %}
+{% include "snippets/formfields.html" with form=settingsform %}
+  <button type="submit" class="btn btn-primary pull-right">{% trans "Submit" %}</button>
+</form>
+</div>
+
+</div>
+{% endblock %}
