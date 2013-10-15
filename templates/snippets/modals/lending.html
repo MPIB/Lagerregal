@@ -1,0 +1,62 @@
+{% extends "snippets/modals/baseForm.html" %}
+{% load i18n %}{% load devicetags %}
+
+{% block modalHeader %}
+          <h4 class="modal-title">{% trans "Mark device as lendt" %}</h4>
+{% endblock %}
+
+{% block modalUrl %}{% url "device-lend"  device.id %}{% endblock %}
+
+{% block modalBody %}
+{% for field in lendform %}
+{% if field.html_name == "duedate" %}
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-8">
+<div class="bfh-datepicker">
+  <div class="bfh-datepicker-toggle" data-toggle="bfh-datepicker">
+    <input type="text" class="form-control">
+  </div>
+  <div class="bfh-datepicker-calendar">
+    <table class="calendar table table-bordered">
+      <thead>
+        <tr class="months-header">
+          <th class="month" colspan="4">
+            <a class="previous" href="#"><i class="icon-chevron-left"></i></a>
+            <span></span>
+            <a class="next" href="#"><i class="icon-chevron-right"></i></a>
+          </th>
+          <th class="year" colspan="3">
+            <a class="previous" href="#"><i class="icon-chevron-left"></i></a>
+            <span></span>
+            <a class="next" href="#"><i class="icon-chevron-right"></i></a>
+          </th>
+        </tr>
+        <tr class="days-header">
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+</div>
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+  </div>
+{% else %}
+<div class="form-group {{field.css_classes}}">
+    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-8">
+      {{ field}}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+  </div>
+  {% endif %}
+{% endfor %}
+{% endblock %}
+
+{% block modalFooter %}
+          {% if device.templending %}<span class="text-danger pull-left">Note: This device is intended for short term lending</span>{% endif %}
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" />
+{% endblock %}

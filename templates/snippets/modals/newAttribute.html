@@ -1,0 +1,28 @@
+{% extends "snippets/modals/baseForm.html" %}
+{% load i18n %}{% load devicetags %}
+{% block modalHeader %}
+          <h4 class="modal-title">{% trans "New Attribute" %}</h4>
+{% endblock %}
+
+{% block modalUrl %}{% url "typeattribute-add" %}{% endblock %}
+
+{% block modalBody %}
+            <input id="id_devicetype" name="devicetype" type="hidden" value="{{ object.id }}">
+          <div class="form-group">
+              <label for="id_name" class="col-lg-5 control-label">{% trans "Name" %}</label>
+              <div class="col-lg-7">
+                <input id="id_name" name="name" type="text" class="form-control">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="id_regex" class="col-lg-5 control-label">{% trans "Regular Expression" %}</label>
+              <div class="col-lg-7">
+                <input id="id_regex" name="regex" type="text" class="form-control">
+              </div>
+            </div>
+{% endblock %}
+
+{% block modalFooter %}
+          <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
+            <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" />
+{% endblock %}

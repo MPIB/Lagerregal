@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{%  load devicetags %}
+{% load i18n %}
+{% block title %}Merge{{oldobject.name}} into {{newobject.name}} {% endblock %}
+
+{% block header %}
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-md-6 col-md-offset-3">
+  <div class="alert-info alert">Do you really want to merge the {% get_verbose_name oldobject %}: {{oldobject}} into {{newobject}}?</div>
+<form action="" method="post" class="form-horizontal">{% csrf_token %}
+<a href="{{oldobject.get_absolute_url}}" class="btn btn-default" style="margin-right:10px;">No</a><input type="submit" value="Yes" class="btn btn-success" />
+</form>
+
+</div>
+</div>
+{% endblock %}

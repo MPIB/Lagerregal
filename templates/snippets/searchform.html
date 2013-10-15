@@ -1,94 +1,114 @@
-<form method="post" id="searchform">{% csrf_token %}
+{% load i18n %}
+<form method="post" id="searchform" class="form-inline" style="margin-bottom:20px">{% csrf_token %}
 	<div class="row">
-		<div class="small-3 columns {{form.name.css_classes}}  {{form.namemodifier.css_classes}}">	
-		<label>Name</label>
-		<div class="row collapse">
-		    <div class="small-8 columns">
-		      {{form.name}}
-		    </div>
-		    <div class="small-4 columns">
-		      {{form.namemodifier}}
-		    </div>
-		  </div>
+		<div class="col-xs-12 col-md-4 {{form.name.css_classes}}  {{form.namemodifier.css_classes}} form-group" style="margin-bottom:10px;">	
+		<label>Name</label><br>
+			<div class="form-group col-md-8" style="padding-left:0px">
+     			      {{form.searchname}}
+     			      	</div>
+     			      	<div class="form-group col-md-4" style="padding:0px">
+			      {{form.namemodifier}}
+			  </div>
 		    {% if form.name.errors %}<small style="padding-top:20px">Name: {% for error in form.name.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.namemodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.namemodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.buildnumber.css_classes}} {{form.buildnumbermodifier.css_classes}}">
-		<label>Buildnumber</label>
-		<div class="row collapse">
-		    <div class="small-8 columns">
-		      {{form.buildnumber}}
-		    </div>
-		    <div class="small-4 columns">
-		      {{form.buildnumbermodifier}}
-		    </div>
+
+		<div class="col-xs-12 col-md-4 {{form.bildnumber.css_classes}} {{form.bildnumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
+		<label>Bildnumber</label><br>
+			<div class="form-group col-md-8" style="padding-left:0px">
+		      {{form.bildnumber}}
+     			      	</div>
+     			      	<div class="form-group col-md-4" style="padding:0px">
+		      {{form.bildnumbermodifier}}
 		  </div>
 		  {% if form.buildnumber.errors %}<small style="padding-top:20px">Buildnumber: {% for error in form.buildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.buildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.buildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}}">
-		<label>Serialumber</label>
-		<div class="row collapse">
-		    <div class="small-8 columns">
+
+		<div class="col-xs-12 col-md-4 {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
+		<label>Serialumber</label><br>
+			<div class="form-group col-md-8" style="padding-left:0px">
 		      {{form.serialnumber}}
-		    </div>
-		    <div class="small-4 columns">
+     			      	</div>
+     			      	<div class="form-group col-md-4" style="padding:0px">
 		      {{form.serialnumbermodifier}}
-		    </div>
 		  </div>
 		    {% if form.serialnumber.errors %}<small style="padding-top:20px">Serialnumber: {% for error in form.serialnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.serialnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.serialnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.macaddress.css_classes}} {{form.macaddressmodifier.css_classes}}">
-		<label>MAC-Address</label>
-		<div class="row collapse">
-		    <div class="small-8 columns">
+
+		</div>
+		<div class="row">
+
+		<div class="col-xs-12 col-md-4 {{form.macaddress.css_classes}} {{form.macaddressmodifier.css_classes}} form-group"style="margin-bottom:10px;">
+		<label>MAC-Address</label><br>
+			<div class="form-group col-md-8" style="padding-left:0px">
 		      {{form.macaddress}}
-		    </div>
-		    <div class="small-4 columns">
+     			      	</div>
+     			      	<div class="form-group col-md-4" style="padding:0px">
 		      {{form.macaddressmodifier}}
-		    </div>
 		  </div>
 		    {% if form.macaddress.errors %}<small style="padding-top:20px">MAC-Address: {% for error in form.macaddressmodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.macaddressmodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.macaddressmodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-	</div>
-	<div class="row">
-		<div class="small-3 columns {{form.ipaddress.css_classes}}">
+
+		<div class="col-xs-12 col-md-4 {{form.ipaddress.css_classes}} form-group">
 		<label>IP-Address</label>
 			{{form.ipaddress}}
 			  {% if form.ipaddress.errors %}<small style="padding-top:20px">{% for error in form.ipaddress.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.devicetype.css_classes}}">
+
+		<div class="col-xs-12 col-md-4 {{form.devicetype.css_classes}} form-group">
 		<label>Devicetype</label>
 			{{form.devicetype}}
 			  {% if form.devicetype.errors %}<small style="padding-top:20px">{% for error in form.devicetype.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.manufacturer.css_classes}}">
+
+		</div>
+		<div class="row">
+			
+		<div class="col-xs-12 col-md-4 {{form.manufacturer.css_classes}} form-group">
 			<label>Manufacturer</label>
 			{{form.manufacturer}}
 			  {% if form.manufacturer.errors %}<small style="padding-top:20px">{% for error in form.manufacturer.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.room.css_classes}}">
+
+		<div class="col-xs-12 col-md-4{{form.room.css_classes}} form-group">
 			<label>Room</label>
 			{{form.room}}
 			  {% if form.room.errors %}<small style="padding-top:20px">{% for error in form.room.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-	</div>
-	<div class="row">
-		<div class="small-3 columns {{form.overdue.css_classes}}">
+
+		<div class="col-xs-12 col-md-4 {{form.devicegroup.css_classes}} form-group">
+			<label>Devicegroup</label>
+			{{form.devicegroup}}
+			  {% if form.devicegroup.errors %}<small style="padding-top:20px">{% for error in form.devicegroup.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+		</div>
+
+		</div>
+		<div class="row">
+			
+		<div class="col-xs-12 col-md-4{{form.overdue.css_classes}} form-group">
 			<label>Overdue</label>
 			{{form.overdue}}
 			  {% if form.overdue.errors %}<small style="padding-top:20px">{% for error in form.overdue.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns {{form.available.css_classes}}">
-			<label>Available</label>
-			{{form.available}}
-			  {% if form.available.errors %}<small style="padding-top:20px">{% for error in form.available.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+
+		<div class="col-xs-12 col-md-4 {{form.available.css_classes}} {{form.lender.css_classes}} form-group">
+			<label>Filter</label>
+		      {{form.viewfilter}}
+			  {% if form.viewfilter.errors %}<small style="padding-top:20px">{% for error in form.viewfilter.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
-		<div class="small-3 columns right">
-			<input type="submit" value="Search" class="button small" />
-			<input type="button" onclick="clear_form_elements('#searchform')" class="button alert small right" value="Clear">
+		<div class="col-xs-12 col-md-4 {{form.available.css_classes}} {{form.lender.css_classes}} form-group">
+			<label>Lender</label>
+		      {{form.lender}}
+			  {% if form.lender.errors %}<small style="padding-top:20px">{% for error in form.lender.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
+		
 	</div>
+	<div class="pull-right" style="margin-top:10px">
+			<input type="submit" value="{% trans "Search" %}" class="btn btn-primary btn-sm" />
+			<input type="button" onclick="clear_form_elements('#searchform')" class="btn btn-default btn-sm" value="{% trans "Clear" %}" />
+	</div>
+	<div class="clearfix"></div>
 </form>

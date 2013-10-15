@@ -1,0 +1,5 @@
+django
+django-dajaxice
+django-dajax
+django-reversion
+djangorestframework

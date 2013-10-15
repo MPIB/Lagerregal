@@ -1,0 +1,5 @@
+$(".pageselect").change(function() {
+    urlpart = "{% url pageurl 1 %}"
+    urlpart = urlpart.substring(0, urlpart.length-1)
+    window.location = urlpart + $(this).val()
+});

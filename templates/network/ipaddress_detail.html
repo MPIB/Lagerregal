@@ -1,29 +1,39 @@
 {% extends "base.html" %}
-
-{% block title %}{{ipaddress.address{% endblock %}
+{% load i18n %}
+{% block title %}{{ipaddress.address}}{% endblock %}
 
 {% block header %}
-IP-Adress: {{ipaddress.address}}
+{% trans "IP-Adress" %}: {{ipaddress.address}}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'ipaddress-delete' ipaddress.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
-<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="button success right small">Edit</a>
+{% if perms.network.delete_ipaddress %}<a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.network.change_ipaddress %}<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="row">
-  <div class="small-6 large-8 columns">
-    <table>
+  <div class="col-md-4 col-xs-12">
+    <table class="table table-bordered table-striped">
       <tbody>
         <tr><td>Address</td><td>{{ipaddress.address}}</td></tr>
-        {% if ipaddress.device %}
-          <tr><td>Device</td><td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td></tr>
-          {% else %}
-          <tr><td>Device</td><td><a href="#">Assign device</a></td></tr>
-          {% endif %}
+          <tr><td>Device</td><td>{% if ipaddress.device %}<a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a>{% else %}{% trans "Not assigned" %}{% endif %}</td></tr>
       </tbody>
     </table>
   </div>
 </div>
+{% endblock %}
+
+{% block scriptend %}
+{% if perms.network.delete_ipaddress %}
+$("#deletebutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "ipaddress-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
+{% endif %}
 {% endblock %}

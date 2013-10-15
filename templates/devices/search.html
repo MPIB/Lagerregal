@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-
-{% block title %}Search{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Search" %}{% endblock %}
 
 {% block header %}
-Search
+{% trans "Search" %}
 {% endblock %}
 {% block content %}
 {% include 'snippets/searchform.html' %}

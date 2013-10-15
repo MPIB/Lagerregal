@@ -1,52 +1,80 @@
 {% extends "base.html" %}
-
+{%  load devicetags %}
+{% load i18n %}
 {% block title %}{{building.name}}{% endblock %}
 
 {% block header %}
-Building: {{building.name}}
+{% trans "Building" %}: {{building.name}}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'building-delete' building.id %}" class="button alert right small"style="margin-left:10px">Delete</a>
-<a href="{% url 'building-edit' building.id %}" class="button success small right">Edit</a>
+{% if perms.devices.delete_building %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_building %}<a href="{% url 'building-edit' building.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+<a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
+<div class="btn-group">
+  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+    <i class="icon-share-alt" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+  {% for merge in merge_list %}
+  <li><a href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
+  {% endfor %}
+  </ul>
+</div>{% endif %}
 {% endblock %}
 
 {% block content %}
 <div class="row">
-  <div class="small-6 large-8 columns">
-    <table>
+  <div class="col-xs-12 col-md-5">
+    <table class="table table-bordered table-striped">
       <tbody>
-        <tr><td>Street</td><td>{{building.street}} {{building.number}}</td></tr>
-        <tr><td>ZIP Code</td><td>{{building.zipcode}}</td></tr>
-        <tr><td>City</td><td>{{building.city}}</td></tr>
-        <tr><td>State</td><td>{{building.state}}</td></tr>
-        <tr><td>Country</td><td>{{building.country}}</td></tr>
+        <tr><td>{% trans "Street" %}</td><td>{{building.street}} {{building.number}}</td></tr>
+        <tr><td>{% trans "ZIP Code" %}</td><td>{{building.zipcode}}</td></tr>
+        <tr><td>{% trans "City" %}</td><td>{{building.city}}</td></tr>
+        <tr><td>{% trans "State" %}</td><td>{{building.state}}</td></tr>
+        <tr><td>{% trans "Country" %}</td><td>{{building.country}}</td></tr>
       </tbody>
     </table>
   </div>
-</div>
-
+<div class="col-xs-12 col-md-7">
 {% if device_list %}
-<h4>Devices</h4>
-    <table width="100%" id="devicetable">
+<h4>{% trans "Devices" %}</h4>
+    <table width="100%" id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Buildnumber</th>
-      <th>Devicetype</th>
-      <th>Room</th>
+      <th>{% trans "Name" %}</th>
+      <th>{% trans "Bildnumber" %}</th>
+      <th>{% trans "Devicetype" %}</th>
+      <th>{% trans "Room" %}</th>
     </tr>
   </thead>
   <tbody>
     {% for device in device_list %}
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-      <td>{{ device.buildnumber }}</td>
+      <td>{{ device.bildnumber }}</td>
       <td>{{ device.devicetype }}</td>
       <td>{{ device.room }}</td>
     </tr>
      {% endfor %}
   </tbody>
 </table>
+{% endif %}
+</div>
+</div>
+</div>
+{% endblock %}
+
+{% block scriptend %}
+{% if perms.devices.delete_building %}
+$("#deletebutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "building-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
 {% endif %}
 {% endblock %}

@@ -1,0 +1,16 @@
+ {% load i18n %}
+<div class="panel panel-primary widget" id="{% block widgetname %}{% endblock %}">
+  <div class="panel-heading">
+    <h3 class="panel-title">{% block title %}{% endblock %}
+        <a href="#" class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}><i class="icon-remove w-close"></i></a>
+    <a href="#" class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}><i class="icon-{% if widget.minimized %}plus{% else %}minus{% endif %} w-minimize"></i></a>
+    </h3>
+  </div>
+  {% if not usestable %}
+    <div class="panel-body" {% if widget.minimized %}style="display: none;"{% endif %}>
+    {% endif %}
+            {% block  content %}{% endblock %} 
+    {% if not usestable %}
+    </div>
+    {% endif %}
+</div>

@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load devicetags %}
+{% block title %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
+
+{% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-xs-12 col-md-8 col-md-offset-2 well well-lg">
+<form action="" method="post" class="form-horizontal">{% csrf_token %}
+{% for field in form %}
+{% if field.html_name == "creator" %}
+{{ field }}
+{% elif field|is_checkbox %}
+<div class="form-group">
+    <div class="col-lg-offset-3 col-lg-9">
+      <div class="checkbox">
+        <label>
+          {{field}} {{field.label}}
+        </label>
+      </div>
+    </div>
+  </div>
+{% else %}
+{% if field.html_name == "room" %}</div>{% endif %}
+<div class="form-group {{field.css_classes}}"
+{% if field.html_name == "emailsubject_bosses" or field.html_name == "emailbody_bosses" or field.html_name == "emailsubject_managment" or field.html_name == "emailbody_managment"%}
+style="display:none;"
+{% endif %}>
+    <label for="{{field.html_name}}" class="col-lg-3 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+    <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}7{% else %}8{% endif %}{% else %}9{% endif %}">
+      {% if field|is_select %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
+      <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
+    </div>
+    {% if field|is_select %}
+      {% if field.html_name == "emailtemplatebosses" or field.html_name == "emailtemplatemanagment" %}
+      <div class="col-lg-2" style="padding-left:0px"><a class="previewbutton btn btn-default btn-sm pull-right" data-name="{{field.label}}">{% trans "Preview" %}</a></div>
+      {% else %}
+        <div class="col-lg-1" style="padding-left:0px"><a class="modalbutton btn btn-default btn-sm pull-right" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="icon-plus"></i></a></div>
+      {% endif %}
+    {% endif %}
+  </div>
+{% endif %}
+{% if field.html_name == "devicetype" %}<div id="extra_attributes">{% endif %}
+{% endfor %}
+<input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm pull-right" />
+</form>
+
+</div>
+</div>
+
+  <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">{% trans "Create new <span id='addmodal_header'></span>" %}</h4>
+        </div>
+            <form action="" method="post" id="addform" accept-charset="utf-8" class="form-horizontal">
+        <div class="modal-body">
+          <div id="modal-form"></div>
+    <input type="hidden" name="classname" id="addmodal_classname">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+          <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm">
+        </div>
+        </form>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+
+{% include "snippets/modals/mailpreview.html" with modalname="previewModal" %}
+{% endblock %}
+
+{% block scriptend %}
+$( "input:text[name=name]" ).autocomplete({
+      minLength: 2,
+      source: function( request, response ) {
+        var term = request.term;
+        Dajaxice.devices.complete_devicenames(response, {'name':term});
+      }
+    });
+$("#id_devicetype").change(function() {
+        Dajaxice.devicetypes.get_attributes(Dajax.process, {'pk':$(this).val()});
+});
+
+$(".modalbutton").click(function() {
+    $("#addmodal_header").text($(this).data("name"))
+    $("#addmodal_classname").val($(this).data("classname"));
+    Dajaxice.devices.load_extraform(Dajax.process, {'classname':$(this).data("classname")})
+});
+
+$("select").select2();
+
+$("#addform").submit(function() {
+    Dajaxice.devices.add_device_field(Dajax.process,{'form':$(this).serialize(true)});
+    return false;
+});
+
+changelist = []
+
+initialdata = {
+{% for field in form %}
+  "{{ field.html_name }}": $("#{{ field.auto_id }}").val(),
+{% endfor %}
+}
+
+commentstring = ""
+
+    $('body').on('change', 'input, select, textarea', function() {
+        if (!($(this).attr("id") == "id_emailbosses" ||
+          $(this).attr("id") == "id_emailtemplatebosses" ||
+          $(this).attr("id") == "id_emailmanagment" ||
+          $(this).attr("id") == "id_emailtemplatemanagment" ||
+          $(this).attr("id") == "id_comment" ||
+          $(this).attr("id") == "id_emailsubject_bosses" ||
+          $(this).attr("id") == "id_emailbody_bosses" ||
+          $(this).attr("id") == "id_emailsubject_managment" ||
+          $(this).attr("id") == "id_emailbody_managment")) {
+            if ($(this).val() != initialdata[$(this).attr("name")]) {
+              if (changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()) == -1) {
+                changelist.push($("label[for='"+$(this).attr('name')+"']").html())
+              }
+            } else {
+                changelist.splice(changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()), 1)
+            }
+          if($("#id_comment").val() == commentstring) {
+            if (changelist.length === 0) {
+              commentstring = ""
+              $("#id_comment").val("")
+            } else {
+              commentstring = "Updated: " + changelist.join(", ")
+              $("#id_comment").val(commentstring)
+            }
+          }
+        }
+    });
+
+$(".previewbutton").click(function() {
+    $("#previewmodal_header").text($(this).parents(".form-group:first").find("select option:selected").text());
+    template = $(this).parents(".form-group:first").find("select").val()
+    device = {
+      "name": $("#id_name").val(),
+      "bildnumber": $("#id_bildnumber").val(),
+      "serialnumber": $("#id_serialnumber").val(),
+      "macaddress": $("#id_macaddress").val(),
+      "manufacturer": $("#id_manufacturer").val(),
+      "hostname": $("#id_hostname").val(),
+      "description": $("#id_description").val(),
+      "devicetype": $("#id_devicetype").val(),
+      "room": $("#id_room").val(),
+      "webinterface": $("#id_webinterface").val()
+  }
+    Dajaxice.devices.load_mailpreview(Dajax.process, {"template":template, "device":device})
+});
+
+$("#id_emailtemplatebosses").change(function() {
+  if ($(this).val() === "") {
+    $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val(), "fieldtype":"bosses"})
+  }
+});
+
+if ($("#id_emailtemplatebosses").val() === "") {
+  $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+} else {
+  $("#id_emailtemplatebosses").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+}
+
+  $("#id_emailtemplatemanagment").change(function() {
+  if ($(this).val() === "") {
+    $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  } else {
+    $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val(), "fieldtype":"managment"})
+  }
+});
+
+if ($("#id_emailtemplatemanagment").val() === "") {
+  $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+} else {
+  $("#id_emailtemplatemanagment").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+}
+
+  $("#id_emailedit_bosses").change(function() {
+  if ($(this).val()) {
+    $("#id_emailsubject_bosses").parents(".form-group:first").fadeIn();
+    $("#id_emailbody_bosses").parents(".form-group:first").fadeIn();
+  } else {
+    $("#id_emailsubject_bosses").parents(".form-group:first").fadeOut();
+    $("#id_emailbody_bosses").parents(".form-group:first").fadeOut();
+  }
+});
+
+  $("#id_emailedit_managment").change(function() {
+  if ($(this).val()) {
+    $("#id_emailsubject_managment").parents(".form-group:first").fadeIn();
+    $("#id_emailbody_managment").parents(".form-group:first").fadeIn();
+  } else {
+    $("#id_emailsubject_managment").parents(".form-group:first").fadeOut();
+    $("#id_emailbody_managment").parents(".form-group:first").fadeOut();
+  }
+});
+
+{% endblock %}

@@ -1,24 +1,30 @@
 {% extends "base.html" %}
-
-{% block title %}Manufacturers{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Manufacturers" %}{% endblock %}
 
 {% block header %}
-Manufacturers
+{% trans "Manufacturers" %}
 {% endblock %}
 
 {% block pullright %}
-<a href="{% url 'manufacturer-add' %}" class="button success small right">Add Manufacturer</a>
+{% if perms.devices.add_manufacturer %}<a href="{% url 'manufacturer-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Manufacturer" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-5">
 {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
-<ul>
+<div class="list-group">
   {% for manufacturer in manufacturer_list %}
-  <li><a href="{% url 'manufacturer-detail' manufacturer.id %}">{{manufacturer.name}}</a></li>
+  <a href="{% url 'manufacturer-detail' manufacturer.id %}" class="list-group-item">{{manufacturer.name}}</a>
   {% endfor %}
-</ul>
+</div>
 {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
+
+</div>
+</div>
 {% endblock %}
 
 {% block scriptend %}
+{% include "snippets/pagination_js.html" with pageurl="manufacturer-list" %}
 {% endblock %}
