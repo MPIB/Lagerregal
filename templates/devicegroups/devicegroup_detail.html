@@ -4,7 +4,7 @@
 {% block title %}{{object.name}}{% endblock %}
 
 {% block pullright %}
-{% if perms.devicegroups.deletedevicegroup %}<a  href="#" id="deletebutton" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devicegroups.delete_devicegroup %}<a  href="#" id="deletebutton" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
 {% if perms.devicegroups.change_devicegroup %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
