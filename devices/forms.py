@@ -55,7 +55,7 @@ class SearchForm(forms.Form):
     searchname = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name", "class":"form-control input-sm"}), required=False)
     namemodifier =forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}))
 
-    bildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search buildnumber", "class":"form-control input-sm"}), required=False)
+    bildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search bildnumber", "class":"form-control input-sm"}), required=False)
     bildnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
 
     serialnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search serialnumber", "class":"form-control input-sm"}), required=False)
