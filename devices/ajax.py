@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Room, Building, Manufacturer
