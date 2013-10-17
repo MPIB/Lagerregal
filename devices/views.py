@@ -44,9 +44,9 @@ class DeviceList(ListView):
 
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
-            return devices.order_by(self.viewsorting)
-        else:
-            return devices
+            devices = devices.order_by(self.viewsorting)
+        
+        return devices.values("id", "name", "bildnumber", "devicetype__name", "room__name", "room__building", "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
