@@ -34,7 +34,7 @@ def add_widget(request, widgetname):
             col = ".dashboard-right"
         context["usestable"] = True
         context["hidecontrols"] = True
-        dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{}.html'.format(widgetname), context))
+        dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{0}.html'.format(widgetname), context))
         dajax.script("$('#addWidgetModal').modal('hide');")
         dajax.remove(".addWidget[data-name={0}]".format(widgetname))
     return dajax.json()
