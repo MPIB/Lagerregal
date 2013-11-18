@@ -108,8 +108,8 @@ msgstr "Hersteller"
 #: templates/devices/room_detail.html:32
 #: templates/devices/searchresult.html:14
 #: templates/devices/type_detail.html:21
-msgid "Bildnumber"
-msgstr "Bildnummer"
+msgid "Inventorynumber"
+msgstr "Inventorynummer"
 
 #: devices/models.py:84 templates/devices/device_detail.html:32
 #: templates/devices/device_history.html:24
@@ -448,7 +448,7 @@ msgstr "Gerät hinzufügen"
 
 #: templates/devices/device_list.html:21
 msgid "Buildnumber"
-msgstr "Bildnummer"
+msgstr "Inventorynummer"
 
 #: templates/devices/device_list.html:59
 msgid "Create from Template"

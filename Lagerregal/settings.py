@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'dajaxice',
     'dajax',
+    'south',
 )
 
 LANGUAGES = (

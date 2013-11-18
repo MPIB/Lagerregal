@@ -13,13 +13,13 @@
 {% if form.namemodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.namemodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 
-		<div class="col-xs-12 col-md-4 {{form.bildnumber.css_classes}} {{form.bildnumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
-		<label>Bildnumber</label><br>
+		<div class="col-xs-12 col-md-4 {{form.inventorynumber.css_classes}} {{form.inventorynumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
+		<label>Inventorynumber</label><br>
 			<div class="form-group col-md-8" style="padding-left:0px">
-		      {{form.bildnumber}}
+		      {{form.inventorynumber}}
      			      	</div>
      			      	<div class="form-group col-md-4" style="padding:0px">
-		      {{form.bildnumbermodifier}}
+		      {{form.inventorynumbermodifier}}
 		  </div>
 		  {% if form.buildnumber.errors %}<small style="padding-top:20px">Buildnumber: {% for error in form.buildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 {% if form.buildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.buildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
