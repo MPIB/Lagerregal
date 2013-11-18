@@ -21,6 +21,7 @@ from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.conf import settings
 
 class DeviceList(ListView):
     context_object_name = 'device_list'
@@ -1014,32 +1015,32 @@ class Search(FormView):
     def form_valid(self, form):
         search = {}
         if form.cleaned_data["searchname"] != "":
-            search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["searchname"]
+            search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["searchname"].strip()
 
         if form.cleaned_data["lender"] != "":
-            search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"]
+            search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"].strip()
 
         if form.cleaned_data["inventorynumber"] != "":
-            search["inventorynumber__" + form.cleaned_data["inventorynumbermodifier"]] = form.cleaned_data["inventorynumber"]
+            search["inventorynumber__" + form.cleaned_data["inventorynumbermodifier"]] = form.cleaned_data["inventorynumber"].strip()
 
         if form.cleaned_data["serialnumber"] != "":
-            search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"]
+            search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"].strip()
 
         if form.cleaned_data["macaddress"] != "":
-            search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"]
+            search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"].strip()
 
         if form.cleaned_data["devicetype"].exists():
-            search["devicetype__in"] = form.cleaned_data["devicetype"]
+            search["devicetype__in"] = form.cleaned_data["devicetype"].strip()
 
         if form.cleaned_data["manufacturer"].exists():
-            search["manufacturer__in"] = form.cleaned_data["manufacturer"]
+            search["manufacturer__in"] = form.cleaned_data["manufacturer"].strip()
 
         if form.cleaned_data["room"].exists():
-            search["room__in"] = form.cleaned_data["room"]
+            search["room__in"] = form.cleaned_data["room"].strip()
 
 
         if form.cleaned_data["devicegroup"].exists():
-            search["group__in"] = form.cleaned_data["devicegroup"]
+            search["group__in"] = form.cleaned_data["devicegroup"].strip()
 
         if form.cleaned_data["overdue"] == "y":
             search["duedate__gt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
