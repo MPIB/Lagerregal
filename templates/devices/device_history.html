@@ -39,10 +39,10 @@
           <td>{% history_compare previous.name this_version.name %}</td>
           <td>{% history_compare this_version.name current.name %}</td>
         </tr>
-        <tr><td>{% trans "Bildnumber" %}</td>
-          <td>{{previous.bildnumber}}</td>
-          <td>{% history_compare previous.bildnumber this_version.bildnumber %}</td>
-          <td>{% history_compare this_version.bildnumber current.bildnumber %}</td>
+        <tr><td>{% trans "Inventorynumber" %}</td>
+          <td>{{previous.inventorynumber}}</td>
+          <td>{% history_compare previous.inventorynumber this_version.inventorynumber %}</td>
+          <td>{% history_compare this_version.inventorynumber current.inventorynumber %}</td>
         </tr>
         <tr><td>{% trans "Serialnumber" %}</td>
           <td>{{previous.serialnumber}}</td>
@@ -91,9 +91,9 @@
             <td>{{this_version.name}}</td>
             <td>{% history_compare this_version.name current.name %}</td>
         </tr>
-        <tr><td>{% trans "Bildnumber" %}</td>
-          <td>{{this_version.bildnumber}}</td>
-          <td>{% history_compare this_version.bildnumber current.bildnumber %}</td>
+        <tr><td>{% trans "Inventorynumber" %}</td>
+          <td>{{this_version.inventorynumber}}</td>
+          <td>{% history_compare this_version.inventorynumber current.inventorynumber %}</td>
         </tr>
         <tr><td>{% trans "Serialnumber" %}</td>
           <td>{{this_version.serialnumber}}</td>

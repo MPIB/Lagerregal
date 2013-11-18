@@ -75,7 +75,7 @@ class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add = True, blank=True, null=True)
     creator = models.ForeignKey(Lageruser)
     name = models.CharField(_('Name'), max_length=200)
-    bildnumber = models.CharField(_('Bildnumber'), max_length=50)
+    inventorynumber = models.CharField(_('Inventorynumber'), max_length=50)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50)
     macaddress = models.CharField(_('MAC Address'), max_length=40)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True)
