@@ -82,7 +82,7 @@
         </ul>
       </li>
       {% else %}
-      <li id="loginbutton"><a href="{% url 'django.contrib.auth.views.login' %}" class="button button-success"><i class="icon-signin"></i> {% trans "Login" %}</a></li>
+      <li id="loginbutton"><a href="{% url 'users.views.login' %}" class="button button-success"><i class="icon-signin"></i> {% trans "Login" %}</a></li>
     {% endif %}
     </ul>
   </div><!-- /.navbar-collapse -->

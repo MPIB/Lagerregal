@@ -13,7 +13,7 @@
 </div>
 {% endif %}
 <div class="well">
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+<form method="post" action="{% url 'users.views.login' %}" class="form-horizontal">
 {% csrf_token %}
 <div class="form-group {{field.css_classes}}">
     <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ form.username.label_tag }}</label>
