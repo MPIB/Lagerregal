@@ -20,7 +20,7 @@ dajaxice_autodiscover()
 urlpatterns = patterns('',
     url(r'^$', Home.as_view(), name="home"),
 
-    url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}),
+    url(r'^accounts/login/$', 'users.views.login', {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}),
 
     url(r'^devices/$', permission_required("devices.read_device", raise_exception=True)(DeviceList.as_view()), name="device-list"),
