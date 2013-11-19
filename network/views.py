@@ -28,13 +28,14 @@ class IpAddressList(ListView):
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "all")
         if self.viewfilter == "all":
-            return IpAddress.objects.all()
+            addresses = IpAddress.objects.all()
         elif self.viewfilter == "free":
-            return IpAddress.objects.filter(device=None)
+            addresses = IpAddress.objects.filter(device=None)
         elif self.viewfilter == "used":
-            return IpAddress.objects.exclude(device=None)
+            addresses = IpAddress.objects.exclude(device=None)
         else:
-            return IpAddress.objects.all()
+            addresses = IpAddress.objects.all()
+        return addresses.values("id", "address", "device__pk", "device__name")
 
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)

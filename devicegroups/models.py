@@ -14,6 +14,9 @@ class Devicegroup(models.Model):
     class Meta:
         verbose_name = _('Devicegroup')
         verbose_name_plural = _('Devicegroups')
+        permissions = (
+            ("read_devicegroup", _("Can read Devicegroup")),
+        )
 
     def get_absolute_url(self):
         return reverse('devicegroup-detail', kwargs={'pk': self.pk})

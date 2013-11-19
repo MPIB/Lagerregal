@@ -120,7 +120,7 @@ class TypeMerge(View):
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")),
             (reverse("type-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"]),
-            ("", _("Merge with {}".format(context["newobject"])))]
+            ("", _("Merge with {0}".format(context["newobject"])))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):

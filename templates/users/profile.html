@@ -12,7 +12,7 @@
 
 {% block content %}
 <div class="row">
-{% if perms.devices.read_user %}
+{% if perms.users.read_user %}
   <ul class="nav nav-tabs" id="myTab">
   <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
   <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
@@ -51,7 +51,7 @@
       {% endif %}
     </div>
 
-{% if perms.devices.read_user %}
+{% if perms.users.read_user %}
   </div>
   <div class="tab-pane" id="edits">
 <div class="col-xs-12 col-md-12">
@@ -87,7 +87,7 @@
 
 {% block scriptend %}
 var device_initialized = false;
-{% if perms.devices.read_user %}
+{% if perms.users.read_user %}
 var change_initialized = false;
 
 $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {

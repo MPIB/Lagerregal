@@ -45,9 +45,9 @@ class DeviceList(ListView):
 
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
-            return devices.order_by(self.viewsorting)
-        else:
-            return devices
+            devices = devices.order_by(self.viewsorting)
+        
+        return devices.values("id", "name", "bildnumber", "devicetype__name", "room__name", "room__building", "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
@@ -229,7 +229,7 @@ class DeviceHistory(View):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
             (reverse("device-history-list", kwargs={"pk":device.pk}), _("History")),
-            ("", _("Version {}".format(this_version.revision.pk)))
+            ("", _("Version {0}".format(this_version.revision.pk)))
             ]
         return render_to_response('devices/device_history.html', context, RequestContext(request))
 
@@ -275,13 +275,12 @@ class DeviceHistory(View):
         device.save()
         if version.field_dict["devicetype"] != None:        
             TypeAttributeValue.objects.filter(device = version.object_id).delete()
-        reversion.set_comment("Reverted to version from {}".format(localize(version.revision.date_created)))
+        reversion.set_comment("Reverted to version from {0}".format(localize(version.revision.date_created)))
         reversion.set_ignore_duplicates(True)
 
         if deleted_keys == []:
             messages.success(self.request, _('Successfully reverted Device to revision {0}').format(version.revision.id))
         else:
-            print "test"
             messages.warning(self.request, _("Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}").format(version.revision.id, ",".join(deleted_keys)))
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
@@ -675,7 +674,7 @@ class TemplateUpdate(UpdateView):
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")),
-            ("", _("Edit: {}".format(self.object.templatename)))]
+            ("", _("Edit: {0}".format(self.object.templatename)))]
         return context
 
 class TemplateDelete(DeleteView):
@@ -688,7 +687,7 @@ class TemplateDelete(DeleteView):
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")),
-            ("", _("Delete: {}".format(self.object.templatename)))]
+            ("", _("Delete: {0}".format(self.object.templatename)))]
         return context
 
 
@@ -785,7 +784,7 @@ class RoomMerge(View):
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
-            ("", _("Merge with {}".format(context["newobject"].name)))]
+            ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):
@@ -885,7 +884,7 @@ class BuildingMerge(View):
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
-            ("", _("Merge with {}".format(context["newobject"].name)))]
+            ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):
@@ -989,7 +988,7 @@ class ManufacturerMerge(View):
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
-            ("", _("Merge with {}".format(context["newobject"].name)))]
+            ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     def post(self,  request, **kwargs):

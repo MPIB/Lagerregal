@@ -50,7 +50,7 @@
       </li>
       {% endif %}
       {% if perms.network.read_ipaddress %}<li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
-      {% if perms.mail.read_mailtemplateg %}<li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
+      {% if perms.mail.read_mailtemplate %}<li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
     </ul>
 
     <ul class="nav navbar-nav navbar-right">

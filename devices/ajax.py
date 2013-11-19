@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Room, Building, Manufacturer
@@ -43,7 +44,7 @@ def complete_names(request, classtype, name):
         return None
     dajax = Dajax()
     if len(objects) > 0:
-        objects = ["<li><a href='{}'  class='alert-link'>{}</a></li>".format(
+        objects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
 		reverse(urlname, kwargs={"pk":object[0]}), object[1])
 		for object in objects.values_list("pk", "name")]
         dajax.add_data(objects, 'display_alternatives')
@@ -156,11 +157,11 @@ def load_mailtemplate(request, template, fieldtype=None):
     if fieldtype == None:
         dajax.assign("#id_emailsubject", "value", template.subject)
     else:
-        dajax.assign("#id_emailsubject_{}".format(fieldtype), "value", template.subject)
+        dajax.assign("#id_emailsubject_{0}".format(fieldtype), "value", template.subject)
     
 
     if fieldtype == None:
         dajax.assign("#id_emailbody", "innerHTML", template.body)
     else:
-        dajax.assign("#id_emailbody_{}".format(fieldtype), "innerHTML", template.body)
+        dajax.assign("#id_emailbody_{0}".format(fieldtype), "innerHTML", template.body)
     return dajax.json()

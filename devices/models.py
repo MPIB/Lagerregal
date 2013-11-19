@@ -77,7 +77,7 @@ class Device(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     inventorynumber = models.CharField(_('Inventorynumber'), max_length=50)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50)
-    macaddress = models.CharField(_('MAC Address'), max_length=40)
+    macaddress = models.CharField(_('MAC Address'), max_length=40, blank=True)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True)
     hostname = models.CharField(_('Hostname'), max_length=40, blank=True)
     description = models.CharField(_('Description'), max_length=1000, blank=True)
