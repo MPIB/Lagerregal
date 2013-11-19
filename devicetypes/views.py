@@ -8,11 +8,10 @@ from django.shortcuts import render_to_response
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
-from django.contrib import messages
 from devicetypes.forms import TypeForm
-from django.shortcuts import render
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy, reverse
+import reversion
 
 class TypeList(ListView):
     model = Type
@@ -130,6 +129,7 @@ class TypeMerge(View):
         devices = Device.objects.filter(devicetype=oldobject)
         for device in devices:
             device.devicetype = newobject
+            reversion.set_comment(_("Merged Devicetype {0} into {1}".format(oldobject, newobject)))
             device.save()
 
         attributes = TypeAttribute.objects.filter(devicetype=oldobject)

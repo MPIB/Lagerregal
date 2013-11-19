@@ -21,7 +21,7 @@ from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
-from django.conf import settings
+from django.db.transaction import commit_on_success
 
 class DeviceList(ListView):
     context_object_name = 'device_list'
@@ -787,12 +787,14 @@ class RoomMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
+    @commit_on_success
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(room=oldobject)
         for device in devices:
             device.room = newobject
+            reversion.set_comment(_("Merged Room {0} into {1}".format(oldobject, newobject)))
             device.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
@@ -887,6 +889,7 @@ class BuildingMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
+    @commit_on_success
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -937,6 +940,7 @@ class ManufacturerDetail(DetailView):
 class ManufacturerCreate(CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
+
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -991,12 +995,14 @@ class ManufacturerMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
+    @commit_on_success
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(manufacturer=oldobject)
         for device in devices:
             device.manufacturer = newobject
+            reversion.set_comment(_("Merged Manufacturer {0} into {1}".format(oldobject, newobject)))
             device.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
