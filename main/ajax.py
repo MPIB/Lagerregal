@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from dajax.core import Dajax
 from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Room, Building, Manufacturer
@@ -34,7 +35,7 @@ def add_widget(request, widgetname):
             col = ".dashboard-right"
         context["usestable"] = True
         context["hidecontrols"] = True
-        dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{}.html'.format(widgetname), context))
+        dajax.append(col, "innerHTML", render_to_string('snippets/widgets/{0}.html'.format(widgetname), context))
         dajax.script("$('#addWidgetModal').modal('hide');")
         dajax.remove(".addWidget[data-name={0}]".format(widgetname))
     return dajax.json()
@@ -42,7 +43,6 @@ def add_widget(request, widgetname):
 @dajaxice_register
 def remove_widget(request, widgetname):
     dajax = Dajax()
-    print widgetname, widgets
     if widgetname in widgets:
         DashboardWidget.objects.get(user=request.user, widgetname=widgetname).delete()
 
@@ -59,7 +59,6 @@ def toggle_minimized(request, widgetname):
         w = DashboardWidget.objects.get(user=request.user, widgetname=widgetname)
         w.minimized = not w.minimized
         w.save()
-        print widgetname
         dajax.script("""$({0}).find( ".minimize" ).toggleClass( "icon-minus" ).toggleClass( "icon-plus" );
   $({0}).find(".panel-heading").next().slideToggle("fast");""".format(widgetname))
     return dajax.json()
