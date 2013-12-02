@@ -37,5 +37,8 @@
 {% endblock %}
 
 {% block scriptend %}
+$('#id_viewsorting').change(function() {
+    window.location = "/mails/sorting/" + $(this).val()
+});
 {% include "snippets/pagination_js.html" with pageurl="mail-list" %}
 {% endblock %}

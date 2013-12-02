@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block pullright %}
+{{viewform.viewsorting}}
 {% if perms.devicetypes.add_type %}<a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Devicetype" %}</a>{% endif %}
 {% endblock %}
 
@@ -25,5 +26,8 @@
 {% endblock %}
 
 {% block scriptend %}
+$('#id_viewsorting').change(function() {
+    window.location = "/types/sorting/" + $(this).val()
+});
 {% include "snippets/pagination_js.html" with pageurl="type-list" %}
 {% endblock %}

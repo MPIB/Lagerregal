@@ -27,7 +27,7 @@ VIEWFILTER = (
     )
 
 
-VIEWSORTING = (
+VIEWSORTING_DEVICES = (
     ('name', _('Name ascending')),
     ('-name', _('Name descending')),
     ('created_at', _('Age ascending')),
@@ -41,7 +41,14 @@ VIEWSORTING = (
     ('group__name', _('Devicegroup ascending')),
     ('-group__name', _('Devicegroup descending')),
     ('currentlending', _('Availability')),
-    )
+)
+
+VIEWSORTING = (
+    ('name', _('Name ascending')),
+    ('-name', _('Name descending')),
+    ('id', _('ID ascending')),
+    ('-id', _('ID descending')),
+)
 
 class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
@@ -82,11 +89,16 @@ class LendForm(forms.Form):
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y', '%d.%m.%y'))
     room = forms.ModelChoiceField(Room.objects.all(), required=False)
 
-class ViewForm(forms.Form):
+class DeviceViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
         widget=forms.Select(attrs={"style":"width:150px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
+    viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
+        widget=forms.Select(attrs={"style":"width:150px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
+
+class ViewForm(forms.Form):
     viewsorting = forms.ChoiceField(choices=VIEWSORTING,
         widget=forms.Select(attrs={"style":"width:150px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
+
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'

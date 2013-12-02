@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING
+from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES
 import datetime
 from django.utils.timezone import utc
 import reversion
@@ -45,14 +45,14 @@ class DeviceList(ListView):
             devices = Device.objects.filter(archived=None)
 
         self.viewsorting = self.kwargs.pop("sorting", "name")
-        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+        if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
         
         return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building", "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
-        context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter, "viewsorting":self.viewsorting})
+        context["viewform"] = DeviceViewForm(initial={'viewfilter': self.viewfilter, "viewsorting":self.viewsorting})
         context["template_list"] = Template.objects.all()
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -679,11 +679,19 @@ class RoomList(ListView):
     model = Room
     context_object_name = 'room_list'
     
+    def get_queryset(self):
+        rooms = Room.objects.all()
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+            rooms = rooms.order_by(self.viewsorting)
+        return rooms
+
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(RoomList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
-
+        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -784,10 +792,19 @@ class BuildingList(ListView):
     model = Building
     context_object_name = 'building_list'
 
+    def get_queryset(self):
+        buildings = Building.objects.all()
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+            buildings = buildings.order_by(self.viewsorting)
+        return buildings
+
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(BuildingList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
+        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
         return context
     
     def get_paginate_by(self, queryset):
@@ -885,11 +902,18 @@ class ManufacturerList(ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
     
+    def get_queryset(self):
+        manufacturers = Manufacturer.objects.all()
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+            manufacturers = manufacturers.order_by(self.viewsorting)
+        return manufacturers
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(ManufacturerList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
-        
+        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
