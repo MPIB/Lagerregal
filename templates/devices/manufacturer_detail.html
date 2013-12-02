@@ -31,7 +31,7 @@
   <thead>
     <tr>
       <th>{% trans "Name" %}</th>
-      <th>{% trans "Bildnumber" %}</th>
+      <th>{% trans "Inventorynumber" %}</th>
       <th>{% trans "Devicetype" %}</th>
       <th>{% trans "Room" %}</th>
     </tr>
@@ -40,7 +40,7 @@
   	{% for device in device_list %}
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-      <td>{{ device.bildnumber }}</td>
+      <td>{{ device.inventorynumber }}</td>
       <td>{{ device.devicetype }}</td>
       <td>{{ device.room }} ({{device.room.building}})</td>
     </tr>

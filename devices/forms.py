@@ -32,8 +32,8 @@ VIEWSORTING = (
     ('-name', _('Name descending')),
     ('created_at', _('Age ascending')),
     ('-created_at', _('Age descending')),
-    ('bildnumber', _('Bildnumber ascending')),
-    ('-bildnumber', _('Bildnumber descending')),
+    ('inventorynumber', _('Inventorynumber ascending')),
+    ('-inventorynumber', _('Inventorynumber descending')),
     ('devicetype__name', _('Devicetype ascending')),
     ('-devicetype__name', _('Devicetype descending')),
     ('room__name', _('Room ascending')),
@@ -55,8 +55,8 @@ class SearchForm(forms.Form):
     searchname = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name", "class":"form-control input-sm"}), required=False)
     namemodifier =forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}))
 
-    bildnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search bildnumber", "class":"form-control input-sm"}), required=False)
-    bildnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
+    inventorynumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search inventorynumber", "class":"form-control input-sm"}), required=False)
+    inventorynumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)
 
     serialnumber = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search serialnumber", "class":"form-control input-sm"}), required=False)
     serialnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER, widget=forms.Select(attrs={"class":"form-control input-sm"}), required=False)

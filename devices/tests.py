@@ -22,7 +22,7 @@ class DeviceTest(unittest.TestCase):
     def test_add(self):
         response = self.client.post('/devices/add', {
               "name": "test",
-              "bildnumber":"1",
+              "inventorynumber":"1",
               "serialnumber":"15",
               "macaddress":"36",
               "hostname":"1236",

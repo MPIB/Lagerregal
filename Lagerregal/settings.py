@@ -102,6 +102,7 @@ MIDDLEWARE_CLASSES = (
     'reversion.middleware.RevisionMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
 )
 
 ROOT_URLCONF = 'Lagerregal.urls'
@@ -144,6 +145,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'dajaxice',
     'dajax',
+    'south',
+    'debug_toolbar'
 )
 
 LANGUAGES = (
@@ -167,6 +170,10 @@ REST_FRAMEWORK = {
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = '{0}/mails'.format(os.getcwd())
 DEFAULT_FROM_EMAIL = 'support@localhost'
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

@@ -13,16 +13,16 @@
 {% if form.namemodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.namemodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 
-		<div class="col-xs-12 col-md-4 {{form.bildnumber.css_classes}} {{form.bildnumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
-		<label>Bildnumber</label><br>
+		<div class="col-xs-12 col-md-4 {{form.inventorynumber.css_classes}} {{form.inventorynumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
+		<label>Inventorynumber</label><br>
 			<div class="form-group col-md-8" style="padding-left:0px">
-		      {{form.bildnumber}}
+		      {{form.inventorynumber}}
      			      	</div>
      			      	<div class="form-group col-md-4" style="padding:0px">
-		      {{form.bildnumbermodifier}}
+		      {{form.inventorynumbermodifier}}
 		  </div>
-		  {% if form.bildnumber.errors %}<small style="padding-top:20px">Bildnumber: {% for error in form.bildnumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
-{% if form.bildnumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.bildnumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+		  {% if form.inventorynumber.errors %}<small style="padding-top:20px">Bildnumber: {% for error in form.inventorynumber.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
+{% if form.inventorynumbermodifier.errors %}<small style="padding-top:20px">Modifier: {% for error in form.inventorynumbermodifier.errors %}{{ error|escape }} {% endfor %}</small>{% endif %}
 		</div>
 
 		<div class="col-xs-12 col-md-4 {{form.serialnumber.css_classes}} {{form.serialnumbermodifier.css_classes}} form-group"style="margin-bottom:10px;">
