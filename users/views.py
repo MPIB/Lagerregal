@@ -4,7 +4,7 @@ from reversion.models import Version
 from devices.models import Device
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from users.forms import SettingsForm
+from users.forms import SettingsForm, AvatarForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
@@ -57,13 +57,17 @@ class UsersettingsView(TemplateView):
         context = super(UsersettingsView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         if self.request.method != "POST":
-            context['settingsform'] = SettingsForm(initial={"pagelength":self.request.user.pagelength})
+            context['settingsform'] = SettingsForm(instance=self.request.user)
+            context['avatarform'] = AvatarForm(instance=self.request.user)
         context["breadcrumbs"] = [
             (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),
             ("", _("Settings"))]
         return context
 
-    def post(self, request): 
+    def post(self, request):
+        context = self.get_context_data()
+        context["settingsform"] = SettingsForm(instance=request.user)
+        context["avatarform"] = AvatarForm(instance=request.user)
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
@@ -76,9 +80,24 @@ class UsersettingsView(TemplateView):
                     request.user.pagelength = request.POST["pagelength"]
                     request.user.save()
                 messages.success(self.request, _('Settings were successfully updated'))
-            context = self.get_context_data()
             context["settingsform"] = form
-            return  render(request, self.template_name, context)
+        elif "avatar" in request.FILES or "avatar" in request.POST:
+            if request.user.avatar:
+                tempavatar = request.user.avatar
+            else:
+                tempavatar = None
+            form = AvatarForm(request.POST, request.FILES, instance=request.user)
+            if form.is_valid():
+                if form.cleaned_data["avatar_clear"] and request.user.avatar != None:
+                    request.user.avatar.delete()
+                    request.user.avatar = None
+                    request.user.save()
+                if tempavatar != None:
+                    print tempavatar
+                    tempavatar.storage.delete(tempavatar)
+                form.save()
+            context["avatarform"] = form
+        return  render(request, self.template_name, context)
 
 @sensitive_post_parameters()
 @csrf_protect
