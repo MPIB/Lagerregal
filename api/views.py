@@ -29,13 +29,11 @@ class DeviceApiSearch(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Device.objects.all()
-        print(type(self.request.QUERY_PARAMS), self.request.QUERY_PARAMS)
         valid_fields = Device._meta.get_all_field_names()
         filters = {}
         for param in self.request.QUERY_PARAMS.lists():
             if param[0] in valid_fields:
                 filters[param[0]]=param[1][0]
-        print filters
         queryset = queryset.filter(**filters)
         return queryset
 

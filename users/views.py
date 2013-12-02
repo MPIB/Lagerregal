@@ -105,7 +105,6 @@ def login(request, template_name='registration/login.html',
 
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
-            print request.user
             request.session['django_language'] = request.user.language
             return HttpResponseRedirect(redirect_to)
     else:
