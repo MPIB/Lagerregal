@@ -54,3 +54,10 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Device
+
+class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
+
+    class Meta:
+        model = Device
+        fields = ("url", "name")
