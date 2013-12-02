@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block pullright %}
+{{viewform.viewsorting}}
 {% if perms.devices.add_building %}<a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add Building" %}</a>{% endif %}
 {% endblock %}
 
@@ -26,5 +27,8 @@
 {% endblock %}
 
 {% block scriptend %}
+$('#id_viewsorting').change(function() {
+    window.location = "/buildings/sorting/" + $(this).val()
+});
 {% include "snippets/pagination_js.html" with pageurl="building-list" %}
 {% endblock %}

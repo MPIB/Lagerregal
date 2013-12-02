@@ -12,17 +12,26 @@ from devicetypes.forms import TypeForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy, reverse
 import reversion
+from devices.forms import ViewForm, VIEWSORTING
 
 class TypeList(ListView):
     model = Type
     context_object_name = 'type_list'
     
+    def get_queryset(self):
+        devicetype = Type.objects.all()
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+            devicetype = devicetype.order_by(self.viewsorting)
+        return devicetype
+
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(TypeList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")),]
-
+        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
