@@ -11,6 +11,8 @@ class Lageruser(AbstractUser):
     pagelength = models.IntegerField(validators=[
             MaxValueValidator(250)
         ], default=30)
+    avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
+
     def __unicode__(self):
         if self.first_name != "" and self.last_name != "":
             return u"{0} {1}".format(self.first_name, self.last_name)
