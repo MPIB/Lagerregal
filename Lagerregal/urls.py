@@ -9,6 +9,7 @@ from mail.views import *
 from devicegroups.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView
 from rest_framework.urlpatterns import format_suffix_patterns
+import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
@@ -27,8 +28,6 @@ urlpatterns = patterns('',
     url(r'^devices/page/(?P<page>[0-9]*)$', permission_required("devices.read_device", raise_exception=True)(DeviceList.as_view()), name="device-list"),
     url(r'^devices/filter/(?P<filter>.*)/sorting/(?P<sorting>.*)$', permission_required("devices.read_device", raise_exception=True)(DeviceList.as_view()), name="device-list"),
     url(r'^devices/page/(?P<page>[0-9]*)/filter/(?P<filter>.*)/sorting/(?P<sorting>.*)$', permission_required("devices.read_device", raise_exception=True)(DeviceList.as_view()), name="device-list"),
-    url(r'^devices/globalhistory/$', permission_required("devices.change_device", raise_exception=True)(DeviceGlobalhistory.as_view()), name="device-globalhistory"),
-    url(r'^devices/globalhistory/(?P<page>[0-9]*)$', permission_required("devices.change_device", raise_exception=True)(DeviceGlobalhistory.as_view()), name="device-globalhistory"),
     url(r'^devices/add$', permission_required("devices.add_device", raise_exception=True)(DeviceCreate.as_view()), name="device-add"),
     url(r'^devices/add/template/(?P<templateid>[0-9]*)$', permission_required("devices.add_device", raise_exception=True)(DeviceCreate.as_view()), name="device-add"),
     url(r'^devices/add/copy/(?P<copyid>[0-9]*)$', permission_required("devices.add_device", raise_exception=True)(DeviceCreate.as_view()), name="device-add-copy"),
@@ -116,6 +115,9 @@ urlpatterns = patterns('',
     url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
     url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
 
+    url(r'^globalhistory/$', permission_required("devices.change_device", raise_exception=True)(Globalhistory.as_view()), name="globalhistory"),
+    url(r'^globalhistory/(?P<page>[0-9]*)$', permission_required("devices.change_device", raise_exception=True)(Globalhistory.as_view()), name="globalhistory"),
+
     url(r'^search/$', permission_required("devices.read_device", raise_exception=True)(Search.as_view()), name="search"),
 
     url(r'^admin/', include(admin.site.urls)),
@@ -143,3 +145,9 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ), allowed=["json", "html"])
+
+if settings.DEBUG:
+    # static files (images, css, javascript, etc.)
+    urlpatterns += patterns('',
+        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
+        'document_root': settings.MEDIA_ROOT}))
