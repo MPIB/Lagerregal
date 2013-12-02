@@ -14,12 +14,40 @@
 <div class="row">
 {% if perms.users.read_user %}
   <ul class="nav nav-tabs" id="myTab">
-  <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+  <li class="active"><a href="#about" data-toggle="tab" data-tab="about">About</a></li>
+  <li><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
   <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
 </ul>
 
 <div class="tab-content">
-  <div class="tab-pane active" id="devices">
+  <div class="tab-pane active" id="about">
+  {% if profileuseruser.avatar %}
+  <div class="col-sm-12 col-md-2" style="margin-top:20px">
+    <a href="#" class="thumbnail">
+      <img src="{{profileuser.avatar.url}}" alt="Avatar">
+    </a>
+  </div>
+  {% endif %}
+  <div class="col-sm-12 col-md-6" style="margin-top:20px">
+    <table class="table table-bordered">
+      <tr>
+        <td>{% trans "Name" %}</td><td>{{profileuser.first_name}} {{profileuser.last_name}}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Groups" %}</td>
+        <td>
+          {% for group in profileuser.groups.all %}
+          {{group.name}}<br>
+          {% endfor %}
+        </td>
+      </tr>
+      <tr>
+        <td>{% trans "Last Login" %}</td>
+        <td>{{profileuser.last_login}}</td>
+    </table>
+  </div>
+</div>
+  <div class="tab-pane" id="devices">
 {% endif %}
     <div class="col-xs-12 col-md-12">
       <h4>{% trans "Owned devices" %}</h4>
