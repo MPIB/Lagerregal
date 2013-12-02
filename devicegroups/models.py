@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+import reversion
 
 # Create your models here.
 
@@ -23,3 +24,5 @@ class Devicegroup(models.Model):
 
     def get_edit_url(self):
         return reverse('devicegroup-edit', kwargs={'pk': self.pk})
+
+reversion.register(Devicegroup)

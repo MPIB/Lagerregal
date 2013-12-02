@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy, reverse
+import reversion
 
 class Type(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
@@ -48,3 +49,6 @@ class TypeAttributeValue(models.Model):
 
     def __unicode__(self):
         return self.value
+
+reversion.register(Type)
+reversion.register(TypeAttribute)

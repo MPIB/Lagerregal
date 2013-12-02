@@ -4,6 +4,8 @@ from users.models import Lageruser
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.template import Context, Template
+import reversion
+
 usages = {
     "new":_("New Device is created"),
     "room_changed":_("Room the device is in is changed"),
@@ -60,3 +62,5 @@ class MailHistory(models.Model):
 
     def get_absolute_url(self):
         return reverse('mailhistory-detail', kwargs={'pk': self.pk})
+
+reversion.register(MailTemplate)
