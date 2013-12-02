@@ -612,27 +612,6 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
-class DeviceGlobalhistory(ListView):
-    queryset = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
-    context_object_name = "revision_list"
-    template_name = 'devices/globalhistory.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(DeviceGlobalhistory, self).get_context_data(**kwargs)
-        context["breadcrumbs"] = [("", _("Global edit history"))]
-        if context["is_paginated"]  and context["page_obj"].number > 1:
-            context["breadcrumbs"].append(["", context["page_obj"].number])
-        return context
-
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
-
-
-
 class TemplateList(ListView):
     model = Template
     context_object_name = 'template_list'

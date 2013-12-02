@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from devices.models import *
 from network.models import *
 from devicegroups.models import Devicegroup
@@ -49,3 +49,22 @@ class Home(TemplateView):
             context["breadcrumbs"] = [("", _("Home"))]
             context["form"] = AuthenticationForm()
         return context
+
+class Globalhistory(ListView):
+    queryset = Version.objects.select_related().filter().order_by("-pk")
+    context_object_name = "revision_list"
+    template_name = 'devices/globalhistory.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Globalhistory, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [("", _("Global edit history"))]
+        if context["is_paginated"]  and context["page_obj"].number > 1:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
+        return context
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
