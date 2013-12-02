@@ -40,7 +40,13 @@
                     {% endif %}
                     </a>
                 </td>
-                <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
+                <td>
+                {% if action.content_type.model == "device" %}
+                <a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a>
+                {% else %}
+                {{action.revision.date_created}}
+                {% endif %}
+                </td>
                 <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
                 <td class="commentcol">{{action.revision.comment|linebreaksbr|default:""}}</td>
             </tr>
