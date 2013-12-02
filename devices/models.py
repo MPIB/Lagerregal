@@ -31,6 +31,8 @@ class Building(models.Model):
     def get_edit_url(self):
         return reverse('building-edit', kwargs={'pk': self.pk})
 
+reversion.register(Building)
+
 
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
@@ -52,6 +54,9 @@ class Room(models.Model):
     def get_edit_url(self):
         return reverse('room-edit', kwargs={'pk': self.pk})
 
+reversion.register(Room)
+
+
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
 
@@ -70,6 +75,9 @@ class Manufacturer(models.Model):
 
     def get_edit_url(self):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
+
+reversion.register(Manufacturer)
+
 
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add = True, blank=True, null=True)

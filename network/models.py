@@ -3,6 +3,7 @@ from devices.models import Device
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 # Create your models here.
+import reversion
 
 class IpAddress(models.Model):
     address = models.IPAddressField(unique=True)
@@ -20,3 +21,5 @@ class IpAddress(models.Model):
 
     def get_absolute_url(self):
         return reverse('ipaddress-detail', kwargs={'pk': self.pk})
+
+reversion.register(IpAddress)
