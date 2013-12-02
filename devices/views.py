@@ -19,6 +19,7 @@ import reversion
 from django.contrib.auth.models import Permission
 from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.db.transaction import commit_on_success
@@ -258,19 +259,19 @@ class DeviceHistory(View):
             devicetype = device.devicetype
         except Type.DoesNotExist:
             device.devicetype = None
-            deleted_keys.append(_("Devicetype"))
+            deleted_keys.append(ugettext("Devicetype"))
 
         try:
             manufacturer = device.manufacturer
         except Manufacturer.DoesNotExist:
             device.manufacturer = None
-            deleted_keys.append(_("Manufacturer"))
+            deleted_keys.append(ugettext("Manufacturer"))
 
         try:
             room = device.room
         except Room.DoesNotExist:
             device.room = None
-            deleted_keys.append(_("Room"))
+            deleted_keys.append(ugettext("Room"))
 
         device.save()
         if version.field_dict["devicetype"] != None:        
