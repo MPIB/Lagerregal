@@ -21,6 +21,7 @@ from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
+from django.db.transaction import commit_on_success
 
 class DeviceList(ListView):
     context_object_name = 'device_list'
@@ -46,7 +47,7 @@ class DeviceList(ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devices = devices.order_by(self.viewsorting)
         
-        return devices.values("id", "name", "bildnumber", "devicetype__name", "room__name", "room__building", "group__name", "currentlending")
+        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building", "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
@@ -786,12 +787,14 @@ class RoomMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
+    @commit_on_success
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(room=oldobject)
         for device in devices:
             device.room = newobject
+            reversion.set_comment(_("Merged Room {0} into {1}".format(oldobject, newobject)))
             device.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
@@ -886,6 +889,7 @@ class BuildingMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
+    @commit_on_success
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -936,6 +940,7 @@ class ManufacturerDetail(DetailView):
 class ManufacturerCreate(CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
+
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -990,12 +995,14 @@ class ManufacturerMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
+    @commit_on_success
     def post(self,  request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(manufacturer=oldobject)
         for device in devices:
             device.manufacturer = newobject
+            reversion.set_comment(_("Merged Manufacturer {0} into {1}".format(oldobject, newobject)))
             device.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
@@ -1013,32 +1020,32 @@ class Search(FormView):
     def form_valid(self, form):
         search = {}
         if form.cleaned_data["searchname"] != "":
-            search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["searchname"]
+            search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["searchname"].strip()
 
         if form.cleaned_data["lender"] != "":
-            search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"]
+            search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"].strip()
 
-        if form.cleaned_data["bildnumber"] != "":
-            search["bildnumber__" + form.cleaned_data["bildnumbermodifier"]] = form.cleaned_data["bildnumber"]
+        if form.cleaned_data["inventorynumber"] != "":
+            search["inventorynumber__" + form.cleaned_data["inventorynumbermodifier"]] = form.cleaned_data["inventorynumber"].strip()
 
         if form.cleaned_data["serialnumber"] != "":
-            search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"]
+            search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"].strip()
 
         if form.cleaned_data["macaddress"] != "":
-            search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"]
+            search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"].strip()
 
         if form.cleaned_data["devicetype"].exists():
-            search["devicetype__in"] = form.cleaned_data["devicetype"]
+            search["devicetype__in"] = form.cleaned_data["devicetype"].strip()
 
         if form.cleaned_data["manufacturer"].exists():
-            search["manufacturer__in"] = form.cleaned_data["manufacturer"]
+            search["manufacturer__in"] = form.cleaned_data["manufacturer"].strip()
 
         if form.cleaned_data["room"].exists():
-            search["room__in"] = form.cleaned_data["room"]
+            search["room__in"] = form.cleaned_data["room"].strip()
 
 
         if form.cleaned_data["devicegroup"].exists():
-            search["group__in"] = form.cleaned_data["devicegroup"]
+            search["group__in"] = form.cleaned_data["devicegroup"].strip()
 
         if form.cleaned_data["overdue"] == "y":
             search["duedate__gt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
