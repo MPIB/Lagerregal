@@ -131,3 +131,15 @@ table tr th, table tr td {
 .select2-container {
     width:100%;
 }
+
+.navbar-avatar {
+  max-height:26px;
+  margin-right:5px;
+  width:auto;
+  vertical-align:middle;
+}
+
+.navbar-user {
+    padding-top:12px !important;
+    padding-bottom:10px !important;
+}
