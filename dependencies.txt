@@ -4,3 +4,4 @@ django-dajax
 django-reversion
 djangorestframework
 django-debug-toolbar
+South
