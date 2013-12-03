@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, ListView
 from users.models import Lageruser
 from reversion.models import Version
 from devices.models import Device
@@ -19,6 +19,40 @@ from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 from django.conf import settings
+from devices.forms import FilterForm
+
+class UserList(ListView):
+    model = Lageruser
+    context_object_name = 'user_list'
+    template_name = "users/user_list.html"
+    
+    def get_queryset(self):
+        user = Lageruser.objects.all()
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            user = user.filter(username__icontains=self.filterstring)
+        return user
+
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(UserList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("user-list"), _("Users")),]
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
+        if context["is_paginated"] and context["page_obj"].number > 1:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
+        return context
+
+    def get_paginate_by(self, queryset):
+        return self.request.user.pagelength
+        if self.request.user.pagelength == None:
+            return self.request.user.pagelength
+        else:
+            return 30
 
 class ProfileView(DetailView):
     model = Lageruser
@@ -32,7 +66,7 @@ class ProfileView(DetailView):
         # Add in a QuerySet of all the books
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
-        context["breadcrumbs"] = [("", context["profileuser"])]
+        context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", context["profileuser"])]
         return context
 
 class UserprofileView(TemplateView):
@@ -46,7 +80,7 @@ class UserprofileView(TemplateView):
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
         context["breadcrumbs"] = [
-            (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),]
+            (reverse("user-list"), _("Users")), (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),]
         return context
 
 class UsersettingsView(TemplateView):
