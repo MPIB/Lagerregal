@@ -44,6 +44,28 @@
       <tr>
         <td>{% trans "Last Login" %}</td>
         <td>{{profileuser.last_login}}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Is Staff" %}</td>
+        <td>{% if profileuser.id_staff %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
+      </tr>
+      <tr>
+        <td>{% trans "Is Superuser" %}</td>
+        <td>{% if profileuser.is_superuser %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
+      </tr>
+    </table>
+    <h3>{% trans "Permissions" %}</h3>
+    <table class="table table-bordered">
+      <tr>
+        <th>{% trans "Permission" %}</th><th>{% trans "User" %}</th><th>{% trans "Group" %}</th>
+      </tr>
+      {% for permission in permission_list %}
+        <tr>
+          <td>{{permission.name}}</td>
+          <td>{% if permission.codename in userperms %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
+          <td>{% if permission.codename in groupperms %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
+        </tr>
+      {% endfor %}
     </table>
   </div>
 </div>
