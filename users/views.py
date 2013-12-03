@@ -83,6 +83,9 @@ class UserprofileView(TemplateView):
         context["profileuser"] = self.request.user
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
+        context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
+        context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")), (reverse("userprofile", kwargs={"pk":self.request.user.pk}), self.request.user),]
         return context
