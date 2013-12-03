@@ -12,7 +12,8 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES
+from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm
+from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm
 import datetime
 from django.utils.timezone import utc
 import reversion
@@ -681,6 +682,9 @@ class RoomList(ListView):
     
     def get_queryset(self):
         rooms = Room.objects.all()
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            rooms = rooms.filter(name__icontains=self.filterstring)
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             rooms = rooms.order_by(self.viewsorting)
@@ -692,6 +696,10 @@ class RoomList(ListView):
         context = super(RoomList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
         context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -794,6 +802,9 @@ class BuildingList(ListView):
 
     def get_queryset(self):
         buildings = Building.objects.all()
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            buildings = buildings.filter(name__icontains=self.filterstring)
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             buildings = buildings.order_by(self.viewsorting)
@@ -805,6 +816,10 @@ class BuildingList(ListView):
         context = super(BuildingList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
         context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
         return context
     
     def get_paginate_by(self, queryset):
@@ -904,6 +919,9 @@ class ManufacturerList(ListView):
     
     def get_queryset(self):
         manufacturers = Manufacturer.objects.all()
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            manufacturers = manufacturers.filter(name__icontains=self.filterstring)
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             manufacturers = manufacturers.order_by(self.viewsorting)
@@ -914,6 +932,10 @@ class ManufacturerList(ListView):
         context = super(ManufacturerList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
         context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context

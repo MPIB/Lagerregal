@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from devicegroups.models import Devicegroup
 from devices.models import Device
 from django.utils.translation import ugettext_lazy as _
-from devices.forms import ViewForm, VIEWSORTING
+from devices.forms import ViewForm, VIEWSORTING, FilterForm
 
 class DevicegroupList(ListView):
     model = Devicegroup
@@ -11,6 +11,9 @@ class DevicegroupList(ListView):
     
     def get_queryset(self):
         devicegroups = Devicegroup.objects.all()
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            devicegroups = devicegroups.filter(name__icontains=self.filterstring)
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devicegroups = devicegroups.order_by(self.viewsorting)
@@ -23,6 +26,10 @@ class DevicegroupList(ListView):
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups"))]
         context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context

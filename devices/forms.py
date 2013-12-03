@@ -99,6 +99,10 @@ class ViewForm(forms.Form):
     viewsorting = forms.ChoiceField(choices=VIEWSORTING,
         widget=forms.Select(attrs={"style":"width:150px;margin-left:10px;", "class":"pull-right form-control input-sm"}))
 
+class FilterForm(forms.Form):
+    filterstring = forms.CharField(max_length=100,
+        widget=forms.TextInput(attrs={"style":"width:150px;margin-left:10px;", 
+            "class":"pull-right form-control input-sm", "placeholder":"Filter"}))
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
