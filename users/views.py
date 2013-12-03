@@ -70,9 +70,6 @@ class ProfileView(DetailView):
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
         context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
-        print context["groupperms"]
-        print context["userperms"]
-        print context["permission_list"]
         context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", context["profileuser"])]
         return context
 
@@ -134,7 +131,6 @@ class UsersettingsView(TemplateView):
                     request.user.avatar = None
                     request.user.save()
                 if tempavatar != None:
-                    print tempavatar
                     tempavatar.storage.delete(tempavatar)
                 form.save()
             context["avatarform"] = form
