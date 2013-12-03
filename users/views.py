@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth.models import Permission
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
@@ -66,6 +67,12 @@ class ProfileView(DetailView):
         # Add in a QuerySet of all the books
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
+        context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
+        context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
+        print context["groupperms"]
+        print context["userperms"]
+        print context["permission_list"]
         context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", context["profileuser"])]
         return context
 
