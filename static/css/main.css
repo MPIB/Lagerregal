@@ -143,3 +143,8 @@ table tr th, table tr td {
     padding-top:12px !important;
     padding-bottom:10px !important;
 }
+
+.affix {
+    width:100%;
+    top:50px;
+}
