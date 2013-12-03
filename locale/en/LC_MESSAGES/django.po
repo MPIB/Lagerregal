@@ -1,0 +1,1443 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-12-03 08:44-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: Lagerregal/urls.py:24 templates/base.html:94 templates/login.html:4
+msgid "Login"
+msgstr ""
+
+#: Lagerregal/urls.py:25 templates/base.html:90 templates/logout.html:3
+msgid "Logout"
+msgstr ""
+
+#: devicegroups/models.py:16 templates/devices/device_detail.html:44
+#: templates/devices/device_list.html:42
+#: templates/snippets/searchform_js.html:21
+msgid "Devicegroup"
+msgstr ""
+
+#: devicegroups/models.py:17 devicegroups/views.py:27 devicegroups/views.py:53
+#: devicegroups/views.py:67 devicegroups/views.py:79 devicegroups/views.py:94
+#: templates/base.html:40
+msgid "Devicegroups"
+msgstr ""
+
+#: devicegroups/models.py:19
+msgid "Can read Devicegroup"
+msgstr ""
+
+#: devicegroups/views.py:68
+msgid "Create new devicegroup"
+msgstr ""
+
+#: devicegroups/views.py:81 devices/views.py:430 devices/views.py:757
+#: devices/views.py:875 devices/views.py:995 devicetypes/views.py:111
+#: mail/views.py:67 network/views.py:91
+#: templates/devicegroups/devicegroup_detail.html:8
+#: templates/devices/building_detail.html:12
+#: templates/devices/device_detail.html:16
+#: templates/devices/manufacturer_detail.html:11
+#: templates/devices/room_detail.html:12
+#: templates/devicetypes/type_detail.html:11
+#: templates/mail/mailtemplate_detail.html:11
+#: templates/network/ipaddress_detail.html:11
+#: templates/snippets/modals/attribute.html:24
+msgid "Edit"
+msgstr ""
+
+#: devicegroups/views.py:96 devices/views.py:509 devices/views.py:771
+#: devices/views.py:889 devices/views.py:1009 devicetypes/views.py:125
+#: mail/views.py:84 templates/devicegroups/devicegroup_detail.html:7
+#: templates/devices/base_delete.html:4
+#: templates/devices/building_detail.html:11
+#: templates/devices/device_detail.html:13
+#: templates/devices/manufacturer_detail.html:10
+#: templates/devices/room_detail.html:11
+#: templates/devicetypes/type_detail.html:10
+#: templates/mail/mailtemplate_detail.html:10
+#: templates/network/ipaddress_detail.html:10
+msgid "Delete"
+msgstr ""
+
+#: devices/forms.py:13
+msgid "Contains"
+msgstr ""
+
+#: devices/forms.py:14
+msgid "Starts with"
+msgstr ""
+
+#: devices/forms.py:15
+msgid "Ends with"
+msgstr ""
+
+#: devices/forms.py:16
+msgid "Exact"
+msgstr ""
+
+#: devices/forms.py:20
+msgid "Active Devices"
+msgstr ""
+
+#: devices/forms.py:21
+msgid "All Devices"
+msgstr ""
+
+#: devices/forms.py:22
+msgid "Available Devices"
+msgstr ""
+
+#: devices/forms.py:23
+msgid "Lendt Devices"
+msgstr ""
+
+#: devices/forms.py:24
+msgid "Archived Devices"
+msgstr ""
+
+#: devices/forms.py:25
+msgid "Overdue Devices"
+msgstr ""
+
+#: devices/forms.py:26
+msgid "Short term Devices"
+msgstr ""
+
+#: devices/forms.py:31 devices/forms.py:47
+msgid "Name ascending"
+msgstr ""
+
+#: devices/forms.py:32 devices/forms.py:48
+msgid "Name descending"
+msgstr ""
+
+#: devices/forms.py:33
+msgid "Age ascending"
+msgstr ""
+
+#: devices/forms.py:34
+msgid "Age descending"
+msgstr ""
+
+#: devices/forms.py:35
+msgid "Inventorynumber ascending"
+msgstr ""
+
+#: devices/forms.py:36
+msgid "Inventorynumber descending"
+msgstr ""
+
+#: devices/forms.py:37
+msgid "Devicetype ascending"
+msgstr ""
+
+#: devices/forms.py:38
+msgid "Devicetype descending"
+msgstr ""
+
+#: devices/forms.py:39
+msgid "Room ascending"
+msgstr ""
+
+#: devices/forms.py:40
+msgid "Room descending"
+msgstr ""
+
+#: devices/forms.py:41
+msgid "Devicegroup ascending"
+msgstr ""
+
+#: devices/forms.py:42
+msgid "Devicegroup descending"
+msgstr ""
+
+#: devices/forms.py:43 templates/snippets/widgets/shorttermdevices.html:15
+msgid "Availability"
+msgstr ""
+
+#: devices/forms.py:49
+msgid "ID ascending"
+msgstr ""
+
+#: devices/forms.py:50
+msgid "ID descending"
+msgstr ""
+
+#: devices/forms.py:86 devices/models.py:136
+#: templates/devices/device_detail.html:55
+#: templates/snippets/widgets/overdue.html:16
+#: templates/snippets/widgets/recentlendings.html:17
+msgid "Lendt to"
+msgstr ""
+
+#: devices/forms.py:109
+msgid "Send email to bosses"
+msgstr ""
+
+#: devices/forms.py:110 devices/forms.py:116 devices/models.py:154
+msgid "Template"
+msgstr ""
+
+#: devices/forms.py:111 devices/forms.py:117
+msgid "Edit template"
+msgstr ""
+
+#: devices/forms.py:112 devices/forms.py:118 devices/forms.py:206
+#: mail/models.py:19 mail/models.py:56
+#: templates/devices/device_detail.html:171
+#: templates/mail/mailtemplate_list.html:21
+msgid "Subject"
+msgstr ""
+
+#: devices/forms.py:113 devices/forms.py:119 devices/forms.py:207
+#: mail/models.py:20 mail/models.py:57
+msgid "Body"
+msgstr ""
+
+#: devices/forms.py:115
+msgid "Send email to managment"
+msgstr ""
+
+#: devices/forms.py:141
+#, python-brace-format
+msgid "Doesn't match the given regex \"{0}\"."
+msgstr ""
+
+#: devices/models.py:11 devices/models.py:38 devices/models.py:85
+#: devices/models.py:145 devicetypes/models.py:7 mail/models.py:18
+#: templates/devicegroups/devicegroup_detail.html:29
+#: templates/devicegroups/devicegroup_list.html:22
+#: templates/devices/building_detail.html:45
+#: templates/devices/device_history.html:37
+#: templates/devices/device_history.html:90
+#: templates/devices/device_list.html:38
+#: templates/devices/manufacturer_detail.html:33
+#: templates/devices/room_detail.html:45 templates/devices/room_list.html:20
+#: templates/devices/searchresult.html:13
+#: templates/devicetypes/type_detail.html:49
+#: templates/mail/mailtemplate_list.html:20
+#: templates/snippets/modals/attribute.html:11
+#: templates/snippets/modals/newAttribute.html:12
+#: templates/snippets/widgets/groups.html:14
+#: templates/snippets/widgets/newestdevices.html:14
+#: templates/snippets/widgets/overdue.html:14
+#: templates/snippets/widgets/recentlendings.html:14
+#: templates/snippets/widgets/shorttermdevices.html:14
+#: templates/users/profile.html:35 templates/users/user_list.html:18
+msgid "Name"
+msgstr ""
+
+#: devices/models.py:12 templates/devices/building_detail.html:31
+msgid "Street"
+msgstr ""
+
+#: devices/models.py:13
+msgid "Number"
+msgstr ""
+
+#: devices/models.py:14
+msgid "ZIP code"
+msgstr ""
+
+#: devices/models.py:15 templates/devices/building_detail.html:33
+msgid "City"
+msgstr ""
+
+#: devices/models.py:16 templates/devices/building_detail.html:34
+msgid "State"
+msgstr ""
+
+#: devices/models.py:17 templates/devices/building_detail.html:35
+msgid "Country"
+msgstr ""
+
+#: devices/models.py:22 templates/devices/building_detail.html:7
+#: templates/devices/room_detail.html:31 templates/devices/room_list.html:21
+msgid "Building"
+msgstr ""
+
+#: devices/models.py:23 devices/views.py:818 devices/views.py:844
+#: devices/views.py:859 devices/views.py:873 devices/views.py:887
+#: devices/views.py:900 templates/500.html:44 templates/base.html:48
+#: templates/devices/building_list.html:3
+#: templates/devices/building_list.html:6
+msgid "Buildings"
+msgstr ""
+
+#: devices/models.py:25
+msgid "Can read Building"
+msgstr ""
+
+#: devices/models.py:45 devices/views.py:275
+#: templates/devicegroups/devicegroup_detail.html:32
+#: templates/devices/building_detail.html:48
+#: templates/devices/device_detail.html:40
+#: templates/devices/device_history.html:77
+#: templates/devices/device_history.html:122
+#: templates/devices/device_list.html:41
+#: templates/devices/manufacturer_detail.html:36
+#: templates/devices/room_detail.html:7 templates/devices/searchresult.html:16
+#: templates/devicetypes/type_detail.html:52
+#: templates/snippets/searchform_js.html:11 templates/users/profile.html:86
+msgid "Room"
+msgstr ""
+
+#: devices/models.py:46 devices/views.py:698 devices/views.py:726
+#: devices/views.py:741 devices/views.py:755 devices/views.py:769
+#: devices/views.py:782 templates/500.html:43 templates/base.html:47
+#: templates/devices/room_list.html:3 templates/devices/room_list.html.py:6
+msgid "Rooms"
+msgstr ""
+
+#: devices/models.py:48
+msgid "Can read Room"
+msgstr ""
+
+#: devices/models.py:61 devices/models.py:67 devices/views.py:269
+#: templates/devices/device_detail.html:39
+#: templates/devices/device_history.html:72
+#: templates/devices/device_history.html:118
+#: templates/devices/manufacturer_detail.html:7
+#: templates/snippets/searchform_js.html:8
+msgid "Manufacturer"
+msgstr ""
+
+#: devices/models.py:68 devices/views.py:934 devices/views.py:963
+#: devices/views.py:979 devices/views.py:993 devices/views.py:1007
+#: devices/views.py:1020 templates/500.html:38 templates/base.html:39
+#: templates/devices/manufacturer_list.html:3
+#: templates/devices/manufacturer_list.html:6
+msgid "Manufacturers"
+msgstr ""
+
+#: devices/models.py:70
+msgid "Can read Manufacturer"
+msgstr ""
+
+#: devices/models.py:86 templates/devicegroups/devicegroup_detail.html:30
+#: templates/devices/building_detail.html:46
+#: templates/devices/device_detail.html:35
+#: templates/devices/device_history.html:42
+#: templates/devices/device_history.html:94
+#: templates/devices/device_list.html:39
+#: templates/devices/manufacturer_detail.html:34
+#: templates/devices/room_detail.html:46
+#: templates/devices/searchresult.html:14
+#: templates/devicetypes/type_detail.html:50
+msgid "Inventorynumber"
+msgstr ""
+
+#: devices/models.py:87 templates/devices/device_detail.html:36
+#: templates/devices/device_history.html:47
+#: templates/devices/device_history.html:98
+msgid "Serialnumber"
+msgstr ""
+
+#: devices/models.py:88
+msgid "MAC Address"
+msgstr ""
+
+#: devices/models.py:90 templates/devices/device_history.html:57
+#: templates/devices/device_history.html:106
+msgid "Hostname"
+msgstr ""
+
+#: devices/models.py:91 devices/models.py:147
+#: templates/devices/device_history.html:82
+#: templates/devices/device_history.html:126
+msgid "Description"
+msgstr ""
+
+#: devices/models.py:95 templates/devices/device_history.html:62
+#: templates/devices/device_history.html:110
+msgid "Webinterface"
+msgstr ""
+
+#: devices/models.py:97
+msgid "For short term lending"
+msgstr ""
+
+#: devices/models.py:106 templates/devices/device_detail.html:8
+#: templates/devices/device_history.html:7
+#: templates/devices/globalhistory.html:15
+#: templates/devices/room_detail.html:40
+#: templates/snippets/widgets/edithistory.html:14
+#: templates/users/profile.html:83 templates/users/profile.html.py:116
+msgid "Device"
+msgstr ""
+
+#: devices/models.py:107 devices/views.py:58 devices/views.py:104
+#: devices/views.py:117 devices/views.py:141 devices/views.py:231
+#: devices/views.py:303 devices/views.py:328 devices/views.py:369
+#: devices/views.py:428 devices/views.py:507 devices/views.py:524
+#: devices/views.py:580 devices/views.py:624 devices/views.py:645
+#: devices/views.py:657 devices/views.py:670 templates/500.html:34
+#: templates/500.html.py:36 templates/base.html:35 templates/base.html.py:37
+#: templates/devices/building_detail.html:41
+#: templates/devices/device_list.html:3 templates/devices/device_list.html:6
+#: templates/devicetypes/type_detail.html:45
+#: templates/snippets/widgets/groups.html:15
+#: templates/snippets/widgets/statistics.html:21
+msgid "Devices"
+msgstr ""
+
+#: devices/models.py:109
+msgid "Emails for bosses"
+msgstr ""
+
+#: devices/models.py:110
+msgid "Emails for managment"
+msgstr ""
+
+#: devices/models.py:111
+msgid "Emails for support"
+msgstr ""
+
+#: devices/models.py:112
+msgid "Can read Device"
+msgstr ""
+
+#: devices/models.py:113
+msgid "Can lend Device"
+msgstr ""
+
+#: devices/models.py:144
+msgid "Templatename"
+msgstr ""
+
+#: devices/models.py:155 devices/views.py:625 devices/views.py:646
+#: devices/views.py:658 devices/views.py:671
+#: templates/devices/template_list.html:6
+msgid "Templates"
+msgstr ""
+
+#: devices/models.py:157
+msgid "Can read Template"
+msgstr ""
+
+#: devices/views.py:119
+msgid "Unassign IP-Addresses"
+msgstr ""
+
+#: devices/views.py:143 templates/devices/assign_ipaddress.html:8
+msgid "Assign IP-Addresses"
+msgstr ""
+
+#: devices/views.py:150
+msgid "Archived Devices can't get new IP-Addresses"
+msgstr ""
+
+#: devices/views.py:233 devices/views.py:305
+msgid "History"
+msgstr ""
+
+#: devices/views.py:234
+#, python-brace-format
+msgid "Version {0}"
+msgstr ""
+
+#: devices/views.py:242
+msgid "Archived Devices can't be reverted"
+msgstr ""
+
+#: devices/views.py:263 templates/devicegroups/devicegroup_detail.html:31
+#: templates/devices/building_detail.html:47
+#: templates/devices/device_detail.html:38
+#: templates/devices/device_history.html:67
+#: templates/devices/device_history.html:114
+#: templates/devices/device_list.html:40
+#: templates/devices/manufacturer_detail.html:35
+#: templates/devices/room_detail.html:47
+#: templates/devices/searchresult.html:15
+#: templates/devicetypes/type_detail.html:7
+#: templates/devicetypes/type_detail.html:51
+#: templates/snippets/searchform_js.html:5
+msgid "Devicetype"
+msgstr ""
+
+#: devices/views.py:284
+#, python-brace-format
+msgid "Successfully reverted Device to revision {0}"
+msgstr ""
+
+#: devices/views.py:286
+#, python-brace-format
+msgid ""
+"Reverted Device to revision {0}, but the following fields had to be set to "
+"null, as the referenced object was deleted: {1}"
+msgstr ""
+
+#: devices/views.py:330
+msgid "Lending"
+msgstr ""
+
+#: devices/views.py:370
+msgid "Create new device"
+msgstr ""
+
+#: devices/views.py:376
+msgid "Created"
+msgstr ""
+
+#: devices/views.py:414
+msgid "Device was successfully created."
+msgstr ""
+
+#: devices/views.py:437
+msgid "Archived Devices can't be edited"
+msgstr ""
+
+#: devices/views.py:441
+msgid "Updated"
+msgstr ""
+
+#: devices/views.py:494
+msgid "Device was successfully updated."
+msgstr ""
+
+#: devices/views.py:526
+msgid "Lend"
+msgstr ""
+
+#: devices/views.py:533
+msgid "Archived Devices can't be lendt"
+msgstr ""
+
+#: devices/views.py:543
+#, python-brace-format
+msgid "Device lendt and moved room {0}"
+msgstr ""
+
+#: devices/views.py:546
+#, python-brace-format
+msgid "Device is marked as lendt to {0}"
+msgstr ""
+
+#: devices/views.py:555
+msgid "Archived Devices can't be returned"
+msgstr ""
+
+#: devices/views.py:563
+msgid "Device is marked as returned."
+msgstr ""
+
+#: devices/views.py:582
+msgid "Send Mail"
+msgstr ""
+
+#: devices/views.py:595
+#, python-brace-format
+msgid "Mail sent to {0}"
+msgstr ""
+
+#: devices/views.py:613
+msgid "Device was archived."
+msgstr ""
+
+#: devices/views.py:647
+msgid "Create new devicetemplate"
+msgstr ""
+
+#: devices/views.py:659
+#, python-brace-format
+msgid "Edit: {0}"
+msgstr ""
+
+#: devices/views.py:672
+#, python-brace-format
+msgid "Delete: {0}"
+msgstr ""
+
+#: devices/views.py:742
+msgid "Create new room"
+msgstr ""
+
+#: devices/views.py:784 devices/views.py:902 devices/views.py:1022
+#: devicetypes/views.py:138
+#, python-brace-format
+msgid "Merge with {0}"
+msgstr ""
+
+#: devices/views.py:794
+#, python-brace-format
+msgid "Merged Room {0} into {1}"
+msgstr ""
+
+#: devices/views.py:860
+msgid "Create new building"
+msgstr ""
+
+#: devices/views.py:980
+msgid "Create new manufacturer"
+msgstr ""
+
+#: devices/views.py:1032
+#, python-brace-format
+msgid "Merged Manufacturer {0} into {1}"
+msgstr ""
+
+#: devices/views.py:1044 templates/base.html:81
+#: templates/devices/search.html:3 templates/devices/search.html.py:6
+#: templates/snippets/searchform.html:110
+msgid "Search"
+msgstr ""
+
+#: devices/views.py:1106 templates/devices/searchresult.html:6
+msgid "Searchresult"
+msgstr ""
+
+#: devicetypes/models.py:13 templates/devices/globalhistory.html:14
+msgid "Type"
+msgstr ""
+
+#: devicetypes/models.py:14
+msgid "Types"
+msgstr ""
+
+#: devicetypes/models.py:16
+msgid "Can read Type"
+msgstr ""
+
+#: devicetypes/models.py:32
+msgid "Type-attribute"
+msgstr ""
+
+#: devicetypes/models.py:33
+msgid "Type-attributes"
+msgstr ""
+
+#: devicetypes/models.py:47
+msgid "Type-attribute value"
+msgstr ""
+
+#: devicetypes/models.py:48
+msgid "Type-attribute values"
+msgstr ""
+
+#: devicetypes/views.py:36 devicetypes/views.py:66 devicetypes/views.py:81
+#: devicetypes/views.py:109 devicetypes/views.py:123 devicetypes/views.py:136
+#: templates/500.html:37 templates/base.html:38
+#: templates/devices/template_list.html:3
+#: templates/devicetypes/type_list.html:3
+#: templates/devicetypes/type_list.html:6
+msgid "Devicetypes"
+msgstr ""
+
+#: devicetypes/views.py:78 devicetypes/views.py:82
+msgid "Create new Devicetype"
+msgstr ""
+
+#: devicetypes/views.py:104
+msgid "Update"
+msgstr ""
+
+#: devicetypes/views.py:148
+#, python-brace-format
+msgid "Merged Devicetype {0} into {1}"
+msgstr ""
+
+#: mail/models.py:10
+msgid "New Device is created"
+msgstr ""
+
+#: mail/models.py:11
+msgid "Room the device is in is changed"
+msgstr ""
+
+#: mail/models.py:12
+msgid "person currently lending is changed"
+msgstr ""
+
+#: mail/models.py:13
+msgid "Reminder for current owner that device is still owned"
+msgstr ""
+
+#: mail/models.py:14
+msgid "Reminder for current owner that device is overdue"
+msgstr ""
+
+#: mail/models.py:22 templates/mail/mailtemplate_list.html:22
+msgid "Usage"
+msgstr ""
+
+#: mail/models.py:28 templates/devices/device_detail.html:170
+#: templates/mail/mailtemplate_detail.html:7
+msgid "Mailtemplate"
+msgstr ""
+
+#: mail/models.py:29 mail/views.py:15 mail/views.py:37 mail/views.py:51
+#: mail/views.py:65 mail/views.py:82 templates/500.html:48
+#: templates/base.html:56 templates/devicegroups/devicegroup_list.html:3
+#: templates/devicegroups/devicegroup_list.html:6
+#: templates/mail/mailtemplate_list.html:3
+#: templates/mail/mailtemplate_list.html:6
+msgid "Mailtemplates"
+msgstr ""
+
+#: mail/models.py:31
+msgid "Can read Mailtemplate"
+msgstr ""
+
+#: mail/views.py:52
+msgid "Create new mailtemplate"
+msgstr ""
+
+#: main/models.py:7 templates/devices/device_detail.html:107
+#: templates/snippets/widgets/edithistory.html:5
+msgid "Edit history"
+msgstr ""
+
+#: main/models.py:8 templates/snippets/widgets/newestdevices.html:5
+msgid "Newest devices"
+msgstr ""
+
+#: main/models.py:9 templates/snippets/widgets/overdue.html:5
+msgid "Overdue devices"
+msgstr ""
+
+#: main/models.py:10 templates/snippets/widgets/statistics.html:5
+msgid "Statistics"
+msgstr ""
+
+#: main/models.py:11 templates/snippets/widgets/groups.html:5
+#: templates/users/profile.html:38
+msgid "Groups"
+msgstr ""
+
+#: main/models.py:12 templates/snippets/widgets/recentlendings.html:5
+msgid "Recent lendings"
+msgstr ""
+
+#: main/models.py:13 templates/snippets/widgets/shorttermdevices.html:5
+msgid "Devices for short term lending"
+msgstr ""
+
+#: main/views.py:47
+msgid "Dashboard"
+msgstr ""
+
+#: main/views.py:49 templates/home.html:7
+msgid "Home"
+msgstr ""
+
+#: main/views.py:60 templates/devices/globalhistory.html:3
+#: templates/devices/globalhistory.html:6
+msgid "Global edit history"
+msgstr ""
+
+#: network/forms.py:5
+msgid "All IP-Addresses"
+msgstr ""
+
+#: network/forms.py:6
+msgid "Free IP-Addresses"
+msgstr ""
+
+#: network/forms.py:7
+msgid "Used IP-Addresses"
+msgstr ""
+
+#: network/models.py:16
+msgid "IP-Address"
+msgstr ""
+
+#: network/models.py:17 network/views.py:43 network/views.py:56
+#: network/views.py:70 network/views.py:89 templates/500.html:47
+#: templates/base.html:55 templates/base.html.py:61
+#: templates/devices/device_detail.html:81
+#: templates/snippets/widgets/statistics.html:34
+msgid "IP-Addresses"
+msgstr ""
+
+#: network/models.py:19
+msgid "Can read IP-Address"
+msgstr ""
+
+#: network/views.py:71
+msgid "Create new IP-Address"
+msgstr ""
+
+#: templates/403.html:3
+msgid "I can't let you do that."
+msgstr ""
+
+#: templates/403.html:15
+msgid "Error 403"
+msgstr ""
+
+#: templates/403.html:16
+msgid "I'm sorry, but I can't let you do that."
+msgstr ""
+
+#: templates/404.html:3
+msgid "Nothing to see here"
+msgstr ""
+
+#: templates/404.html:8
+msgid "Error 404"
+msgstr ""
+
+#: templates/404.html:9
+msgid "We couldn't find what you are looking for. Sorry for that"
+msgstr ""
+
+#: templates/500.html:5
+msgid "Something went wrong"
+msgstr ""
+
+#: templates/500.html:23 templates/base.html:23
+msgid "Toggle navigation"
+msgstr ""
+
+#: templates/500.html:41 templates/base.html:45
+msgid "Locations"
+msgstr ""
+
+#: templates/500.html:57
+msgid "Error 500"
+msgstr ""
+
+#: templates/500.html:58
+msgid ""
+"I regret to inform you, that our trained monkeys made a mistake when "
+"processing your request. Our trainers already have been informed of this "
+"incident and will try resolve the issue as soon as possible"
+msgstr ""
+
+#: templates/base.html:53
+msgid "Manage"
+msgstr ""
+
+#: templates/base.html:57 templates/users/user_list.html:3
+#: templates/users/user_list.html.py:6 users/models.py:24 users/views.py:42
+#: users/views.py:73 users/views.py:90
+msgid "Users"
+msgstr ""
+
+#: templates/base.html:72
+msgid "Search Name"
+msgstr ""
+
+#: templates/base.html:80
+msgid "Advanced Search"
+msgstr ""
+
+#: templates/base.html:85
+msgid "Profile"
+msgstr ""
+
+#: templates/base.html:86 templates/users/settings.html:3
+#: templates/users/settings.html.py:6 users/views.py:105
+msgid "Settings"
+msgstr ""
+
+#: templates/base.html:88 templates/users/user_list.html:21
+msgid "Admin"
+msgstr ""
+
+#: templates/home.html:4
+msgid "Main"
+msgstr ""
+
+#: templates/home.html:30
+msgid "You are not logged in. Please do so below."
+msgstr ""
+
+#: templates/home.html:33 templates/login.html:11
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: templates/logout.html:6
+msgid "You were successfully logged out."
+msgstr ""
+
+#: templates/devicegroups/devicegroup_detail.html:12
+#: templates/devices/building_detail.html:16
+#: templates/devices/manufacturer_detail.html:15
+#: templates/devices/room_detail.html:16
+#: templates/devicetypes/type_detail.html:15
+msgid "Merge"
+msgstr ""
+
+#: templates/devicegroups/devicegroup_detail.html:54
+#: templates/devices/building_detail.html:73
+#: templates/devices/device_detail.html:224
+#: templates/devices/device_detail.html:235
+#: templates/devices/device_detail.html:246
+#: templates/devices/manufacturer_detail.html:60
+#: templates/devices/room_detail.html:71
+#: templates/devicetypes/type_detail.html:97
+#: templates/mail/mailtemplate_detail.html:33
+#: templates/network/ipaddress_detail.html:32
+msgid "are you sure?"
+msgstr ""
+
+#: templates/devicegroups/devicegroup_detail.html:56
+#: templates/devices/base_delete.html:13
+#: templates/devices/building_detail.html:75
+#: templates/devices/device_archive.html:13
+#: templates/devices/device_detail.html:226
+#: templates/devices/device_detail.html:237
+#: templates/devices/device_detail.html:248
+#: templates/devices/manufacturer_detail.html:62
+#: templates/devices/room_detail.html:73
+#: templates/devices/unassign_ipaddress.html:13
+#: templates/devicetypes/type_detail.html:99
+#: templates/mail/mailtemplate_detail.html:35
+#: templates/network/ipaddress_detail.html:34
+msgid "No"
+msgstr ""
+
+#: templates/devicegroups/devicegroup_detail.html:57
+#: templates/devices/base_delete.html:13
+#: templates/devices/building_detail.html:76
+#: templates/devices/device_archive.html:13
+#: templates/devices/device_detail.html:227
+#: templates/devices/device_detail.html:238
+#: templates/devices/device_detail.html:249
+#: templates/devices/manufacturer_detail.html:63
+#: templates/devices/room_detail.html:74
+#: templates/devices/unassign_ipaddress.html:13
+#: templates/devicetypes/type_detail.html:100
+#: templates/mail/mailtemplate_detail.html:36
+#: templates/network/ipaddress_detail.html:35
+#: templates/snippets/modals/attribute.html:32
+msgid "Yes"
+msgstr ""
+
+#: templates/devicegroups/devicegroup_list.html:12
+msgid "Add Devicegroup"
+msgstr ""
+
+#: templates/devices/assign_ipaddress.html:5
+msgid "Assign IP-Address"
+msgstr ""
+
+#: templates/devices/assign_ipaddress.html:24
+#: templates/devices/base_form.html:20 templates/devices/device_form.html:46
+#: templates/devices/device_form.html:66
+#: templates/devicetypes/type_form.html:25
+#: templates/snippets/modals/lending.html:61
+#: templates/snippets/modals/newAttribute.html:27
+#: templates/users/settings.html:57
+msgid "Submit"
+msgstr ""
+
+#: templates/devices/base_delete.html:11
+#, python-format
+msgid "Do you really want to delete %(object)s?"
+msgstr ""
+
+#: templates/devices/base_form.html:25
+msgid "Help"
+msgstr ""
+
+#: templates/devices/building_detail.html:32
+msgid "ZIP Code"
+msgstr ""
+
+#: templates/devices/building_list.html:12
+msgid "Add Building"
+msgstr ""
+
+#: templates/devices/device_archive.html:4
+#: templates/devices/device_detail.html:14
+msgid "Archive"
+msgstr ""
+
+#: templates/devices/device_detail.html:15
+msgid "Create Copy"
+msgstr ""
+
+#: templates/devices/device_detail.html:19
+msgid "Mark as returned"
+msgstr ""
+
+#: templates/devices/device_detail.html:21
+msgid "Mark as Lendt"
+msgstr ""
+
+#: templates/devices/device_detail.html:26
+msgid "Unarchive"
+msgstr ""
+
+#: templates/devices/device_detail.html:37
+#: templates/devices/device_history.html:52
+#: templates/devices/device_history.html:102
+msgid "MAC-Address"
+msgstr ""
+
+#: templates/devices/device_detail.html:45
+msgid "Created by"
+msgstr ""
+
+#: templates/devices/device_detail.html:46
+msgid "Last edited"
+msgstr ""
+
+#: templates/devices/device_detail.html:46
+msgid "Not edited yet"
+msgstr ""
+
+#: templates/devices/device_detail.html:50
+msgid "Go to webinterface"
+msgstr ""
+
+#: templates/devices/device_detail.html:51
+msgid "Current Lending information"
+msgstr ""
+
+#: templates/devices/device_detail.html:56
+#: templates/devices/device_detail.html:119
+#: templates/devices/device_lending_list.html:16
+msgid "Since"
+msgstr ""
+
+#: templates/devices/device_detail.html:57
+msgid "Due to"
+msgstr ""
+
+#: templates/devices/device_detail.html:61
+msgid "Overdue notification"
+msgstr ""
+
+#: templates/devices/device_detail.html:67
+#: templates/snippets/modals/devicemailModal.html:4
+msgid "Send mail to user"
+msgstr ""
+
+#: templates/devices/device_detail.html:71
+msgid "Currently not lent"
+msgstr ""
+
+#: templates/devices/device_detail.html:93
+msgid "Assign Addresses"
+msgstr ""
+
+#: templates/devices/device_detail.html:106
+msgid "Lending history"
+msgstr ""
+
+#: templates/devices/device_detail.html:108
+msgid "Mail history"
+msgstr ""
+
+#: templates/devices/device_detail.html:114
+msgid "10 last lendings"
+msgstr ""
+
+#: templates/devices/device_detail.html:118
+#: templates/devices/device_detail.html:146
+#: templates/devices/device_history_list.html:18
+#: templates/devices/device_lending_list.html:15
+#: templates/devices/globalhistory.html:17
+#: templates/snippets/widgets/edithistory.html:16
+#: templates/users/profile.html:63 users/models.py:23
+msgid "User"
+msgstr ""
+
+#: templates/devices/device_detail.html:120
+#: templates/devices/device_lending_list.html:17
+#: templates/snippets/widgets/overdue.html:15
+#: templates/snippets/widgets/recentlendings.html:16
+#: templates/users/profile.html:85
+msgid "Duedate"
+msgstr ""
+
+#: templates/devices/device_detail.html:121
+#: templates/devices/device_lending_list.html:18
+msgid "Returned"
+msgstr ""
+
+#: templates/devices/device_detail.html:135
+msgid "View lending history"
+msgstr ""
+
+#: templates/devices/device_detail.html:141
+msgid "10 last edits"
+msgstr ""
+
+#: templates/devices/device_detail.html:145
+#: templates/devices/device_history_list.html:17
+#: templates/devices/globalhistory.html:16
+#: templates/snippets/widgets/edithistory.html:15
+#: templates/users/profile.html:117
+msgid "Date/time"
+msgstr ""
+
+#: templates/devices/device_detail.html:147
+#: templates/devices/device_history.html:32
+#: templates/devices/device_history_list.html:19
+#: templates/devices/globalhistory.html:18
+#: templates/snippets/widgets/edithistory.html:17
+#: templates/users/profile.html:118
+msgid "Comment"
+msgstr ""
+
+#: templates/devices/device_detail.html:160
+msgid "View edit history"
+msgstr ""
+
+#: templates/devices/device_detail.html:166
+msgid "10 last sent mails"
+msgstr ""
+
+#: templates/devices/device_detail.html:172
+msgid "Sent by"
+msgstr ""
+
+#: templates/devices/device_detail.html:173
+msgid "Sent at"
+msgstr ""
+
+#: templates/devices/device_form.html:37
+msgid "Preview"
+msgstr ""
+
+#: templates/devices/device_form.html:57
+msgid "Create new <span id='addmodal_header'></span>"
+msgstr ""
+
+#: templates/devices/device_form.html:65
+msgid "Cancel"
+msgstr ""
+
+#: templates/devices/device_history.html:4
+msgid "Revision for"
+msgstr ""
+
+#: templates/devices/device_history.html:13
+msgid "Restore Revision"
+msgstr ""
+
+#: templates/devices/device_history.html:23
+#: templates/devices/device_history.html:31
+msgid "previous revision"
+msgstr ""
+
+#: templates/devices/device_history.html:24
+msgid "next revision"
+msgstr ""
+
+#: templates/devices/device_history.html:31
+#: templates/devices/device_history.html:89
+msgid "this revision"
+msgstr ""
+
+#: templates/devices/device_history.html:31
+#: templates/devices/device_history.html:89
+msgid "current revision"
+msgstr ""
+
+#: templates/devices/device_history_list.html:4
+#: templates/devices/device_history_list.html:7
+msgid "History for"
+msgstr ""
+
+#: templates/devices/device_history_list.html:33
+msgid "This object doesn't have a change history."
+msgstr ""
+
+#: templates/devices/device_lending_list.html:4
+#: templates/devices/device_lending_list.html:7
+msgid "Lendinghistory for"
+msgstr ""
+
+#: templates/devices/device_list.html:14
+msgid "Add Device"
+msgstr ""
+
+#: templates/devices/device_list.html:19
+msgid "From Template"
+msgstr ""
+
+#: templates/devices/device_list.html:20
+msgid "Edit Templates"
+msgstr ""
+
+#: templates/devices/device_list.html:27
+msgid "New Template"
+msgstr ""
+
+#: templates/devices/device_list.html:43
+#: templates/snippets/widgets/statistics.html:14
+msgid "Available"
+msgstr ""
+
+#: templates/devices/manufacturer_list.html:12
+msgid "Add Manufacturer"
+msgstr ""
+
+#: templates/devices/room_list.html:12
+msgid "Add Room"
+msgstr ""
+
+#: templates/devices/template_list.html:10
+msgid "Add Template"
+msgstr ""
+
+#: templates/devices/unassign_ipaddress.html:4
+msgid "Unassign IP-Address"
+msgstr ""
+
+#: templates/devices/unassign_ipaddress.html:11
+#, python-format
+msgid ""
+"Do you really want to unassign the IP-Address %(ipaddress)s from %(device)s?"
+msgstr ""
+
+#: templates/devicetypes/type_detail.html:29
+msgid "Extra attributes"
+msgstr ""
+
+#: templates/devicetypes/type_detail.html:40
+msgid "Add new Attribute"
+msgstr ""
+
+#: templates/devicetypes/type_list.html:12
+msgid "Add Devicetype"
+msgstr ""
+
+#: templates/mail/help.html:2
+msgid "available variables"
+msgstr ""
+
+#: templates/mail/mailtemplate_list.html:10
+msgid "Add Mailtemplate"
+msgstr ""
+
+#: templates/network/ipaddress_detail.html:6
+msgid "IP-Adress"
+msgstr ""
+
+#: templates/network/ipaddress_detail.html:20
+msgid "Not assigned"
+msgstr ""
+
+#: templates/network/ipaddress_list.html:11
+msgid "Add IP-Address"
+msgstr ""
+
+#: templates/snippets/devicepagination.html:8
+#: templates/snippets/devicepagination.html:11
+#: templates/snippets/ipaddresspagination.html:8
+#: templates/snippets/ipaddresspagination.html:11
+#: templates/snippets/pagination.html:7
+#: templates/snippets/subpagination.html:7
+msgid "First"
+msgstr ""
+
+#: templates/snippets/devicepagination.html:9
+#: templates/snippets/devicepagination.html:12
+#: templates/snippets/devicepagination.html:15
+#: templates/snippets/pagination.html:8 templates/snippets/pagination.html:10
+#: templates/snippets/subpagination.html:8
+#: templates/snippets/subpagination.html:10
+msgid "Previous"
+msgstr ""
+
+#: templates/snippets/devicepagination.html:17
+#: templates/snippets/ipaddresspagination.html:17
+#: templates/snippets/pagination.html:12
+#: templates/snippets/subpagination.html:12
+msgid "Page"
+msgstr ""
+
+#: templates/snippets/devicepagination.html:26
+#: templates/snippets/ipaddresspagination.html:26
+#: templates/snippets/pagination.html:21
+#: templates/snippets/subpagination.html:21
+msgid "of"
+msgstr ""
+
+#: templates/snippets/devicepagination.html:29
+#: templates/snippets/devicepagination.html:32
+#: templates/snippets/ipaddresspagination.html:29
+#: templates/snippets/ipaddresspagination.html:32
+#: templates/snippets/pagination.html:23
+#: templates/snippets/subpagination.html:23
+msgid "Last"
+msgstr ""
+
+#: templates/snippets/devicepagination.html:30
+#: templates/snippets/devicepagination.html:33
+#: templates/snippets/devicepagination.html:36
+#: templates/snippets/ipaddresspagination.html:9
+#: templates/snippets/ipaddresspagination.html:12
+#: templates/snippets/ipaddresspagination.html:15
+#: templates/snippets/ipaddresspagination.html:30
+#: templates/snippets/ipaddresspagination.html:33
+#: templates/snippets/ipaddresspagination.html:36
+#: templates/snippets/pagination.html:24 templates/snippets/pagination.html:26
+#: templates/snippets/subpagination.html:24
+#: templates/snippets/subpagination.html:26
+msgid "Next"
+msgstr ""
+
+#: templates/snippets/searchform.html:111
+msgid "Clear"
+msgstr ""
+
+#: templates/snippets/searchform_js.html:14
+msgid "Overdue"
+msgstr ""
+
+#: templates/snippets/searchform_js.html:17
+msgid "Filter"
+msgstr ""
+
+#: templates/snippets/modals/addwidget.html:4
+msgid "Add a widget"
+msgstr ""
+
+#: templates/snippets/modals/attribute.html:4
+msgid "Edit the Attribute"
+msgstr ""
+
+#: templates/snippets/modals/attribute.html:17
+#: templates/snippets/modals/newAttribute.html:18
+msgid "Regular Expression"
+msgstr ""
+
+#: templates/snippets/modals/attribute.html:31
+msgid "Do you want to delete  the attribute?"
+msgstr ""
+
+#: templates/snippets/modals/devicemailModal.html:22
+#: templates/snippets/modals/lending.html:60
+msgid "Close"
+msgstr ""
+
+#: templates/snippets/modals/devicemailModal.html:23
+msgid "Send"
+msgstr ""
+
+#: templates/snippets/modals/lending.html:5
+msgid "Mark device as lendt"
+msgstr ""
+
+#: templates/snippets/modals/mailpreview.html:4
+msgid "Preview for mailtemplate '<span id='previewmodal_header'></span>'"
+msgstr ""
+
+#: templates/snippets/modals/newAttribute.html:4
+msgid "New Attribute"
+msgstr ""
+
+#: templates/snippets/widgets/edithistory.html:57
+#: templates/snippets/widgets/newestdevices.html:30
+#: templates/snippets/widgets/overdue.html:30
+#: templates/snippets/widgets/shorttermdevices.html:28
+msgid "More…"
+msgstr ""
+
+#: templates/snippets/widgets/newestdevices.html:15
+msgid "Creation date"
+msgstr ""
+
+#: templates/snippets/widgets/newestdevices.html:16
+msgid "Creator"
+msgstr ""
+
+#: templates/snippets/widgets/recentlendings.html:15
+msgid "Lendt on"
+msgstr ""
+
+#: templates/snippets/widgets/statistics.html:15
+msgid "Overall"
+msgstr ""
+
+#: templates/users/profile.html:46 templates/users/user_list.html:22
+msgid "Last Login"
+msgstr ""
+
+#: templates/users/profile.html:50
+msgid "Is Staff"
+msgstr ""
+
+#: templates/users/profile.html:54
+msgid "Is Superuser"
+msgstr ""
+
+#: templates/users/profile.html:63
+msgid "Permission"
+msgstr ""
+
+#: templates/users/profile.html:63
+msgid "Group"
+msgstr ""
+
+#: templates/users/profile.html:78
+msgid "Owned devices"
+msgstr ""
+
+#: templates/users/profile.html:84
+msgid "Lendt since"
+msgstr ""
+
+#: templates/users/profile.html:103
+msgid "User doesn't own any devices."
+msgstr ""
+
+#: templates/users/profile.html:111
+msgid "Edits"
+msgstr ""
+
+#: templates/users/profile.html:132
+msgid "User hasn't edited anything."
+msgstr ""
+
+#: templates/users/settings.html:17
+msgid "Language"
+msgstr ""
+
+#: templates/users/settings.html:26
+msgid "Set Language"
+msgstr ""
+
+#: templates/users/settings.html:30
+msgid "Avatar"
+msgstr ""
+
+#: templates/users/settings.html:49
+msgid "Upload"
+msgstr ""
+
+#: templates/users/settings.html:54
+msgid "Appearance"
+msgstr ""
+
+#: templates/users/user_list.html:19
+msgid "Username"
+msgstr ""
+
+#: templates/users/user_list.html:20
+msgid "Staff"
+msgstr ""
+
+#: users/forms.py:12
+msgid "The number of items displayed on one page in a list."
+msgstr ""
+
+#: users/models.py:26
+msgid "Can read User"
+msgstr ""
+
+#: users/views.py:123
+msgid "Settings were successfully updated"
+msgstr ""
