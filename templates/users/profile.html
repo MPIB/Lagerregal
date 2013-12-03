@@ -21,6 +21,7 @@
 
 <div class="tab-content">
   <div class="tab-pane active" id="about">
+  <div data-spy="affix" data-offset-top="160">
   {% if profileuser.avatar %}
   <div class="col-sm-12 col-md-2" style="margin-top:20px">
     <a href="#" class="thumbnail">
@@ -28,7 +29,7 @@
     </a>
   </div>
   {% endif %}
-  <div class="col-sm-12 col-md-6" style="margin-top:20px">
+  <div class="col-sm-12 col-md-5" style="margin-top:20px">
     <table class="table table-bordered">
       <tr>
         <td>{% trans "Name" %}</td><td>{{profileuser.first_name}} {{profileuser.last_name}}</td>
@@ -54,7 +55,9 @@
         <td>{% if profileuser.is_superuser %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
       </tr>
     </table>
-    <h3>{% trans "Permissions" %}</h3>
+  </div>
+</div>
+  <div class="col-sm-12 col-md-5 pull-right" style="margin-top:20px">
     <table class="table table-bordered">
       <tr>
         <th>{% trans "Permission" %}</th><th>{% trans "User" %}</th><th>{% trans "Group" %}</th>
