@@ -5,3 +5,4 @@ django-reversion
 djangorestframework
 django-debug-toolbar
 South
+Pillow
