@@ -9,7 +9,7 @@ from mail.views import *
 from devicegroups.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from rest_framework.urlpatterns import format_suffix_patterns
-import settings
+from . import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
