@@ -7,12 +7,12 @@
 {% trans "Manufacturer" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-{% if perms.devices.delete_manufacturer %}<a  href="#" id="deletebutton" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.devices.change_manufacturer %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+{% if perms.devices.delete_manufacturer %}<a  href="#" id="deletebutton" data-toggle="modal" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_manufacturer %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
   <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-    <i class="icon-share-alt" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+    <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" role="menu">
   {% for merge in merge_list %}

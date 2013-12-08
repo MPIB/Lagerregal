@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block pullright %}
-{% if perms.network.delete_ipaddress %}<a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.network.change_ipaddress %}<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+{% if perms.network.delete_ipaddress %}<a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.network.change_ipaddress %}<a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}

@@ -59,7 +59,7 @@ $('body').on('click', ".deleteattribute", function() {
 })
 
 $("#newattribute").click(function() {
-    element = $('<div class="form-group"><label class="col-lg-4 control-label">Extra Attribute</label><div class="col-lg-7"><input class="extra_attribute form-control" type="text"><p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p></div><div class="col-lg-1"><a href="#" class="deleteattribute"><i class="icon-remove"></i></a></div></div>');
+    element = $('<div class="form-group"><label class="col-lg-4 control-label">Extra Attribute</label><div class="col-lg-7"><input class="extra_attribute form-control" type="text"><p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p></div><div class="col-lg-1"><a href="#" class="deleteattribute"><i class="fa fa-times"></i></a></div></div>');
     element.find(".extra_attribute").attr('name', 'extra_field_' + form_count);
     if($(".extra_attribute")[0]) {
       $(".extra_attribute:last").parents(".form-group:first").after(element);

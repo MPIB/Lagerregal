@@ -19,7 +19,7 @@
         {% for device in shortterm_devices %}
             <tr>
                 <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                <td>{% if device.currentlending == None %}<i class="icon-ok-sign text-success" style="font-size:1.3em"></i>{% else %}<i class="icon-exclamation-sign text-danger" style="font-size:1.3em"></i>{% endif %}</td>
+                <td>{% if device.currentlending == None %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
             </tr>
         {% endfor %}
     </tbody>

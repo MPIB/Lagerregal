@@ -4,10 +4,10 @@
 <div class="pagination-centered">
   <ul class="pager">
         {% if page_obj.has_previous %}
-        <li class="previous"><a href="{% url listurl 1 %}" style="margin-right:5px"><i class="icon-double-angle-left"></i> {% trans "First" %}</a></li>
-        <li class="previous"><a href="{% url listurl page_obj.previous_page_number %}"><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
+        <li class="previous"><a href="{% url listurl 1 %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
+        <li class="previous"><a href="{% url listurl page_obj.previous_page_number %}"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
         {% else %}
-          <li class="previous disabled"><a><i class="icon-angle-left"></i> {% trans "Previous" %}</a></li>
+          <li class="previous disabled"><a><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
         {% endif %}
                 <li class="current">{% trans "Page" %}
                   <select class="pageselect">
@@ -20,10 +20,10 @@
                     {% endfor %}
                   </select> {% trans "of" %} {{ page_obj.paginator.num_pages }}</li>
         {% if page_obj.has_next %}
-        <li class="next"><a href="{% url listurl page_obj.paginator.num_pages %}" style="margin-left:5px">{% trans "Last" %} <i class="icon-double-angle-right"></i></a></li>
-        <li class="next"><a href="{% url listurl page_obj.next_page_number %}">{% trans "Next" %} <i class="icon-angle-right"></i></a></li>
+        <li class="next"><a href="{% url listurl page_obj.paginator.num_pages %}" style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
+        <li class="next"><a href="{% url listurl page_obj.next_page_number %}">{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
             {% else %}
-          <li class="next disabled"><a>{% trans "Next" %} <i class="icon-angle-right"></i></a></li>
+          <li class="next disabled"><a>{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
         {% endif %}
   </ul>
 {% endif %}
