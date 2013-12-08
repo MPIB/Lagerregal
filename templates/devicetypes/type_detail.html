@@ -7,12 +7,12 @@
 {% trans "Devicetype" %}: {{object.name}}
 {% endblock %}
 {% block pullright %}
-{% if perms.devicetypes.delete_type %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.devicetypes.change_type %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+{% if perms.devicetypes.delete_type %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devicetypes.change_type %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
   <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-    <i class="icon-share-alt" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+    <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
   </button>
   <ul class="dropdown-menu" role="menu">
   {% for merge in merge_list %}
@@ -37,7 +37,7 @@
   {% endfor %}
   </ul>
 
-{% if perms.devicetypes.change_type %}<a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm"><i class="icon-plus" style="margin-right:7px"></i>{% trans "Add new Attribute" %}</a>{% endif %}
+{% if perms.devicetypes.change_type %}<a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add new Attribute" %}</a>{% endif %}
 </div>
 <div class="col-xs-12 col-md-7">
   {% if perms.devices.read_device %}

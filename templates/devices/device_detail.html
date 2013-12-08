@@ -10,20 +10,20 @@
 
 {% block pullright %}
 {% if device.archived == None %}
-{% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-remove" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.devices.change_device %}<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-close" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
-{% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="icon-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
-{% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="icon-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+{% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_device %}<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
+{% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
+{% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
-    <a href="#"  id="returnbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as returned" %}</a>
+    <a href="#"  id="returnbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Mark as returned" %}</a>
   {% else %}
-    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="icon-ok" style="margin-right:7px"></i>{% trans "Mark as Lendt" %}</a>
+    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Mark as Lendt" %}</a>
   {% endif %}
 {% endif %}
 {% else %}
 {% if perms.devices.change_device %}
-  <a  href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="icon-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
+  <a  href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
 {% endif %}
 {% endblock %}
 
@@ -55,8 +55,8 @@
         <tr><td>{% trans "Lendt to" %}</td><td>{{device.currentlending.owner}}</td></tr>
         <tr><td>{% trans "Since" %}</td><td>{{device.currentlending.lenddate}}</td></tr>
         <tr><td>{% trans "Due to" %}</td><td>{{device.currentlending.duedate}}
-{% if device.currentlending.duedate < weekago %}<span class="error-icon"><i class="icon-exclamation-sign"></i></span>
-{% elif device.currentlending.duedate < today %}<span class="warning-icon"><i class="icon-exclamation-sign"></i></span>
+{% if device.currentlending.duedate < weekago %}<span class="error-icon"><i class="fa fa-exclamation-circle"></i></span>
+{% elif device.currentlending.duedate < today %}<span class="warning-icon"><i class="fa fa-exclamation-circle"></i></span>
 {% endif %}
 <tr><td>{% trans "Overdue notification" %}</td><td>{{device.currentlending.duedate_email|default_if_none:"Not sent"}}</td></tr>
 </td></tr>
@@ -64,7 +64,7 @@
     </table>
 
 {% if perms.devices.lend_device %}
-<a href="#" class="btn btn-default" data-target="#mailModal" data-toggle="modal" ><i class="icon-envelope" style="margin-right:7px"></i>{% trans "Send mail to user" %}</a>
+<a href="#" class="btn btn-default" data-target="#mailModal" data-toggle="modal" ><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send mail to user" %}</a>
 {% endif %}
 
     {% else %}
@@ -81,7 +81,7 @@
   <div class="panel-heading">{% trans "IP-Addresses" %}</div>
   <ul class="list-group">
     {% for address in ipaddress_list %}
-        <li class="list-group-item ipaddress-list">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="icon-remove"></i></a></li>
+        <li class="list-group-item ipaddress-list">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="fa fa-times"></i></a></li>
       {% endfor %}
   </ul>
   
@@ -90,7 +90,7 @@
       <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
         {{ipaddressform.ipaddresses}}
         <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
-        <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="icon-plus"></i> {% trans "Assign Addresses" %}</button>
+        <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}</button>
     </div>
     <input type="hidden" name="device" value="{{ device.pk }}" />
       </form>
@@ -132,7 +132,7 @@
      {% endfor %}
   </tbody>
 </table>
-<a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View lending history" %}</a>
+<a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i class="fa fa-book" style="margin-right:7px"></i>{% trans "View lending history" %}</a>
 </div>
 {% endif %}
 
@@ -157,7 +157,7 @@
                         {% endfor %}
                     </tbody>
                 </table>
-<a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="icon-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
+<a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
 </div>
 {% endif %}
 
