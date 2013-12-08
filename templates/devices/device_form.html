@@ -152,7 +152,6 @@ $(".previewbutton").click(function() {
 });
 
 $("#id_emailrecipients").change(function() {
-console.log($(this).val())
   if ($(this).val() === null) {
     $("#id_emailtemplate").parents(".form-group:first").slideUp();
     $("#id_emailedit").parents(".form-group:first").slideUp();

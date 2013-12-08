@@ -127,7 +127,7 @@ def load_mailpreview(request, template, device, owner=None):
     if device["manufacturer"] != "":
         device["manufacturer"] = get_object_or_404(Manufacturer, pk=device["manufacturer"])
     else:
-        del device["room"]
+        del device["manufacturer"]
 
     if device["devicetype"] != "":
         device["devicetype"] = get_object_or_404(Type, pk=device["devicetype"])
