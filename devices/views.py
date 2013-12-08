@@ -89,7 +89,9 @@ class DeviceDetail(DetailView):
         
         mailinitial = {}
         if context["device"].currentlending != None:
-            mailinitial["recipient"] = context["device"].currentlending.owner
+            currentowner = context["device"].currentlending.owner
+            mailinitial["owner"] = currentowner
+            mailinitial["recipients"] = ("u" + str(currentowner.id), currentowner.username)
         try:
             mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder")
             mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
@@ -364,8 +366,6 @@ class DeviceCreate(CreateView):
         context = super(DeviceCreate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Device"
-        context['form'].fields['emailbosses'].label = "Notify bosses about new device"
-        context['form'].fields['emailmanagment'].label = "Notify managment about new device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Create new device"))]
@@ -391,7 +391,6 @@ class DeviceCreate(CreateView):
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
-                print recipient
                 if recipient[0] == "g":
                     group = get_object_or_404(Group, pk=recipient[1:])
                     recipients += group.lageruser_set.all().values_list("email")[0]
@@ -463,7 +462,6 @@ class DeviceUpdate(UpdateView):
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
-                print recipient
                 if recipient[0] == "g":
                     group = get_object_or_404(Group, pk=recipient[1:])
                     recipients += group.lageruser_set.all().values_list("email")[0]
@@ -556,25 +554,39 @@ class DeviceMail(FormView):
     form_class = DeviceMailForm
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceLend, self).get_context_data(**kwargs)
-        deviceid = self.kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
+        context = super(DeviceMail, self).get_context_data(**kwargs)
+        
         # Add in a QuerySet of all the books
         context['form_scripts'] = "$('#id_owner').select2();"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            (reverse("device-detail", kwargs={"pk":self.device.pk}), self.device.name),
             ("", _("Send Mail"))]
         return context
+
+    def get_initial(self):
+        deviceid = self.kwargs["pk"]
+        self.device = get_object_or_404(Device, pk=deviceid)
+        if self.device.currentlending:
+            return {"owner":self.device.currentlending.owner}
+        else:
+            return {}
 
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         template = form.cleaned_data["mailtemplate"]
-        recipient = form.cleaned_data["recipient"]
+        recipients = []
+        for recipient in form.cleaned_data["recipients"]:
+            if recipient[0] == "g":
+                group = get_object_or_404(Group, pk=recipient[1:])
+                recipients += group.lageruser_set.all().values_list("email")[0]
+            else:
+                recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
+        recipients = list(set(recipients))
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
-        template.send(self.request, [recipient.email,], {"device":device, "owner":recipient, "user":self.request.user})
+        template.send(self.request, recipients, {"device":device, "user":self.request.user})
         device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
         device.currentlending.save()
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
