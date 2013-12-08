@@ -154,14 +154,6 @@ def load_mailtemplate(request, template, fieldtype=None):
         return dajax.json()
     template = get_object_or_404(MailTemplate, pk=template)
 
-    if fieldtype == None:
-        dajax.assign("#id_emailsubject", "value", template.subject)
-    else:
-        dajax.assign("#id_emailsubject_{0}".format(fieldtype), "value", template.subject)
-    
-
-    if fieldtype == None:
-        dajax.assign("#id_emailbody", "innerHTML", template.body)
-    else:
-        dajax.assign("#id_emailbody_{0}".format(fieldtype), "innerHTML", template.body)
+    dajax.assign("#id_emailsubject", "value", template.subject)
+    dajax.assign("#id_emailbody", "innerHTML", template.body)
     return dajax.json()

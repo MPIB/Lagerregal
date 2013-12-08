@@ -28,6 +28,10 @@ def history_compare(old, new):
 def is_select(form_field_obj):
     return (form_field_obj.field.widget.__class__.__name__ == "Select")
 
+@register.filter("is_selectmultiple")
+def is_selectmultiple(form_field_obj):
+    return (form_field_obj.field.widget.__class__.__name__ == "SelectMultiple")
+
 @register.filter(name='is_checkbox')
 def is_checkbox(field):
   return field.field.widget.__class__.__name__ == CheckboxInput().__class__.__name__
