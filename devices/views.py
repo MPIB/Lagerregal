@@ -3,6 +3,7 @@ from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseD
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending
+from django.contrib.auth.models import Group
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
@@ -387,29 +388,21 @@ class DeviceCreate(CreateView):
                 attribute.value = value
                 attribute.save()
         
-        if form.cleaned_data["emailbosses"] or form.cleaned_data["emailmanagment"]:
-            if form.cleaned_data["emailbosses"]:
-                perm = Permission.objects.get(codename='boss_mails')
-                bosses = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
-                recipients = []
-                for boss in bosses:
-                    recipients.append(boss.email)
-                template = form.cleaned_data["emailtemplatebosses"]
-                if form.cleaned_data["emailedit_bosses"]:
-                    template.subject = form.cleaned_data["emailsubject_bosses"]
-                    template.body = form.cleaned_data["emailbody_bosses"]
-                template.send(request=self.request, recipients=recipients, data={"device":self.object})
-            if form.cleaned_data["emailmanagment"]:
-                perm = Permission.objects.get(codename='managment_mails')
-                managment = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
-                recipients = []
-                for m in managment:
-                    recipients.append(m.email)
-                template = form.cleaned_data["emailtemplatemanagment"]
-                if form.cleaned_data["emailedit_managment"]:
-                    template.subject = form.cleaned_data["emailsubject_managment"]
-                    template.body = form.cleaned_data["emailbody_managment"]
-                template.send(request=self.request, recipients=recipients, data={"device":self.object})
+        if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
+            recipients = []
+            for recipient in form.cleaned_data["emailrecipients"]:
+                print recipient
+                if recipient[0] == "g":
+                    group = get_object_or_404(Group, pk=recipient[1:])
+                    recipients += group.lageruser_set.all().values_list("email")[0]
+                else:
+                    recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
+            recipients = list(set(recipients))
+            template = form.cleaned_data["emailtemplate"]
+            if form.cleaned_data["emailedit"]:
+                template.subject = form.cleaned_data["emailsubject"]
+                template.body = form.cleaned_data["emailbody"]
+            template.send(request=self.request, recipients=recipients, data={"device":self.object})
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
@@ -467,29 +460,21 @@ class DeviceUpdate(UpdateView):
                 except:
                     pass
 
-        if form.cleaned_data["emailbosses"] or form.cleaned_data["emailmanagment"]:
-            if form.cleaned_data["emailbosses"]:
-                perm = Permission.objects.get(codename='boss_mails')
-                bosses = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
-                recipients = []
-                for boss in bosses:
-                    recipients.append(boss.email)
-                template = form.cleaned_data["emailtemplatebosses"]
-                if form.cleaned_data["emailedit_bosses"]:
-                    template.subject = form.cleaned_data["emailsubject_bosses"]
-                    template.body = form.cleaned_data["emailbody_bosses"]
-                template.send(request=self.request, recipients=recipients, data={"device":device})
-            if form.cleaned_data["emailmanagment"]:
-                perm = Permission.objects.get(codename='managment_mails')
-                managment = Lageruser.objects.filter(Q(groups__permissions=perm) | Q(user_permissions=perm)).distinct()
-                recipients = []
-                for m in managment:
-                    recipients.append(m.email)
-                template = form.cleaned_data["emailtemplatemanagment"]
-                if form.cleaned_data["emailedit_managment"]:
-                    template.subject = form.cleaned_data["emailsubject_managment"]
-                    template.body = form.cleaned_data["emailbody_managment"]
-                template.send(request=self.request, recipients=recipients, data={"device":device})
+        if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
+            recipients = []
+            for recipient in form.cleaned_data["emailrecipients"]:
+                print recipient
+                if recipient[0] == "g":
+                    group = get_object_or_404(Group, pk=recipient[1:])
+                    recipients += group.lageruser_set.all().values_list("email")[0]
+                else:
+                    recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
+            recipients = list(set(recipients))
+            template = form.cleaned_data["emailtemplate"]
+            if form.cleaned_data["emailedit"]:
+                template.subject = form.cleaned_data["emailsubject"]
+                template.body = form.cleaned_data["emailbody"]
+            template.send(request=self.request, recipients=recipients, data={"device":device})
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)

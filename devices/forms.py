@@ -4,6 +4,7 @@ from devices.models import Device, Type, Room, Manufacturer
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from users.models import Lageruser
+from django.contrib.auth.models import Group
 import re
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
@@ -49,6 +50,17 @@ VIEWSORTING = (
     ('id', _('ID ascending')),
     ('-id', _('ID descending')),
 )
+
+def get_emailrecipientlist():
+    objects = (
+        (_("Groups"),
+            [("g" + str(group.id), group.name) for group in Group.objects.all()],
+        ),
+        (_("People"),
+            [("u" + str(user.id), user.username) for user in Lageruser.objects.all()],
+        )
+    )
+    return objects
 
 class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
@@ -106,17 +118,12 @@ class FilterForm(forms.Form):
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
-    emailbosses = forms.BooleanField(required=False, label=_("Send email to bosses"))
-    emailtemplatebosses = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
-    emailedit_bosses = forms.BooleanField(required=False, label=_("Edit template"))
-    emailsubject_bosses = forms.CharField(required=False, label=_("Subject"))
-    emailbody_bosses = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
 
-    emailmanagment = forms.BooleanField(required=False, label=_("Send email to managment"))
-    emailtemplatemanagment = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
-    emailedit_managment = forms.BooleanField(required=False, label=_("Edit template"))
-    emailsubject_managment = forms.CharField(required=False, label=_("Subject"))
-    emailbody_managment = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
+    emailrecipients = forms.MultipleChoiceField(required=False)
+    emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(),  required=False, label=_("Template"), widget=forms.Select(attrs={"style":"width:100%;"}))
+    emailedit = forms.BooleanField(required=False, label=_("Edit template"))
+    emailsubject = forms.CharField(required=False, label=_("Subject"))
+    emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
 
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
@@ -133,6 +140,8 @@ class DeviceForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(DeviceForm, self).clean()
         unclean_data = []
+        if cleaned_data["emailrecipients"] and not cleaned_data["emailtemplate"]:
+            self._errors["emailtemplate"] = self.error_class([_("You specified recipients, but didn't select a template")])
         for key, attribute in cleaned_data.iteritems():
                 if key.startswith("attribute_") and attribute != "":
                     attributenumber = key.split("_")[1]
@@ -146,6 +155,7 @@ class DeviceForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
+        self.fields["emailrecipients"].choices = get_emailrecipientlist()
         if self.data != {}:
             try:
                 attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
