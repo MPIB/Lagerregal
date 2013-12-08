@@ -51,15 +51,20 @@ VIEWSORTING = (
     ('-id', _('ID descending')),
 )
 
-def get_emailrecipientlist():
-    objects = (
-        (_("Groups"),
+def get_emailrecipientlist(special=None):
+    objects = []
+
+    if special:
+        objects.append((_("Special"),
+            [(value, key) for key, value in special.iteritems()]
+            ))
+
+    objects.append((_("Groups"),
             [("g" + str(group.id), group.name) for group in Group.objects.all()],
-        ),
-        (_("People"),
+        ))
+    objects.append((_("People"),
             [("u" + str(user.id), user.username) for user in Lageruser.objects.all()],
-        )
-    )
+        ))
     return objects
 
 class IpAddressForm(forms.Form):
@@ -210,8 +215,18 @@ class AddForm(forms.ModelForm):
         return cleaned_data
 
 class DeviceMailForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super(DeviceMailForm, self).__init__(*args, **kwargs)
+        if "initial" in kwargs:
+            if "owner" in kwargs["initial"]:
+                self.fields["recipients"].choices = get_emailrecipientlist(
+                    special={_("Current Owner"):"u" + str(kwargs["initial"]["owner"].pk)})
+                return
+        
+        self.fields["recipients"].choices = get_emailrecipientlist()
+
     error_css_class = 'has_error'
-    recipient = forms.ModelChoiceField(Lageruser.objects.all())
+    recipients = forms.MultipleChoiceField()
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
