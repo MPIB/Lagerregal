@@ -24,7 +24,7 @@
   <div data-spy="affix" data-offset-top="160" class="affix-container">
   {% if profileuser.avatar %}
   <div class="col-sm-12 col-md-2" style="margin-top:20px">
-    <a href="#" class="thumbnail">
+    <a data-toggle="modal" data-target="#avatarModal" class="thumbnail">
       <img src="{{profileuser.avatar.url}}" alt="Avatar">
     </a>
   </div>
@@ -136,6 +136,9 @@
 </div>
 {% endif %}
 </div>
+{% if perms.users.read_user and profileuser.avatar %}
+{% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
+{% endif %}
 {% endblock %}
 
 {% block scriptend %}

@@ -32,7 +32,7 @@
 {% if user.avatar %}
 <div class="row" style="margin-bottom:5px">
   <div class="col-sm-6 col-md-6 pull-right">
-<a href="#" class="thumbnail">
+<a data-toggle="modal" data-target="#avatarModal" class="thumbnail" >
       <img src="{{user.avatar.url}}" alt="Avatar">
   </a>
   </div>
@@ -60,4 +60,7 @@
 </div>
 
 </div>
+{% if user.avatar %} 
+  {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=user.avatar.url %}
+{% endif %}
 {% endblock %}
