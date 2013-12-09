@@ -168,6 +168,9 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/templates/(?P<pk>\d+)/$', TemplateApiDetail.as_view(), name='template-api-detail'),
     url(r'^api/ipaddresses/$', IpAddressApiList.as_view(), name='ipaddress-api-list'),
     url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
+    
+    url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
+    url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ), allowed=["json", "html"])
 
