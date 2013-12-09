@@ -684,7 +684,7 @@ class RoomList(ListView):
     context_object_name = 'room_list'
     
     def get_queryset(self):
-        rooms = Room.objects.all()
+        rooms = Room.objects.select_related().all()
         self.filterstring = self.kwargs.pop("filter", None)
         if self.filterstring:
             rooms = rooms.filter(name__icontains=self.filterstring)
@@ -723,7 +723,7 @@ class RoomDetail(DetailView):
         context = super(RoomDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Room.objects.exclude(pk=context["room"].pk)
-        context['device_list'] = Device.objects.filter(room=context["room"], archived=None)
+        context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None)
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk":context["room"].pk}), context["room"].name)]
@@ -841,7 +841,7 @@ class BuildingDetail(DetailView):
         context = super(BuildingDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Building.objects.exclude(pk=context["building"].pk)
-        context['device_list'] = Device.objects.filter(room__building=context["building"], archived=None)
+        context['device_list'] = Device.objects.select_related().filter(room__building=context["building"], archived=None)
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk":context["building"].pk}), context["building"].name)]

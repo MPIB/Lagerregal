@@ -1,4 +1,4 @@
-from api.serializers import DeviceSerializer, DeviceListSerializer, TypeSerializer, RoomSerializer, BuildingSerializer, ManufacturerSerializer, TemplateSerializer
+from api.serializers import *
 from devices.models import *
 from devicetypes.models import *
 from network.models import *
@@ -17,6 +17,7 @@ def api_root(request, format=None):
         'types': rest_framework.reverse.reverse('type-api-list', request=request),
         'templates': rest_framework.reverse.reverse('template-api-list', request=request),
         'ipaddresses': rest_framework.reverse.reverse('ipaddress-api-list', request=request),
+        'users': rest_framework.reverse.reverse('user-api-list', request=request),
     })
 
 
@@ -108,6 +109,15 @@ class TemplateApiCreate(generics.CreateAPIView):
 class TemplateApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Template
     serializer_class = TemplateSerializer
+
+
+class UserApiList(SearchQuerysetMixin, generics.ListAPIView):
+    model = Lageruser
+    serializer_class = UserListSerializer
+
+class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Lageruser
+    serializer_class = UserSerializer
 
 
 class IpAddressApiList(SearchQuerysetMixin, generics.ListCreateAPIView):

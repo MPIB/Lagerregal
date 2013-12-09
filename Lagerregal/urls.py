@@ -155,22 +155,36 @@ urlpatterns = patterns('',
 urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/$', api_root),
     url(r'^api/devices/$', DeviceApiList.as_view(), name='device-api-list'),
+    url(r'^api/devices/create/$', DeviceApiCreate.as_view(), name='device-api-create'),
     url(r'^api/devices/(?P<pk>\d+)/$', DeviceApiDetail.as_view(), name='device-api-detail'),
+    
     url(r'^api/manufacturers/$', ManufacturerApiList.as_view(), name='manufacturer-api-list'),
+    url(r'^api/manufacturers/create/$', ManufacturerApiCreate.as_view(), name='manufacturer-api-create'),
     url(r'^api/manufacturers/(?P<pk>\d+)/$', ManufacturerApiDetail.as_view(), name='manufacturer-api-detail'),
+    
     url(r'^api/rooms/$', RoomApiList.as_view(), name='room-api-list'),
+    url(r'^api/rooms/create/$', RoomApiCreate.as_view(), name='room-api-create'),
     url(r'^api/rooms/(?P<pk>\d+)/$', RoomApiDetail.as_view(), name='room-api-detail'),
+    
     url(r'^api/types/$', TypeApiList.as_view(), name='type-api-list'),
+    url(r'^api/types/create/$', TypeApiCreate.as_view(), name='type-api-create'),
     url(r'^api/types/(?P<pk>\d+)/$', TypeApiDetail.as_view(), name='type-api-detail'),
+    
     url(r'^api/buildings/$', BuildingApiList.as_view(), name='building-api-list'),
+    url(r'^api/buildings/create/$', BuildingApiCreate.as_view(), name='building-api-create'),
     url(r'^api/buildings/(?P<pk>\d+)/$', BuildingApiDetail.as_view(), name='building-api-detail'),
+    
     url(r'^api/templates/$', TemplateApiList.as_view(), name='template-api-list'),
+    url(r'^api/templates/create/$', TemplateApiCreate.as_view(), name='template-api-create'),
     url(r'^api/templates/(?P<pk>\d+)/$', TemplateApiDetail.as_view(), name='template-api-detail'),
+    
     url(r'^api/ipaddresses/$', IpAddressApiList.as_view(), name='ipaddress-api-list'),
+    url(r'^api/ipaddresses/create/$', IpAddressApiCreate.as_view(), name='ipaddress-api-create'),
     url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
     
     url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
     url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
+
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ), allowed=["json", "html"])
 
