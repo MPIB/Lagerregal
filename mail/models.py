@@ -61,7 +61,7 @@ class MailTemplateRecipient(models.Model):
     content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
-        return unicode(self.content_type.name + ": " + self.content_object)
+        return unicode(self.content_type.name + ": " + self.content_object.__unicode__())
 
 
 class MailHistory(models.Model):
