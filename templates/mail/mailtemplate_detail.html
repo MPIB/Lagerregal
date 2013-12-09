@@ -16,9 +16,9 @@
   <div class="col-md-5 col-xs-12">
     <table class="table table-bordered table-striped">
       <tbody>
-        <tr><td>Subject</td><td>{{mailtemplate.subject}}</td></tr>
-          <tr><td>Usage</td><td>{{mailtemplate.get_usage_display }}</td></tr>
-          <tr><td>Body</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
+        <tr><td>{% trans "Subject" %}</td><td>{{mailtemplate.subject}}</td></tr>
+          <tr><td>{% trans "Usage" %}</td><td>{{mailtemplate.get_usage_display }}</td></tr>
+          <tr><td>{% trans "Body" %}</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
       </tbody>
     </table>
   </div>
