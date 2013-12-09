@@ -6,3 +6,4 @@ mails/
 *.pyo
 
 newrelic.ini
+settings.py
