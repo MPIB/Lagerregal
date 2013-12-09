@@ -5,6 +5,7 @@ python:
 install:
   - "pip install -r dependencies.txt"
   # create the database
+  - "mv Lagerregal/settings_template.py Lagerregal/settings.py"
   - "./manage.py syncdb --noinput"
 # command to run tests
 script: "./manage.py test devices network"
