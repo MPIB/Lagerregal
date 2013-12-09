@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from mail.models import MailTemplate
 from devices.forms import get_emailrecipientlist
