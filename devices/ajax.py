@@ -156,7 +156,7 @@ def load_mailtemplate(request, template, recipients=[]):
     dajax.assign("#id_emailsubject", "value", template.subject)
     dajax.assign("#id_emailbody", "innerHTML", template.body)
     newrecipients = ["'"+obj+"'" for obj in recipients]
-    newrecipients += ["'"+obj.content_type.name[0].lower()+str(obj.id) + "'" for obj in template.default_recipients.all()]
+    newrecipients += ["'"+obj.content_type.name[0].lower()+str(obj.object_id) + "'" for obj in template.default_recipients.all()]
     newrecipients = list(set(newrecipients))
     newselect = "$('#id_emailrecipients').select2('val', [{0}])".format(
         ", ".join(newrecipients))
