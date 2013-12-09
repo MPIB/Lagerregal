@@ -151,49 +151,35 @@ $(".previewbutton").click(function() {
     Dajaxice.devices.load_mailpreview(Dajax.process, {"template":template, "device":device})
 });
 
-$("#id_emailrecipients").change(function() {
-  if ($(this).val() === null) {
-    $("#id_emailtemplate").parents(".form-group:first").slideUp();
-    $("#id_emailedit").parents(".form-group:first").slideUp();
-    $("#id_emailsubject").parents(".form-group:first").slideUp();
-    $("#id_emailbody").parents(".form-group:first").slideUp();
-  } else {
-    $("#id_emailtemplate").parents(".form-group:first").slideDown();
-    $("#id_emailedit").parents(".form-group:first").slideDown();
-    if ($("#id_emailedit").prop('checked')) {
-      $("#id_emailsubject").parents(".form-group:first").slideDown();
-      $("#id_emailbody").parents(".form-group:first").slideDown();
-    } 
-  }
-});
-
-if ($("#id_emailrecipients").val() === null) {
-    $("#id_emailtemplate").parents(".form-group:first").slideUp();
-    $("#id_emailedit").parents(".form-group:first").slideUp();
-    $("#id_emailsubject").parents(".form-group:first").slideUp();
-    $("#id_emailbody").parents(".form-group:first").slideUp();
-  } else {
-    $("#id_emailtemplate").parents(".form-group:first").slideDown();
-    $("#id_emailedit").parents(".form-group:first").slideDown();
-    if ($("#id_emailedit").prop('checked')) {
-      $("#id_emailsubject").parents(".form-group:first").slideDown();
-      $("#id_emailbody").parents(".form-group:first").slideDown();
-    } 
-  }
-
 $("#id_emailtemplate").change(function() {
   if ($(this).val() === "") {
     $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
+    $("#id_emailedit").parents(".form-group:first").slideUp();
+    $("#id_emailsubject").parents(".form-group:first").slideUp();
+    $("#id_emailbody").parents(".form-group:first").slideUp();
   } else {
     $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
     Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")})
+    $("#id_emailedit").parents(".form-group:first").slideDown();
+    if ($("#id_emailedit").prop('checked')) {
+      $("#id_emailsubject").parents(".form-group:first").slideDown();
+      $("#id_emailbody").parents(".form-group:first").slideDown();
+    } 
   }
 });
 
 if ($("#id_emailtemplate").val() === "") {
   $("#id_emailtemplate").parents(".form-group:first").find(".previewbutton").addClass("disabled")
+  $("#id_emailedit").parents(".form-group:first").slideUp();
+  $("#id_emailsubject").parents(".form-group:first").slideUp();
+  $("#id_emailbody").parents(".form-group:first").slideUp();
 } else {
   $("#id_emailtemplates").parents(".form-group:first").find(".previewbutton").removeClass("disabled")
+  $("#id_emailedit").parents(".form-group:first").slideDown();
+    if ($("#id_emailedit").prop('checked')) {
+      $("#id_emailsubject").parents(".form-group:first").slideDown();
+      $("#id_emailbody").parents(".form-group:first").slideDown();
+  }
 }
 
 $("#id_emailedit").change(function() {
