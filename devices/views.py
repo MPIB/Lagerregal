@@ -425,6 +425,7 @@ class DeviceUpdate(UpdateView):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
             ("", _("Edit"))]
+        context["template_list"] = MailTemplate.objects.exclude(usage=None)
         return context
 
     def form_valid(self, form):

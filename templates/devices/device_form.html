@@ -107,6 +107,12 @@ initialdata = {
 }
 
 commentstring = ""
+templatelist = {
+{% for template in template_list %}
+  "{{template.usage}}" : "{{template.id}}", 
+{% endfor %}
+}
+
 
     $('body').on('change', 'input, select, textarea', function() {
         if (!($(this).attr("id") == "id_emailrecipients" ||
@@ -115,11 +121,23 @@ commentstring = ""
           $(this).attr("id") == "id_emailsubject" ||
           $(this).attr("id") == "id_emailbody")) {
             if ($(this).val() != initialdata[$(this).attr("name")]) {
+              changename = $(this).attr("name")
               if (changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()) == -1) {
                 changelist.push($("label[for='"+$(this).attr('name')+"']").html())
+                if ($("#id_emailtemplate").val() === "") {
+                  $.each(templatelist, function(key, element) {
+                      if (key === changename) {
+                        $("#id_emailtemplate").select2("val", element, triggerChange=true)
+                      }
+                  });
+                }
               }
             } else {
                 changelist.splice(changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()), 1)
+                console.log($("#id_emailtemplate").select2("val") + " " + $(this).attr("name"))
+                if ($("#id_emailtemplate").select2("val") === templatelist[$(this).attr("name")]) {
+                  $("#id_emailtemplate").select2("val", "")
+                }
             }
           if($("#id_comment").val() == commentstring) {
             if (changelist.length === 0) {
