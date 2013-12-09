@@ -147,7 +147,9 @@ INSTALLED_APPS = (
     'dajaxice',
     'dajax',
     'south',
-    'debug_toolbar'
+    'debug_toolbar',
+    'provider',
+    'provider.oauth2',
 )
 
 LANGUAGES = (
