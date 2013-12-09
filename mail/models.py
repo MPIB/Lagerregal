@@ -11,10 +11,10 @@ from django.contrib.contenttypes import generic
 
 usages = {
     "new":_("New Device is created"),
-    "room_changed":_("Room the device is in is changed"),
-    "owner_changed":_("person currently lending is changed"),
-    "reminder":_("Reminder for current owner that device is still owned"),
-    "overdue":_("Reminder for current owner that device is overdue")
+    "room":_("Room is changed"),
+    "owner":_("person currently lending is changed"),
+    "reminder":_("Reminder that device is still owned"),
+    "overdue":_("Reminder that device is overdue")
 }
 
 class MailTemplate(models.Model):
