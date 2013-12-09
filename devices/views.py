@@ -528,7 +528,7 @@ class DeviceLend(FormView):
         device.currentlending = lending
         if form.cleaned_data["room"]:
             device.room = form.cleaned_data["room"]
-            reversion.set_comment(_("Device lendt and moved room {0}").format(device.room))
+            reversion.set_comment(_("Device lendt and moved to room {0}").format(device.room))
         device.save()
         reversion.set_ignore_duplicates(True)
         messages.success(self.request, _('Device is marked as lendt to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
