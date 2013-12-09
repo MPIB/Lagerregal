@@ -91,7 +91,7 @@ class DeviceDetail(DetailView):
         if context["device"].currentlending != None:
             currentowner = context["device"].currentlending.owner
             mailinitial["owner"] = currentowner
-            mailinitial["recipients"] = ("u" + str(currentowner.id), currentowner.username)
+            mailinitial["emailrecipients"] = ("u" + str(currentowner.id), currentowner.username)
         try:
             mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder")
             mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
@@ -346,20 +346,17 @@ class DeviceCreate(CreateView):
     form_class = DeviceForm
 
     def get_initial(self):
-        super(DeviceCreate, self).get_initial()
+        initial = super(DeviceCreate, self).get_initial()
         creator = self.request.user.pk
         templateid = self.kwargs.pop("templateid", None)
         if templateid != None:
-            templatedict = get_object_or_404(Template, pk=templateid).get_as_dict()
-            templatedict["creator"] = creator
-            return templatedict
+            initial += get_object_or_404(Template, pk=templateid).get_as_dict()
         copyid = self.kwargs.pop("copyid", None)
         if copyid != None:
-            copydict = get_object_or_404(Device, pk=copyid).get_as_dict()
-            copydict["creator"] = creator
-            copydict["deviceid"] = copyid
-            return copydict
-        return {"creator":creator}
+            initial += get_object_or_404(Device, pk=copyid).get_as_dict()
+            initial["deviceid"] = copyid
+        initial["creator"] = creator
+        return initial
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
