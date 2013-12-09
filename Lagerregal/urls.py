@@ -148,6 +148,8 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
+    
+    url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
 )
 
 urlpatterns += format_suffix_patterns(patterns('',
