@@ -121,7 +121,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.static',
     'django.core.context_processors.request',
-    'django.contrib.messages.context_processors.messages'
+    'django.contrib.messages.context_processors.messages',
+    'devices.context_processors.get_settings'
 )
 
 INSTALLED_APPS = (
@@ -156,6 +157,7 @@ LANGUAGES = (
 
 AUTH_USER_MODEL = 'users.Lageruser'
 
+SITE_NAME = "Lagerregal (Beta)"
 
 MESSAGE_TAGS = {
     messages.ERROR: 'alert',
