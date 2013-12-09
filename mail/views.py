@@ -75,7 +75,7 @@ class MailUpdate(UpdateView):
 
     def get_initial(self):
         initial = super(MailUpdate, self).get_initial()
-        initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.id) for obj in self.object.default_recipients.all()]
+        initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in self.object.default_recipients.all()]
         return initial
 
     def get_context_data(self, **kwargs):
