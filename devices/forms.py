@@ -219,14 +219,14 @@ class DeviceMailForm(forms.Form):
         super(DeviceMailForm, self).__init__(*args, **kwargs)
         if "initial" in kwargs:
             if "owner" in kwargs["initial"]:
-                self.fields["recipients"].choices = get_emailrecipientlist(
+                self.fields["emailrecipients"].choices = get_emailrecipientlist(
                     special={_("Current Owner"):"u" + str(kwargs["initial"]["owner"].pk)})
                 return
         
-        self.fields["recipients"].choices = get_emailrecipientlist()
+        self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
     error_css_class = 'has_error'
-    recipients = forms.MultipleChoiceField()
+    emailrecipients = forms.MultipleChoiceField()
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
