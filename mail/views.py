@@ -76,7 +76,6 @@ class MailUpdate(UpdateView):
     def get_initial(self):
         initial = super(MailUpdate, self).get_initial()
         initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.id) for obj in self.object.default_recipients.all()]
-        print initial
         return initial
 
     def get_context_data(self, **kwargs):
@@ -91,15 +90,12 @@ class MailUpdate(UpdateView):
 
     def form_valid(self, form):
         r = super(MailUpdate, self).form_valid(form)
-        print form.cleaned_data["default_recipients"]
         for recipient in self.object.default_recipients.all():
             identifier = recipient.content_type.name[0].lower() + str(recipient.id)
             if not identifier in form.cleaned_data["default_recipients"]:
                 recipient.delete()
-                print identifier
             else:
                 form.cleaned_data["default_recipients"].remove(identifier)
-        print form.cleaned_data["default_recipients"]
         for recipient in form.cleaned_data["default_recipients"]:
             if recipient[0] == "g":
                 obj = get_object_or_404(Group, pk=recipient[1:])
