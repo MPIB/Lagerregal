@@ -5,6 +5,8 @@ from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.template import Context, Template
 import reversion
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 usages = {
     "new":_("New Device is created"),
@@ -51,6 +53,16 @@ class MailTemplate(models.Model):
             mailhistory.device = data["device"]
         mailhistory.save()
 
+class MailTemplateRecipient(models.Model):
+    mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients')
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    def __unicode__(self):
+        return self.content_type.name + ": " + str(self.content_object)
+
+
 class MailHistory(models.Model):
     mailtemplate = models.ForeignKey(MailTemplate)
     subject = models.CharField(_('Subject'), max_length=500)
@@ -62,5 +74,3 @@ class MailHistory(models.Model):
 
     def get_absolute_url(self):
         return reverse('mailhistory-detail', kwargs={'pk': self.pk})
-
-reversion.register(MailTemplate)

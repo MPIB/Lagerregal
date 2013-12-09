@@ -19,6 +19,12 @@
         <tr><td>{% trans "Subject" %}</td><td>{{mailtemplate.subject}}</td></tr>
           <tr><td>{% trans "Usage" %}</td><td>{{mailtemplate.get_usage_display }}</td></tr>
           <tr><td>{% trans "Body" %}</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
+          <tr><td>{% trans "Default recipients" %}</td>
+            <td>
+              {% for recipient in mailtemplate.default_recipients.all %}
+              {{recipient}}<br>
+              {% endfor %}
+            </td></tr>
       </tbody>
     </table>
   </div>

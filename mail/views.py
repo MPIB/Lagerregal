@@ -1,8 +1,11 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
-from mail.models import MailTemplate
+from mail.models import MailTemplate, MailTemplateRecipient
 from mail.forms import MailTemplateForm
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import Group
+from users.models import Lageruser
+from django.shortcuts import get_object_or_404
 
 class MailList(ListView):
     model = MailTemplate
@@ -53,10 +56,28 @@ class MailCreate(CreateView):
         context["formhelp"] = "mail/help.html"
         return context
 
+    def form_valid(self, form):
+        r = super(MailCreate, self).form_valid(form)
+        for recipient in form.cleaned_data["default_recipients"]:
+            if recipient[0] == "g":
+                obj = get_object_or_404(Group, pk=recipient[1:])
+            else:
+                obj = get_object_or_404(Lageruser, pk=recipient[1:])
+            recipient = MailTemplateRecipient(content_object=obj)
+            recipient.mailtemplate = self.object
+            recipient.save()
+        return r
+
 class MailUpdate(UpdateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
+
+    def get_initial(self):
+        initial = super(MailUpdate, self).get_initial()
+        initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.id) for obj in self.object.default_recipients.all()]
+        print initial
+        return initial
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -68,6 +89,26 @@ class MailUpdate(UpdateView):
         context["formhelp"] = "mail/help.html"
         return context
 
+    def form_valid(self, form):
+        r = super(MailUpdate, self).form_valid(form)
+        print form.cleaned_data["default_recipients"]
+        for recipient in self.object.default_recipients.all():
+            identifier = recipient.content_type.name[0].lower() + str(recipient.id)
+            if not identifier in form.cleaned_data["default_recipients"]:
+                recipient.delete()
+                print identifier
+            else:
+                form.cleaned_data["default_recipients"].remove(identifier)
+        print form.cleaned_data["default_recipients"]
+        for recipient in form.cleaned_data["default_recipients"]:
+            if recipient[0] == "g":
+                obj = get_object_or_404(Group, pk=recipient[1:])
+            else:
+                obj = get_object_or_404(Lageruser, pk=recipient[1:])
+            rec = MailTemplateRecipient(content_object=obj)
+            rec.mailtemplate = self.object
+            rec.save()
+        return r
 
 class MailDelete(DeleteView):
     form_class = MailTemplateForm
