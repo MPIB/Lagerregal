@@ -13,8 +13,8 @@ def get_attributes(request, pk):
     dajax.clear("#extra_attributes", "innerHTML")
     for attribute in attributes:
         item = u"""<div class="form-group">
-    <label for="id_attribute_{1}" class="col-lg-4 control-label">{0}</label>
-    <div class="col-lg-8">
+    <label for="id_attribute_{1}" class="col-lg-3 control-label">{0}</label>
+    <div class="col-lg-9">
         <input type="text" id="id_attribute_{1}" name="attribute_{1}" class="form-control" />
       </div>
 </div>
