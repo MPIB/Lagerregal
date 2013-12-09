@@ -21,7 +21,7 @@
 
 <div class="tab-content">
   <div class="tab-pane active" id="about">
-  <div data-spy="affix" data-offset-top="160">
+  <div data-spy="affix" data-offset-top="160" class="affix-container">
   {% if profileuser.avatar %}
   <div class="col-sm-12 col-md-2" style="margin-top:20px">
     <a href="#" class="thumbnail">
@@ -159,4 +159,12 @@ $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
          $('#devicetable').dataTable({});
          device_initialized = true;
       }
+
+$(function() {
+   var $affix = $(".affix-container"), 
+       $parent = $affix.parent(), 
+       resize = function() { $affix.width($parent.width()); };
+   $(window).resize(resize); 
+   resize();
+});
 {% endblock %}
