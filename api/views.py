@@ -19,17 +19,11 @@ def api_root(request, format=None):
         'ipaddresses': rest_framework.reverse.reverse('ipaddress-api-list', request=request),
     })
 
-class DeviceApiList(generics.ListCreateAPIView):
-    model = Device
-    serializer_class = DeviceListSerializer
 
-class DeviceApiSearch(generics.ListCreateAPIView):
-    model = Device
-    serializer_class = DeviceListSerializer
-
+class SearchQuerysetMixin():
     def get_queryset(self):
-        queryset = Device.objects.all()
-        valid_fields = Device._meta.get_all_field_names()
+        queryset = self.model.objects.all()
+        valid_fields = self.model._meta.get_all_field_names()
         filters = {}
         for param in self.request.QUERY_PARAMS.lists():
             if param[0] in valid_fields:
@@ -37,12 +31,17 @@ class DeviceApiSearch(generics.ListCreateAPIView):
         queryset = queryset.filter(**filters)
         return queryset
 
+
+class DeviceApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
+    model = Device
+    serializer_class = DeviceListSerializer
+
 class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Device
     serializer_class = DeviceSerializer
 
 
-class TypeApiList(generics.ListCreateAPIView):
+class TypeApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = Type
     serializer_class = TypeSerializer
 
@@ -50,7 +49,8 @@ class TypeApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Type
     serializer_class = TypeSerializer       
 
-class RoomApiList(generics.ListCreateAPIView):
+
+class RoomApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = Room
     serializer_class = RoomSerializer
 
@@ -59,7 +59,7 @@ class RoomApiDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RoomSerializer
 
 
-class BuildingApiList(generics.ListCreateAPIView):
+class BuildingApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = Building
     serializer_class = BuildingSerializer
 
@@ -68,7 +68,7 @@ class BuildingApiDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = BuildingSerializer
 
 
-class ManufacturerApiList(generics.ListCreateAPIView):
+class ManufacturerApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = Manufacturer
     serializer_class = ManufacturerSerializer
 
@@ -77,7 +77,7 @@ class ManufacturerApiDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ManufacturerSerializer
 
 
-class TemplateApiList(generics.ListCreateAPIView):
+class TemplateApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = Template
     serializer_class = TemplateSerializer
 
