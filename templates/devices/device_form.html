@@ -186,7 +186,7 @@ $("#id_emailtemplate").change(function() {
     $(this).parents(".form-group:first").find(".previewbutton").addClass("disabled")
   } else {
     $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
-    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val()})
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")})
   }
 });
 
