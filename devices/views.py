@@ -356,6 +356,14 @@ class DeviceCreate(CreateView):
             initial += get_object_or_404(Device, pk=copyid).get_as_dict()
             initial["deviceid"] = copyid
         initial["creator"] = creator
+        try:
+            initial["emailtemplate"] = MailTemplate.objects.get(usage="new")
+            initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in initial["emailtemplate"].default_recipients.all()]
+            initial["emailsubject"] = initial["emailtemplate"].subject
+            initial["emailbody"] = initial["emailtemplate"].body
+        except:
+            pass
+        print initial
         return initial
 
     def get_context_data(self, **kwargs):
