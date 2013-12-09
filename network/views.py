@@ -1,19 +1,9 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy
 from network.models import IpAddress
-from rest_framework import generics
-from network.serializers import IpAddressSerializer
 from network.forms import ViewForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-
-class IpAddressApiList(generics.ListCreateAPIView):
-    model = IpAddress
-    serializer_class = IpAddressSerializer
-
-class IpAddressApiDetail(generics.RetrieveUpdateDestroyAPIView):
-    model = IpAddress
-    serializer_class = IpAddressSerializer
 
 class IpAddressList(ListView):
     context_object_name = 'ipaddress_list'
