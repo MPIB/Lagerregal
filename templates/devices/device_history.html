@@ -16,8 +16,6 @@
 {% endblock %}
 
 {% block content %}
-
-<div class="row">
   <div class="small-6 large-8 columns">
     <h4>Revision: {{version.revision.pk}} from {{version.revision.date_created}}, by <a href="{% url 'userprofile' version.revision.user.pk %}">{{version.revision.user}}</a>.</h4><ul class="pager">
 {% if previous != None %}<li class="previous"><a href="{% url 'device-history' current.pk previous.revisionpk %}"><i class="fa fa-angle-left"></i> {% trans 'previous revision' %}</a></li>{% endif %}
@@ -131,5 +129,4 @@
       </tbody>
     </table>
   </div>
-</div>
 {% endblock %}
