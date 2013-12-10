@@ -146,7 +146,7 @@
                     <tbody>
                         {% for action in version_list %}
                             <tr>
-                                <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}" title="{{action.revision.date_created|date:'Y-m-d\TH:i:s'}}" class="edit-date">{{action.revision.date_created}}</a></th>
+                                <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}" title="{{action.revision.date_created|date:'c'}}" class="edit-date">{{action.revision.date_created}}</a></th>
                                 <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
                                 <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
                             </tr>
@@ -175,7 +175,7 @@
       <td>{{mail.mailtemplate.name}}</td>
       <td>{{mail.subject}}</td>
       <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{mail.sent_by}}</a></td>
-      <td><span  title="{{mail.sent_at|date:'Y-m-d\TH:i:s'}}" class="mail-date">{{mail.sent_at}}</span></td>
+      <td><span  title="{{mail.sent_at|date:'c'}}" class="mail-date">{{mail.sent_at}}</span></td>
     </tr>
      {% endfor %}
   </tbody>
