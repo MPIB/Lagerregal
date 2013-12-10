@@ -44,7 +44,7 @@
       </tr>
       <tr>
         <td>{% trans "Last Login" %}</td>
-        <td>{{profileuser.last_login}}</td>
+        <td><span title="{{profileuser.last_login|date:"c"}}" class="profile-date">{{profileuser.last_login}}</span></td>
       </tr>
       <tr>
         <td>{% trans "Is Staff" %}</td>
@@ -170,4 +170,8 @@ $(function() {
    $(window).resize(resize); 
    resize();
 });
+
+$(document).ready(function() {
+    $(".profile-date").timeago();
+  });
 {% endblock %}
