@@ -21,6 +21,8 @@ from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 from django.conf import settings
 from devices.forms import FilterForm
+from django.utils import timezone
+from Lagerregal import settings
 
 class UserList(ListView):
     model = Lageruser
@@ -114,11 +116,14 @@ class UsersettingsView(TemplateView):
             request.user.save()
             request.session['django_language'] =request.POST["language"]
             return HttpResponseRedirect(reverse("usersettings"))
-        elif "pagelength" in request.POST:
+        elif "pagelength" in request.POST or "timezone" in request.POST:
             form = SettingsForm(request.POST)
             if form.is_valid():
                 if request.user.pagelength != form.cleaned_data["pagelength"]:
-                    request.user.pagelength = request.POST["pagelength"]
+                    request.user.pagelength = form.cleaned_data["pagelength"]
+                    request.user.save()
+                if request.user.timezone != form.cleaned_data["timezone"]:
+                    request.user.timezone = form.cleaned_data["timezone"]
                     request.user.save()
                 messages.success(self.request, _('Settings were successfully updated'))
             context["settingsform"] = form

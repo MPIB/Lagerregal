@@ -7,3 +7,4 @@ django-debug-toolbar
 South
 Pillow
 django-oauth2-provider
+pytz
