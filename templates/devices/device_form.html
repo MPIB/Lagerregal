@@ -49,26 +49,7 @@ style="display:none;"
 </div>
 </div>
 
-  <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">{% trans "Create new <span id='addmodal_header'></span>" %}</h4>
-        </div>
-            <form action="" method="post" id="addform" accept-charset="utf-8" class="form-horizontal">
-        <div class="modal-body">
-          <div id="modal-form"></div>
-    <input type="hidden" name="classname" id="addmodal_classname">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
-          <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm">
-        </div>
-        </form>
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
+{% include "snippets/modals/addmodal.html" with modalname="addModal" %}
 
 {% include "snippets/modals/mailpreview.html" with modalname="previewModal" %}
 {% endblock %}
