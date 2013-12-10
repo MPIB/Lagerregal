@@ -113,13 +113,13 @@
   <div class="tab-pane active" id="notes">
 <ul class="list-unstyled" style="padding-top:20px;">
   {% for note in device.notes.all %}
-    <li>
+    <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
         <div class="row">
             <div class="col-xs-2 col-md-1">
                 {% if note.creator.avatar %}
                 <img src="{{note.creator.avatar.url}}" class="img-rounded img-responsive" alt="" />
                 {% endif %}
-                <p style="padding-top:5px">{{note.creator}}</p>
+                <p style="padding-top:5px;margin-bottom:0px">{{note.creator}}</p>
             </div>
             <div class="col-xs-10 col-md-11">
                 <div class="comment-text">
@@ -139,7 +139,7 @@
 {% endfor %}
 </ul>
 
-<form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6'>
+<form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0px">
   <textarea class="form-control" name="note" id="id_note"></textarea>
   <input type="hidden" name="device" value="{{ device.pk }}" />
   <input type="hidden" name="creator" value="{{ user.pk }}" />
