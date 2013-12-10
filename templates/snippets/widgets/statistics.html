@@ -24,8 +24,8 @@
 <div class="progress" style="margin-bottom:0px">
   <div class="progress-bar progress-bar-{{device_percentcolor}}" role="progressbar" aria-valuenow="{{device_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{device_percent}}%;">
   </div>
-  <span>{{device_available}}</span><span style="color:black;right:0px">{{device_all}}</span>
 </div>
+  <span>{{device_available}}</span><span class="pull-right">{{device_all}}</span>
 </div>
 </div>
 
@@ -37,8 +37,8 @@
 <div class="progress" style="margin-bottom:0px">
   <div class="progress-bar progress-bar-{{ipaddress_percentcolor}}" role="progressbar" aria-valuenow="{{ipaddress_percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{ipaddress_percent}}%;">
   </div>
-  <span>{{ipaddress_available}}</span><span style="color:black;right:0px">{{ipaddress_all}}</span>
 </div>
+<span>{{ipaddress_available}}</span><span class="pull-right">{{ipaddress_all}}</span>
 </div>
 </div>
 {% endblock %}
