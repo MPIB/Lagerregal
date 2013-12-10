@@ -11,35 +11,9 @@
 {% for field in lendform %}
 {% if field.html_name == "duedate" %}
 <div class="form-group {{field.css_classes}}">
-    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
+<label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
     <div class="col-lg-8">
-<div class="bfh-datepicker">
-  <div class="bfh-datepicker-toggle" data-toggle="bfh-datepicker">
-    <input type="text" class="form-control">
-  </div>
-  <div class="bfh-datepicker-calendar">
-    <table class="calendar table table-bordered">
-      <thead>
-        <tr class="months-header">
-          <th class="month" colspan="4">
-            <a class="previous" href="#"><i class="fa fa-chevron-left"></i></a>
-            <span></span>
-            <a class="next" href="#"><i class="fa fa-chevron-right"></i></a>
-          </th>
-          <th class="year" colspan="3">
-            <a class="previous" href="#"><i class="fa fa-chevron-left"></i></a>
-            <span></span>
-            <a class="next" href="#"><i class="fa fa-chevron-right"></i></a>
-          </th>
-        </tr>
-        <tr class="days-header">
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-  </div>
-</div>
+      {{ field|add_class:'form-control'}}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
   </div>
