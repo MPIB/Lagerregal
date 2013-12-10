@@ -1,4 +1,6 @@
-body { padding-top: 20px; }
+body {
+    padding-top: 20px;
+}
 
 .delete {
 	color:#444;
@@ -35,6 +37,7 @@ body { padding-top: 20px; }
     margin-left:-15px;
     padding:20px 0px;
     border-top:1px #eee solid;
+    margin-bottom:50px;
 }
 
 #loginbutton {
@@ -140,11 +143,21 @@ table tr th, table tr td {
 }
 
 .navbar-user {
-    padding-top:12px !important;
-    padding-bottom:10px !important;
+    padding-top:8px !important;
+    padding-bottom:6px !important;
 }
 
 .affix {
     width:100%;
     top:50px;
+}
+
+
+
+#searchform .row {
+    margin-top:10px;
+}
+
+#searchform .row:first-child {
+    margin-top:0px;
 }
