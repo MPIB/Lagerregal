@@ -102,7 +102,8 @@ MIDDLEWARE_CLASSES = (
     'reversion.middleware.RevisionMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware'
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'users.middleware.TimezoneMiddleware'
 )
 
 ROOT_URLCONF = 'Lagerregal.urls'

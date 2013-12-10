@@ -7,7 +7,7 @@ class SettingsForm(forms.ModelForm):
 
     class Meta:
         model = Lageruser
-        fields = ["pagelength"]
+        fields = ["pagelength", "timezone"]
         help_texts = {
             "pagelength" : _("The number of items displayed on one page in a list."),
         }
