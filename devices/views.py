@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note
 from django.contrib.auth.models import Group
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
@@ -1036,6 +1036,29 @@ class ManufacturerMerge(View):
             device.save()
         oldobject.delete()
         return HttpResponseRedirect(newobject.get_absolute_url())
+
+
+class NoteCreate(CreateView):
+    model = Note
+    template_name = 'devices/base_form.html'
+
+    def get_initial(self):
+        initial = super(NoteCreate, self).get_initial()
+        initial["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
+        initial["creator"] = self.request.user
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(NoteCreate, self).get_context_data(**kwargs)
+        device = get_object_or_404(Device, pk=self.kwargs["pk"])
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":device.pk}), device),
+            ("", _("Notes")),
+            ("", _("Create new note"))]
+        return context
+
+
 
 class Search(FormView):
     template_name = 'devices/search.html'

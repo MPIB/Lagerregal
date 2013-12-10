@@ -167,3 +167,16 @@ class Template(models.Model):
         dict["manufacturer"] = self.manufacturer
         dict["devicetype"] = self.devicetype
         return dict
+
+class Note(models.Model):
+    device = models.ForeignKey(Device, related_name="notes")
+    note = models.CharField(max_length=1000)
+    creator = models.ForeignKey(Lageruser)
+    created_at = models.DateTimeField(auto_now_add = True)
+
+    class Meta:
+        verbose_name = _("Note")
+        verbose_name = _("Notes")
+
+    def get_absolute_url(self):
+        return reverse("device-detail", kwargs={'pk': self.device.pk})
