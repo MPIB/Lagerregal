@@ -583,7 +583,7 @@ class DeviceMail(FormView):
         device = get_object_or_404(Device, pk=deviceid)
         template = form.cleaned_data["mailtemplate"]
         recipients = []
-        for recipient in form.cleaned_data["recipients"]:
+        for recipient in form.cleaned_data["emailrecipients"]:
             if recipient[0] == "g":
                 group = get_object_or_404(Group, pk=recipient[1:])
                 recipients += group.lageruser_set.all().values_list("email")[0]
@@ -593,8 +593,9 @@ class DeviceMail(FormView):
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
         template.send(self.request, recipients, {"device":device, "user":self.request.user})
-        device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
-        device.currentlending.save()
+        if template.usage == "reminder" or template.usage == "overdue":
+            device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
+            device.currentlending.save()
         messages.success(self.request, _('Mail sent to {0}').format(recipient))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
