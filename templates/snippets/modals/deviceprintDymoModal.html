@@ -6,18 +6,11 @@
     type="text/javascript" charset="UTF-8"> </script>
     <script>
         $('#printDymoModal').on('show.bs.modal', function (e) {
-            try {
                 loadPrinters()
-                //$.get("{% static LABEL_TEMPLATES.device %}", function(labelXml)
-                //{
-                    labelXml = "{% filter escapejs %}{% ssi '/Users/vbrekenfeld/Lagerregal/static/labels/device.label' %}{% endfilter %}"
-                    label = dymo.label.framework.openLabelXml(labelXml);
-                    label.setObjectText("devicename", "{{ device.name }}");
-                    label.setObjectText("inventorynumber", "{{ device.inventorynumber }}");
-                    label.setObjectText("serialnumber", "{{ device.serialnumber }}");
-                    label.setObjectText("BARCODE", "{{ device.id|stringformat:"07d" }}");
-                    updatePreview(label);
-                //}, "text");
+                labelXml = "{% filter escapejs %}{% ssi label_path %}{% endfilter %}"
+                label = dymo.label.framework.openLabelXml(labelXml);
+                {% autoescape off %}{{label_js}}{% endautoescape %}
+                updatePreview(label);
                 printButton.onclick = function()
                 {
                     try
@@ -32,10 +25,6 @@
                         $('#printDymoModal').modal('hide')
                     }
                 }
-            } catch(e) {
-                alert("Dymo Plugin is not installed.");
-                $('#printDymoModal').modal('hide')
-            }
         })
     </script>
 {% endblock %}
@@ -49,8 +38,6 @@ function updatePreview(label)
         return
     
     var pngData = label.render();
-    console.log('pngData')
-    console.log(pngData)
     var labelImage = document.getElementById('labelImage');
     labelImage.src = "data:image/png;base64," + pngData;
 }

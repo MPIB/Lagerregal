@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {%  load devicetags %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{{device.name}}{% endblock %}
 
@@ -15,7 +16,9 @@
 {% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
 {% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% if perms.devices.change_device or perms.devices.lend_device %}<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal" data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>{% endif %}
+{% if "device" in LABEL_TEMPLATES %}
 <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
+{% endif %}
 {% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
     <a href="#"  id="returnbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
@@ -239,7 +242,10 @@
 {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
 {% endif %}
 
-{% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" %}
+
+{% if "device" in LABEL_TEMPLATES %}
+{% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.device.0 %}
+{% endif %}
 {% endblock %}
 
 {% block scriptend %}

@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy, reverse
 import reversion
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from django.conf import settings
 
 class TypeList(ListView):
     model = Type
@@ -62,6 +63,12 @@ class TypeDetail(DetailView):
         context["merge_list"] = Type.objects.exclude(pk=context["object"].pk)
         context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None)
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
+
+        if "type" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["type"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["object"], attribute))
+
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")),
             (reverse("type-detail", kwargs={"pk":context["object"].pk}), context["object"])]

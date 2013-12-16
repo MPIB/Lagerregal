@@ -46,6 +46,12 @@
 {% endif %}
 {% endblock %}
 
+{%block htmlend %}
+{% if "devicegroup" in LABEL_TEMPLATES %}
+{% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.devicegroup.0 %}
+{% endif %}
+{% endblock %}
+
 {% block scriptend %}
 {% if perms.devicegroups.delete_devicegroup %}
 $("#deletebutton").popover({

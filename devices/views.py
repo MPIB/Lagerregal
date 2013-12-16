@@ -25,6 +25,7 @@ from django.utils.translation import ugettext
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.db.transaction import commit_on_success
+from django.conf import settings
 
 class DeviceList(ListView):
     context_object_name = 'device_list'
@@ -102,6 +103,11 @@ class DeviceDetail(DetailView):
         versions = reversion.get_for_object(context["device"])
         if len(versions) != 0:
             context["lastedit"] = versions[0]
+
+        if "device" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["device"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["device"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -726,6 +732,12 @@ class RoomDetail(DetailView):
         # Add in a QuerySet of all the books
         context["merge_list"] = Room.objects.exclude(pk=context["room"].pk)
         context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None)
+
+        if "room" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["room"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["room"], attribute))
+
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk":context["room"].pk}), context["room"].name)]
@@ -844,6 +856,12 @@ class BuildingDetail(DetailView):
         # Add in a QuerySet of all the books
         context["merge_list"] = Building.objects.exclude(pk=context["building"].pk)
         context['device_list'] = Device.objects.select_related().filter(room__building=context["building"], archived=None)
+
+        if "building" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["building"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["building"], attribute))
+
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk":context["building"].pk}), context["building"].name)]
@@ -963,6 +981,12 @@ class ManufacturerDetail(DetailView):
         # Add in a QuerySet of all the books
         context["merge_list"] = Manufacturer.objects.exclude(pk=context["object"].pk)
         context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None)
+
+        if "manufacturer" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["manufacturer"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["object"], attribute))
+
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
