@@ -180,6 +180,34 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+
+USE_LDAP = True
+
+if USE_LDAP:
+    AUTH_LDAP_SERVER_URI = ""
+    AUTH_LDAP_BIND_DN = ""
+    AUTH_LDAP_BIND_PASSWORD = ""
+    AUTH_LDAP_USER_SEARCH = LDAPSearch("",
+        ldap.SCOPE_SUBTREE, "")
+    AUTH_LDAP_GROUP_SEARCH = LDAPSearch("",
+        ldap.SCOPE_SUBTREE, '')
+
+    LDAP_USER_SEARCH = ["", ldap.SCOPE_SUBTREE, ""]
+    LDAP_GROUP_SEARCH = ["", ldap.SCOPE_SUBTREE, '']
+
+    AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType()
+    AUTH_LDAP_MIRROR_GROUPS  = True
+
+    AUTH_LDAP_USER_ATTR_MAP = {
+        "first_name": "",
+        "last_name": "",
+        "email": ""
+    }
+
+    AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+        "is_staff":  "",
+    }
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
