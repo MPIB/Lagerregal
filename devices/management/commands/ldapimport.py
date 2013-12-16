@@ -12,8 +12,6 @@ class Command(BaseCommand):
             users = l.search_s(*settings.LDAP_USER_SEARCH)
             created_users = 0
             for dn, user in users:
-                if user["sAMAccountName"][0] == "weinreich":
-                    print "BLABLASLDALSDQWE"
                 try:
                     Lageruser.objects.get(username=user["sAMAccountName"][0])
                 except Exception as e:
