@@ -119,7 +119,7 @@
       </div>
   </div>
 </div>
-  {% block htmlend %}{% endblock %}
+
 <script src="{% static "js/jquery.min.js" %}"></script>
 	<script src="{% static "js/bootstrap.min.js" %}"></script>
   <script src="{% static "js/select2.min.js" %}"></script>
@@ -159,6 +159,7 @@
 });
 {% endif %}
 </script>
+{% block htmlend %}{% endblock %}
 </body>
 
 </html>

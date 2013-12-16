@@ -9,6 +9,9 @@
 
 {% block pullright %}
 {% if perms.devices.delete_room %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if "room" in LABEL_TEMPLATES %}
+<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
+{% endif %}
 {% if perms.devices.change_room %}<a href="{% url 'room-edit' room.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
 <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 <div class="btn-group">
@@ -22,6 +25,7 @@
   </ul>
 </div>
 {% endif %}
+
 {% endblock %}
 
 {% block content %}
@@ -61,6 +65,12 @@
 {% endif %}
 </div>
 </div>
+{% endblock %}
+
+{%block htmlend %}
+{% if "room" in LABEL_TEMPLATES %}
+{% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.room.0 %}
+{% endif %}
 {% endblock %}
 
 {% block scriptend %}

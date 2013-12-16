@@ -4,6 +4,7 @@ from devicegroups.models import Devicegroup
 from devices.models import Device
 from django.utils.translation import ugettext_lazy as _
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from django.conf import settings
 
 class DevicegroupList(ListView):
     model = Devicegroup
@@ -49,6 +50,12 @@ class DevicegroupDetail(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DevicegroupDetail, self).get_context_data(**kwargs)
+
+        if "devicegroup" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["devicegroup"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["devicegroup"], attribute))
+
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
             (reverse("devicegroup-detail", kwargs={"pk":self.object.pk}), self.object)]

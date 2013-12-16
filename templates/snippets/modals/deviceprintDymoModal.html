@@ -1,0 +1,88 @@
+{% extends "snippets/modals/base.html" %}
+{% load i18n %}{% load devicetags %}{% load staticfiles %}
+{% block modalHeader %}
+          {% trans "Print Dymo Label" %}
+    <script src="http://labelwriter.com/software/dls/sdk/js/DYMO.Label.Framework.latest.js"
+    type="text/javascript" charset="UTF-8"> </script>
+    <script>
+        $('#printDymoModal').on('show.bs.modal', function (e) {
+                loadPrinters()
+                labelXml = "{% filter escapejs %}{% ssi label_path %}{% endfilter %}"
+                label = dymo.label.framework.openLabelXml(labelXml);
+                {% autoescape off %}{{label_js}}{% endautoescape %}
+                updatePreview(label);
+                printButton.onclick = function()
+                {
+                    try
+                    {
+                        label.print(printersSelect.value);
+                    }
+                    catch(e)
+                    {
+                        alert(e.message || e);
+                    }
+                    finally {
+                        $('#printDymoModal').modal('hide')
+                    }
+                }
+        })
+    </script>
+{% endblock %}
+
+
+{% block modalBody %}
+<script>
+function updatePreview(label)
+{
+    if (!label)
+        return
+    
+    var pngData = label.render();
+    var labelImage = document.getElementById('labelImage');
+    labelImage.src = "data:image/png;base64," + pngData;
+}
+
+function loadPrinters()
+{
+    var printers = dymo.label.framework.getPrinters();
+    if (printers.length == 0)
+    {
+        var option = document.createElement('option');
+        option.appendChild(document.createTextNode("No DYMO-Printers found"));
+        printersSelect.appendChild(option);
+        printButton.disabled = true;
+        return;
+    }
+
+    for (var i = 0; i < printers.length; i++)
+    {
+        var printer = printers[i];
+        if (printer.printerType == "LabelWriterPrinter")
+        {
+            var printerName = printer.name;
+        
+            var option = document.createElement('option');
+            option.value = printerName;
+            option.appendChild(document.createTextNode(printerName));
+            printersSelect.appendChild(option);
+        }
+    }
+}
+</script>
+
+<div id="printersDiv">
+    <label for="printersSelect">Printers:</label>
+    <select id="printersSelect"></select>
+</div>
+
+<div id="labelImageDiv">
+    <img id="labelImage" src=""/>
+</div>
+
+{% endblock %}
+
+
+{% block modalFooter %}
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          <button id="printButton" type="button" class="btn btn-default">{% trans "Print" %}</button>
+{% endblock %}

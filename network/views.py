@@ -4,6 +4,7 @@ from network.models import IpAddress
 from network.forms import ViewForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 class IpAddressList(ListView):
     context_object_name = 'ipaddress_list'
@@ -42,6 +43,12 @@ class IpAddressDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(IpAddressDetail, self).get_context_data(**kwargs)
+
+        if "ipaddress" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["ipaddress"][1]:
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["ipaddress"], attribute))
+
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
             (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address)]

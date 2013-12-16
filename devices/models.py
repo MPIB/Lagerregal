@@ -35,7 +35,7 @@ reversion.register(Building)
 
 
 class Room(models.Model):
-    name = models.CharField(_('Name'), max_length=200, unique=True)
+    name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True)
 
     def __unicode__(self):
@@ -97,7 +97,8 @@ class Device(models.Model):
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)
 
-    archived = models.DateTimeField(null=True)
+    archived = models.DateTimeField(null=True, blank=True)
+    trashed = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
