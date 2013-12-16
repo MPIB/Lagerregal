@@ -51,7 +51,7 @@ class DeviceList(ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
         
-        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building", "group__name", "currentlending")
+        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name", "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
