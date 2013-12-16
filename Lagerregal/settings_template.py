@@ -181,7 +181,7 @@ INTERNAL_IPS = [
 ]
 
 
-USE_LDAP = True
+USE_LDAP = False
 
 if USE_LDAP:
     AUTH_LDAP_SERVER_URI = ""
