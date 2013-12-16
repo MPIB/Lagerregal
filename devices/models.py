@@ -97,7 +97,7 @@ class Device(models.Model):
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)
 
-    archived = models.DateTimeField(null=True)
+    archived = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name
