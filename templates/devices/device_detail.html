@@ -42,7 +42,7 @@
         <tr><td>{% trans "MAC-Address" %}</td><td>{{device.macaddress}}</td></tr>
         <tr><td>{% trans "Devicetype" %}</td><td>{{device.devicetype}}</td></tr>
         <tr><td>{% trans "Manufacturer" %}</td><td>{{device.manufacturer}}</td></tr>
-        <tr><td>{% trans "Room" %}</td><td>{{device.room}}</td></tr>
+        <tr><td>{% trans "Room" %}</td><td>{{device.room}} ({{device.room.building}})</td></tr>
   {% for attributevalue in attributevalue_list %}
         <tr><td>{{attributevalue.typeattribute.name}}</td><td>{{attributevalue}}</td></tr>
 {% endfor %}
