@@ -592,10 +592,7 @@ class DeviceMail(FormView):
     def get_initial(self):
         deviceid = self.kwargs["pk"]
         self.device = get_object_or_404(Device, pk=deviceid)
-        if self.device.currentlending:
-            return {"owner":self.device.currentlending.owner}
-        else:
-            return {}
+        return {}
 
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
