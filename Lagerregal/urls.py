@@ -45,6 +45,7 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<pk>[0-9]*)/history/revision/(?P<revision>[0-9]*)$', permission_required("devices.change_device")(DeviceHistory.as_view()), name="device-history"),
     url(r'^devices/(?P<pk>[0-9]*)/lending/$', permission_required("devices.lend_device")(DeviceLendingList.as_view()), name="device-lending-list"),
     url(r'^devices/(?P<pk>[0-9]*)/lending/(?P<page>[0-9]*)$', permission_required("devices.lend_device")(DeviceLendingList.as_view()), name="device-lending-list"),
+    url(r'^devices/(?P<pk>[0-9]*)/inventoried/$', permission_required("devices.change_device")(DeviceInventoried.as_view()), name="device-inventoried"),
     url(r'^devices/(?P<pk>[0-9]*)/notes/create/$', permission_required("devices.change_device")(NoteCreate.as_view()), name="device-note-create"),
 
     url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),

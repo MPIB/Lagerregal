@@ -99,6 +99,7 @@ class Device(models.Model):
 
     archived = models.DateTimeField(null=True, blank=True)
     trashed = models.DateTimeField(null=True, blank=True)
+    inventoried = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.name

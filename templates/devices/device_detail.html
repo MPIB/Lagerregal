@@ -13,6 +13,7 @@
 {% if device.archived == None %}
 {% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
 {% if perms.devices.change_device %}<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
+<a href="{% url "device-inventoried" device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-ok" style="margin-right:7px"></i>{% trans "Inventoried" %}</a>
 {% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
 {% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% if perms.devices.change_device or perms.devices.lend_device %}<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal" data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>{% endif %}
@@ -50,6 +51,7 @@
         <tr><td>{% trans "Created by" %}</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
         <tr><td>{% trans "Last edited" %}</td><td>{% if lastedit != None %}<a href="{% url 'device-history' device.pk lastedit.revision.pk %}">{{lastedit.revision.date_created}}</a> by {{lastedit.revision.user}}{% else %}{% trans "Not edited yet" %}{% endif %}</td></tr>
         {% if device.trashed %}<tr><td>{% trans "Trashed on" %}</td><td>{{device.trashed}}</td></tr>{% endif %}
+        {% if device.inventoried %}<tr><td>{% trans "Last inventoried on" %}</td><td>{{device.inventoried}}</td></tr>{% endif %}
       </tbody>
     </table>
 

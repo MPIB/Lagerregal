@@ -541,6 +541,20 @@ class DeviceLend(FormView):
         messages.success(self.request, _('Device is marked as lendt to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+class DeviceInventoried(View):
+
+    def get(self, request, **kwargs):
+        deviceid = kwargs["pk"]
+        device = get_object_or_404(Device, pk=deviceid)
+        device.inventoried = datetime.datetime.now()
+        device.save()
+        reversion.set_ignore_duplicates(True)
+        messages.success(request, _('Device is marked as returned.'))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+    def post(self, request, **kwargs):
+        return self.get(request, **kwargs)
+
 class DeviceReturn(View):
 
     def get(self, request, **kwargs):
