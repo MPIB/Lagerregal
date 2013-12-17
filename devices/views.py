@@ -740,7 +740,7 @@ class RoomDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(RoomDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).values("name", "building__name")
+        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("name", "building__name")
         context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None).values("name", "inventorynumber", "devicetype__name")
 
         if "room" in settings.LABEL_TEMPLATES:
@@ -864,7 +864,7 @@ class BuildingDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(BuildingDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Building.objects.exclude(pk=context["building"].pk)
+        context["merge_list"] = Building.objects.exclude(pk=context["building"].pk).order_by("name")
         context['device_list'] = Device.objects.select_related().filter(room__building=context["building"], archived=None)
 
         if "building" in settings.LABEL_TEMPLATES:
@@ -989,7 +989,7 @@ class ManufacturerDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(ManufacturerDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Manufacturer.objects.exclude(pk=context["object"].pk)
+        context["merge_list"] = Manufacturer.objects.exclude(pk=context["object"].pk).order_by("name")
         context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None)
 
         if "manufacturer" in settings.LABEL_TEMPLATES:

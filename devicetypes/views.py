@@ -60,7 +60,7 @@ class TypeDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(TypeDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Type.objects.exclude(pk=context["object"].pk)
+        context["merge_list"] = Type.objects.exclude(pk=context["object"].pk).order_by("name")
         context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None)
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
 
