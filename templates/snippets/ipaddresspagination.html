@@ -8,8 +8,8 @@
           <li class="previous"><a href="{% url 'ipaddress-list' 1 %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
           <li class="previous"><a href="{% url 'ipaddress-list' page_obj.previous_page_number %}"><i class="fa fa-angle-left"></i> {% trans "Next" %}</a></li>
           {% else %}
-        <li class="previous"><a href="{% url 'ipaddress-list-filtered'  1 viewform.viewfilter.value %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
-          <li class="previous"><a href="{% url 'ipaddress-list-filtered' page_obj.previous_page_number viewform.viewfilter.value %}"><i class="fa fa-angle-left"></i> {% trans "Next" %}</a></li>
+        <li class="previous"><a href="{% url 'ipaddress-list'  1 viewform.viewfilter.value %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
+          <li class="previous"><a href="{% url 'ipaddress-list' page_obj.previous_page_number viewform.viewfilter.value %}"><i class="fa fa-angle-left"></i> {% trans "Next" %}</a></li>
           {% endif %}
         {% else %}
           <li class="previous disabled"><a><i class="fa fa-angle-left"></i> {% trans "Next" %}</a></li>
@@ -29,8 +29,8 @@
         <li class="next"><a href="{% url 'ipaddress-list' page_obj.paginator.num_pages %}" style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
           <li class="next"><a href="{% url 'ipaddress-list' page_obj.next_page_number %}">{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
           {% else %}
-        <li class="next"><a href="{% url 'ipaddress-list-filtered'  page_obj.paginator.num_pages viewform.viewfilter.value %}" style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
-          <li class="next"><a href="{% url 'ipaddress-list-filtered' page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
+        <li class="next"><a href="{% url 'ipaddress-list'  page_obj.paginator.num_pages viewform.viewfilter.value %}" style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
+          <li class="next"><a href="{% url 'ipaddress-list' page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
           {% endif %}
             {% else %}
           <li class="next disabled"><a>{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>

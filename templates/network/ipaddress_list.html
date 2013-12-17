@@ -46,10 +46,10 @@ $(document).ready(function() {
     });
 
     $('#id_viewfilter').change(function() {
-    window.location = "/ipaddresses/filter/" + $(this).val()
+    window.location = "/ipaddresses/page/1/filter/" + $(this).val()
 });
 
 });
 
-{% include "snippets/pagination_js.html" with pageurl="ipaddress-list" %}
+{% include "snippets/ipaddresspagination_js.html" with pageurl="ipaddress-list" %}
 {% endblock %}
