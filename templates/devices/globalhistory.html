@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-{% include "snippets/pagination.html" with listurl='globalhistory' %}
+{% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
 <table id="change-history" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -56,7 +56,7 @@
                     </tbody>
                 </table>
 
-{% include "snippets/pagination.html" with listurl='globalhistory' %}
+{% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
 {% endblock %}
 
 {% block scriptend %}
