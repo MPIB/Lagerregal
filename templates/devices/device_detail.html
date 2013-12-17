@@ -42,7 +42,7 @@
         <tr><td>{% trans "MAC-Address" %}</td><td>{{device.macaddress}}</td></tr>
         <tr><td>{% trans "Devicetype" %}</td><td>{{device.devicetype}}</td></tr>
         <tr><td>{% trans "Manufacturer" %}</td><td>{{device.manufacturer}}</td></tr>
-        <tr><td>{% trans "Room" %}</td><td>{{device.room}}</td></tr>
+        <tr><td>{% trans "Room" %}</td><td>{{device.room}} ({{device.room.building}})</td></tr>
   {% for attributevalue in attributevalue_list %}
         <tr><td>{{attributevalue.typeattribute.name}}</td><td>{{attributevalue}}</td></tr>
 {% endfor %}
@@ -273,7 +273,7 @@ $("#deletebutton").popover({
     placement: "bottom",
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
           "</form>"
           })
@@ -284,7 +284,7 @@ $("#archivebutton").popover({
     placement: "bottom",
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#archivebutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
           "</form>"
           })
@@ -295,11 +295,24 @@ $("#returnbutton").popover({
     placement: "bottom",
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;destroy&quot;);'>{% trans "No" %}</button>"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
           "</form>"
           })
 {% endif %}
+
+{% if perms.devices.lend_device and device.currentlending != None %}
+$(".deletenotebutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
+{% endif %}
+
 {% endif %}
   $(function() {
     $( "#id_duedate" ).datepicker();

@@ -36,7 +36,7 @@ reversion.register(Building)
 
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
-    building = models.ForeignKey(Building, null=True)
+    building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
 
     def __unicode__(self):
         return self.name
@@ -86,16 +86,16 @@ class Device(models.Model):
     inventorynumber = models.CharField(_('Inventorynumber'), max_length=50)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50)
     macaddress = models.CharField(_('MAC Address'), max_length=40, blank=True)
-    manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True)
+    manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, on_delete=models.SET_NULL)
     hostname = models.CharField(_('Hostname'), max_length=40, blank=True)
     description = models.CharField(_('Description'), max_length=1000, blank=True)
-    devicetype = models.ForeignKey(Type, blank=True, null=True)
-    room = models.ForeignKey(Room, blank=True, null=True)
-    group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices")
+    devicetype = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
+    room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
     
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
-    currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True)
+    currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True, on_delete=models.SET_NULL)
 
     archived = models.DateTimeField(null=True, blank=True)
     trashed = models.DateTimeField(null=True, blank=True)

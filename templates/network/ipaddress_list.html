@@ -24,7 +24,7 @@ IP-Addresses
   	{% for ipaddress in ipaddress_list %}
     <tr>
       <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
-      {% if ipaddress.device %}
+      {% if ipaddress.device__pk %}
           <td><a href="{% url 'device-detail' ipaddress.device__id %}">{{ipaddress.device__name}}</a></td>
           {% else %}
           <td>Not assigned</td>

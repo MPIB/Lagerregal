@@ -49,7 +49,7 @@
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
       <td>{{ device.inventorynumber }}</td>
       <td>{{ device.devicetype__name }}</td>
-      <td>{{ device.room__name }} ({{device.room__building}})</td>
+      <td>{{ device.room__name }} ({{device.room__building__name}})</td>
       <td>{{ device.group__name }}</td>
       <td>{% if device.currentlending == None %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
     </tr>
