@@ -369,7 +369,6 @@ class DeviceCreate(CreateView):
             initial["emailbody"] = initial["emailtemplate"].body
         except:
             pass
-        print initial
         return initial
 
     def get_context_data(self, **kwargs):
