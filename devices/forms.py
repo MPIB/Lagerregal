@@ -217,12 +217,6 @@ class AddForm(forms.ModelForm):
 class DeviceMailForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(DeviceMailForm, self).__init__(*args, **kwargs)
-        if "initial" in kwargs:
-            if "owner" in kwargs["initial"]:
-                self.fields["emailrecipients"].choices = get_emailrecipientlist(
-                    special={_("Current Owner"):"u" + str(kwargs["initial"]["owner"].pk)})
-                return
-        
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
     error_css_class = 'has_error'
