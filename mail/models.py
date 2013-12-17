@@ -8,6 +8,7 @@ from django.template import Context, Template
 import reversion
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+import pystache
 
 usages = {
     "new":_("New Device is created"),
@@ -41,9 +42,39 @@ class MailTemplate(models.Model):
         return reverse('mail-edit', kwargs={'pk': self.pk})
 
     def send(self, request, recipients=None, data=None):
-        t = Template(self.body)
-        body = t.render(Context(data))
-        email = EmailMessage(subject=self.subject, body=body, to=recipients)
+        datadict = {}
+        datadict["device"] = {
+            "currentlending": data["device"].currentlending,
+            "description": data["device"].description,
+            "devicetype": data["device"].devicetype.name,
+            "group": data["device"].group,
+            "hostname": data["device"].hostname,
+            "inventoried": data["device"].inventoried,
+            "inventorynumber": data["device"].inventorynumber,
+            "macaddress": data["device"].macaddress,
+            "manufacturer": data["device"].manufacturer,
+            "name": data["device"],
+            "room": data["device"].room.name + " (" + data["device"].room.building.name + ")" ,
+            "serialnumber": data["device"].serialnumber,
+            "templending": data["device"].templending,
+            "trashed": data["device"].trashed,
+            "webinterface": data["device"].webinterface
+        }
+        datadict["user"] = {
+        "username" : data["user"].username,
+        "first_name" : data["user"].first_name,
+        "last_name" : data["user"].last_name
+        }
+        if "owner" in data:
+            datadict["owner"] = {
+                "username" : data["owner"].username,
+                "first_name" : data["owner"].first_name,
+                "last_name" : data["owner"].last_name
+            }
+        body = pystache.render(self.body, datadict)
+        subject = pystache.render(self.subject, datadict)
+
+        email = EmailMessage(subject=subject, body=body, to=recipients)
         email.send()
         mailhistory = MailHistory()
         mailhistory.mailtemplate = self

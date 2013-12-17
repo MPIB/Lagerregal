@@ -264,12 +264,7 @@ $("#id_ipaddresses").select2({
 
 
 
-  $("#id_mailtemplate").change(function() {
-  if ($(this).val() === "") {
-  } else {
-    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val()})
-  }
-});
+
 {% if perms.devices.delete_device %}
 $("#deletebutton").popover({
     html: 'true',
@@ -325,5 +320,12 @@ content : "<form action='{% url "device-return" object.id %}' method='post' clas
     $(".mail-date").timeago();
     $("#id_emailrecipients").select2()
 $("#id_mailtemplate").select2()
+
+$("#id_mailtemplate").change(function() {
+  if ($(this).val() === "") {
+  } else {
+    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val()})
+  }
+});
   });
 {% endblock %}

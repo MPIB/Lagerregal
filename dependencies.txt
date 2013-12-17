@@ -8,3 +8,4 @@ South
 Pillow
 django-oauth2-provider
 pytz
+pystache

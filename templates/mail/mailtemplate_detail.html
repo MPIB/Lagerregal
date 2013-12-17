@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {%  load devicetags %}
 {% load i18n %}
+{% load staticfiles %}
 {% block title %}{{mailtemplate.name}}{% endblock %}
 
 {% block header %}
@@ -28,7 +29,20 @@
       </tbody>
     </table>
   </div>
+  <div class="col-md-5 col-xs-12">
+  <h4>{% trans "Preview" %}
+    <table class="table table-bordered table-striped">
+      <tbody id="mailpreview">
+        <tr><td>{% trans "Subject" %}</td><td>{{mailtemplate.subject}}</td></tr>
+          <tr><td>{% trans "Body" %}</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+{% endblock %}
+
+{% block htmlend %}
+<script src="{% static "js/mustache.js" %}"></script>
 {% endblock %}
 
 {% block scriptend %}
@@ -43,4 +57,37 @@ content : "<form action='{% url "mail-delete" object.id %}' method='post' class=
           "</form>"
           })
 {% endif %}
+
+var data = {
+  "device" : {
+    "currentlending": "None",
+    "description": "",
+    "devicetype": "Laptop",
+    "group": "None",
+    "hostname": "1234",
+    "inventoried": "None",
+    "inventorynumber": "124376543",
+    "macaddress":"'123",
+    "manufacturer": "Examplecompany",
+    "name": "Laptop 123",
+    "room": "201 (Building 1)",
+    "serialnumber": "1234",
+    "templending": false,
+    "trashed": "None",
+    "webinterface": "http://example.com"
+  },
+  "user" : {
+    "username" : "testuser",
+    "first_name" : "Test",
+    "last_name" : "User"
+  },
+  "owner" : {
+    "username" : "seconduser",
+    "first_name" : "Second",
+    "last_name" : "User"
+  }
+}
+
+out = Mustache.render($("#mailpreview").html(), data)
+$("#mailpreview").html(out)
 {% endblock %}
