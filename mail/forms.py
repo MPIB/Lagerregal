@@ -10,6 +10,6 @@ class MailTemplateForm(forms.ModelForm):
 
     error_css_class = 'has-error'
     body = forms.CharField(widget=forms.Textarea())
-    default_recipients = forms.MultipleChoiceField()
+    default_recipients = forms.MultipleChoiceField(required=False)
     class Meta:
         model = MailTemplate
