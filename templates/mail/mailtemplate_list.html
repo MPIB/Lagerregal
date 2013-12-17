@@ -13,7 +13,7 @@
 {% block content %}
 <div class="row">
     <div class="col-xs-12 col-md-12">
-{% include "snippets/pagination.html" with listurl='mail-list' %}
+{% include "snippets/pagination_simple.html" with listurl='mail-list' %}
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -31,11 +31,11 @@
     </tr>
   {% endfor %}
 </table>
-{% include "snippets/pagination.html" with listurl='mail-list' %}
+{% include "snippets/pagination_simple.html" with listurl='mail-list' %}
 </div>
 </div>
 {% endblock %}
 
 {% block scriptend %}
-{% include "snippets/pagination_js.html" with pageurl="mail-list" %}
+{% include "snippets/pagination_simple_js.html" with pageurl="mail-list" %}
 {% endblock %}

@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block content %}
-{% include "snippets/pagination.html" with listurl='user-list' %}
+{% include "snippets/userpagination.html" with listurl='user-list' %}
 <table class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -33,12 +33,12 @@
     </tr>
   {% endfor %}
 </table>
-{% include "snippets/pagination.html" with listurl='user-list' %}
+{% include "snippets/userpagination.html" with listurl='user-list' %}
 {% endblock %}
 
 {% block scriptend %}
 $('#id_filterstring').change(function() {
     window.location = "/users/filter/" + $(this).val()
 });
-{% include "snippets/pagination_js.html" with pageurl="user-list" %}
+{% include "snippets/userpagination_js.html" with pageurl="user-list" %}
 {% endblock %}
