@@ -132,7 +132,7 @@ urlpatterns = patterns('',
     url(r'^ipaddresses/delete/(?P<pk>[^/]*)$', permission_required("network.delete_ipaddress")(IpAddressDelete.as_view()), name="ipaddress-delete"),
     url(r'^ipaddresses/view/(?P<pk>[^/]*)$', permission_required("network.read_ipaddress")(IpAddressDetail.as_view()), name="ipaddress-detail"),
 
-    url(r'^users/$', permission_required("users.read_devicegroup")(UserList.as_view()), name="user-list"),
+    url(r'^users/$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
     url(r'^users/(?P<page>[0-9]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
     url(r'^users/filter/(?P<filter>[^/]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
     url(r'^users/page/(?P<page>[0-9]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_user")(UserList.as_view()), name="user-list"),
