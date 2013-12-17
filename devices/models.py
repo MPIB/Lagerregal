@@ -130,7 +130,7 @@ class Device(models.Model):
         dict["room"] = self.room
         return dict
 
-reversion.register(Device, follow=["typeattributevalue_set"], exclude=["archived", "currentlending"])
+reversion.register(Device, follow=["typeattributevalue_set"], exclude=["archived", "currentlending", "inventoried"])
 reversion.register(TypeAttributeValue)
 
 
