@@ -7,3 +7,5 @@ mails/
 
 newrelic.ini
 settings.py
+
+*.label
