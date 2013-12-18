@@ -1162,8 +1162,11 @@ class Search(FormView):
                 devices = devices.filter(archived=None)
 
         context = {
-        "device_list":devices.values("name", "inventorynumber", "devicetype__name", "room__name", "room__building__name"),
         "form":form,
         "breadcrumbs":[["", _("Searchresult")]]
         }
+        if devices == []:
+            context["device_list"] = devices
+        else:
+            context["device_list"] = devices.values("name", "inventorynumber", "devicetype__name", "room__name", "room__building__name"),
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
