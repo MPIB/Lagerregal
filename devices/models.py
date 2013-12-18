@@ -39,7 +39,10 @@ class Room(models.Model):
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
 
     def __unicode__(self):
-        return self.name
+        if self.building:
+            return self.name + " (" + self.building.__unicode__() + ")"
+        else:
+            return self.name
 
     class Meta:
         verbose_name = _('Room')
