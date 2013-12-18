@@ -323,7 +323,6 @@ content : "<form action='{% url "device-return" object.id %}' method='post' clas
   $(document).ready(function() {
     $(".edit-date").timeago();
     $(".mail-date").timeago();
-    $("#id_emailrecipients").select2()
-$("#id_mailtemplate").select2()
+    $("select").select2()
   });
 {% endblock %}
