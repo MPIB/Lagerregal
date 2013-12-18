@@ -144,6 +144,8 @@
 {% if user.language != "en" %}
 <script src="{% static "js/jquery.timeago.de.js" %}"></script>
 {% endif %}
+
+{% block htmlend %}{% endblock %}
 	<script>
   {% block scriptend %}{% endblock %}
   {% if messages %}
@@ -159,7 +161,6 @@
 });
 {% endif %}
 </script>
-{% block htmlend %}{% endblock %}
 </body>
 
 </html>
