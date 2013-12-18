@@ -743,7 +743,7 @@ class RoomDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(RoomDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("name", "building__name")
+        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("id", "name", "building__name")
         context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None).values("name", "inventorynumber", "devicetype__name")
 
         if "room" in settings.LABEL_TEMPLATES:
