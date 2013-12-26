@@ -79,7 +79,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-'dajaxice.finders.DajaxiceFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -145,8 +144,6 @@ INSTALLED_APPS = (
     'mail',
     'reversion',
     'rest_framework',
-    'dajaxice',
-    'dajax',
     'south',
     'debug_toolbar',
     'provider',

@@ -15,9 +15,6 @@ from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 admin.autodiscover()
 
-from dajaxice.core import dajaxice_autodiscover, dajaxice_config
-dajaxice_autodiscover()
-
 urlpatterns = patterns('',
     url(r'^$', login_required(Home.as_view()), name="home"),
 
@@ -147,7 +144,6 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    url(dajaxice_config.dajaxice_url, include('dajaxice.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),

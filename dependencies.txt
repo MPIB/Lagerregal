@@ -1,6 +1,4 @@
 django
-django-dajaxice
-django-dajax
 django-reversion
 djangorestframework
 django-debug-toolbar
