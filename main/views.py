@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from main.models import DashboardWidget, widgets, get_progresscolor
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
+from Lagerregal.utils import PaginationMixin
 
 def get_widget_data():
     context = {}
@@ -50,21 +51,14 @@ class Home(TemplateView):
             context["form"] = AuthenticationForm()
         return context
 
-class Globalhistory(ListView):
+class Globalhistory(PaginationMixin, ListView):
     queryset = Version.objects.select_related().filter().order_by("-pk")
     context_object_name = "revision_list"
     template_name = 'devices/globalhistory.html'
 
     def get_context_data(self, **kwargs):
         context = super(Globalhistory, self).get_context_data(**kwargs)
-        context["breadcrumbs"] = [("", _("Global edit history"))]
+        context["breadcrumbs"] = [(reverse("globalhistory"), _("Global edit history"))]
         if context["is_paginated"]  and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
-
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
