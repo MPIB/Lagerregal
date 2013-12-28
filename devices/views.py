@@ -26,8 +26,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Q
 from django.db.transaction import commit_on_success
 from django.conf import settings
+from Lagerregal.utils import PaginationMixin
 
-class DeviceList(ListView):
+class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
 
     def get_queryset(self):
@@ -61,13 +62,6 @@ class DeviceList(ListView):
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
-
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class DeviceDetail(DetailView):
     model = Device
@@ -317,14 +311,9 @@ class DeviceHistoryList(ListView):
             ("", _("History"))]
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
+    
 
-class DeviceLendingList(ListView):
+class DeviceLendingList(PaginationMixin, ListView):
     context_object_name = 'lending_list'
     template_name = 'devices/device_lending_list.html'
 
@@ -342,12 +331,6 @@ class DeviceLendingList(ListView):
             ("", _("Lending"))]
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class DeviceCreate(CreateView):
     model = Device
@@ -637,7 +620,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 
-class TemplateList(ListView):
+class TemplateList(PaginationMixin, ListView):
     model = Template
     context_object_name = 'template_list'
     
@@ -651,12 +634,6 @@ class TemplateList(ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class TemplateCreate(CreateView):
     model = Template
@@ -700,7 +677,7 @@ class TemplateDelete(DeleteView):
 
 
 
-class RoomList(ListView):
+class RoomList(PaginationMixin, ListView):
     model = Room
     context_object_name = 'room_list'
     
@@ -728,12 +705,6 @@ class RoomList(ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class RoomDetail(DetailView):
     model = Room
@@ -826,7 +797,7 @@ class RoomMerge(View):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class BuildingList(ListView):
+class BuildingList(PaginationMixin, ListView):
     model = Building
     context_object_name = 'building_list'
 
@@ -851,13 +822,7 @@ class BuildingList(ListView):
         else:
             context["filterform"] = FilterForm()
         return context
-    
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
+
 
 class BuildingDetail(DetailView):
     model = Building
@@ -949,7 +914,7 @@ class BuildingMerge(View):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class ManufacturerList(ListView):
+class ManufacturerList(PaginationMixin, ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
     
@@ -976,12 +941,6 @@ class ManufacturerList(ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class ManufacturerDetail(DetailView):
     model = Manufacturer

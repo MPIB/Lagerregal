@@ -23,8 +23,8 @@ from django.conf import settings
 from devices.forms import FilterForm
 from django.utils import timezone
 from Lagerregal import settings
-
-class UserList(ListView):
+from Lagerregal.utils import PaginationMixin
+class UserList(PaginationMixin, ListView):
     model = Lageruser
     context_object_name = 'user_list'
     template_name = "users/user_list.html"
@@ -50,12 +50,6 @@ class UserList(ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class ProfileView(DetailView):
     model = Lageruser

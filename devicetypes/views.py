@@ -14,8 +14,9 @@ from django.core.urlresolvers import reverse_lazy, reverse
 import reversion
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from django.conf import settings
+from Lagerregal.utils import PaginationMixin
 
-class TypeList(ListView):
+class TypeList(PaginationMixin, ListView):
     model = Type
     context_object_name = 'type_list'
     
@@ -44,12 +45,6 @@ class TypeList(ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class TypeDetail(DetailView):
     model = Type

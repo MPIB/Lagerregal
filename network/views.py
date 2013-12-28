@@ -5,16 +5,10 @@ from network.forms import ViewForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from Lagerregal.utils import PaginationMixin
 
-class IpAddressList(ListView):
+class IpAddressList(PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
-    
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "all")
