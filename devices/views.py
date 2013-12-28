@@ -548,7 +548,7 @@ class DeviceInventoried(View):
         device.inventoried = datetime.datetime.now()
         device.save()
         reversion.set_ignore_duplicates(True)
-        messages.success(request, _('Device is marked as returned.'))
+        messages.success(request, _('Device is marked as inventoried.'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
     def post(self, request, **kwargs):
@@ -612,7 +612,7 @@ class DeviceMail(FormView):
         if template.usage == "reminder" or template.usage == "overdue":
             device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.currentlending.save()
-        messages.success(self.request, _('Mail sent to {0}').format(recipient))
+        messages.success(self.request, _('Mail successfully sent'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
