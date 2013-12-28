@@ -76,20 +76,46 @@ $(function() {
       $(".dashboard-right").children('.widget').each(function(i) { 
           widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
       });
-        Dajaxice.main.move_widgets(Dajax.process, {'userwidgets':widgets})
+        
     }
     });
 
     $('body').on('click', '.panel-title .w-minimize', function() {
-        Dajaxice.main.toggle_minimized(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
+        $.ajax({
+          type: "POST",
+          url: "{% url "widget_toggle" %}",
+          context: $(this).parents( ".widget:first" ),
+          data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
+        }).done(function(data) {
+          $(this).find( ".w-minimize" ).toggleClass( "fa-minus" ).toggleClass( "fa-plus" );
+          $(this).find(".panel-heading").next().slideToggle("fast");
+        });
     });
     
     $('body').on('click', '.panel-title .w-close', function() {
-        Dajaxice.main.remove_widget(Dajax.process,{'widgetname':$( this ).parents( ".widget:first" ).attr("id")})
+        $.ajax({
+          type: "POST",
+          url: "{% url "widget_remove" %}",
+          context: $(this).parents( ".widget:first" ),
+          data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
+        }).done(function(data) {
+          $(this).slideUp("fast", function() {
+          $(this).remove()});
+          $("#widgetlist").append('<li><a href="#" data-name="' + $(this).attr("id") + '" class="addWidget">' + $(this).find(".panel-title").html() + '</a></li>')
+        });
     });
 
     $('body').on('click', '.addWidget', function() {
-        Dajaxice.main.add_widget(Dajax.process,{'widgetname':$( this ).data("name")})
+        $.ajax({
+          type: "POST",
+          context: $(this),
+          url: "{% url "widget_add" %}",
+          data: {"widgetname":$( this ).data("name")}
+        }).done(function(data) {
+          $(this).remove();
+          $(".dashboard-left").append(data);
+          $('#addWidgetModal').modal('hide');
+        });
     });
 
     $(".panel-title .pull-right").hide();

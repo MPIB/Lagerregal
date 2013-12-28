@@ -8,6 +8,7 @@ from api.views import *
 from mail.views import *
 from devicegroups.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
+from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
@@ -147,6 +148,11 @@ urlpatterns = patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
     
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
+
+    url(r'^ajax/add_widget', login_required(WidgetAdd.as_view()), name="widget_add"),
+    url(r'^ajax/remove_widget', login_required(WidgetRemove.as_view()), name="widget_remove"),
+    url(r'^ajax/toggle_widget', login_required(WidgetToggle.as_view()), name="widget_toggle"),
+    url(r'^ajax/move_widget', login_required(WidgetMove.as_view()), name="widget_move")
 )
 
 urlpatterns += format_suffix_patterns(patterns('',
