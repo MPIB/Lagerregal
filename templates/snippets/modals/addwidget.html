@@ -7,7 +7,7 @@
 {% block modalBody %}
           <ul style="list-style-type: none;" id="widgetlist">
           {% for widgetname, widgetvalue in widgets_list.iteritems %}
-          <li><a href="#" data-name="{{widgetname}}" class="addWidget">{{widgetvalue}}</a></li>
+          <li><a data-name="{{widgetname}}" class="addWidget">{{widgetvalue}}</a></li>
           {% endfor %}
         </ul>
 {% endblock %}

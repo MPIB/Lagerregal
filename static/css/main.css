@@ -161,3 +161,7 @@ table tr th, table tr td {
 #searchform .row:first-child {
     margin-top:0px;
 }
+
+a:hover {
+ cursor:pointer;
+}
