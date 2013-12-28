@@ -7,8 +7,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
 from users.models import Lageruser
 from django.shortcuts import get_object_or_404
-
-class MailList(ListView):
+from Lagerregal.utils import PaginationMixin
+class MailList(PaginationMixin, ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
     
@@ -22,12 +22,6 @@ class MailList(ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-    def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
-        if self.request.user.pagelength == None:
-            return self.request.user.pagelength
-        else:
-            return 30
 
 class MailDetail(DetailView):
     model = MailTemplate
