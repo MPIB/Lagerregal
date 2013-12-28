@@ -66,6 +66,8 @@ function loadPrinters()
             option.appendChild(document.createTextNode(printerName));
             printersSelect.appendChild(option);
         }
+    console.log($('#printersSelect option:eq(0)').val())
+    $("#printersSelect").select2('val', $('#printersSelect option:eq(0)').val());
     }
 }
 </script>

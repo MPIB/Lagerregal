@@ -21,8 +21,8 @@
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
       <td>{{ device.inventorynumber }}</td>
-      <td >{{ device.devicetype }}</td>
-      <td>{{ device.room }} ({{device.room.building}})</td>
+      <td >{{ device.devicetype__name }}</td>
+      <td>{{ device.room__name }} ({{device.room__building__name}})</td>
     </tr>
      {% endfor %}
   </tbody>

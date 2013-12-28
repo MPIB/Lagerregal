@@ -107,7 +107,10 @@ class DeviceDetail(DetailView):
         if "device" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["device"][1]:
-                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["device"], attribute))
+                if attribute == "id":
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["device"], attribute))
+                else:
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["device"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -740,7 +743,7 @@ class RoomDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(RoomDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("name", "building__name")
+        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("id", "name", "building__name")
         context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None).values("name", "inventorynumber", "devicetype__name")
 
         if "room" in settings.LABEL_TEMPLATES:
@@ -1162,8 +1165,11 @@ class Search(FormView):
                 devices = devices.filter(archived=None)
 
         context = {
-        "device_list":devices,
         "form":form,
         "breadcrumbs":[["", _("Searchresult")]]
         }
+        if devices == []:
+            context["device_list"] = devices
+        else:
+            context["device_list"] = devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
