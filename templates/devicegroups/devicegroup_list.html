@@ -30,7 +30,7 @@
   {% endfor %}
 </table>
 
-{% include "snippets/pagination.html" with listurl='type-list' %}
+{% include "snippets/pagination.html" with listurl='devicegroup-list' %}
 </div>
 </div>
 {% endblock %}
@@ -46,5 +46,5 @@ $('#id_viewsorting').change(function() {
 $('#id_filterstring').change(function() {
     window.location = "/devicegroups/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
 });
-{% include "snippets/pagination_js.html" with pageurl="mail-list" %}
+{% include "snippets/pagination_js.html" with pageurl="devicegroup-list" %}
 {% endblock %}
