@@ -247,21 +247,15 @@ class AjaxSearch(View):
 
             if key == "user":
                 value = value.split("-", 1)[0]
-                if "currentlending__owner__username__icontains" in searchdict:
-                    searchdict["currentlending__owner__username__icontains"].append(value)
-                else:
-                    searchdict["currentlending__owner__username__icontains"] = [value]
+                searchdict["currentlending__owner__username__icontains"] = value
 
             if key == "ipaddress":
-                if "ipaddress__address__icontains" in searchdict:
-                    searchdict["ipaddress__address__icontains"].append(value)
-                else:
-                    searchdict["ipaddress__address__icontains"] = [value]
+                searchdict["ipaddress__address__icontains"] = value
 
             if key == "text":
                 textfilter = value
-
-        devices = Device.objects.filter(**searchdict).distinct()
+        print searchdict
+        devices = Device.objects.filter(**searchdict)
         if textfilter != None:
             devices = devices.filter(Q(name__icontains=textfilter)|
                 Q(inventorynumber__icontains=textfilter)|Q(serialnumber__icontains=textfilter))
