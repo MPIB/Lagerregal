@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from devices.models import Device, Room, Building, Manufacturer
+from devicetypes.models import Type
+from devicegroups.models import Devicegroup
+from users.models import Lageruser
+from network.models import IpAddress
 from mail.models import MailTemplate
 from django.shortcuts import get_object_or_404
 from devicetypes.models import Type
@@ -14,6 +18,8 @@ from django.views.generic.base import View
 from django.http import HttpResponse
 import pystache
 from django.http import QueryDict
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -181,3 +187,76 @@ class LoadMailtemplate(View):
         newrecipients = list(set(newrecipients))
         data["recipients"] = newrecipients
         return HttpResponse(simplejson.dumps(data), content_type='application/json')
+
+class LoadSearchoptions(View):
+    def post(self, request):
+        term = request.POST["searchTerm"]
+        facet = request.POST["facet"]
+        if facet == "manufacturer":
+            items = Manufacturer.objects.filter(name__icontains=term)
+        elif facet == "devicetype":
+            items = Type.objects.filter(name__icontains=term)
+        elif facet == "room":
+            items = Room.objects.filter(name__icontains=term)
+        elif facet == "devicegroup":
+            items = Devicegroup.objects.filter(name__icontains=term)
+        elif facet == "user":
+            items = Lageruser.objects.filter(username__icontains=term)
+        else:
+            return HttpResponse("")
+
+        data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()} 
+            for object in items]
+        return HttpResponse(simplejson.dumps(data), content_type='application/json')
+
+class AjaxSearch(View):
+    def post(self, request):
+        search = simplejson.loads(request.POST["search"])
+        searchdict = {}
+        for searchitem in search:
+            key, value = searchitem.items()[0]
+            if key == "manufacturer":
+                value = value.split("-", 1)[0]
+                if "manufacturer__in" in searchdict:
+                    searchdict["manufacturer__in"].append(value)
+                else:
+                    searchdict["manufacturer__in"] = [value]
+
+            if key == "room":
+                value = value.split("-", 1)[0]
+                if "room__in" in searchdict:
+                    searchdict["room__in"].append(value)
+                else:
+                    searchdict["room__in"] = [value]
+
+            if key == "devicetype":
+                value = value.split("-", 1)[0]
+                if "devicetype__in" in searchdict:
+                    searchdict["devicetype__in"].append(value)
+                else:
+                    searchdict["devicetype__in"] = [value]
+
+            if key == "devicegroup":
+                value = value.split("-", 1)[0]
+                if "devicegroup__in" in searchdict:
+                    searchdict["devicegroup__in"].append(value)
+                else:
+                    searchdict["devicegroup__in"] = [value]
+
+            if key == "user":
+                value = value.split("-", 1)[0]
+                if "currentlending__owner__username__icontains" in searchdict:
+                    searchdict["currentlending__owner__username__icontains"].append(value)
+                else:
+                    searchdict["currentlending__owner__username__icontains"] = [value]
+
+            if key == "ipaddress":
+                value = value.split("-", 1)[0]
+                if "ipaddress__address__icontains" in searchdict:
+                    searchdict["ipaddress__address__icontains"].append(value)
+                else:
+                    searchdict["ipaddress__address__icontains"] = [value]
+
+        devices = Device.objects.filter(**searchdict).distinct()
+        context = {"device_list": devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
+        return render_to_response('devices/searchresult.html', context, RequestContext(self.request))

@@ -1,49 +1,44 @@
 {% load i18n %}
  $(document).ready(function() {
-
-$("#id_devicetype").select2({
-placeholder: "{% trans "Devicetype" %}"
-});
-$("#id_manufacturer").select2({
-placeholder: "{% trans "Manufacturer" %}"
-});
-$("#id_room").select2({
-placeholder: "{% trans "Room" %}"
-});
-$("#id_overdue").select2({
-placeholder: "{% trans "Overdue" %}"
-});
-$("#id_viewfilter").select2({
-placeholder: "{% trans "Filter" %}"
-});
-
-$("#id_devicegroup").select2({
-placeholder: "{% trans "Devicegroup" %}"
-});
-
-});
-
-function clear_form_elements(ele) {
-    $(ele).find(':input').each(function() {
-        switch(this.type) {
-            case 'select-multiple':
-                $(this).select2("val", "");
-                break;
-            case 'password':
-            case 'select-one':
-                if ($(this).attr("id") == "id_overdue" || $(this).attr("id") == "id_viewfilter") {
-                    $(this).select2("val", $(this).children("option:first").val());
-                    break;
-                }
-                $(this).val($(this).children("option:first").val());
-                break;
-            case 'text':
-            case 'textarea':
-                $(this).val('');
-                break;
-            case 'checkbox':
-            case 'radio':
-                this.checked = false;
-        }
+var visualSearch = VS.init({
+      container : $('.visual_search'),
+      query     : '',
+      callbacks : {
+        search       : function(query, searchCollection) {},
+  // These are the facets that will be autocompleted in an empty input.
+  facetMatches : function(callback) {
+    callback([
+      {value: "text", label: "{% trans "Text" %}"},
+      {value: "manufacturer", label: "{% trans "Manufacturer" %}"},
+      {value: "room", label: "{% trans "Room" %}"},
+      {value: "devicetype", label: "{% trans "Devicetype" %}"},
+      {value: "user", label: "{% trans "User" %}"},
+      {value: "ipaddress", label: "{% trans "IP-Address" %}"},
+    ]);
+  },
+  // These are the values that match specific categories, autocompleted
+  // in a category's input field.  searchTerm can be used to filter the
+  // list on the server-side, prior to providing a list to the widget.
+  valueMatches : function(facet, searchTerm, callback) {
+    $.ajax({
+        type: "POST",
+        url: "{% url "load-searchoptions" %}",
+        data: {facet: facet, searchTerm: searchTerm}
+    }).done(function(data) {
+        callback(data)
     });
+  }
 }
+    });
+
+    $("#searchbutton").click(function(){
+        $("#searchresult").slideDown("fast")
+        $.ajax({
+            type: "POST",
+            url: "{% url "ajax-search" %}",
+            data: {"search": JSON.stringify(visualSearch.searchQuery.facets())}
+        }).done(function(data){
+            $("#searchresult").html(data)
+        });
+    });
+});

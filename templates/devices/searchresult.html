@@ -1,13 +1,5 @@
-{% extends "base.html" %}
 {% load i18n %}
-{% block title %}Searchresult for "{{searchquery}}"{% endblock %}
-
-{% block header %}
-{% trans "Searchresult" %}
-{% endblock %}
-{% block content %}
-{% include 'snippets/searchform.html' %}
-    <table id="devicetable" class="table table-bordered table-striped">
+<table id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
       <th>{% trans "Name" %}</th>
@@ -27,13 +19,3 @@
      {% endfor %}
   </tbody>
 </table>
-{% endblock %}
-
-{% block scriptend %}
-{% include 'snippets/searchform_js.html' %}
-$(document).ready( function () {
-var oTable = $("#devicetable").dataTable({
-  "sScrollX": "100%",
-});
-} );
-{% endblock %}

@@ -14,6 +14,8 @@
   <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
   <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
 
+  <link href="{% static "css/visualsearch.css" %}" media="screen" rel="stylesheet" type="text/css" />
+
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -142,6 +144,7 @@
 {% if user.language != "en" %}
 <script src="{% static "js/jquery.timeago.de.js" %}"></script>
 {% endif %}
+
 
 {% block htmlend %}{% endblock %}
 	<script>
