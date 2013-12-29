@@ -35,9 +35,7 @@ $( "input:text[name=name]" ).keyup(function() {
             url: "{% url "autocomplete-name" %}",
             data: {'classtype':'{{type}}', 'name':$(this).val()}
         }).done(function(data){
-        console.log(data)
         if (data != "") {
-            console.log("bla")
             if ($("#alternatives").length == 0){
                 $( "input:text[name=name]" ).after("\
           <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?\
@@ -49,7 +47,6 @@ $( "input:text[name=name]" ).keyup(function() {
               $("#alternatives").append(data[i])
             };
         } else {
-            console.log("empty")
             $("#alternativebox").remove();
         }
 

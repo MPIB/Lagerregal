@@ -149,7 +149,6 @@ var change_initialized = false;
 $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
    e.target // activated tab
    e.relatedTarget // previous tab
-   console.log($(e.target).data("tab"))
    if ($(e.target).data("tab") === "edits") {
       if (!change_initialized) {
         $('#changehistory').dataTable({});
