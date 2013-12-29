@@ -32,13 +32,17 @@ var visualSearch = VS.init({
     });
 
     $("#searchbutton").click(function(){
-        $("#searchresult").slideDown("fast")
+        $("#searchresult").fadeOut(100);
+            $("#searchspinner").fadeIn(100);
         $.ajax({
             type: "POST",
             url: "{% url "ajax-search" %}",
             data: {"search": JSON.stringify(visualSearch.searchQuery.facets())}
         }).done(function(data){
             $("#searchresult").html(data)
+            $("#searchspinner").fadeOut(100, function() {
+                $("#searchresult").fadeIn(100);
+            });
         });
     });
 });
