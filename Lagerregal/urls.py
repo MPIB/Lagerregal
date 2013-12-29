@@ -9,6 +9,7 @@ from mail.views import *
 from devicegroups.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
+from devices.ajax import AutocompleteName, AutocompleteDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
@@ -152,7 +153,13 @@ urlpatterns = patterns('',
     url(r'^ajax/add_widget', login_required(WidgetAdd.as_view()), name="widget_add"),
     url(r'^ajax/remove_widget', login_required(WidgetRemove.as_view()), name="widget_remove"),
     url(r'^ajax/toggle_widget', login_required(WidgetToggle.as_view()), name="widget_toggle"),
-    url(r'^ajax/move_widget', login_required(WidgetMove.as_view()), name="widget_move")
+    url(r'^ajax/move_widget', login_required(WidgetMove.as_view()), name="widget_move"),
+    url(r'^ajax/autocomplete_name', login_required(AutocompleteName.as_view()), name="autocomplete-name"),
+    url(r'^ajax/autocomplete_device', login_required(AutocompleteDevice.as_view()), name="autocomplete-device"),
+    url(r'^ajax/load_extraform', login_required(LoadExtraform.as_view()), name="load-extraform"),
+    url(r'^ajax/load_mailtemplate', login_required(LoadMailtemplate.as_view()), name="load-mailtemplate"),
+    url(r'^ajax/preview_mail', login_required(PreviewMail.as_view()), name="preview-mail"),
+    url(r'^ajax/add_device_field', login_required(AddDeviceField.as_view()), name="add-device-field"),
 )
 
 urlpatterns += format_suffix_patterns(patterns('',

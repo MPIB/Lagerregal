@@ -32,7 +32,31 @@
 {% block scriptend %}
 $( "input:text[name=name]" ).keyup(function() {
     if($(this).val().length > 1) {
-        Dajaxice.devices.complete_names(Dajax.process,{'classtype':'{{type}}', 'name':$(this).val()})
+        $.ajax({
+            type: "POST",
+            url: "{% url "autocomplete-name" %}",
+            data: {'classtype':'{{type}}', 'name':$(this).val()}
+        }).done(function(data){
+        console.log(data)
+        if (data != "") {
+            console.log("bla")
+            if ($("#alternatives").length == 0){
+                $( "input:text[name=name]" ).after("\
+          <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?\
+          <ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul>\
+          </div>")
+            }
+            $("#alternatives").empty()
+            for (var i=0; i < data.length; i++) {
+              $("#alternatives").append(data[i])
+            };
+        } else {
+            console.log("empty")
+            $("#alternativebox").remove();
+        }
+
+        
+      });
     }
 });
 

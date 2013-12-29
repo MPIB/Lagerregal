@@ -165,3 +165,7 @@ table tr th, table tr td {
 a:hover {
  cursor:pointer;
 }
+
+#alternativebox {
+    margin-top:10px;
+}
