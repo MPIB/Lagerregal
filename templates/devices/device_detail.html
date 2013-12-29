@@ -324,7 +324,15 @@ content : "<form action='{% url "device-return" object.id %}' method='post' clas
 $("#id_mailtemplate").change(function() {
   if ($(this).val() === "") {
   } else {
-    Dajaxice.devices.load_mailtemplate(Dajax.process, {"template":$(this).val()})
+    $.ajax({
+      type: "POST",
+      url: "{% url "load-mailtemplate" %}",
+      data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")}
+    }).done(function(data) {
+      $("#id_emailsubject").val(data.subject)
+      $("#id_emailbody").val(data.body)
+      $('#id_emailrecipients').select2('val', data.recipients)
+    })
   }
 });
   });
