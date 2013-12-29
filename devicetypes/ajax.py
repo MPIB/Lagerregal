@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from dajax.core import Dajax
-from dajaxice.decorators import dajaxice_register
 from devices.models import Device, Room, Building, Manufacturer
 from devicetypes.models import TypeAttribute
 from django.utils import simplejson
