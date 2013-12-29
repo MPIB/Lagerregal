@@ -13,6 +13,7 @@ from main.views import get_widget_data
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic.base import View
 from django.http import HttpResponse
+from django.http import QueryDict
 
 class WidgetAdd(View):
     def post(self, request):
@@ -58,7 +59,9 @@ class WidgetToggle(View):
  
 class WidgetMove(View):
     def post(self, request):
-        userwidgets = request.POST["widgets"]
+        userwidgets = simplejson.loads(request.POST["widgets"])
+        print userwidgets, type(userwidgets)
+
         for widgetname, widgetattr in userwidgets.iteritems():
             if widgetname in widgets:
                 w = DashboardWidget.objects.get(user=request.user, widgetname=widgetname)
@@ -66,4 +69,4 @@ class WidgetMove(View):
                     w.index = widgetattr["index"]
                     w.column = widgetattr["column"]
                     w.save()
-        return dajax.json()
+        return HttpResponse("")

@@ -76,7 +76,11 @@ $(function() {
       $(".dashboard-right").children('.widget').each(function(i) { 
           widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
       });
-        
+      $.ajax({
+          type: "POST",
+          url: "{% url "widget_move" %}",
+          data: {widgets:JSON.stringify(widgets)}
+        });
     }
     });
 
