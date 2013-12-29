@@ -1,5 +1,5 @@
 {% load i18n %}{% load staticfiles %}<!DOCTYPE html>
-<html lang="en">
+<html lang="{{user.language|default:"en"}}">
 <head>
 	<meta charset="utf-8" />
 	<title>{% block title %}{% endblock %} &middot; {{SITE_NAME}}</title>
