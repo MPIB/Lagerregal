@@ -60,7 +60,6 @@ class WidgetToggle(View):
 class WidgetMove(View):
     def post(self, request):
         userwidgets = simplejson.loads(request.POST["widgets"])
-        print userwidgets, type(userwidgets)
 
         for widgetname, widgetattr in userwidgets.iteritems():
             if widgetname in widgets:

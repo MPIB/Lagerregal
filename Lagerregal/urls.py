@@ -10,6 +10,7 @@ from devicegroups.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField
+from devicetypes.ajax import GetTypeAttributes
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
@@ -160,6 +161,7 @@ urlpatterns = patterns('',
     url(r'^ajax/load_mailtemplate', login_required(LoadMailtemplate.as_view()), name="load-mailtemplate"),
     url(r'^ajax/preview_mail', login_required(PreviewMail.as_view()), name="preview-mail"),
     url(r'^ajax/add_device_field', login_required(AddDeviceField.as_view()), name="add-device-field"),
+    url(r'^ajax/get_attributes', login_required(GetTypeAttributes.as_view()), name="get-attributes"),
 )
 
 urlpatterns += format_suffix_patterns(patterns('',

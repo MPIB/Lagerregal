@@ -67,7 +67,18 @@ $( "input:text[name=name]" ).autocomplete({
       }
     });
 $("#id_devicetype").change(function() {
-        Dajaxice.devicetypes.get_attributes(Dajax.process, {'pk':$(this).val()});
+    $.ajax({
+      type: "POST",
+      url: "{% url "get-attributes" %}",
+      data: {'pk':$(this).val()}
+    }).done(function(data) {
+      $("#extra_attributes").empty();
+      if (data != "") {
+        $.each(data, function(index, value) {
+          $("#extra_attributes").append('<div class="form-group"><label for="id_attribute_' + value.id + '" class="col-lg-3 control-label">' + value.name + '</label><div class="col-lg-9"><input type="text" id="id_attribute_' + value.id + '" name="attribute_' + value.id + '" class="form-control" /></div></div>')
+        });
+      }
+    });
 });
 
 $(".modalbutton").click(function() {
@@ -137,7 +148,6 @@ templatelist = {
               }
             } else {
                 changelist.splice(changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()), 1)
-                console.log($("#id_emailtemplate").select2("val") + " " + $(this).attr("name"))
                 if ($("#id_emailtemplate").select2("val") === templatelist[$(this).attr("name")]) {
                   $("#id_emailtemplate").select2("val", "")
                 }
@@ -174,7 +184,6 @@ $(".previewbutton").click(function() {
       url: "{% url "preview-mail" %}",
       data: {"template":template, "device":device}
     }).done(function(data) {
-      console.log(data.body)
       $("#previewModalSubject").html(data.subject);
       $("#previewModalBody").html(data.body);
       $('#previewModal').modal('show');
