@@ -117,7 +117,6 @@ class LoadExtraform(View):
 
 class PreviewMail(View):
     def post(self, request):
-        print request.POST
         template = request.POST["template"]
         device = {
             "currentlending": request.POST.get("device[currentlending]", ""),
@@ -134,9 +133,8 @@ class PreviewMail(View):
             "templending": request.POST.get("device[templending]", ""),
             "webinterface": request.POST.get("device[webinterface]", "")
         }
-        print device
         if template == "":
-            return dajax.json()
+            return HttpResponse("")
 
         if device["manufacturer"] != "":
             device["manufacturer"] = get_object_or_404(Manufacturer, pk=device["manufacturer"])
