@@ -20,6 +20,7 @@ import pystache
 from django.http import QueryDict
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.db.models import Q
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -213,6 +214,7 @@ class AjaxSearch(View):
     def post(self, request):
         search = simplejson.loads(request.POST["search"])
         searchdict = {}
+        textfilter = None
         for searchitem in search:
             key, value = searchitem.items()[0]
             if key == "manufacturer":
@@ -251,12 +253,17 @@ class AjaxSearch(View):
                     searchdict["currentlending__owner__username__icontains"] = [value]
 
             if key == "ipaddress":
-                value = value.split("-", 1)[0]
                 if "ipaddress__address__icontains" in searchdict:
                     searchdict["ipaddress__address__icontains"].append(value)
                 else:
                     searchdict["ipaddress__address__icontains"] = [value]
 
+            if key == "text":
+                textfilter = value
+
         devices = Device.objects.filter(**searchdict).distinct()
+        if textfilter != None:
+            devices = devices.filter(Q(name__icontains=textfilter)|
+                Q(inventorynumber__icontains=textfilter)|Q(serialnumber__icontains=textfilter))
         context = {"device_list": devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
