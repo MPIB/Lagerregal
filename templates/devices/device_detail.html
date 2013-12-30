@@ -119,7 +119,7 @@
 {% if perms.devices.lend_device %}
   <div class="tab-pane active" id="notes">
 <ul class="list-unstyled" style="padding-top:20px;">
-  {% for note in device.notes.all %}
+  {% for note in notes %}
     <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
         <div class="row">
             <div class="col-xs-2 col-md-1">

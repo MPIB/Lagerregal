@@ -64,7 +64,7 @@ class DeviceList(PaginationMixin, ListView):
         return context
 
 class DeviceDetail(DetailView):
-    model = Device
+    queryset = Device.objects.select_related("manufacturer", "devicetype", "currentlending")
     context_object_name = 'device'
 
     def get_context_data(self, **kwargs):
@@ -81,6 +81,7 @@ class DeviceDetail(DetailView):
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
+        context["notes"] = Note.objects.select_related("creator").filter(device=context["device"])
         
         mailinitial = {}
         if context["device"].currentlending != None:
@@ -682,7 +683,7 @@ class RoomList(PaginationMixin, ListView):
     context_object_name = 'room_list'
     
     def get_queryset(self):
-        rooms = Room.objects.select_related().all()
+        rooms = Room.objects.select_related("building").all()
         self.filterstring = self.kwargs.pop("filter", None)
         if self.filterstring:
             rooms = rooms.filter(name__icontains=self.filterstring)

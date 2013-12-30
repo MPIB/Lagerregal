@@ -104,7 +104,7 @@ class LendForm(forms.Form):
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
 '%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y', '%d.%m.%y'))
-    room = forms.ModelChoiceField(Room.objects.all(), required=False)
+    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
 
 class DeviceViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
