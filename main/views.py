@@ -52,7 +52,7 @@ class Home(TemplateView):
         return context
 
 class Globalhistory(PaginationMixin, ListView):
-    queryset = Version.objects.select_related().filter().order_by("-pk")
+    queryset = Version.objects.select_related("revision", "revision__user", "content_type").filter().order_by("-pk")
     context_object_name = "revision_list"
     template_name = 'devices/globalhistory.html'
 
