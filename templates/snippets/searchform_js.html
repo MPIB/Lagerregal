@@ -11,22 +11,40 @@ var visualSearch = VS.init({
       {value: "text", label: "{% trans "Text" %}"},
       {value: "manufacturer", label: "{% trans "Manufacturer" %}"},
       {value: "room", label: "{% trans "Room" %}"},
+      {value: "devicegroup", label: "{% trans "Devicegroup" %}"},
       {value: "devicetype", label: "{% trans "Devicetype" %}"},
       {value: "user", label: "{% trans "User" %}"},
       {value: "ipaddress", label: "{% trans "IP-Address" %}"},
+      {value: "status", label: "{% trans "Status" %}"},
     ]);
   },
   // These are the values that match specific categories, autocompleted
   // in a category's input field.  searchTerm can be used to filter the
   // list on the server-side, prior to providing a list to the widget.
   valueMatches : function(facet, searchTerm, callback) {
-    $.ajax({
-        type: "POST",
-        url: "{% url "load-searchoptions" %}",
-        data: {facet: facet, searchTerm: searchTerm}
-    }).done(function(data) {
-        callback(data)
-    });
+      switch (facet) {
+        case 'status':
+            callback([
+              { value: 'all', label: '{% trans "All" %}' },
+              { value: 'available',   label: '{% trans "Available" %}' },
+              { value: 'active',   label: '{% trans "Active (Default)" %}' },
+              { value: 'lendt',   label: '{% trans "Lendt" %}' },
+              { value: 'archived',   label: '{% trans "Archived" %}' },
+              { value: 'trashed',   label: '{% trans "Trashed" %}' },
+              { value: 'overdue',   label: '{% trans "Overdue" %}' },
+              { value: 'shortterm',   label: '{% trans "Short term" %}' }
+            ]);
+            break;
+        default:
+            $.ajax({
+                type: "POST",
+                url: "{% url "load-searchoptions" %}",
+                data: {facet: facet, searchTerm: searchTerm}
+            }).done(function(data) {
+                callback(data)
+            });
+            break;
+    }
   }
 }
     });

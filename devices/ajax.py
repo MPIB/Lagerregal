@@ -215,6 +215,7 @@ class AjaxSearch(View):
         search = simplejson.loads(request.POST["search"])
         searchdict = {}
         textfilter = None
+        statusfilter = None
         for searchitem in search:
             key, value = searchitem.items()[0]
             if key == "manufacturer":
@@ -224,38 +225,54 @@ class AjaxSearch(View):
                 else:
                     searchdict["manufacturer__in"] = [value]
 
-            if key == "room":
+            elif key == "room":
                 value = value.split("-", 1)[0]
                 if "room__in" in searchdict:
                     searchdict["room__in"].append(value)
                 else:
                     searchdict["room__in"] = [value]
 
-            if key == "devicetype":
+            elif key == "devicetype":
                 value = value.split("-", 1)[0]
                 if "devicetype__in" in searchdict:
                     searchdict["devicetype__in"].append(value)
                 else:
                     searchdict["devicetype__in"] = [value]
 
-            if key == "devicegroup":
+            elif key == "devicegroup":
                 value = value.split("-", 1)[0]
-                if "devicegroup__in" in searchdict:
-                    searchdict["devicegroup__in"].append(value)
+                if "group__in" in searchdict:
+                    searchdict["group__in"].append(value)
                 else:
-                    searchdict["devicegroup__in"] = [value]
+                    searchdict["group__in"] = [value]
 
-            if key == "user":
+            elif key == "user":
                 value = value.split("-", 1)[0]
                 searchdict["currentlending__owner__username__icontains"] = value
 
-            if key == "ipaddress":
+            elif key == "ipaddress":
                 searchdict["ipaddress__address__icontains"] = value
 
-            if key == "text":
+            elif key == "text":
                 textfilter = value
-        print searchdict
+
+            elif key == "status":
+                statusfilter = value
+
+
         devices = Device.objects.filter(**searchdict)
+
+        if statusfilter == "all":
+                pass
+        elif statusfilter == "available":
+            devices = devices.filter(currentlending=None)
+        elif statusfilter == "unavailable":
+            devices = devices.exclude(currentlending=None)
+        elif statusfilter == "archived":
+            devices = devices.exclude(archived=None)
+        else:
+            devices = devices.filter(archived=None, trashed=None)
+
         if textfilter != None:
             devices = devices.filter(Q(name__icontains=textfilter)|
                 Q(inventorynumber__icontains=textfilter)|Q(serialnumber__icontains=textfilter))
