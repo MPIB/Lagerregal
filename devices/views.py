@@ -741,7 +741,10 @@ class RoomDetail(DetailView):
         if "room" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["room"][1]:
-                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["room"], attribute))
+                if attribute == "id":
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["room"], attribute))
+                else:
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["room"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
@@ -859,7 +862,10 @@ class BuildingDetail(DetailView):
         if "building" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["building"][1]:
-                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["building"], attribute))
+                if attribute == "id":
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["building"], attribute))
+                else:
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["building"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
@@ -978,8 +984,11 @@ class ManufacturerDetail(DetailView):
         if "manufacturer" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["manufacturer"][1]:
-                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["object"], attribute))
-
+                if attribute == "id":
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["manufacturer"], attribute))
+                else:
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["manufacturer"], attribute))
+                    
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
