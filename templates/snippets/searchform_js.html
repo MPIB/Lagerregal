@@ -62,7 +62,11 @@ var visualSearch = VS.init({
         }).done(function(data){
             $("#searchresult").html(data)
             $("#searchspinner").fadeOut(100, function() {
-                $("#searchresult").fadeIn(100);
+                $("#searchresult").fadeIn(100, function() {
+                    $("#devicetable").dataTable({
+                        "bFilter": false
+                  });
+              });
             });
         });
     });
