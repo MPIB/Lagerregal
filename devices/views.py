@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
@@ -1070,68 +1070,7 @@ class Search(TemplateView):
         context["breadcrumbs"] = [("", _("Search"))]
         return context
 
-    def form_valid(self, form):
-        search = {}
-        if form.cleaned_data["searchname"] != "":
-            search["name__" + form.cleaned_data["namemodifier"]] = form.cleaned_data["searchname"].strip()
-
-        if form.cleaned_data["lender"] != "":
-            search["currentlending__owner__username__icontains"] = form.cleaned_data["lender"].strip()
-
-        if form.cleaned_data["inventorynumber"] != "":
-            search["inventorynumber__" + form.cleaned_data["inventorynumbermodifier"]] = form.cleaned_data["inventorynumber"].strip()
-
-        if form.cleaned_data["serialnumber"] != "":
-            search["serialnumber__" + form.cleaned_data["serialnumbermodifier"]] = form.cleaned_data["serialnumber"].strip()
-
-        if form.cleaned_data["macaddress"] != "":
-            search["name__" + form.cleaned_data["macaddressmodifier"]] = form.cleaned_data["macaddress"].strip()
-
-        if form.cleaned_data["devicetype"].exists():
-            search["devicetype__in"] = form.cleaned_data["devicetype"].strip()
-
-        if form.cleaned_data["manufacturer"].exists():
-            search["manufacturer__in"] = form.cleaned_data["manufacturer"].strip()
-
-        if form.cleaned_data["room"].exists():
-            search["room__in"] = form.cleaned_data["room"].strip()
-
-
-        if form.cleaned_data["devicegroup"].exists():
-            search["group__in"] = form.cleaned_data["devicegroup"].strip()
-
-        if form.cleaned_data["overdue"] == "y":
-            search["duedate__gt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
-        elif form.cleaned_data["overdue"] == "n":
-            search["duedate__lt"] = datetime.datetime.utcnow().replace(tzinfo=utc)
-
-        if search == {} and form.cleaned_data["ipaddress"] == "":
-            devices = []
-        else:
-
-            devices = Device.objects.filter(**search)
-
-            if form.cleaned_data["ipaddress"] != "":
-                devices = devices.filter(ipaddress__address__icontains=form.cleaned_data["ipaddress"]).distinct()
-
-            viewfilter = form.cleaned_data["viewfilter"]
-            if viewfilter == "all":
-                pass
-            elif viewfilter == "available":
-                devices = devices.filter(currentlending=None)
-            elif viewfilter == "unavailable":
-                devices = devices.exclude(currentlending=None)
-            elif viewfilter == "archived":
-                devices = devices.exclude(archived=None)
-            else:
-                devices = devices.filter(archived=None)
-
-        context = {
-        "form":form,
-        "breadcrumbs":[["", _("Searchresult")]]
-        }
-        if devices == []:
-            context["device_list"] = devices
-        else:
-            context["device_list"] = devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")
-        return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
+    def post(self, request, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context["searchterm"] = self.request.POST["searchname"]
+        return render_to_response(self.template_name, context, RequestContext(self.request))

@@ -2,7 +2,7 @@
  $(document).ready(function() {
 var visualSearch = VS.init({
       container : $('.visual_search'),
-      query     : '',
+      query     : '{{searchterm}}',
       callbacks : {
         search       : function(query, searchCollection) {},
   // These are the facets that will be autocompleted in an empty input.
@@ -63,4 +63,8 @@ var visualSearch = VS.init({
             });
         });
     });
+
+{% if searchterm != "" %}
+$("#searchbutton").trigger("click");
+{% endif %}
 });
