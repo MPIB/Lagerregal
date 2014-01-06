@@ -21,6 +21,7 @@ from django.http import QueryDict
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db.models import Q
+from django.conf import settings
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -274,7 +275,9 @@ class AjaxSearch(View):
             devices = devices.filter(archived=None, trashed=None)
 
         if textfilter != None:
-            devices = devices.filter(Q(name__icontains=textfilter)|
+            if "text" in settings.SEARCHSTRIP:
+                textfilter = textfilter.strip(settings.SEARCHSTRIP["text"])
+            devices = devices.filter(Q(name__icontains=textfilter.strip())|
                 Q(inventorynumber__icontains=textfilter)|Q(serialnumber__icontains=textfilter))
         context = {"device_list": devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
