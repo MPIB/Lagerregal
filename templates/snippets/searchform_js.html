@@ -16,6 +16,7 @@ var visualSearch = VS.init({
       {value: "user", label: "{% trans "User" %}"},
       {value: "ipaddress", label: "{% trans "IP-Address" %}"},
       {value: "status", label: "{% trans "Status" %}"},
+      {value: "id", label: "{% trans "ID" %}"},
     ]);
   },
   // These are the values that match specific categories, autocompleted
@@ -35,6 +36,8 @@ var visualSearch = VS.init({
               { value: 'shortterm',   label: '{% trans "Short term" %}' }
             ]);
             break;
+        case "ipaddress":
+          break;
         default:
             $.ajax({
                 type: "POST",

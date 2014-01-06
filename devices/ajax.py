@@ -260,6 +260,9 @@ class AjaxSearch(View):
             elif key == "status":
                 statusfilter = value
 
+            elif key == "id":
+                context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
+                return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
 
         devices = Device.objects.filter(**searchdict)
 
@@ -278,6 +281,6 @@ class AjaxSearch(View):
             if "text" in settings.SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             devices = devices.filter(Q(name__icontains=textfilter)|
-                Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", "")))
+                Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", ""))|Q(id=textfilter.replace( " ", "")))
         context = {"device_list": devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
