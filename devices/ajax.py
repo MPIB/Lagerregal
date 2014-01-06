@@ -280,7 +280,12 @@ class AjaxSearch(View):
         if textfilter != None:
             if "text" in settings.SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
-            devices = devices.filter(Q(name__icontains=textfilter)|
-                Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", ""))|Q(id=textfilter.replace( " ", "")))
+            try:
+                searchid = int(textfilter.replace(" ", ""))
+                devices = devices.filter(Q(name__icontains=textfilter)|
+                    Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", ""))|Q(id=searchid))
+            except ValueError:
+                devices = devices.filter(Q(name__icontains=textfilter)|
+                    Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", "")))
         context = {"device_list": devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
