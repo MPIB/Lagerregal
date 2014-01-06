@@ -6,6 +6,8 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import rest_framework.reverse
+from rest_framework.permissions import AllowAny
+from django.shortcuts import get_object_or_404
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -119,6 +121,16 @@ class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Lageruser
     serializer_class = UserSerializer
 
+class UserApiAvatar(generics.RetrieveAPIView):
+    permission_classes = (AllowAny,)
+    model = Lageruser
+    serializer_class = UserAvatarSerializer
+
+    def get_object(self, kwargs):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(queryset, username=self.kwargs["username"])
+        self.check_object_permissions(self.request, obj)
+        return obj
 
 class IpAddressApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = IpAddress

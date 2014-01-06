@@ -75,6 +75,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = Lageruser
         exclude = ("password", )
 
+class UserAvatarSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lageruser
+        fields = ("username", "avatar")
+
 class UserListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
 

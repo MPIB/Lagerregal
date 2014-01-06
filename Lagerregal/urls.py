@@ -199,6 +199,7 @@ urlpatterns += format_suffix_patterns(patterns('',
     
     url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
     url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
+    url(r'^api/useravatar/(?P<username>[^/]*)/$', UserApiAvatar.as_view(), name='user-api-avatar'),
 
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ), allowed=["json", "html"])
