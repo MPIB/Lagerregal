@@ -153,6 +153,7 @@
 </ul>
 
 <form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0px">
+  {% csrf_token %}
   <textarea class="form-control" name="note" id="id_note"></textarea>
   <input type="hidden" name="device" value="{{ device.pk }}" />
   <input type="hidden" name="creator" value="{{ user.pk }}" />

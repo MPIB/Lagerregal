@@ -83,7 +83,7 @@ class DeviceDetail(DetailView):
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
-        context["notes"] = Note.objects.select_related("creator").filter(device=context["device"])
+        context["notes"] = Note.objects.select_related("creator").filter(device=context["device"]).order_by("-id")
         
         mailinitial = {}
         if context["device"].currentlending != None:
@@ -988,7 +988,7 @@ class ManufacturerDetail(DetailView):
                     context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["manufacturer"], attribute))
                 else:
                     context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["manufacturer"], attribute))
-                    
+
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
