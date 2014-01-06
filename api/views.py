@@ -126,7 +126,7 @@ class UserApiAvatar(generics.RetrieveAPIView):
     model = Lageruser
     serializer_class = UserAvatarSerializer
 
-    def get_object(self, kwargs):
+    def get_object(self, kwargs=None):
         queryset = self.get_queryset()
         obj = get_object_or_404(queryset, username=self.kwargs["username"])
         self.check_object_permissions(self.request, obj)
