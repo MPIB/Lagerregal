@@ -622,6 +622,24 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         messages.success(request, _("Device was archived."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
+    model = Device
+    template_name = 'devices/device_archive.html'
+
+    def post(self, request, **kwargs):
+        device = self.get_object()
+        if device.trashed == None:
+            device.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
+            device.room = None
+            device.currentlending = None
+        else:
+            device.trashed = None
+        device.save()
+        #reversion.set_comment("Archived")
+        reversion.set_ignore_duplicates(True)
+        messages.success(request, _("Device was trashed."))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
 
 class TemplateList(PaginationMixin, ListView):
     model = Template

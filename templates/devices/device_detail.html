@@ -10,9 +10,12 @@
 {% endblock %}
 
 {% block pullright %}
-{% if device.archived == None %}
-{% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.devices.change_device %}<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a>{% endif %}
+{% if device.archived == None and device.trashed == None %}
+{% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
+{% if perms.devices.change_device %}
+<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a>
+<a   href="#" id="trashbutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a>
+{% endif %}
 <a href="{% url "device-inventoried" device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-ok" style="margin-right:7px"></i>{% trans "Inventoried" %}</a>
 {% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
 {% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
@@ -28,8 +31,11 @@
   {% endif %}
 {% endif %}
 {% else %}
-{% if perms.devices.change_device %}
+{% if device.archived != None and perms.devices.change_device %}
   <a  href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
+
+{% if device.trashed != None and perms.devices.change_device %}
+  <a  href="#" id="trashbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder-open" style="margin-right:7px"></i>{% trans "Remove from Trash" %}</a>{% endif %}
 {% endif %}
 {% endblock %}
 
@@ -277,7 +283,7 @@ content : "<form action='{% url "device-delete" object.id %}' method='post' clas
           "</form>"
           })
 {% endif %}
-{% if perms.devices.chang_edevice %}
+{% if perms.devices.change_edevice %}
 $("#archivebutton").popover({
     html: 'true',
     placement: "bottom",
@@ -288,6 +294,16 @@ content : "<form action='{% url "device-archive" object.id %}' method='post' cla
           "</form>"
           })
 
+$("#trashbutton").popover({
+    html: 'true',
+    placement: "bottom",
+    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+content : "<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+          "</form>"
+          })
+{% endif %}
 {% if perms.devices.lend_device and device.currentlending != None %}
 $("#returnbutton").popover({
     html: 'true',
@@ -312,7 +328,6 @@ content : "<form action='{% url "device-return" object.id %}' method='post' clas
           })
 {% endif %}
 
-{% endif %}
   $(function() {
     $( "#id_duedate" ).datepicker();
   });
