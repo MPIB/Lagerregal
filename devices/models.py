@@ -133,6 +133,10 @@ class Device(models.Model):
         dict["room"] = self.room
         return dict
 
+    @staticmethod
+    def active():
+        return Device.objects.filter(archived=None, trashed=None)
+
 reversion.register(Device, follow=["typeattributevalue_set"], exclude=["archived", "currentlending", "inventoried"])
 reversion.register(TypeAttributeValue)
 

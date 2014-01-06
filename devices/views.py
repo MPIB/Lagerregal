@@ -36,17 +36,19 @@ class DeviceList(PaginationMixin, ListView):
         if self.viewfilter == "all":
             devices = Device.objects.all()
         elif self.viewfilter == "available":
-            devices = Device.objects.filter(currentlending=None)
+            devices = Device.active().filter(currentlending=None)
         elif self.viewfilter == "lendt":
             devices = Device.objects.exclude(currentlending=None)
         elif self.viewfilter == "archived":
             devices = Device.objects.exclude(archived=None)
+        elif self.viewfilter == "trashed":
+            devices = Device.objects.exclude(trashed=None)
         elif self.viewfilter == "overdue":
             devices = Device.objects.filter(currentlending__duedate__lt = datetime.date.today())
         elif self.viewfilter == "temporary":
-            devices = Device.objects.filter(templending=True)
+            devices = Device.active().filter(templending=True)
         else:
-            devices = Device.objects.filter(archived=None)
+            devices = Device.active()
 
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
@@ -1058,7 +1060,7 @@ class NoteCreate(CreateView):
 
 
 
-class Search(FormView):
+class Search(TemplateView):
     template_name = 'devices/search.html'
     form_class = SearchForm
 

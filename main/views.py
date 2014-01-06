@@ -12,8 +12,8 @@ from Lagerregal.utils import PaginationMixin
 
 def get_widget_data():
     context = {}
-    context['device_all'] = Device.objects.all().count()
-    context['device_available'] = Device.objects.filter(currentlending=None).count()
+    context['device_all'] = Device.active().count()
+    context['device_available'] = Device.active().filter(currentlending=None).count()
     context["device_percent"] = 100 - int((float(context["device_available"])/context["device_all"])*100)
     context["device_percentcolor"] = get_progresscolor(context["device_percent"] )
     context['ipaddress_all'] = IpAddress.objects.all().count()
