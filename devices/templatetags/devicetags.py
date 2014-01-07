@@ -59,5 +59,4 @@ def get_range(value):
 
 @register.filter
 def check_bookmark(device, user):
-    print device, user
     return device.bookmarkers.filter(id=user.id).exists()
