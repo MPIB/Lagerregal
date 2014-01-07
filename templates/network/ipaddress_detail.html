@@ -21,6 +21,7 @@
       <tbody>
         <tr><td>Address</td><td>{{ipaddress.address}}</td></tr>
           <tr><td>Device</td><td>{% if ipaddress.device %}<a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a>{% else %}{% trans "Not assigned" %}{% endif %}</td></tr>
+          <tr><td>Last seen</td><td>{{ipaddress.last_seen|default:"never"}}</td></tr>
       </tbody>
     </table>
   </div>
