@@ -11,18 +11,29 @@
 
 {% block pullright %}
 {% if device.archived == None and device.trashed == None %}
-{% if perms.devices.delete_device %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.devices.change_device %}
-<a   href="#" id="archivebutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a>
-<a   href="#" id="trashbutton" data-toggle="popover" class="btn btn-danger pull-right btn-sm" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a>
-{% endif %}
-<a href="{% url "device-inventoried" device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-ok" style="margin-right:7px"></i>{% trans "Inventoried" %}</a>
-{% if perms.devices.create_device %}<a href="{% url 'device-add-copy' device.id %}" class="btn btn-default pull-right btn-sm" style="margin-left:10px"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a>{% endif %}
+<div class="btn-group pull-right" style="margin-left:10px">
+  <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+    {% trans "Manage" %} <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    {% if "device" in LABEL_TEMPLATES %}
+    <li><a href="#" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a></li>
+    {% endif %}
+    {% if perms.devices.change_device %}<li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Inventoried" %}</a></li>{% endif %}
+    {% if perms.devices.create_device %}<li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a></li>{% endif %}
+    {% if perms.devices.change_device or perms.devices.delete_device %}<li class="divider"></li>{% endif %}
+    {% if perms.devices.change_device %}
+    <li><a   href="#" id="archivebutton" data-toggle="popover"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
+    <li><a   href="#" id="trashbutton" data-toggle="popover"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
+    {% endif %}
+    {% if perms.devices.delete_device %}<li><a  href="#" id="deletebutton" data-toggle="popover"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a></li>{% endif %}
+  </ul>
+</div>
+
+
 {% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% if perms.devices.change_device or perms.devices.lend_device %}<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal" data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>{% endif %}
-{% if "device" in LABEL_TEMPLATES %}
-<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
-{% endif %}
+
 {% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
     <a href="#"  id="returnbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
@@ -31,6 +42,8 @@
   {% endif %}
 {% endif %}
 {% else %}
+
+
 {% if device.archived != None and perms.devices.change_device %}
   <a  href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
 
@@ -276,32 +289,32 @@ $("#id_ipaddresses").select2({
 {% if perms.devices.delete_device %}
 $("#deletebutton").popover({
     html: 'true',
-    placement: "bottom",
+    placement: "left",
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;' />"+
           "</form>"
           })
 {% endif %}
 {% if perms.devices.change_edevice %}
 $("#archivebutton").popover({
     html: 'true',
-    placement: "bottom",
+    placement: "left",
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default' onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
           "</form>"
           })
 
 $("#trashbutton").popover({
     html: 'true',
-    placement: "bottom",
+    placement: "left",
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default' onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
           "</form>"
           })
 {% endif %}
@@ -312,7 +325,7 @@ $("#returnbutton").popover({
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
           "</form>"
           })
 {% endif %}
@@ -324,7 +337,7 @@ $(".deletenotebutton").popover({
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
           "</form>"
           })
 {% endif %}
@@ -352,4 +365,8 @@ $("#id_mailtemplate").change(function() {
   }
 });
   });
+
+$('.dropdown-menu li a').click(function(e) {
+    e.stopPropagation();
+});
 {% endblock %}
