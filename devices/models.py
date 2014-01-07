@@ -95,7 +95,7 @@ class Device(models.Model):
     macaddress = models.CharField(_('MAC Address'), max_length=40, blank=True)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, on_delete=models.SET_NULL)
     hostname = models.CharField(_('Hostname'), max_length=40, blank=True)
-    description = models.CharField(_('Description'), max_length=1000, blank=True)
+    description = models.CharField(_('Description'), max_length=10000, blank=True)
     devicetype = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
@@ -185,7 +185,7 @@ class Template(models.Model):
 
 class Note(models.Model):
     device = models.ForeignKey(Device, related_name="notes")
-    note = models.CharField(max_length=1000)
+    note = models.CharField(max_length=5000)
     creator = models.ForeignKey(Lageruser)
     created_at = models.DateTimeField(auto_now_add = True)
 
