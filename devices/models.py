@@ -81,6 +81,10 @@ class Manufacturer(models.Model):
 
 reversion.register(Manufacturer)
 
+class Bookmark(models.Model):
+    device = models.ForeignKey("Device")
+    user = models.ForeignKey(Lageruser)
+
 
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add = True, blank=True, null=True)
@@ -103,6 +107,7 @@ class Device(models.Model):
     archived = models.DateTimeField(null=True, blank=True)
     trashed = models.DateTimeField(null=True, blank=True)
     inventoried = models.DateTimeField(null=True, blank=True)
+    bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks")
 
     def __unicode__(self):
         return self.name
@@ -137,7 +142,8 @@ class Device(models.Model):
     def active():
         return Device.objects.filter(archived=None, trashed=None)
 
-reversion.register(Device, follow=["typeattributevalue_set"], exclude=["archived", "currentlending", "inventoried"])
+reversion.register(Device, follow=["typeattributevalue_set"], exclude=
+    ["archived", "currentlending", "inventoried", "bookmarks"])
 reversion.register(TypeAttributeValue)
 
 
@@ -189,3 +195,4 @@ class Note(models.Model):
 
     def get_absolute_url(self):
         return reverse("device-detail", kwargs={'pk': self.device.pk})
+

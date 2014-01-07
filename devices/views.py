@@ -2,7 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
 from django.contrib.auth.models import Group
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
@@ -640,6 +640,21 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         messages.success(request, _("Device was trashed."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+
+class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
+    model = Device
+
+    def post(self, request, **kwargs):
+        device = self.get_object()
+        if device.bookmarkers.filter(id=request.user.id).exists():
+            bookmark = Bookmark.objects.get(user=request.user, device=device)
+            bookmark.delete()
+            messages.success(request, _("Bookmark was removed"))
+        else:
+            bookmark = Bookmark(device=device, user=request.user)
+            bookmark.save()
+            messages.success(request, _("Device was bookmarked."))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class TemplateList(PaginationMixin, ListView):
     model = Template

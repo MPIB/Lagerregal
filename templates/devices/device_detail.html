@@ -31,7 +31,17 @@
 </div>
 
 
-{% if perms.devices.change_device %}<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+{% if perms.devices.change_device %}
+<form action='{% url "device-bookmark" object.id %}' method='post' class='form-inline pull-right'>{% csrf_token %}
+  {% with is_bookmarked=device|check_bookmark:user %}
+  {% if is_bookmarked  %}
+    <input type='submit' value='{% trans "remove Bookmark" %}' class='btn btn-danger btn-sm' style='margin-left:10px;'/>
+  {% else %}
+    <input type='submit' value='{% trans "Bookmark" %}' class='btn btn-danger btn-sm' style='margin-left:10px;'/>
+  {% endif %}
+  {% endwith %}
+</form>
+<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% if perms.devices.change_device or perms.devices.lend_device %}<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal" data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>{% endif %}
 
 {% if perms.devices.lend_device %}
