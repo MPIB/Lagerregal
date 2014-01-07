@@ -8,7 +8,7 @@ import reversion
 class IpAddress(models.Model):
     address = models.IPAddressField(unique=True)
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
-    last_seen = models.DateTimeField(auto_now=True, null=True, blank=True)
+    last_seen = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.address
