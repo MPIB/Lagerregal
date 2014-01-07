@@ -8,21 +8,50 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'Note'
-        db.create_table(u'devices_note', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('device', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Device'])),
-            ('note', self.gf('django.db.models.fields.CharField')(max_length=1000)),
-            ('creator', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser'])),
-            ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-        ))
-        db.send_create_signal(u'devices', ['Note'])
+        # Removing unique constraint on 'Room', fields ['name']
+        db.delete_unique(u'devices_room', ['name'])
 
+
+        # Changing field 'Room.building'
+        db.alter_column(u'devices_room', 'building_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Building'], null=True, on_delete=models.SET_NULL))
+
+        # Changing field 'Device.group'
+        db.alter_column(u'devices_device', 'group_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, on_delete=models.SET_NULL, to=orm['devicegroups.Devicegroup']))
+
+        # Changing field 'Device.currentlending'
+        db.alter_column(u'devices_device', 'currentlending_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, on_delete=models.SET_NULL, to=orm['devices.Lending']))
+
+        # Changing field 'Device.devicetype'
+        db.alter_column(u'devices_device', 'devicetype_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devicetypes.Type'], null=True, on_delete=models.SET_NULL))
+
+        # Changing field 'Device.room'
+        db.alter_column(u'devices_device', 'room_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Room'], null=True, on_delete=models.SET_NULL))
+
+        # Changing field 'Device.manufacturer'
+        db.alter_column(u'devices_device', 'manufacturer_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Manufacturer'], null=True, on_delete=models.SET_NULL))
 
     def backwards(self, orm):
-        # Deleting model 'Note'
-        db.delete_table(u'devices_note')
 
+        # Changing field 'Room.building'
+        db.alter_column(u'devices_room', 'building_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Building'], null=True))
+        # Adding unique constraint on 'Room', fields ['name']
+        db.create_unique(u'devices_room', ['name'])
+
+
+        # Changing field 'Device.group'
+        db.alter_column(u'devices_device', 'group_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['devicegroups.Devicegroup']))
+
+        # Changing field 'Device.currentlending'
+        db.alter_column(u'devices_device', 'currentlending_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['devices.Lending']))
+
+        # Changing field 'Device.devicetype'
+        db.alter_column(u'devices_device', 'devicetype_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devicetypes.Type'], null=True))
+
+        # Changing field 'Device.room'
+        db.alter_column(u'devices_device', 'room_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Room'], null=True))
+
+        # Changing field 'Device.manufacturer'
+        db.alter_column(u'devices_device', 'manufacturer_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['devices.Manufacturer'], null=True))
 
     models = {
         u'auth.group': {
@@ -63,21 +92,21 @@ class Migration(SchemaMigration):
         },
         u'devices.device': {
             'Meta': {'object_name': 'Device'},
-            'archived': ('django.db.models.fields.DateTimeField', [], {'null': 'True'}),
+            'archived': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']"}),
-            'currentlending': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'currentdevice'", 'null': 'True', 'to': u"orm['devices.Lending']"}),
+            'currentlending': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'currentdevice'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['devices.Lending']"}),
             'description': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'blank': 'True'}),
-            'devicetype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devicetypes.Type']", 'null': 'True', 'blank': 'True'}),
-            'group': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'devices'", 'null': 'True', 'to': u"orm['devicegroups.Devicegroup']"}),
+            'devicetype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devicetypes.Type']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'devices'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['devicegroups.Devicegroup']"}),
             'hostname': ('django.db.models.fields.CharField', [], {'max_length': '40', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'inventorynumber': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'inventoried': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'inventorynumber': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'macaddress': ('django.db.models.fields.CharField', [], {'max_length': '40', 'blank': 'True'}),
-            'manufacturer': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Manufacturer']", 'null': 'True', 'blank': 'True'}),
+            'manufacturer': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Manufacturer']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'room': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Room']", 'null': 'True', 'blank': 'True'}),
+            'room': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Room']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'serialnumber': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'templending': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'trashed': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
@@ -102,15 +131,15 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Note'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']"}),
-            'device': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Device']"}),
+            'device': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notes'", 'to': u"orm['devices.Device']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'note': ('django.db.models.fields.CharField', [], {'max_length': '1000'})
         },
         u'devices.room': {
             'Meta': {'object_name': 'Room'},
-            'building': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Building']", 'null': 'True'}),
+            'building': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Building']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
         },
         u'devices.template': {
             'Meta': {'object_name': 'Template'},
@@ -132,7 +161,7 @@ class Migration(SchemaMigration):
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -143,7 +172,7 @@ class Migration(SchemaMigration):
             'pagelength': ('django.db.models.fields.IntegerField', [], {'default': '30'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'timezone': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         }
     }
