@@ -49,6 +49,8 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<pk>[0-9]*)/inventoried/$', permission_required("devices.change_device")(DeviceInventoried.as_view()), name="device-inventoried"),
     url(r'^devices/(?P<pk>[0-9]*)/bookmark/$', permission_required("devices.change_device")(DeviceBookmark.as_view()), name="device-bookmark"),
     url(r'^devices/(?P<pk>[0-9]*)/notes/create/$', permission_required("devices.change_device")(NoteCreate.as_view()), name="device-note-create"),
+    url(r'^devices/(?P<pk>[0-9]*)/notes/edit/$', permission_required("devices.change_device")(NoteUpdate.as_view()), name="device-note-edit"),
+    url(r'^devices/(?P<device>[0-9]*)/notes/(?P<pk>[0-9]*)/delete/$', permission_required("devices.change_device")(NoteDelete.as_view()), name="device-note-delete"),
 
     url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
     url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),

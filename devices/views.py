@@ -1100,7 +1100,37 @@ class NoteCreate(CreateView):
             ("", _("Create new note"))]
         return context
 
+class NoteUpdate(UpdateView):
+    model = Note
+    template_name = 'devices/base_form.html'
 
+    def get_success_url(self):
+        return reverse_lazy("device-detail", kwargs={"pk":self.object.device.pk})
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(NoteUpdate, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["object"].device.pk}), context["object"].device.name),
+            ("", _("Edit"))]
+        return context
+
+class NoteDelete(DeleteView):
+    model = Note
+    template_name = 'devices/base_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy("device-detail", kwargs={"pk":self.object.device.pk})
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(NoteDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":context["object"].device.pk}), context["object"].device.name),
+            ("", _("Delete"))]
+        return context
 
 class Search(TemplateView):
     template_name = 'devices/search.html'

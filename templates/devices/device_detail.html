@@ -162,12 +162,15 @@
                     {{note.note|linebreaks}}
                 </div>
                 <div class="action">
-                    <button type="button" class="btn btn-primary btn-xs" title="Edit">
+                    <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
                         <i class="fa fa-edit"></i>
                     </button>
-                    <button type="button" class="btn btn-danger btn-xs" title="Delete">
+                    <form action='{% url "device-note-delete" device.id note.id %}' method='post' class='form-inline pull-left' style="margin-left:10px">{% csrf_token %}
+                    <button class="btn btn-danger btn-xs" title="Delete" type="submit">
                         <i class="fa fa-trash-o"></i>
                     </button>
+                    </form>
+                    
                 </div>
             </div>
         </div>
