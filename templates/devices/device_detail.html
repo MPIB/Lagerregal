@@ -161,6 +161,7 @@
                 <div class="comment-text">
                     {{note.note|linebreaks}}
                 </div>
+                {% if note.creator == user %}
                 <div class="action">
                     <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
                         <i class="fa fa-edit"></i>
@@ -170,8 +171,8 @@
                         <i class="fa fa-trash-o"></i>
                     </button>
                     </form>
-                    
                 </div>
+                {% endif %}
             </div>
         </div>
     </li>
