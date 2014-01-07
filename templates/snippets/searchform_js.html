@@ -52,23 +52,24 @@ var visualSearch = VS.init({
 }
     });
 
+var l = Ladda.create(document.querySelector( '#searchbutton' ));
+
     $("#searchbutton").click(function(){
         $("#searchresult").fadeOut(100);
-            $("#searchspinner").fadeIn(100);
+            l.start()
         $.ajax({
             type: "POST",
             url: "{% url "ajax-search" %}",
             data: {"search": JSON.stringify(visualSearch.searchQuery.facets())}
         }).done(function(data){
             $("#searchresult").html(data)
-            $("#searchspinner").fadeOut(100, function() {
-                $("#searchresult").fadeIn(100, function() {
-                    $("#devicetable").dataTable({
+            $("#devicetable").dataTable({
                         "bFilter": false
-                  });
+            });
+                $("#searchresult").fadeIn(100, function() {
+                    l.stop();
               });
             });
-        });
     });
 
 {% if searchterm != None %}
