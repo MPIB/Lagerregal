@@ -311,7 +311,7 @@ content : "<form action='{% url "device-delete" object.id %}' method='post' clas
           "</form>"
           })
 {% endif %}
-{% if perms.devices.change_edevice %}
+{% if perms.devices.change_device %}
 $("#archivebutton").popover({
     html: 'true',
     placement: "left",
