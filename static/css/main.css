@@ -86,6 +86,7 @@ body {
 
 table tr th, table tr td {
     font-size:0.85em;
+    padding:5px !important;
 }
 
 .commentcol {
