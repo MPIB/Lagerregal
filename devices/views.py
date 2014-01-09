@@ -614,6 +614,9 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
             device.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
             device.currentlending = None
+            for ip in device.ipaddress_set.all():
+                ip.device = None
+                ip.save()
         else:
             device.archived = None
         device.save()
@@ -632,6 +635,9 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
             device.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
             device.currentlending = None
+            for ip in device.ipaddress_set.all():
+                ip.device = None
+                ip.save()
         else:
             device.trashed = None
         device.save()
