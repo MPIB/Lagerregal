@@ -23,10 +23,10 @@
     {% if perms.devices.create_device %}<li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a></li>{% endif %}
     {% if perms.devices.change_device or perms.devices.delete_device %}<li class="divider"></li>{% endif %}
     {% if perms.devices.change_device %}
-    <li><a   href="#" id="archivebutton" data-toggle="popover"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
-    <li><a   href="#" id="trashbutton" data-toggle="popover"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
+    <li><a   href="#" id="archivebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
+    <li><a   href="#" id="trashbutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
     {% endif %}
-    {% if perms.devices.delete_device %}<li><a  href="#" id="deletebutton" data-toggle="popover"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a></li>{% endif %}
+    {% if perms.devices.delete_device %}<li><a  href="#" id="deletebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a></li>{% endif %}
   </ul>
 </div>
 
@@ -380,7 +380,7 @@ $("#id_mailtemplate").change(function() {
 });
   });
 
-$('.dropdown-menu li a').click(function(e) {
+$('.dropdown-cancel').click(function(e) {
     e.stopPropagation();
 });
 {% endblock %}
