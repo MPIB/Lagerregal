@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy
 from network.models import IpAddress
 from network.forms import ViewForm
+from devices.forms import FilterForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -12,6 +13,7 @@ class IpAddressList(PaginationMixin, ListView):
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "all")
+        self.filterstring = self.kwargs.pop("search", None)
         if self.viewfilter == "all":
             addresses = IpAddress.objects.all()
         elif self.viewfilter == "free":
@@ -20,11 +22,17 @@ class IpAddressList(PaginationMixin, ListView):
             addresses = IpAddress.objects.exclude(device=None)
         else:
             addresses = IpAddress.objects.all()
+        if self.filterstring:
+            addresses = addresses.filter(address__icontains=self.filterstring)
         return addresses.values("id", "address", "device__pk", "device__name")
 
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
         context["breadcrumbs"] = [(reverse("device-list"), _("IP-Addresses"))]
         
         if context["is_paginated"] and context["page_obj"].number > 1:

@@ -7,6 +7,7 @@ IP-Addresses
 {% endblock %}
 
 {% block pullright %}
+{{filterform.filterstring}}
 {{viewform.viewfilter}}
 {% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
 {% endblock %}
@@ -45,11 +46,17 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_viewfilter').change(function() {
-    window.location = "/ipaddresses/page/1/filter/" + $(this).val()
+$('#id_viewfilter').change(function() {
+    if ($("#id_filterstring").val() != "") {
+        window.location = "/ipaddresses/page/1/filter/" + $(this).val() + "/search/" + $("#id_filterstring").val()
+    } else {
+        window.location = "/ipaddresses/page/1/filter/" + $(this).val()
+    }
+});
+$('#id_filterstring').change(function() {
+    window.location = "/ipaddresses/page/1/filter/" + $("#id_viewfilter").val() + "/search/" + $(this).val()
 });
 
 });
-
 {% include "snippets/ipaddresspagination_js.html" with pageurl="ipaddress-list" %}
 {% endblock %}
