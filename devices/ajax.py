@@ -22,6 +22,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db.models import Q
 from django.conf import settings
+from django.utils.translation import ugettext_lazy as _
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -217,10 +218,15 @@ class AjaxSearch(View):
         searchdict = {}
         textfilter = None
         statusfilter = None
+        displayed_columns  = []
+        searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name"]
         for searchitem in search:
             key, value = searchitem.items()[0]
             if key == "manufacturer":
                 value = value.split("-", 1)[0]
+                if len(displayed_columns) < 8:
+                    displayed_columns.append(("manufacturer", _("Manufacturer")))
+                    searchvalues.append("manufacturer__name")
                 if "manufacturer__in" in searchdict:
                     searchdict["manufacturer__in"].append(value)
                 else:
@@ -242,6 +248,9 @@ class AjaxSearch(View):
 
             elif key == "devicegroup":
                 value = value.split("-", 1)[0]
+                if len(displayed_columns) < 8:
+                    displayed_columns.append(("group", _("Group")))
+                    searchvalues.append("group__name")
                 if "group__in" in searchdict:
                     searchdict["group__in"].append(value)
                 else:
@@ -252,6 +261,9 @@ class AjaxSearch(View):
                 searchdict["currentlending__owner__username__icontains"] = value
 
             elif key == "ipaddress":
+                if len(displayed_columns) < 8:
+                    displayed_columns.append(("ipaddress", _("IP-Address")))
+                    searchvalues.append("ipaddress__address")
                 searchdict["ipaddress__address__icontains"] = value
 
             elif key == "text":
@@ -287,5 +299,8 @@ class AjaxSearch(View):
             except ValueError:
                 devices = devices.filter(Q(name__icontains=textfilter)|
                     Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", "")))
-        context = {"device_list": devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
+        context = {
+            "device_list": devices.values(*searchvalues),
+            "columns": displayed_columns
+        }
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))

@@ -6,6 +6,9 @@
       <th>{% trans "Inventorynumber" %}</th>
       <th>{% trans "Devicetype" %}</th>
       <th>{% trans "Room" %}</th>
+      {% for column in columns %}
+        <th>{{column.1}}</th>
+      {% endfor %}
     </tr>
   </thead>
   <tbody>
@@ -15,6 +18,14 @@
       <td>{{ device.inventorynumber }}</td>
       <td >{{ device.devicetype__name }}</td>
       <td>{{ device.room__name }} ({{device.room__building__name}})</td>
+      {% for column in columns %}
+        <td>
+          {% if column.0 == "ipaddress" %}{{device.ipaddress__address}}
+          {% elif column.0 == "manufacturer" %}{{device.manufacturer__name}}
+          {% elif column.0 == "group" %}{{device.group__name}}
+          {% endif %}
+        </td>
+      {% endfor %}
     </tr>
      {% endfor %}
   </tbody>
