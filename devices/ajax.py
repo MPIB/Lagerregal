@@ -264,7 +264,10 @@ class AjaxSearch(View):
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("ipaddress", _("IP-Address")))
                     searchvalues.append("ipaddress__address")
-                searchdict["ipaddress__address__icontains"] = value
+                if value.lower() == "null":
+                    searchdict["ipaddress"] = None
+                else:
+                    searchdict["ipaddress__address__icontains"] = value
 
             elif key == "text":
                 textfilter = value
