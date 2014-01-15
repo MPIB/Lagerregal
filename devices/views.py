@@ -47,6 +47,9 @@ class DeviceList(PaginationMixin, ListView):
             devices = Device.objects.filter(currentlending__duedate__lt = datetime.date.today())
         elif self.viewfilter == "temporary":
             devices = Device.active().filter(templending=True)
+        elif self.viewfilter == "bookmark":
+            if self.request.user.is_authenticated:
+                devices = self.request.user.bookmarks.all()
         else:
             devices = Device.active()
 
