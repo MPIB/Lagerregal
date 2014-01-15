@@ -4,7 +4,7 @@
 <div class="pagination-centered">
   <ul class="pager">
         {% if page_obj.has_previous %}
-        <li class="previous"><a href="{% url listurl 1 %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
+        <li class="previous"><a href="{% url listurl 1 viewform.viewsorting.value viewform.viewfilter.value %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
         <li class="previous"><a href="{% url listurl page_obj.previous_page_number viewform.viewsorting.value viewform.viewfilter.value %}"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
         {% else %}
           <li class="previous disabled"><a><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
