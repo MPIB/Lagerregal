@@ -258,7 +258,13 @@ class AjaxSearch(View):
 
             elif key == "user":
                 value = value.split("-", 1)[0]
-                searchdict["currentlending__owner__username__icontains"] = value
+                if len(displayed_columns) < 8:
+                    displayed_columns.append(("user", _("User")))
+                    searchvalues.append("currentlending__owner__username")
+                if value.lower() == "null":
+                    searchdict["currentlending"] = None
+                else:
+                    searchdict["currentlending__owner__id"] = value
 
             elif key == "ipaddress":
                 if len(displayed_columns) < 8:

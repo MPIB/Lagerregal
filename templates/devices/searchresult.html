@@ -23,6 +23,7 @@
           {% if column.0 == "ipaddress" %}{{device.ipaddress__address}}
           {% elif column.0 == "manufacturer" %}{{device.manufacturer__name}}
           {% elif column.0 == "group" %}{{device.group__name}}
+          {% elif column.0 == "user" %}{{device.currentlending__user__username}}
           {% endif %}
         </td>
       {% endfor %}
