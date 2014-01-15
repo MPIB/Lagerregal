@@ -10,8 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
 from Lagerregal.utils import PaginationMixin
 
-def get_widget_data(widgetlist=[]):
-    print widgetlist
+def get_widget_data(user, widgetlist=[]):
     context = {}
     if "statistics" in widgetlist:
         context['device_all'] = Device.active().count()
@@ -35,6 +34,8 @@ def get_widget_data(widgetlist=[]):
         context["recentlendings"] = Lending.objects.select_related().all().order_by("-pk")[:10]
     if "edithistory" in widgetlist:
         context['shorttermdevices'] = Device.objects.filter(templending=True)[:10]
+    if "bookmarks" in widgetlist:
+        context["bookmarks"] = user.bookmarks.all()[:10]
     return context
 
 class Home(TemplateView):
@@ -47,7 +48,7 @@ class Home(TemplateView):
             context["widgets_right"] = DashboardWidget.objects.filter(user=self.request.user, column="r").order_by("index")
             userwidget_list = dict(widgets)
             widgetlist =  [x[0] for x in DashboardWidget.objects.filter(user=self.request.user).values_list("widgetname")]
-            context.update(get_widget_data(widgetlist))
+            context.update(get_widget_data(self.request.user, widgetlist))
             for w in context["widgets_left"]:
                 del userwidget_list[w.widgetname]
 

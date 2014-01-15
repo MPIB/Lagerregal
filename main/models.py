@@ -10,7 +10,8 @@ widgets = {
     "statistics": _("Statistics"),
     "groups": _("Groups"),
     "recentlendings": _("Recent lendings"),
-    "shorttermdevices": _("Devices for short term lending")
+    "shorttermdevices": _("Devices for short term lending"),
+    "bookmarks": _("Bookmarked Devices")
 }
 
 def get_progresscolor(percent):
@@ -34,6 +35,7 @@ def create_dashboard(sender, instance, created, **kwargs):
         DashboardWidget(column="l", index=0, widgetname="statistics", user=instance, minimized=False).save()
         DashboardWidget(column="l", index=1, widgetname="newestdevices", user=instance, minimized=False).save()
         DashboardWidget(column="l", index=2, widgetname="overdue", user=instance, minimized=False).save()
+        DashboardWidget(column="r", index=0, widgetname="bookmarks", user=instance, minimized=False).save()
         DashboardWidget(column="r", index=0, widgetname="edithistory", user=instance, minimized=False).save()
     
 
