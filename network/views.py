@@ -13,7 +13,7 @@ class IpAddressList(PaginationMixin, ListView):
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "all")
-        self.filterstring = self.kwargs.pop("search", None)
+        self.filterstring = self.kwargs.pop("search", "")
         if self.viewfilter == "all":
             addresses = IpAddress.objects.all()
         elif self.viewfilter == "free":
@@ -22,7 +22,7 @@ class IpAddressList(PaginationMixin, ListView):
             addresses = IpAddress.objects.exclude(device=None)
         else:
             addresses = IpAddress.objects.all()
-        if self.filterstring:
+        if self.filterstring != "":
             addresses = addresses.filter(address__icontains=self.filterstring)
         return addresses.values("id", "address", "device__pk", "device__name")
 
