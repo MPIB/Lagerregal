@@ -29,7 +29,7 @@ class WidgetAdd(View):
             widget.widgetname = widgetname
             widget.user = request.user
             widget.save()
-            context = get_widget_data()
+            context = get_widget_data([widgetname, ])
             context["usestable"] = True
             context["hidecontrols"] = True
             return HttpResponse(render_to_string('snippets/widgets/{0}.html'.format(widgetname), context))
