@@ -49,8 +49,11 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Device
     serializer_class = DeviceSerializer
 
-    def get_object(self, query):
-        device = super(DeviceApiDetail, self).get_object(query)
+    def get_object(self, query=None):
+        if query:
+            device = super(DeviceApiDetail, self).get_object(query)
+        else:
+            device = super(DeviceApiDetail, self).get_object()
         device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
         return device
 
