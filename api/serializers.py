@@ -55,6 +55,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     ip_addresses = serializers.SlugRelatedField(many=True, source='ipaddress_set', slug_field="address")
     creator = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     currentlending = LendingSerializer()
+    bookmarked = serializers.BooleanField()
 
     class Meta:
         model = Device

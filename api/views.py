@@ -49,9 +49,13 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Device
     serializer_class = DeviceSerializer
 
+    def get_object(self, query):
+        device = super(DeviceApiDetail, self).get_object(query)
+        device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
+        return device
+
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
-        print request.POST
         device = Device.objects.get(pk=pk)
         if device.bookmarkers.filter(id=request.user.id).exists():
             bookmark = Bookmark.objects.get(user=request.user, device=device)
@@ -61,7 +65,6 @@ class DeviceApiBookmark(APIView):
             bookmark = Bookmark(device=device, user=request.user)
             bookmark.save()
             if "note" in request.POST:
-                print "bla"
                 note = Note()
                 note.device = device
                 note.creator = request.user
