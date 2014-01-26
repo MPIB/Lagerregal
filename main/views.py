@@ -12,22 +12,27 @@ from Lagerregal.utils import PaginationMixin
 
 def get_widget_data(user, widgetlist=[]):
     context = {}
+    context["today"] = datetime.date.today()
     if "statistics" in widgetlist:
         context['device_all'] = Device.active().count()
         context['device_available'] = Device.active().filter(currentlending=None).count()
-        context["device_percent"] = 100 - int((float(context["device_available"])/context["device_all"])*100)
+        context["device_percent"] = 100 - int((float(context["device_available"]
+            )/context["device_all"])*100)
         context["device_percentcolor"] = get_progresscolor(context["device_percent"] )
         context['ipaddress_all'] = IpAddress.objects.all().count()
         context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
-        context["ipaddress_percent"] = 100 - int((float(context["ipaddress_available"])/context["ipaddress_all"])*100)
+        context["ipaddress_percent"] = 100 - int((float(context["ipaddress_available"]
+            )/context["ipaddress_all"])*100)
         context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"] )
     if "edithistory" in widgetlist:
-        context['revisions'] = Version.objects.select_related("revision", "revision__user", "content_type").filter().order_by("-pk")[:20]
+        context['revisions'] = Version.objects.select_related("revision",
+            "revision__user", "content_type").filter().order_by("-pk")[:20]
     if "newestdevices" in widgetlist:
         context['newest_devices'] = Device.objects.select_related().all().order_by("-pk")[:10]
-        context["today"] = datetime.date.today()
     if "overdue" in widgetlist:
-        context["overdue"] = Device.objects.select_related("currentlending", "currentlending__owner").filter(currentlending__duedate__lt = context["today"]).order_by("currentlending__duedate")[:10]
+        context["overdue"] = Device.objects.select_related("currentlending",
+            "currentlending__owner").filter(currentlending__duedate__lt = context["today"]
+            ).order_by("currentlending__duedate")[:10]
     if "groups" in widgetlist:
         context["groups"] = Devicegroup.objects.all()
     if "recentlendings" in widgetlist:
@@ -49,10 +54,13 @@ class Home(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
         if self.request.user.is_staff:
-            context["widgets_left"] = DashboardWidget.objects.filter(user=self.request.user, column="l").order_by("index")
-            context["widgets_right"] = DashboardWidget.objects.filter(user=self.request.user, column="r").order_by("index")
+            context["widgets_left"] = DashboardWidget.objects.filter(user=self.request.user, column="l"
+                ).order_by("index")
+            context["widgets_right"] = DashboardWidget.objects.filter(user=self.request.user, column="r"
+                ).order_by("index")
             userwidget_list = dict(widgets)
-            widgetlist =  [x[0] for x in DashboardWidget.objects.filter(user=self.request.user).values_list("widgetname")]
+            widgetlist =  [x[0] for x in DashboardWidget.objects.filter(user=self.request.user
+                ).values_list("widgetname")]
             context.update(get_widget_data(self.request.user, widgetlist))
             for w in context["widgets_left"]:
                 del userwidget_list[w.widgetname]
@@ -67,7 +75,8 @@ class Home(TemplateView):
         return context
 
 class Globalhistory(PaginationMixin, ListView):
-    queryset = Version.objects.select_related("revision", "revision__user", "content_type").filter().order_by("-pk")
+    queryset = Version.objects.select_related("revision", "revision__user", "content_type"
+        ).filter().order_by("-pk")
     context_object_name = "revision_list"
     template_name = 'devices/globalhistory.html'
 
