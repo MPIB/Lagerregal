@@ -36,6 +36,11 @@ def get_widget_data(user, widgetlist=[]):
         context['shorttermdevices'] = Device.objects.filter(templending=True)[:10]
     if "bookmarks" in widgetlist:
         context["bookmarks"] = user.bookmarks.all()[:10]
+    if "returnsoon" in widgetlist:
+        soon = context["today"] + datetime.timedelta(days=10)
+        context["returnsoon"] = Device.objects.select_related("currentlending", 
+            "currentlending__owner").filter(currentlending__duedate__lte = soon, 
+            currentlending__duedate__gt = context["today"]).order_by("currentlending__duedate")[:10]
     return context
 
 class Home(TemplateView):

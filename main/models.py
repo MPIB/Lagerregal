@@ -11,7 +11,8 @@ widgets = {
     "groups": _("Groups"),
     "recentlendings": _("Recent lendings"),
     "shorttermdevices": _("Devices for short term lending"),
-    "bookmarks": _("Bookmarked Devices")
+    "bookmarks": _("Bookmarked Devices"),
+    "returnsoon": _("Devices, that are due soon")
 }
 
 def get_progresscolor(percent):
