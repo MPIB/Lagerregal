@@ -285,6 +285,12 @@ class AjaxSearch(View):
                 context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
                 return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
 
+            elif key == "shortterm":
+                if value.lower() == "yes":
+                    searchdict["templending"] = True
+                else:
+                    searchdict["templending"] = False
+
         devices = Device.objects.filter(**searchdict)
 
         if statusfilter == "all":

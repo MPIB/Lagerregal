@@ -17,6 +17,7 @@ var visualSearch = VS.init({
       {value: "ipaddress", label: "{% trans "IP-Address" %}"},
       {value: "status", label: "{% trans "Status" %}"},
       {value: "id", label: "{% trans "ID" %}"},
+      { value: 'shortterm',   label: '{% trans "Short term" %}' }
     ]);
   },
   // These are the values that match specific categories, autocompleted
@@ -32,11 +33,18 @@ var visualSearch = VS.init({
               { value: 'lendt',   label: '{% trans "Lendt" %}' },
               { value: 'archived',   label: '{% trans "Archived" %}' },
               { value: 'trashed',   label: '{% trans "Trashed" %}' },
-              { value: 'overdue',   label: '{% trans "Overdue" %}' },
-              { value: 'shortterm',   label: '{% trans "Short term" %}' }
+              { value: 'overdue',   label: '{% trans "Overdue" %}' }
             ]);
             break;
         case "ipaddress":
+          break;
+        case "text":
+          break;
+        case "shortterm":
+          callback([
+              { value: 'yes', label: '{% trans "Yes" %}' },
+              { value: 'no',   label: '{% trans "No" %}' },
+            ]);
           break;
         default:
             $.ajax({
