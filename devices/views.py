@@ -1153,5 +1153,25 @@ class Search(TemplateView):
 
     def post(self, request, **kwargs):
         context = self.get_context_data(**kwargs)
-        context["searchterm"] = self.request.POST["searchname"]
+        searchlist = self.request.POST["searchname"].split(" ")
+        for i, item in enumerate(searchlist):
+            if "." in item:
+                isIP = True
+                for element in item.split("."):
+                    try:
+                        intelement = int(element)
+                        if not (intelement >= 0 and intelement <= 255):
+                            isIP = False
+                    except:
+                        isIP = False
+                if isIP:
+                    searchlist[i] = "ipaddress: " + item
+            elif len(item) == 7:
+                try:
+                    int(item)
+                    searchlist[i] = "id: " + item
+                except:
+                    pass
+        context["searchterm"] = " ".join(searchlist)
+
         return render_to_response(self.template_name, context, RequestContext(self.request))
