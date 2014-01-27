@@ -57,6 +57,7 @@ var l = Ladda.create(document.querySelector( '#searchbutton' ));
     $("#searchbutton").click(function(){
         $("#searchresult").fadeOut(100);
             l.start()
+        setTimeout(function() {
         $.ajax({
             type: "POST",
             url: "{% url "ajax-search" %}",
@@ -70,6 +71,7 @@ var l = Ladda.create(document.querySelector( '#searchbutton' ));
                     l.stop();
               });
             });
+          }, 500);
     });
 
 {% if searchterm != None %}
