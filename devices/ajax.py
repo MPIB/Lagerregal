@@ -282,9 +282,12 @@ class AjaxSearch(View):
                 statusfilter = value
 
             elif key == "id":
-                context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
-                return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
-
+                try:
+                    value = int(value)
+                    context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
+                    return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
+                except:
+                    return render_to_response('devices/searchempty.html', {}, RequestContext(self.request))
             elif key == "shortterm":
                 if value.lower() == "yes":
                     searchdict["templending"] = True
