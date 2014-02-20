@@ -47,14 +47,14 @@ var visualSearch = VS.init({
             ]);
           break;
         default:
-            $.ajax({
+          $.ajax({
                 type: "POST",
                 url: "{% url "load-searchoptions" %}",
                 data: {facet: facet, searchTerm: searchTerm}
-            }).done(function(data) {
+          }).done(function(data) {
                 callback(data)
-            });
-            break;
+          });
+          break;
     }
   }
 }

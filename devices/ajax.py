@@ -194,6 +194,11 @@ class LoadMailtemplate(View):
 class LoadSearchoptions(View):
     def post(self, request):
         term = request.POST["searchTerm"]
+        if term[:4] == "not ":
+            term = term[4:]
+            invert = True
+        else:
+            invert = False
         facet = request.POST["facet"]
         if facet == "manufacturer":
             items = Manufacturer.objects.filter(name__icontains=term)
@@ -207,54 +212,65 @@ class LoadSearchoptions(View):
             items = Lageruser.objects.filter(username__icontains=term)
         else:
             return HttpResponse("")
-
-        data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()} 
-            for object in items]
+        if invert:
+            data = [{"value": "not " + str(object.pk)+"-"+object.__unicode__(), "label" : "not " + object.__unicode__()} 
+                for object in items]
+        else:
+            data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()} 
+                for object in items]
         return HttpResponse(simplejson.dumps(data), content_type='application/json')
 
 class AjaxSearch(View):
     def post(self, request):
         search = simplejson.loads(request.POST["search"])
         searchdict = {}
+        excludedict = {}
         textfilter = None
         statusfilter = None
         displayed_columns  = []
         searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name"]
         for searchitem in search:
             key, value = searchitem.items()[0]
+
+            if value[:4] == "not ":
+                value = value[4:]
+                dictionary = excludedict
+            else:
+                dictionary = searchdict
+
             if key == "manufacturer":
                 value = value.split("-", 1)[0]
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("manufacturer", _("Manufacturer")))
                     searchvalues.append("manufacturer__name")
-                if "manufacturer__in" in searchdict:
-                    searchdict["manufacturer__in"].append(value)
+                if "manufacturer__in" in dictionary:
+                    dictionary["manufacturer__in"].append(value)
                 else:
-                    searchdict["manufacturer__in"] = [value]
+                    dictionary["manufacturer__in"] = [value]
 
             elif key == "room":
                 value = value.split("-", 1)[0]
-                if "room__in" in searchdict:
-                    searchdict["room__in"].append(value)
+                if "room__in" in dictionary:
+                    dictionary["room__in"].append(value)
                 else:
-                    searchdict["room__in"] = [value]
+                    dictionary["room__in"] = [value]
 
             elif key == "devicetype":
                 value = value.split("-", 1)[0]
-                if "devicetype__in" in searchdict:
-                    searchdict["devicetype__in"].append(value)
+                if "devicetype__in" in dictionary:
+                    dictionary["devicetype__in"].append(value)
                 else:
-                    searchdict["devicetype__in"] = [value]
+                    dictionary["devicetype__in"] = [value]
 
             elif key == "devicegroup":
                 value = value.split("-", 1)[0]
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("group", _("Group")))
                     searchvalues.append("group__name")
-                if "group__in" in searchdict:
-                    searchdict["group__in"].append(value)
+                if "group__in" in dictionary:
+                    dictionary["group__in"].append(value)
                 else:
-                    searchdict["group__in"] = [value]
+                    dictionary["group__in"] = [value]
 
             elif key == "user":
                 value = value.split("-", 1)[0]
@@ -262,18 +278,18 @@ class AjaxSearch(View):
                     displayed_columns.append(("user", _("User")))
                     searchvalues.append("currentlending__owner__username")
                 if value.lower() == "null":
-                    searchdict["currentlending"] = None
+                    dictionary["currentlending"] = None
                 else:
-                    searchdict["currentlending__owner__id"] = value
+                    dictionary["currentlending__owner__id"] = value
 
             elif key == "ipaddress":
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("ipaddress", _("IP-Address")))
                     searchvalues.append("ipaddress__address")
                 if value.lower() == "null":
-                    searchdict["ipaddress"] = None
+                    dictionary["ipaddress"] = None
                 else:
-                    searchdict["ipaddress__address__icontains"] = value
+                    dictionary["ipaddress__address__icontains"] = value
 
             elif key == "text":
                 textfilter = value
@@ -290,11 +306,12 @@ class AjaxSearch(View):
                     return render_to_response('devices/searchempty.html', {}, RequestContext(self.request))
             elif key == "shortterm":
                 if value.lower() == "yes":
-                    searchdict["templending"] = True
+                    dictionary["templending"] = True
                 else:
-                    searchdict["templending"] = False
+                    dictionary["templending"] = False
 
         devices = Device.objects.filter(**searchdict)
+        devices = devices.exclude(**excludedict)
 
         if statusfilter == "all":
                 pass
