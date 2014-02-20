@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
 from django.template import RequestContext
@@ -107,10 +108,11 @@ class DeviceDetail(DetailView):
         if "device" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["device"][1]:
+                print getattr(context["device"], attribute)
                 if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["device"], attribute))
+                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["device"], attribute))
                 else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["device"], attribute))
+                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute, getattr(context["device"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
