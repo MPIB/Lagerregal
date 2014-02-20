@@ -76,7 +76,7 @@
   {% for attributevalue in attributevalue_list %}
         <tr><td>{{attributevalue.typeattribute.name}}</td><td>{{attributevalue}}</td></tr>
 {% endfor %}
-        <tr><td>{% trans "Devicegroup" %}</td><td>{% if device.group %}<a href="{% url 'group-detail' device.group.pk %}">{{device.group}</a>{% else %}-{% endif %}</td></tr>
+        <tr><td>{% trans "Devicegroup" %}</td><td>{% if device.group %}<a href="{% url 'devicegroup-detail' device.group.pk %}">{{device.group}}</a>{% else %}-{% endif %}</td></tr>
         <tr><td>{% trans "Created by" %}</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
         <tr><td>{% trans "Last edited" %}</td><td>{% if lastedit != None %}<a href="{% url 'device-history' device.pk lastedit.revision.pk %}">{{lastedit.revision.date_created}}</a> by {{lastedit.revision.user}}{% else %}{% trans "Not edited yet" %}{% endif %}</td></tr>
         {% if device.trashed %}<tr><td>{% trans "Trashed on" %}</td><td>{{device.trashed}}</td></tr>{% endif %}
