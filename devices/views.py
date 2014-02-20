@@ -439,9 +439,7 @@ class DeviceUpdate(UpdateView):
         reversion.set_ignore_duplicates(True)
 
         if device.devicetype != None:
-            if form.cleaned_data["devicetype"] == None:
-                TypeAttributeValue.objects.filter(device = device.pk).delete()
-            if device.devicetype.pk != form.cleaned_data["devicetype"].pk:
+            if form.cleaned_data["devicetype"] == None or device.devicetype.pk != form.cleaned_data["devicetype"].pk:
                 TypeAttributeValue.objects.filter(device = device.pk).delete()
         for key, value in form.cleaned_data.iteritems():
             if key.startswith("attribute_") and value != "":

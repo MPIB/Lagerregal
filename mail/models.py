@@ -46,7 +46,7 @@ class MailTemplate(models.Model):
         datadict["device"] = {
             "currentlending": data["device"].currentlending,
             "description": data["device"].description,
-            "devicetype": data["device"].devicetype.name,
+            "devicetype": (data["device"].devicetype.name if data["device"].devicetype != None else ""),
             "group": data["device"].group,
             "hostname": data["device"].hostname,
             "inventoried": data["device"].inventoried,
@@ -54,7 +54,7 @@ class MailTemplate(models.Model):
             "macaddress": data["device"].macaddress,
             "manufacturer": data["device"].manufacturer,
             "name": data["device"],
-            "room": data["device"].room.name + " (" + data["device"].room.building.name + ")" ,
+            "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")"  if data["device"].room != None else ""),
             "serialnumber": data["device"].serialnumber,
             "templending": data["device"].templending,
             "trashed": data["device"].trashed,
