@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n %}{% load staticfiles %}
 {% block title %}{{profileuser}}{% endblock %}
 
 {% block header %}
@@ -139,6 +139,10 @@
 {% if perms.users.read_user and profileuser.avatar %}
 {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
 {% endif %}
+{% endblock %}
+
+{% block htmlend %}
+<script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
 {% endblock %}
 
 {% block scriptend %}
