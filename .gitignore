@@ -9,3 +9,6 @@ newrelic.ini
 settings.py
 
 *.label
+
+.coverage
+htmlconv/
