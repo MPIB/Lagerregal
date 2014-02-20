@@ -108,7 +108,6 @@ class DeviceDetail(DetailView):
         if "device" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["device"][1]:
-                print getattr(context["device"], attribute)
                 if attribute == "id":
                     context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["device"], attribute))
                 else:
