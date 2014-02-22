@@ -2,7 +2,7 @@
 from devices.models import Device, Room, Building, Manufacturer
 from devicetypes.models import Type
 from network.models import IpAddress
-from django.utils import simplejson
+import json
 from django.core.urlresolvers import reverse
 from main.models import DashboardWidget, widgets, get_progresscolor
 from django.db.models import Max
@@ -59,7 +59,7 @@ class WidgetToggle(View):
  
 class WidgetMove(View):
     def post(self, request):
-        userwidgets = simplejson.loads(request.POST["widgets"])
+        userwidgets = json.loads(request.POST["widgets"])
 
         for widgetname, widgetattr in userwidgets.iteritems():
             if widgetname in widgets:

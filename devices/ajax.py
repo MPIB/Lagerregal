@@ -7,7 +7,7 @@ from network.models import IpAddress
 from mail.models import MailTemplate
 from django.shortcuts import get_object_or_404
 from devicetypes.models import Type
-from django.utils import simplejson
+import json
 from django.core.urlresolvers import reverse
 from devices.forms import AddForm
 from django.forms.models import modelform_factory

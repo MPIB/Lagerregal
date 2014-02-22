@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from devices.models import Device, Room, Building, Manufacturer
 from devicetypes.models import TypeAttribute
-from django.utils import simplejson
+import json
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic.base import View
