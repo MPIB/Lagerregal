@@ -8,3 +8,4 @@ django-oauth2-provider
 pytz
 pystache
 model_mommy
+django-casper
