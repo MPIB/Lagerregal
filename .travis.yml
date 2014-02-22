@@ -4,8 +4,9 @@ python:
 # command to install dependencies
 install:
   - "pip install -r dependencies.txt"
+  - npm install -g casperjs
   # create the database
   - "cp Lagerregal/settings_template.py Lagerregal/settings.py"
   - "./manage.py syncdb --noinput"
 # command to run tests
-script: "./manage.py test devices network"
+script: "./manage.py test"
