@@ -206,7 +206,11 @@ if USE_LDAP:
     }
 
 LABEL_TEMPLATES = {
-    "device" : "",
+    "device" : 
+    [
+        "",
+        ""
+    ]
 }
 
 # A sample logging configuration. The only tangible logging
