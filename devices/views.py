@@ -18,6 +18,7 @@ from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm
 import datetime
 from django.utils.timezone import utc
+from django.utils import timezone
 import reversion
 from django.contrib.auth.models import Permission
 from users.models import Lageruser
@@ -536,7 +537,7 @@ class DeviceInventoried(View):
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        device.inventoried = datetime.datetime.now()
+        device.inventoried = timezone.now()
         device.save()
         reversion.set_ignore_duplicates(True)
         messages.success(request, _('Device is marked as inventoried.'))
