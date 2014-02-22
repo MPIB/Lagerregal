@@ -73,7 +73,6 @@ class DeviceApiBookmark(APIView):
                 note.creator = request.user
                 note.note = request.POST["note"]
                 note.save()
-                print note, note.device, note.creator
             return Response({"success": "added bookmark"})
 
 
