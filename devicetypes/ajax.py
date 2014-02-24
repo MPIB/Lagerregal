@@ -17,5 +17,5 @@ class GetTypeAttributes(View):
                     "id":attribute.pk,
                     "name":attribute.name
                     })
-            return HttpResponse(simplejson.dumps(data), content_type='application/json')
+            return HttpResponse(json.dumps(data), content_type='application/json')
         return HttpResponse("")

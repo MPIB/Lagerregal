@@ -35,7 +35,7 @@ class AutocompleteDevice(View):
             device_json['label'] = device.name
             device_json['value'] = device.name
             results.append(device_json)
-        return HttpResponse(simplejson.dumps(results), content_type='application/json')
+        return HttpResponse(json.dumps(results), content_type='application/json')
 
 
 class AutocompleteName(View):
@@ -60,7 +60,7 @@ class AutocompleteName(View):
             retobjects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
                 reverse(urlname, kwargs={"pk":obj[0]}), obj[1])
                 for obj in objects.values_list("pk", "name")]
-            return HttpResponse(simplejson.dumps(retobjects), content_type='application/json')
+            return HttpResponse(json.dumps(retobjects), content_type='application/json')
         else:
             return HttpResponse("")
 
@@ -104,7 +104,7 @@ class AddDeviceField(View):
                 data["classname"] = classname
         else:
             data["error"] = "Error: {0}".format(form.non_field_errors())
-        return HttpResponse(simplejson.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 class LoadExtraform(View):
@@ -171,7 +171,7 @@ class PreviewMail(View):
         data = {}
         data["subject"] = pystache.render(template.subject, datadict)
         data["body"] = pystache.render(template.body, datadict).replace("\n", "<br />")
-        return HttpResponse(simplejson.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 class LoadMailtemplate(View):
     def post(self, request):
@@ -189,7 +189,7 @@ class LoadMailtemplate(View):
         newrecipients += [obj.content_type.name[0].lower()+str(obj.object_id) for obj in template.default_recipients.all()]
         newrecipients = list(set(newrecipients))
         data["recipients"] = newrecipients
-        return HttpResponse(simplejson.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 class LoadSearchoptions(View):
     def post(self, request):
@@ -218,11 +218,11 @@ class LoadSearchoptions(View):
         else:
             data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()} 
                 for object in items]
-        return HttpResponse(simplejson.dumps(data), content_type='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 class AjaxSearch(View):
     def post(self, request):
-        search = simplejson.loads(request.POST["search"])
+        search = json.loads(request.POST["search"])
         searchdict = {}
         excludedict = {}
         textfilter = None
