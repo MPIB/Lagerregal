@@ -18,7 +18,7 @@
 {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
 <div class="list-group">
   {% for manufacturer in manufacturer_list %}
-  <a href="{% url 'manufacturer-detail' manufacturer.id %}" class="list-group-item">{{manufacturer.name}}</a>
+  <a href="{% url 'manufacturer-detail' manufacturer.id %}" class="list-group-item">{{manufacturer.name | default:"(None)"}}</a>
   {% endfor %}
 </div>
 {% include "snippets/pagination.html" with listurl='manufacturer-list' %}

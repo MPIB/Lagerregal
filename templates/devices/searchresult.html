@@ -14,7 +14,7 @@
   <tbody>
   	{% for device in device_list %}
     <tr>
-      <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+      <td><a href="{% url 'device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
       <td>{{ device.inventorynumber }}</td>
       <td >{{ device.devicetype__name }}</td>
       <td>{{ device.room__name }} ({{device.room__building__name}})</td>

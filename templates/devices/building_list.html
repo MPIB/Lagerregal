@@ -19,7 +19,7 @@
 
 <div class="list-group">
   {% for building in building_list %}
-  <a href="{% url 'building-detail' building.id %}"  class="list-group-item">{{building.name}}</a>
+  <a href="{% url 'building-detail' building.id %}"  class="list-group-item">{{building.name | default:"(None)"}}</a>
   {% endfor %}
 </div>
 {% include "snippets/pagination.html" with listurl='building-list' %}

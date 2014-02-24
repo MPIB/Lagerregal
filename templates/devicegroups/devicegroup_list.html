@@ -25,7 +25,7 @@
   {% for devicegroup in devicegroup_list %}
 
     <tr>
-      <td><a href="{% url 'devicegroup-detail' devicegroup.id %}">{{devicegroup.name}}</a></td>
+      <td><a href="{% url 'devicegroup-detail' devicegroup.id %}">{{devicegroup.name | default:"(None)"}}</a></td>
     </tr>
   {% endfor %}
 </table>
