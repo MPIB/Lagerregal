@@ -316,11 +316,13 @@ class AjaxSearch(View):
         if statusfilter == "all":
                 pass
         elif statusfilter == "available":
-            devices = devices.filter(currentlending=None)
+            devices = devices.filter(currentlending=None, archived=None, trashed=None)
         elif statusfilter == "unavailable":
-            devices = devices.exclude(currentlending=None)
+            devices = devices.exclude(currentlending=None).filter(archived=None, trashed=None)
         elif statusfilter == "archived":
             devices = devices.exclude(archived=None)
+        elif statusfilter == "trashed":
+            devices = devices.exclude(trashed=None)
         else:
             devices = devices.filter(archived=None, trashed=None)
 
