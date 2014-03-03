@@ -630,7 +630,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
 
 class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
-    template_name = 'devices/device_archive.html'
+    template_name = 'devices/device_trash.html'
 
     def post(self, request, **kwargs):
         device = self.get_object()
