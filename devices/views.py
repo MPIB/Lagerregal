@@ -1,6 +1,6 @@
 # coding: utf-8
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
-from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView
+from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm
-from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm
+from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm
 import datetime
 from django.utils.timezone import utc
 from django.utils import timezone
@@ -649,6 +649,48 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         messages.success(request, _("Device was trashed."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
+class DeviceStorage(SingleObjectMixin, FormView):
+    model = Device
+    form_class = DeviceStorageForm
+    template_name = 'devices/device_storage.html'
+
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        context = super(DeviceStorage, self).get_context_data(**kwargs)
+        print context
+        return context
+
+    def form_valid(self, form):
+        device = self.get_object()
+        try:
+            roomid = settings.STORAGE_ROOM
+            room = get_object_or_404(Room, id=roomid)
+        except:
+            messages.error(self.request, _("Could not move to storage. No room specified. Please contact your administrator."))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        device.room = room
+        device.save()
+        for ipaddress in device.ipaddress_set.all():
+            ipaddress.device = None
+            ipaddress.save()
+        if form.cleaned_data["send_mail"]:
+            try:
+                template = MailTemplate.objects.get(usage="room")
+            except:
+                template = None
+            if not template == None:
+                recipients = []
+                for recipient in template.default_recipients.all():
+                    recipient = recipient.content_object
+                    if isinstance(recipient, Group):
+                        recipients += recipient.lageruser_set.all().values_list("email")[0]
+                    else:
+                        recipients.append(recipient.email)
+                template.send(self.request, recipients, {"device":device, "user":self.request.user})
+                messages.success(self.request, _('Mail successfully sent'))
+        reversion.set_ignore_duplicates(True)
+        messages.success(self.request, _("Device was moved to storage."))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
