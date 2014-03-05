@@ -1,12 +1,17 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy
 from network.models import IpAddress
-from network.forms import ViewForm, IpAddressForm
+from network.forms import ViewForm, IpAddressForm, UserIpAddressForm
 from devices.forms import FilterForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from Lagerregal.utils import PaginationMixin
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from users.models import Lageruser
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 class IpAddressList(PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
@@ -108,3 +113,50 @@ class IpAddressDelete(DeleteView):
 class IpAdressAssign(FormView):
     model = IpAddress
     success_url = reverse_lazy('device-list')
+
+class UserIpAddressRemove(DeleteView):
+    template_name = 'users/unassign_ipaddress.html'
+    model = IpAddress
+
+    def get(self, request, *args, **kwargs):
+        context = {}
+        context["user"] = get_object_or_404(Lageruser, pk=kwargs["pk"])
+        context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
+        context["breadcrumbs"] = [
+            (reverse("user-list"), _("Users")),
+            (reverse("userprofile", kwargs={"pk":context["user"].pk}), context["user"].__unicode__()),
+            ("", _("Unassign IP-Address"))]
+        return render_to_response(self.template_name, context, RequestContext(request))
+
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(Lageruser, pk=kwargs["pk"])
+        ipaddress = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
+        ipaddress.user = None
+        ipaddress.save()
+
+        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":user.pk}))
+
+
+class UserIpAddress(FormView):
+    template_name = 'devices/assign_ipaddress.html'
+    form_class = UserIpAddressForm
+    success_url = "/devices"
+
+    def get_context_data(self, **kwargs):
+        context = super(UserIpAddress, self).get_context_data(**kwargs)
+        user = context["form"].cleaned_data["user"]
+        context["breadcrumbs"] = [
+            (reverse("user-list"), _("Users")),
+            (reverse("userprofile", kwargs={"pk":user.pk}), user.__unicode__()),
+            ("", _("Assign IP-Addresses"))]
+        return context
+
+    def form_valid(self, form):
+        ipaddresses = form.cleaned_data["ipaddresses"]
+        user = form.cleaned_data["user"]
+        for ipaddress in ipaddresses:
+            ipaddress.user = user
+            ipaddress.save()
+
+        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":user.pk}))

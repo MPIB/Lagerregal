@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from network.models import IpAddress
+from users.models import Lageruser
 
 VIEWFILTER = (
     ('all', _('All IP-Addresses')),
@@ -24,3 +25,10 @@ class IpAddressForm(forms.ModelForm):
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
         widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"pull-right input-sm form-control"}))
+
+class UserIpAddressForm(forms.Form):
+    error_css_class = 'has-error'
+    ipaddresses = forms.ModelMultipleChoiceField(
+        IpAddress.objects.filter(device=None, user=None),
+        widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
+    user = forms.ModelChoiceField(Lageruser.objects.all())

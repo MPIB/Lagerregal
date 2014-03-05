@@ -156,6 +156,8 @@ urlpatterns = patterns('',
     url(r'^users/filter/(?P<filter>[^/]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
     url(r'^users/page/(?P<page>[0-9]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_user")(UserList.as_view()), name="user-list"),
     url(r'^users/view/(?P<pk>[0-9]*)$', permission_required("users.read_user")(ProfileView.as_view()), name="userprofile"),
+    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/$', permission_required("users.change_user")(UserIpAddress.as_view()), name="user-ipaddress"),
+    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)$', permission_required("users.change_user")(UserIpAddressRemove.as_view()), name="user-ipaddress-remove"),
     url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
     url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
 

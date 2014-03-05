@@ -5,12 +5,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 from django.conf import settings
 import pytz
+from django.core.urlresolvers import reverse
 
 # Create your models here.
 class Lageruser(AbstractUser):
-    language = models.CharField(max_length=10, null=True, blank=True, 
+    language = models.CharField(max_length=10, null=True, blank=True,
         choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
-    timezone = models.CharField(max_length=50, null=True, blank=True, 
+    timezone = models.CharField(max_length=50, null=True, blank=True,
         choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
     pagelength = models.IntegerField(validators=[
             MaxValueValidator(250)
@@ -29,3 +30,6 @@ class Lageruser(AbstractUser):
         permissions = (
             ("read_user", _("Can read User")),
         )
+
+    def get_absolute_url(self):
+        return reverse('userprofile', kwargs={'pk': self.pk})
