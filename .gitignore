@@ -3,6 +3,7 @@ database.db
 mails/
 .spyderproject
 .spyderworkspace
+.idea/
 *.pyo
 
 newrelic.ini
