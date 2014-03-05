@@ -7,7 +7,7 @@ import reversion
 # Create your models here.
 class Devicetag(models.Model):
 
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
     devices = models.ManyToManyField(Device, related_name="tags")
 
     def __unicode__(self):
