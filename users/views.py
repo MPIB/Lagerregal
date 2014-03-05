@@ -24,11 +24,13 @@ from devices.forms import FilterForm
 from django.utils import timezone
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
+from network.models import IpAddress
+
 class UserList(PaginationMixin, ListView):
     model = Lageruser
     context_object_name = 'user_list'
     template_name = "users/user_list.html"
-    
+
     def get_queryset(self):
         user = Lageruser.objects.all()
         self.filterstring = self.kwargs.pop("filter", None)
@@ -63,6 +65,7 @@ class ProfileView(DetailView):
         # Add in a QuerySet of all the books
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context['ipaddresses'] = IpAddress.objects.filter(user = context["profileuser"])
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
         context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
@@ -79,6 +82,7 @@ class UserprofileView(TemplateView):
         context["profileuser"] = self.request.user
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
         context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context['ipaddresses'] = IpAddress.objects.filter(user = context["profileuser"])
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
         context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
