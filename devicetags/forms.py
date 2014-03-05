@@ -11,6 +11,6 @@ class TagForm(forms.ModelForm):
 class DeviceTagForm(forms.Form):
     error_css_class = 'has-error'
     tags = forms.ModelMultipleChoiceField(
-        Devicetag.objects.filter(devices=None),
+        Devicetag.objects.all(),
         widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     device = forms.ModelChoiceField(Device.objects.all())

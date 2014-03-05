@@ -91,7 +91,7 @@ class DeviceTags(FormView):
     success_url = "/devices"
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceIpAddress, self).get_context_data(**kwargs)
+        context = super(DeviceTags, self).get_context_data(**kwargs)
         device = context["form"].cleaned_data["device"]
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
