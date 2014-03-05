@@ -4,6 +4,7 @@
     <tr>
       <th>{% trans "Name" %}</th>
       <th>{% trans "Inventorynumber" %}</th>
+      <th>{% trans "Serialnumber" %}</th>
       <th>{% trans "Devicetype" %}</th>
       <th>{% trans "Room" %}</th>
       {% for column in columns %}
@@ -16,6 +17,7 @@
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
       <td>{{ device.inventorynumber }}</td>
+      <td>{{ device.serialnumber }}</td>
       <td >{{ device.devicetype__name }}</td>
       <td>{{ device.room__name }} ({{device.room__building__name}})</td>
       {% for column in columns %}
