@@ -4,12 +4,12 @@ from django.utils.safestring import mark_safe
 from django.forms import CheckboxInput
 register = Library()
 
-@register.simple_tag 
-def get_verbose_name(object): 
+@register.simple_tag
+def get_verbose_name(object):
     return object._meta.verbose_name
 
-@register.simple_tag 
-def get_verbose_name_lowercase(object): 
+@register.simple_tag
+def get_verbose_name_lowercase(object):
     return object._meta.verbose_name.lower()
 
 @register.simple_tag
@@ -42,12 +42,12 @@ def add_class(value, css_class):
     string = unicode(value)
     match = class_re.search(string)
     if match:
-        m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class, 
-                                                    css_class, css_class), 
+        m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class,
+                                                    css_class, css_class),
                                                     match.group(1))
 
         if m != None:
-            return mark_safe(class_re.sub(match.group(1) + " " + css_class, 
+            return mark_safe(class_re.sub(match.group(1) + " " + css_class,
                                           string))
     else:
         return mark_safe(string.replace('>', ' class="%s">' % css_class))
@@ -60,3 +60,11 @@ def get_range(value):
 @register.filter
 def check_bookmark(device, user):
     return device.bookmarkers.filter(id=user.id).exists()
+
+@register.filter
+def get_attribute(device, attribute):
+    return getattr(device, attribute)
+
+@register.filter
+def get_attribute_from_list(device, attribute):
+    return device[attribute]

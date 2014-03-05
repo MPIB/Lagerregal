@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n %}{% load devicetags %}
 <table id="devicetable" class="table table-bordered table-striped">
   <thead>
     <tr>
@@ -26,6 +26,7 @@
           {% elif column.0 == "manufacturer" %}{{device.manufacturer__name}}
           {% elif column.0 == "group" %}{{device.group__name}}
           {% elif column.0 == "user" %}{{device.currentlending__user__username}}
+          {% else %}{{device|get_attribute_from_list:column.0}}
           {% endif %}
         </td>
       {% endfor %}
