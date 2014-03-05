@@ -140,6 +140,7 @@ class DeviceIpAddressRemove(DeleteView):
         device = get_object_or_404(Device, pk=kwargs["pk"])
         ipaddress = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         ipaddress.device = None
+        reversion.set_comment(_("Removed from Device {0}".format(device.name)))
         ipaddress.save()
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
@@ -165,6 +166,7 @@ class DeviceIpAddress(FormView):
         if device.archived != None:
             messages.error(self.request, _("Archived Devices can't get new IP-Addresses"))
             return HttpResponseRedirect(self.reverse("device-detail", kwargs={"pk":device.pk}))
+        reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
         for ipaddress in ipaddresses:
             ipaddress.device = device
             ipaddress.save()
@@ -379,10 +381,7 @@ class DeviceCreate(CreateView):
 
     def form_valid(self, form):
         form.cleaned_data["creator"] = self.request.user
-        if form.cleaned_data["comment"] == "":
-            reversion.set_comment(_("Created"))
-        else:
-            reversion.set_comment(form.cleaned_data["comment"])
+        reversion.set_comment(_("Created"))
         r = super(DeviceCreate, self).form_valid(form)
         for key, value in form.cleaned_data.iteritems():
             if key.startswith("attribute_") and value != "":
