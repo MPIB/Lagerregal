@@ -142,7 +142,7 @@ class DeviceForm(forms.ModelForm):
 
     class Meta:
         model=Device
-        exclude = ("archived", "currentlending", "bookmarkers")
+        exclude = ("archived", "currentlending", "bookmarkers", "inventoried", "trashed")
 
     def clean(self):
         cleaned_data = super(DeviceForm, self).clean()
