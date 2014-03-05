@@ -20,6 +20,8 @@ class IpAddressList(PaginationMixin, ListView):
             addresses = IpAddress.objects.filter(device=None, user=None)
         elif self.viewfilter == "used":
             addresses = IpAddress.objects.exclude(device=None, user=None)
+        elif self.viewfilter == "byuser":
+            addresses = IpAddress.objects.exclude(user=None).filter(device=None)
         else:
             addresses = IpAddress.objects.all()
         if self.filterstring != "":
