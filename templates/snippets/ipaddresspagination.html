@@ -6,7 +6,7 @@
         {% if page_obj.has_previous %}
         {% if filterform.filterstring.value == None %}
         <li class="previous"><a href="{% url listurl 1 viewform.viewfilter.value %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
-        <li class="previous"><a href="{% url listurl page_obj.previous_page_number %}"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
+        <li class="previous"><a href="{% url listurl page_obj.previous_page_number viewform.viewfilter.value %}"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
         {% else %}
         <li class="previous"><a href="{% url listurl 1 viewform.viewfilter.value filterform.filterstring.value %}" style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
         <li class="previous"><a href="{% url listurl page_obj.previous_page_number viewform.viewfilter.value filterform.filterstring.value %}"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
@@ -17,7 +17,7 @@
                 <li class="current">{% trans "Page" %}
                   <select class="pageselect">
                     {% for pagenumber in  page_obj.paginator.num_pages|get_range %}
-                    {% if pagenumber|add:"1" == page_obj.number %} 
+                    {% if pagenumber|add:"1" == page_obj.number %}
                     <option selected>{{pagenumber|add:"1"}}</option>
                     {% else %}
                     <option>{{pagenumber|add:"1"}}</option>
