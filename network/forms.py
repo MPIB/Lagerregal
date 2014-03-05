@@ -1,5 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from network.models import IpAddress
 
 VIEWFILTER = (
     ('all', _('All IP-Addresses')),
@@ -7,12 +8,16 @@ VIEWFILTER = (
     ('used', _('Used IP-Addresses'))
  )
 
-class AssignForm(forms.Form):
-    ipaddress = forms.ModelChoiceField
+class IpAddressForm(forms.ModelForm):
 
-    def send_email(self):
-        # send email using the self.cleaned_data dictionary
-        pass
+    class Meta:
+        model = IpAddress
+
+    def clean(self):
+        cleaned_data = super(IpAddressForm, self).clean()
+        if cleaned_data["device"] != None and cleaned_data["user"] != None:
+            raise forms.ValidationError(_("IP-Address can not be owned by a user and a device at the same time."))
+        return cleaned_data
 
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,

@@ -17,19 +17,21 @@ IP-Addresses
     <table width="100%" id="adresstable" class="table table-bordered table-striped">
   <thead>
     <tr>
-      <th>IP Address</th>
-      <th>Device</th>
+      <th>{% trans "IP Address" %}</th>
+      <th>{% trans "Used by" %}</th>
     </tr>
   </thead>
   <tbody>
   	{% for ipaddress in ipaddress_list %}
     <tr>
       <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
-      {% if ipaddress.device__pk %}
-          <td><a href="{% url 'device-detail' ipaddress.device__id %}">{{ipaddress.device__name}}</a></td>
-          {% else %}
+    {% if ipaddress.device__pk %}
+        <td>{% trans "Device" %}: <a href="{% url 'device-detail' ipaddress.device__id %}">{{ipaddress.device__name}}</a></td>
+    {% elif ipaddress.user__pk %}
+        <td>{% trans "User" %}: <a href="{% url 'userprofile' ipaddress.user__id %}">{% if ipaddress.user__first_name and ipaddress.user__last_name %}{{ipaddress.user__first_name}} {{ipaddress.user__last_name}}{% else %}{{ipaddress.user__username}}{% endif %}</a></td>
+    {% else %}
           <td>Not assigned</td>
-          {% endif %}
+    {% endif %}
     </tr>
      {% endfor %}
   </tbody>

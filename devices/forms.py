@@ -72,7 +72,7 @@ def get_emailrecipientlist(special=None):
 class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
-        IpAddress.objects.filter(device=None),
+        IpAddress.objects.filter(device=None, user=None),
         widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     device = forms.ModelChoiceField(Device.objects.all())
 
@@ -120,7 +120,7 @@ class ViewForm(forms.Form):
 
 class FilterForm(forms.Form):
     filterstring = forms.CharField(max_length=100,
-        widget=forms.TextInput(attrs={"style":"width:150px;margin-left:10px;", 
+        widget=forms.TextInput(attrs={"style":"width:150px;margin-left:10px;",
             "class":"pull-right form-control input-sm", "placeholder":"Filter"}))
 
 class DeviceForm(forms.ModelForm):
@@ -168,7 +168,7 @@ class DeviceForm(forms.ModelForm):
                 attributes= TypeAttribute.objects.filter(devicetype = self.data["devicetype"][0])
             except:
                 return
-        
+
         elif kwargs["instance"] != None:
             attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
             if kwargs["instance"].devicetype != None:

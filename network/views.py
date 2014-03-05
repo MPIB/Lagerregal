@@ -1,7 +1,7 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy
 from network.models import IpAddress
-from network.forms import ViewForm
+from network.forms import ViewForm, IpAddressForm
 from devices.forms import FilterForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
@@ -17,14 +17,14 @@ class IpAddressList(PaginationMixin, ListView):
         if self.viewfilter == "all":
             addresses = IpAddress.objects.all()
         elif self.viewfilter == "free":
-            addresses = IpAddress.objects.filter(device=None)
+            addresses = IpAddress.objects.filter(device=None, user=None)
         elif self.viewfilter == "used":
-            addresses = IpAddress.objects.exclude(device=None)
+            addresses = IpAddress.objects.exclude(device=None, user=None)
         else:
             addresses = IpAddress.objects.all()
         if self.filterstring != "":
             addresses = addresses.filter(address__icontains=self.filterstring)
-        return addresses.values("id", "address", "device__pk", "device__name")
+        return addresses.values("id", "address", "device__pk", "device__name", "user__pk", "user__username", "user__first_name", "user__last_name")
 
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
@@ -34,7 +34,7 @@ class IpAddressList(PaginationMixin, ListView):
         else:
             context["filterform"] = FilterForm()
         context["breadcrumbs"] = [(reverse("device-list"), _("IP-Addresses"))]
-        
+
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -58,6 +58,7 @@ class IpAddressDetail(DetailView):
 
 class IpAddressCreate(CreateView):
     model = IpAddress
+    form_class = IpAddressForm
     template_name = 'devices/base_form.html'
 
     def get_context_data(self, **kwargs):
@@ -77,6 +78,7 @@ class IpAddressCreate(CreateView):
 
 class IpAddressUpdate(UpdateView):
     model = IpAddress
+    form_class = IpAddressForm
     template_name = 'devices/base_form.html'
 
     def get_context_data(self, **kwargs):
