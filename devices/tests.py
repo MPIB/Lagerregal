@@ -92,7 +92,7 @@ class DeviceTests(CasperTestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(resp.context["device"].trashed)
-        
+
         resp = self.client.post(trashurl)
         self.assertEqual(resp.status_code, 302)
         resp = self.client.get(url)
@@ -118,7 +118,7 @@ class DeviceTests(CasperTestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(resp.context["device"].trashed)
-        
+
         resp = self.client.post(bookmarkurl)
         self.assertEqual(resp.status_code, 302)
         resp = self.client.get(url)
@@ -135,14 +135,14 @@ class DeviceTests(CasperTestCase):
         deviceurl = reverse("device-detail", kwargs={"pk":1})
         resp = self.client.get(deviceurl)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(len(resp.context["ipaddress_list"]), 1)
-        
+        self.assertEqual(len(resp.context["device"].ipaddress_set.all()), 1)
+
         url = reverse("device-ipaddress-remove", kwargs={"pk":1, "ipaddress":1})
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
         resp = self.client.get(deviceurl)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(len(resp.context["ipaddress_list"]), 0)
+        self.assertEqual(len(resp.context["device"].ipaddress_set.all()), 0)
 
 
 class BuildingTests(CasperTestCase):
