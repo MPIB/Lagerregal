@@ -24,6 +24,7 @@ from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.dateparse import parse_date
+from devicetags.models import Devicetag
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -211,6 +212,8 @@ class LoadSearchoptions(View):
             items = Devicegroup.objects.filter(name__icontains=term)
         elif facet == "user":
             items = Lageruser.objects.filter(username__icontains=term)
+        elif facet == "tag":
+            items = Devicetag.objects.filter(name__icontains=term)
         else:
             return HttpResponse("")
         if invert:
@@ -309,6 +312,12 @@ class AjaxSearch(View):
                     statusfilter = "all"
                 dictionary[key + modifier] = parse_date(value)
 
+            elif key == "tag":
+                value = value.split("-", 1)[0]
+                if "tags__in" in dictionary:
+                    dictionary["tags__in"].append(value)
+                else:
+                    dictionary["tags__in"] = [value]
 
             elif key == "text":
                 textfilter = value
