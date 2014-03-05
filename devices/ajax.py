@@ -329,8 +329,6 @@ class AjaxSearch(View):
                 else:
                     dictionary["templending"] = False
 
-        print searchdict
-
         devices = Device.objects.filter(**searchdict)
         devices = devices.exclude(**excludedict)
 
@@ -361,5 +359,4 @@ class AjaxSearch(View):
             "device_list": devices.values(*searchvalues),
             "columns": displayed_columns
         }
-        print context
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
