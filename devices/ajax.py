@@ -23,6 +23,7 @@ from django.template import RequestContext
 from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.dateparse import parse_date
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -213,10 +214,10 @@ class LoadSearchoptions(View):
         else:
             return HttpResponse("")
         if invert:
-            data = [{"value": "not " + str(object.pk)+"-"+object.__unicode__(), "label" : "not " + object.__unicode__()} 
+            data = [{"value": "not " + str(object.pk)+"-"+object.__unicode__(), "label" : "not " + object.__unicode__()}
                 for object in items]
         else:
-            data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()} 
+            data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()}
                 for object in items]
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -228,7 +229,7 @@ class AjaxSearch(View):
         textfilter = None
         statusfilter = None
         displayed_columns  = []
-        searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name"]
+        searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name", "room__building__name"]
         for searchitem in search:
             key, value = searchitem.items()[0]
 
@@ -291,6 +292,23 @@ class AjaxSearch(View):
                 else:
                     dictionary["ipaddress__address__icontains"] = value
 
+            elif key == "inventoried" or key == "trashed" or key == "archived":
+                if value.startswith("before"):
+                    value = value[7:]
+                    modifier = "__lt"
+                elif value.startswith("after"):
+                    value = value[6:]
+                    modifier = "__gt"
+                else:
+                    modifier = ""
+
+                if len(displayed_columns) < 8:
+                    displayed_columns.append((key, _("{0} on").format(key.capitalize())))
+                    searchvalues.append(key)
+
+                dictionary[key + modifier] = parse_date(value)
+
+
             elif key == "text":
                 textfilter = value
 
@@ -309,6 +327,8 @@ class AjaxSearch(View):
                     dictionary["templending"] = True
                 else:
                     dictionary["templending"] = False
+
+        print searchdict
 
         devices = Device.objects.filter(**searchdict)
         devices = devices.exclude(**excludedict)
@@ -340,4 +360,5 @@ class AjaxSearch(View):
             "device_list": devices.values(*searchvalues),
             "columns": displayed_columns
         }
+        print context
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))

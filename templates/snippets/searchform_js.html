@@ -18,6 +18,7 @@ var visualSearch = VS.init({
       {value: "status", label: "{% trans "Status" %}"},
       {value: "id", label: "{% trans "ID" %}"},
       {value: "shortterm",   label: "{% trans "Short term" %}" },
+      {value: "archived",   label: "{% trans "Archived" %}" },
       {value: "inventoried",   label: "{% trans "Inventoried" %}" },
       {value: "trashed",   label: "{% trans "Trashed" %}" },
     ]);
@@ -48,6 +49,7 @@ var visualSearch = VS.init({
               { value: 'no',   label: '{% trans "No" %}' },
             ]);
           break;
+        case "archived":
         case "inventoried":
         case "trashed":
           callback([
