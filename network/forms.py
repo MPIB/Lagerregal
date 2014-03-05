@@ -6,7 +6,8 @@ VIEWFILTER = (
     ('all', _('All IP-Addresses')),
     ('free', _('Free IP-Addresses')),
     ('used', _('Used IP-Addresses')),
-    ('byuser', _('Owned by User'))
+    ('byuser', _('Owned by User')),
+    ('bydevice', _('Used by Device'))
  )
 
 class IpAddressForm(forms.ModelForm):
