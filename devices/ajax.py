@@ -305,7 +305,8 @@ class AjaxSearch(View):
                 if len(displayed_columns) < 8:
                     displayed_columns.append((key, _("{0} on").format(key.capitalize())))
                     searchvalues.append(key)
-
+                if key == "archived" or key == "inventoried":
+                    statusfilter = "all"
                 dictionary[key + modifier] = parse_date(value)
 
 
