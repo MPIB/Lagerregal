@@ -92,7 +92,6 @@ class Device(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     inventorynumber = models.CharField(_('Inventorynumber'), max_length=50, blank=True)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50, blank=True)
-    macaddress = models.CharField(_('MAC Address'), max_length=40, blank=True)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, on_delete=models.SET_NULL)
     hostname = models.CharField(_('Hostname'), max_length=40, blank=True)
     description = models.CharField(_('Description'), max_length=10000, blank=True)
@@ -142,10 +141,24 @@ class Device(models.Model):
     def active():
         return Device.objects.filter(archived=None, trashed=None)
 
-reversion.register(Device, follow=["typeattributevalue_set"], exclude=
+
+class MacAddress(models.Model):
+
+    macaddress = models.CharField(_('MAC Address'), max_length=40, unique=True)
+    device = models.ForeignKey(Device, related_name="macaddresses")
+
+    def __unicode__(self):
+        return self.macaddress
+
+    class Meta:
+        verbose_name = _('MAC Address')
+        verbose_name_plural = _('MAC Addresses')
+
+
+reversion.register(Device, follow=["typeattributevalue_set", "macaddresses"], exclude=
     ["archived", "currentlending", "inventoried", "bookmarks"])
 reversion.register(TypeAttributeValue)
-
+reversion.register(MacAddress)
 
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser, verbose_name=_("Lendt to"))

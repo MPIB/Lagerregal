@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load devicetags %}
+{% load staticfiles %}
 {% block title %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
+
+{% block extracss %}
+<link rel="stylesheet" type="text/css" href="{% static "css/tagit.ui-zendesk.css" %}">
+<link href="{% static "css/jquery.tagit.css" %}" rel="stylesheet" type="text/css">
+{% endblock %}
 
 {% block header %}{{actionstring}} {% if object != None %}{{object}}{% else %}Object{% endif %}{% endblock %}
 {% block content %}
@@ -54,6 +60,10 @@ style="display:none;"
 {% include "snippets/modals/mailpreview.html" with modalname="previewModal" %}
 {% endblock %}
 
+{% block htmlend %}
+<script src="{% static "js/tag-it.min.js" %}" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
 {% block scriptend %}
 $( "input:text[name=name]" ).autocomplete({
       minLength: 2,
@@ -80,6 +90,8 @@ $("#id_devicetype").change(function() {
       }
     });
 });
+
+$("#id_macaddresses").tagit();
 
 $(".modalbutton").click(function() {
     $("#addmodal_header").text($(this).data("name"))
