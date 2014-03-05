@@ -7,6 +7,7 @@ from main.views import *
 from api.views import *
 from mail.views import *
 from devicegroups.views import *
+from devicetags.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch
@@ -42,6 +43,8 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<pk>[0-9]*)/mail/$', permission_required("devices.lend_device")(DeviceMail.as_view()), name="device-mail"),
     url(r'^devices/(?P<pk>[0-9]*)/ipaddress/$', permission_required("devices.change_device")(DeviceIpAddress.as_view()), name="device-ipaddress"),
     url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)$', permission_required("devices.change_device")(DeviceIpAddressRemove.as_view()), name="device-ipaddress-remove"),
+    url(r'^devices/(?P<pk>[0-9]*)/tags/$', permission_required("devices.change_device")(DeviceTags.as_view()), name="device-tags"),
+    url(r'^devices/(?P<pk>[0-9]*)/tags/(?P<tag>[0-9]*)$', permission_required("devices.change_device")(DeviceTagRemove.as_view()), name="device-tag-remove"),
     url(r'^devices/(?P<pk>[0-9]*)/history/$', permission_required("devices.change_device")(DeviceHistoryList.as_view()), name="device-history-list"),
     url(r'^devices/(?P<pk>[0-9]*)/history/(?P<page>[0-9]*)$', permission_required("devices.change_device")(DeviceHistoryList.as_view()), name="device-history-list"),
     url(r'^devices/(?P<pk>[0-9]*)/history/revision/(?P<revision>[0-9]*)$', permission_required("devices.change_device")(DeviceHistory.as_view()), name="device-history"),
@@ -129,6 +132,15 @@ urlpatterns = patterns('',
     url(r'^devicegroups/view/(?P<pk>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupDetail.as_view()), name="devicegroup-detail"),
     url(r'^devicegroups/delete/(?P<pk>[^/]*)$', permission_required("devicegroups.delete_devicegroup")(DevicegroupDelete.as_view()), name="devicegroup-delete"),
 
+    url(r'^devicetags/$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
+    url(r'^devicetags/(?P<page>[0-9]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
+    url(r'^devicetags/sorting/(?P<sorting>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
+    url(r'^devicetags/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
+    url(r'^devicetags/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
+    url(r'^devicetags/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
+    url(r'^devicetags/add$', permission_required("devicetags.add_devicetag")(DevicetagCreate.as_view()), name="devicetag-add"),
+    url(r'^devicetags/edit/(?P<pk>[^/]*)$', permission_required("devicetags.change_devicetag")(DevicetagUpdate.as_view()), name="devicetag-edit"),
+    url(r'^devicetags/delete/(?P<pk>[^/]*)$', permission_required("devicetags.delete_devicetag")(DevicetagDelete.as_view()), name="devicetag-delete"),
 
     url(r'^ipaddresses/$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
@@ -155,7 +167,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     (r'^i18n/', include('django.conf.urls.i18n')),
-    
+
     url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
 
     url(r'^ajax/add_widget', login_required(WidgetAdd.as_view()), name="widget_add"),
@@ -179,31 +191,31 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/devices/create/$', DeviceApiCreate.as_view(), name='device-api-create'),
     url(r'^api/devices/(?P<pk>\d+)/$', DeviceApiDetail.as_view(), name='device-api-detail'),
     url(r'^api/devices/(?P<pk>\d+)/bookmark/$', DeviceApiBookmark.as_view(), name='device-api-bookmark'),
-    
+
     url(r'^api/manufacturers/$', ManufacturerApiList.as_view(), name='manufacturer-api-list'),
     url(r'^api/manufacturers/create/$', ManufacturerApiCreate.as_view(), name='manufacturer-api-create'),
     url(r'^api/manufacturers/(?P<pk>\d+)/$', ManufacturerApiDetail.as_view(), name='manufacturer-api-detail'),
-    
+
     url(r'^api/rooms/$', RoomApiList.as_view(), name='room-api-list'),
     url(r'^api/rooms/create/$', RoomApiCreate.as_view(), name='room-api-create'),
     url(r'^api/rooms/(?P<pk>\d+)/$', RoomApiDetail.as_view(), name='room-api-detail'),
-    
+
     url(r'^api/types/$', TypeApiList.as_view(), name='type-api-list'),
     url(r'^api/types/create/$', TypeApiCreate.as_view(), name='type-api-create'),
     url(r'^api/types/(?P<pk>\d+)/$', TypeApiDetail.as_view(), name='type-api-detail'),
-    
+
     url(r'^api/buildings/$', BuildingApiList.as_view(), name='building-api-list'),
     url(r'^api/buildings/create/$', BuildingApiCreate.as_view(), name='building-api-create'),
     url(r'^api/buildings/(?P<pk>\d+)/$', BuildingApiDetail.as_view(), name='building-api-detail'),
-    
+
     url(r'^api/templates/$', TemplateApiList.as_view(), name='template-api-list'),
     url(r'^api/templates/create/$', TemplateApiCreate.as_view(), name='template-api-create'),
     url(r'^api/templates/(?P<pk>\d+)/$', TemplateApiDetail.as_view(), name='template-api-detail'),
-    
+
     url(r'^api/ipaddresses/$', IpAddressApiList.as_view(), name='ipaddress-api-list'),
     url(r'^api/ipaddresses/create/$', IpAddressApiCreate.as_view(), name='ipaddress-api-create'),
     url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
-    
+
     url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
     url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
     url(r'^api/useravatar/(?P<username>[^/]*)/$', UserApiAvatar.as_view(), name='user-api-avatar'),

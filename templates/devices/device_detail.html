@@ -116,11 +116,11 @@
   <!-- Default panel contents -->
   <div class="panel-heading">{% trans "IP-Addresses" %}</div>
   <ul class="list-group">
-    {% for address in ipaddress_list %}
+    {% for address in device.ipaddress_set.all %}
         <li class="list-group-item ipaddress-list">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="fa fa-times"></i></a></li>
       {% endfor %}
   </ul>
-  
+
           {% if device.archived == None and perms.devices.change_device %}
   <div class="panel-footer">
       <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
@@ -133,7 +133,28 @@
   </div>
     {% endif %}
 </div>
+
+
+  <div class="panel panel-primary">
+    <!-- Default panel contents -->
+    <div class="panel-heading">{% trans "Tags" %}</div>
+    <ul class="list-group">
+      {% for tag in device.tags.all %}
+          <li class="list-group-item tag-list">{{tag.name}} <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right"><i class="fa fa-times"></i></a></li>
+        {% endfor %}
+    </ul>
+
+    <div class="panel-footer">
+        <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0px;">{% csrf_token %}
+          {{tagform.tags}}
+          <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
+          <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submittags"><i class="fa fa-plus"></i> {% trans "Assign Tags" %}</button>
+      </div>
+      <input type="hidden" name="device" value="{{ device.pk }}" />
+        </form>
+    </div>
   </div>
+    </div>
 </div>
 
 <div class="row">
@@ -298,7 +319,15 @@ $("#id_ipaddresses").select2({
   }
   });
 
-
+$("#id_tags").select2({
+    tokenSeparators: [",", " "]}).
+    on("change", function(e) {
+    if (e.val.length != 0) {
+    $("#submittags").removeClass("disabled")
+  } else {
+    $("#submittags").addClass("disabled")
+  }
+  });
 
 
 {% if perms.devices.delete_device %}
@@ -396,6 +425,6 @@ $("#id_mailtemplate").change(function() {
 $(document).ready(function() {
         $(document).on('click', '.dropdown-cancel', function (e) {
             e.stopPropagation();
-        }); 
+        });
     });
 {% endblock %}

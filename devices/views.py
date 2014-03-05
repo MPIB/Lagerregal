@@ -16,6 +16,7 @@ from django.utils.formats import localize
 from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm
+from devicetags.forms import DeviceTagForm
 import datetime
 from django.utils.timezone import utc
 from django.utils import timezone
@@ -29,6 +30,7 @@ from django.db.models import Q
 from django.db.transaction import commit_on_success
 from django.conf import settings
 from Lagerregal.utils import PaginationMixin
+from devicetags.models import Devicetag
 
 class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
@@ -58,7 +60,7 @@ class DeviceList(PaginationMixin, ListView):
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
-        
+
         return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name", "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
@@ -78,9 +80,9 @@ class DeviceDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['ipaddress_list'] = IpAddress.objects.filter(device=context['device'])
-        context['ipaddress_available'] = IpAddress.objects.filter(device=None)
         context['ipaddressform'] = IpAddressForm()
+        context['tagform'] = DeviceTagForm()
+        context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
         context["version_list"] = Version.objects.filter(object_id=context["device"].id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:10]
         context["mail_list"] = MailHistory.objects.filter(device=context["device"]).order_by("-pk")[:10]
@@ -89,7 +91,7 @@ class DeviceDetail(DetailView):
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
         context["notes"] = Note.objects.select_related("creator").filter(device=context["device"]).order_by("-id")
-        
+
         mailinitial = {}
         if context["device"].currentlending != None:
             currentowner = context["device"].currentlending.owner
@@ -166,7 +168,7 @@ class DeviceIpAddress(FormView):
         for ipaddress in ipaddresses:
             ipaddress.device = device
             ipaddress.save()
-        
+
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceHistory(View):
@@ -267,7 +269,7 @@ class DeviceHistory(View):
         device = get_object_or_404(Device, pk=deviceid)
         device.currentlending = currentlending
         device.archived = archived
-        
+
         deleted_keys = []
 
         try:
@@ -289,7 +291,7 @@ class DeviceHistory(View):
             deleted_keys.append(ugettext("Room"))
 
         device.save()
-        if version.field_dict["devicetype"] != None:        
+        if version.field_dict["devicetype"] != None:
             TypeAttributeValue.objects.filter(device = version.object_id).delete()
         reversion.set_comment("Reverted to version from {0}".format(localize(version.revision.date_created)))
         reversion.set_ignore_duplicates(True)
@@ -319,7 +321,7 @@ class DeviceHistoryList(ListView):
             ("", _("History"))]
         return context
 
-    
+
 
 class DeviceLendingList(PaginationMixin, ListView):
     context_object_name = 'lending_list'
@@ -391,7 +393,7 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
-        
+
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
@@ -572,7 +574,7 @@ class DeviceMail(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(DeviceMail, self).get_context_data(**kwargs)
-        
+
         # Add in a QuerySet of all the books
         context['form_scripts'] = "$('#id_owner').select2();"
         context["breadcrumbs"] = [
@@ -710,7 +712,7 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
 class TemplateList(PaginationMixin, ListView):
     model = Template
     context_object_name = 'template_list'
-    
+
     def get_context_data(self, **kwargs):
         context = super(TemplateList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
@@ -767,7 +769,7 @@ class TemplateDelete(DeleteView):
 class RoomList(PaginationMixin, ListView):
     model = Room
     context_object_name = 'room_list'
-    
+
     def get_queryset(self):
         rooms = Room.objects.select_related("building").all()
         self.filterstring = self.kwargs.pop("filter", None)
@@ -1010,7 +1012,7 @@ class BuildingMerge(View):
 class ManufacturerList(PaginationMixin, ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
-    
+
     def get_queryset(self):
         manufacturers = Manufacturer.objects.all()
         self.filterstring = self.kwargs.pop("filter", None)

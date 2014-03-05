@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'network',
     'devicetypes',
     'devicegroups',
+    'devicetags',
     'users',
     'api',
     'mail',
@@ -206,7 +207,7 @@ if USE_LDAP:
     }
 
 LABEL_TEMPLATES = {
-    "device" : 
+    "device" :
     [
         "",
         ""
