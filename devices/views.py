@@ -471,7 +471,6 @@ class DeviceUpdate(UpdateView):
                     pass
 
         old_macaddresses = [address[0] for address in device.macaddresses.all().values_list("macaddress")]
-        print old_macaddresses
         for macaddress in form.cleaned_data["macaddresses"]:
             if not macaddress in old_macaddresses:
                 new_address = MacAddress(macaddress=macaddress, device=device)
@@ -676,7 +675,6 @@ class DeviceStorage(SingleObjectMixin, FormView):
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
         context = super(DeviceStorage, self).get_context_data(**kwargs)
-        print context
         return context
 
     def form_valid(self, form):
