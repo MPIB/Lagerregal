@@ -472,6 +472,8 @@ class DeviceUpdate(UpdateView):
 
         old_macaddresses = [address[0] for address in device.macaddresses.all().values_list("macaddress")]
         for macaddress in form.cleaned_data["macaddresses"]:
+            if macaddress == "":
+                continue
             if not macaddress in old_macaddresses:
                 new_address = MacAddress(macaddress=macaddress, device=device)
                 new_address.save()
