@@ -57,8 +57,8 @@
     <tr>
       <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
       <td>{{ device.inventorynumber }}</td>
-      <td>{{ device.devicetype }}</td>
-      <td>{{ device.room }}</td>
+      <td>{{ device.devicetype__name }}</td>
+      <td>{{ device.room__name }}</td>
     </tr>
      {% endfor %}
   </tbody>
