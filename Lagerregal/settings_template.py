@@ -139,7 +139,6 @@ INSTALLED_APPS = (
     'network',
     'devicetypes',
     'devicegroups',
-    'sections',
     'locations',
     'users',
     'api',
