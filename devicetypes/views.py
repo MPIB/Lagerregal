@@ -19,7 +19,7 @@ from Lagerregal.utils import PaginationMixin
 class TypeList(PaginationMixin, ListView):
     model = Type
     context_object_name = 'type_list'
-    
+
     def get_queryset(self):
         devicetype = Type.objects.all()
         self.filterstring = self.kwargs.pop("filter", None)
@@ -56,7 +56,7 @@ class TypeDetail(DetailView):
         context = super(TypeDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Type.objects.exclude(pk=context["object"].pk).order_by("name")
-        context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None)
+        context['device_list'] = Device.objects.filter(devicetype=context["object"], archived=None, trashed=None)
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
 
         if "type" in settings.LABEL_TEMPLATES:
