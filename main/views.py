@@ -2,6 +2,7 @@ from django.views.generic import TemplateView, ListView
 from devices.models import *
 from network.models import *
 from devicegroups.models import Devicegroup
+from locations.models import Section
 from reversion.models import Version
 import datetime
 from django.contrib.contenttypes.models import ContentType
@@ -35,6 +36,8 @@ def get_widget_data(user, widgetlist=[]):
             ).order_by("currentlending__duedate")[:10]
     if "groups" in widgetlist:
         context["groups"] = Devicegroup.objects.all()
+    if "sections" in widgetlist:
+        context["sections"] = Section.objects.all()
     if "recentlendings" in widgetlist:
         context["recentlendings"] = Lending.objects.select_related().all().order_by("-pk")[:10]
     if "edithistory" in widgetlist:

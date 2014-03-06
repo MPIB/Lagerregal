@@ -9,6 +9,7 @@ widgets = {
     "overdue": _("Overdue devices"),
     "statistics": _("Statistics"),
     "groups": _("Groups"),
+    "sections": _("Sections"),
     "recentlendings": _("Recent lendings"),
     "shorttermdevices": _("Devices for short term lending"),
     "bookmarks": _("Bookmarked Devices"),
