@@ -9,7 +9,7 @@ class Migration(DataMigration):
     def forwards(self, orm):
         devices = orm.Device.objects.all()
         for device in devices:
-            if device.macaddress != None or device.macaddress != "":
+            if device.macaddress != None or not device.macaddress != "":
                 macaddress = orm.MacAddress()
                 macaddress.macaddress = device.macaddress
                 macaddress.device = device
