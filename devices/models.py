@@ -2,6 +2,7 @@ from django.db import models
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
+from locations.models import Section
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 import reversion
@@ -37,6 +38,7 @@ reversion.register(Building)
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
+    section =  models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms")
 
     def __unicode__(self):
         if self.building:
@@ -99,7 +101,7 @@ class Device(models.Model):
     room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
-    
+
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True, on_delete=models.SET_NULL)
 
@@ -208,4 +210,3 @@ class Note(models.Model):
 
     def get_absolute_url(self):
         return reverse("device-detail", kwargs={'pk': self.device.pk})
-

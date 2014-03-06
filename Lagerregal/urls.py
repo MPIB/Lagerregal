@@ -8,6 +8,7 @@ from api.views import *
 from mail.views import *
 from devicegroups.views import *
 from devicetags.views import *
+from locations.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch
@@ -141,6 +142,18 @@ urlpatterns = patterns('',
     url(r'^devicetags/add$', permission_required("devicetags.add_devicetag")(DevicetagCreate.as_view()), name="devicetag-add"),
     url(r'^devicetags/edit/(?P<pk>[^/]*)$', permission_required("devicetags.change_devicetag")(DevicetagUpdate.as_view()), name="devicetag-edit"),
     url(r'^devicetags/delete/(?P<pk>[^/]*)$', permission_required("devicetags.delete_devicetag")(DevicetagDelete.as_view()), name="devicetag-delete"),
+
+    url(r'^sections/$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
+    url(r'^sections/(?P<page>[0-9]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
+    url(r'^sections/sorting/(?P<sorting>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
+    url(r'^sections/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
+    url(r'^sections/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
+    url(r'^sections/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
+    url(r'^sections/add$', permission_required("locations.add_section")(SectionCreate.as_view()), name="section-add"),
+    url(r'^sections/edit/(?P<pk>[^/]*)$', permission_required("locations.change_section")(SectionUpdate.as_view()), name="section-edit"),
+    url(r'^sections/view/(?P<pk>[^/]*)$', permission_required("locations.read_section")(SectionDetail.as_view()), name="section-detail"),
+    url(r'^sections/delete/(?P<pk>[^/]*)$', permission_required("locations.delete_section")(SectionDelete.as_view()), name="section-delete"),
+    url(r'^sections/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("locations.change_section")(SectionMerge.as_view()), name="section-merge"),
 
     url(r'^ipaddresses/$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),

@@ -49,6 +49,7 @@
         <ul class="dropdown-menu">
           {% if perms.devices.read_room %}<li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>{% endif %}
           {% if perms.devices.read_building %}<li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>{% endif %}
+          {% if perms.locations.read_section %}<li><a href="{% url 'section-list' %}">{% trans "Sections" %}</a></li>{% endif %}
         </ul>
       </li>
       {% endif %}
