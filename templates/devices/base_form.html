@@ -6,9 +6,11 @@
 
 {% block content %}
   <div class="col-xs-12 col-md-6 col-md-offset-{% if formhelp %}1{% else %}3{% endif %} well well-lg">
+{% if form.non_field_errors %}
 <div class="alert alert-danger">
     {{ form.non_field_errors }}
 </div>
+{% endif %}
 <form action="" method="post" class="form-horizontal">{% csrf_token %}
 {% for field in form %}
 <div class="form-group {{field.css_classes}}">
