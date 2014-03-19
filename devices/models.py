@@ -163,7 +163,7 @@ reversion.register(TypeAttributeValue)
 reversion.register(MacAddress)
 
 class Lending(models.Model):
-    owner = models.ForeignKey(Lageruser, verbose_name=_("Lendt to"))
+    owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"))
     lenddate = models.DateField(auto_now_add=True)
     duedate = models.DateField(blank=True, null=True)
     duedate_email = models.DateField(blank=True, null=True)

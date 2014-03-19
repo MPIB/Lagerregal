@@ -41,7 +41,7 @@ class DeviceList(PaginationMixin, ListView):
             devices = Device.objects.all()
         elif self.viewfilter == "available":
             devices = Device.active().filter(currentlending=None)
-        elif self.viewfilter == "lendt":
+        elif self.viewfilter == "lent":
             devices = Device.objects.exclude(currentlending=None)
         elif self.viewfilter == "archived":
             devices = Device.objects.exclude(archived=None)
@@ -56,7 +56,6 @@ class DeviceList(PaginationMixin, ListView):
                 devices = self.request.user.bookmarks.all()
         else:
             devices = Device.active()
-
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
@@ -536,7 +535,7 @@ class DeviceLend(FormView):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived != None:
-            messages.error(self.request, _("Archived Devices can't be lendt"))
+            messages.error(self.request, _("Archived Devices can't be lent"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         lending = Lending()
         lending.owner = get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)
@@ -546,10 +545,10 @@ class DeviceLend(FormView):
         device.currentlending = lending
         if form.cleaned_data["room"]:
             device.room = form.cleaned_data["room"]
-            reversion.set_comment(_("Device lendt and moved to room {0}").format(device.room))
+            reversion.set_comment(_("Device lent and moved to room {0}").format(device.room))
         device.save()
         reversion.set_ignore_duplicates(True)
-        messages.success(self.request, _('Device is marked as lendt to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
+        messages.success(self.request, _('Device is marked as lent to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
 class DeviceInventoried(View):
