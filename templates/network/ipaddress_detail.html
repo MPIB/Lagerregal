@@ -20,9 +20,9 @@
     <table class="table table-bordered table-striped">
       <tbody>
         <tr><td>{% trans "Address" %}</td><td>{{ipaddress.address}}</td></tr>
-        {% if ipaddress.device %}
+        {% if ipaddress.device.pk %}
           <tr><td>{% trans "Device" %}</td><td><a href="{% url 'device-detail' ipaddress.device.id %}">{{ipaddress.device}}</a></td></tr>
-        {% elif ipaddress.user %}
+        {% elif ipaddress.user.pk %}
           <tr><td>{% trans "User" %}</td><td><a href="{% url 'userprofile' ipaddress.user.id %}">{{ipaddress.user}}</a></td></tr>
          {% else %}
            <tr><td></td><td>{% trans "Not assigned" %}</td></tr>

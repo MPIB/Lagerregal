@@ -26,9 +26,9 @@ IP-Addresses
     <tr>
       <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
     {% if ipaddress.device__pk %}
-        <td>{% trans "Device" %}: <a href="{% url 'device-detail' ipaddress.device__id %}">{{ipaddress.device__name}}</a></td>
+        <td>{% trans "Device" %}: <a href="{% url 'device-detail' ipaddress.device__pk %}">{{ipaddress.device__name}}</a></td>
     {% elif ipaddress.user__pk %}
-        <td>{% trans "User" %}: <a href="{% url 'userprofile' ipaddress.user__id %}">{% if ipaddress.user__first_name and ipaddress.user__last_name %}{{ipaddress.user__first_name}} {{ipaddress.user__last_name}}{% else %}{{ipaddress.user__username}}{% endif %}</a></td>
+        <td>{% trans "User" %}: <a href="{% url 'userprofile' ipaddress.user__pk %}">{% if ipaddress.user__first_name and ipaddress.user__last_name %}{{ipaddress.user__first_name}} {{ipaddress.user__last_name}}{% else %}{{ipaddress.user__username}}{% endif %}</a></td>
     {% else %}
           <td>Not assigned</td>
     {% endif %}
