@@ -76,7 +76,6 @@ class SectionDetail(DetailView):
                     context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["section"], attribute))
                 else:
                     context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["section"], attribute))
-        print context["object"].rooms
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections")),
             (reverse("section-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
