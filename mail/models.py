@@ -51,7 +51,6 @@ class MailTemplate(models.Model):
             "hostname": data["device"].hostname,
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
-            "macaddress": data["device"].macaddress,
             "manufacturer": data["device"].manufacturer,
             "name": data["device"],
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")"  if data["device"].room != None else ""),
