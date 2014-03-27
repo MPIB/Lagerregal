@@ -392,13 +392,6 @@ class DeviceCreate(CreateView):
                 attribute.value = value
                 attribute.save()
 
-
-        for macaddress in form.cleaned_data["macaddresses"]:
-            new_address = MacAddress()
-            new_address.macaddress = macaddress
-            new_address.device = device
-            new_address.save()
-
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
