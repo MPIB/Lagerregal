@@ -180,7 +180,8 @@ class Lending(models.Model):
     duedate = models.DateField(blank=True, null=True)
     duedate_email = models.DateField(blank=True, null=True)
     returndate = models.DateField(blank=True, null=True)
-    device = models.ForeignKey(Device)
+    device = models.ForeignKey(Device, null=True, blank=True)
+    smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
 
 class Template(models.Model):
     templatename = models.CharField(_('Templatename'), max_length=200)

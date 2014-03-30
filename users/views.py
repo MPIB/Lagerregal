@@ -1,7 +1,7 @@
 from django.views.generic import DetailView, TemplateView, ListView
 from users.models import Lageruser
 from reversion.models import Version
-from devices.models import Device
+from devices.models import Device, Lending
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from users.forms import SettingsForm, AvatarForm
@@ -65,7 +65,7 @@ class ProfileView(DetailView):
         context = super(ProfileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
-        context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context['lendings'] = Lending.objects.filter(owner = context["profileuser"], returndate=None)
         context['ipaddresses'] = IpAddress.objects.filter(user = context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
@@ -83,7 +83,7 @@ class UserprofileView(TemplateView):
         # Add in a QuerySet of all the books
         context["profileuser"] = self.request.user
         context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
-        context['devices'] = Device.objects.filter(currentlending__owner = context["profileuser"])
+        context['lendings'] = Lending.objects.filter(owner = context["profileuser"], returndate=None)
         context['ipaddresses'] = IpAddress.objects.filter(user = context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")

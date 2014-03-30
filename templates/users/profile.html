@@ -87,7 +87,7 @@
 {% endif %}
     <div class="col-xs-12 col-md-12">
       <h4>{% trans "Owned devices" %}</h4>
-    {% if devices %}
+    {% if lendings %}
       <table id="devicetable" class="table table-bordered table-striped">
                           <thead>
                               <tr>
@@ -98,14 +98,19 @@
                               </tr>
                           </thead>
                           <tbody>
-                              {% for device in devices %}
+                              {% for lending in lendings %}
                                   <tr>
-                                      <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                                      <td>{{device.currentlending.lenddate}}</td>
-                                      <td>{{device.currentlending.duedate}}{% if device.currentlending.duedate < weekago %}<span class="error-icon">!</span>
-    {% elif device.currentlending.duedate < today %}<span class="warning-icon">!</span>
+                                      {% if lending.device.pk %}
+                                        <td><a href="{% url 'device-detail' lending.device.pk %}">{{lending.device.name}}</a></td>
+                                      {% else %}
+                                        <td>{{lending.smalldevice}}</td>
+
+                                      {% endif %}
+                                      <td>{{lending.lenddate}}</td>
+                                      <td>{{lending.duedate}}{% if lending.duedate < weekago %}<span class="error-icon">!</span>
+    {% elif lending.duedate < today %}<span class="warning-icon">!</span>
     {% endif %}</td>
-                                      <td>{{device.room}}</td>
+                                      <td>{{lending.device.room}}</td>
                                   </tr>
                               {% endfor %}
                           </tbody>
