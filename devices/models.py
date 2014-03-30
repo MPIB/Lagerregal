@@ -143,19 +143,6 @@ class Device(models.Model):
     def active():
         return Device.objects.filter(archived=None, trashed=None)
 
-
-class MacAddress(models.Model):
-
-    macaddress = models.CharField(_('MAC Address'), max_length=40, unique=True)
-    device = models.ForeignKey(Device, related_name="macaddresses")
-
-    def __unicode__(self):
-        return self.macaddress
-
-    class Meta:
-        verbose_name = _('MAC Address')
-        verbose_name_plural = _('MAC Addresses')
-
 class DeviceInformationType(models.Model):
 
     keyname = models.CharField(_('Name'), max_length=200)
@@ -183,10 +170,9 @@ class DeviceInformation(models.Model):
 
 
 
-reversion.register(Device, follow=["typeattributevalue_set", "macaddresses"], exclude=
+reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
     ["archived", "currentlending", "inventoried", "bookmarks"])
 reversion.register(TypeAttributeValue)
-reversion.register(MacAddress)
 
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"))
