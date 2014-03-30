@@ -156,6 +156,32 @@ class MacAddress(models.Model):
         verbose_name = _('MAC Address')
         verbose_name_plural = _('MAC Addresses')
 
+class DeviceInformationType(models.Model):
+
+    keyname = models.CharField(_('Name'), max_length=200)
+    humanname = models.CharField(_('Human readable name'), max_length=200)
+
+    def __unicode__(self):
+        return self.humanname
+
+    class Meta:
+        verbose_name = _('Information Type')
+        verbose_name_plural = _('Information Type')
+
+class DeviceInformation(models.Model):
+
+    information = models.CharField(_('Information'), max_length=200)
+    device = models.ForeignKey(Device, related_name="information")
+    infotype = models.ForeignKey(DeviceInformationType)
+
+    def __unicode__(self):
+        return self.infotype.__unicode__() + ": " + self.information
+
+    class Meta:
+        verbose_name = _('Information')
+        verbose_name_plural = _('Information')
+
+
 
 reversion.register(Device, follow=["typeattributevalue_set", "macaddresses"], exclude=
     ["archived", "currentlending", "inventoried", "bookmarks"])
