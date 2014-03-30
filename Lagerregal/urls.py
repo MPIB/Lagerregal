@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<pk>[0-9]*)/notes/create/$', permission_required("devices.change_device")(NoteCreate.as_view()), name="device-note-create"),
     url(r'^devices/(?P<pk>[0-9]*)/notes/edit/$', permission_required("devices.change_device")(NoteUpdate.as_view()), name="device-note-edit"),
     url(r'^devices/(?P<device>[0-9]*)/notes/(?P<pk>[0-9]*)/delete/$', permission_required("devices.change_device")(NoteDelete.as_view()), name="device-note-delete"),
+    url(r'^devices/smalllend/$', permission_required("devices.lend_device")(DeviceLend.as_view()), name="device-lend"),
 
     url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
     url(r'^devices/templates/(?P<page>[0-9]*)$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),

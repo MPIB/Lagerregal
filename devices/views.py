@@ -501,15 +501,19 @@ class DeviceLend(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(DeviceLend, self).get_context_data(**kwargs)
-        deviceid = self.kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        # Add in a QuerySet of all the books
         context['actionstring'] = "Mark device as lend"
         context['form_scripts'] = "$('#id_owner').select2();"
-        context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
-            ("", _("Lend"))]
+        if "pk" in self.kwargs:
+            deviceid = self.kwargs["pk"]
+            device = get_object_or_404(Device, pk=deviceid)
+            context["breadcrumbs"] = [
+                (reverse("device-list"), _("Devices")),
+                (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+                ("", _("Lend"))]
+        else:
+            context["breadcrumbs"] = [
+                (reverse("device-list"), _("Devices")),
+                ("", _("Lend"))]
         return context
 
     def form_valid(self, form):
