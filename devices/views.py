@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, MacAddress
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
 from django.contrib.auth.models import Group
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
@@ -461,18 +461,6 @@ class DeviceUpdate(UpdateView):
                     TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
                 except:
                     pass
-
-        old_macaddresses = [address[0] for address in device.macaddresses.all().values_list("macaddress")]
-        for macaddress in form.cleaned_data["macaddresses"]:
-            if macaddress == "":
-                continue
-            if not macaddress in old_macaddresses:
-                new_address = MacAddress(macaddress=macaddress, device=device)
-                new_address.save()
-            else:
-                old_macaddresses.remove(macaddress)
-        for macaddress in old_macaddresses:
-            MacAddress.objects.get(macaddress=macaddress).delete()
 
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []

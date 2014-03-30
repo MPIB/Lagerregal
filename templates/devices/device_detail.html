@@ -70,7 +70,6 @@
       <tbody>
         <tr><td>{% trans "Inventorynumber" %}</td><td>{{device.inventorynumber}}</td></tr>
         <tr><td>{% trans "Serialnumber" %}</td><td>{{device.serialnumber}}</td></tr>
-        <tr><td>{% trans "MAC-Addresses" %}</td><td>{{device.macaddresses.all|join:", "}}</td></tr>
         <tr><td>{% trans "Devicetype" %}</td><td>{% if device.devicetype %}<a href="{% url 'type-detail' device.devicetype.pk %}">{{device.devicetype}}</a>{% else %}-{% endif %}</td></tr>
         <tr><td>{% trans "Manufacturer" %}</td><td>{% if device.manufacturer %}<a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">{{device.manufacturer}}</a>{% else %}-{% endif %}</td></tr>
         <tr><td>{% trans "Room" %}</td><td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{device.room}}</a>{% else %}-{% endif %}</td></tr>

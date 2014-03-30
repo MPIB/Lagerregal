@@ -91,7 +91,6 @@ $("#id_devicetype").change(function() {
     });
 });
 
-$("#id_macaddresses").tagit();
 
 $(".modalbutton").click(function() {
     $("#addmodal_header").text($(this).data("name"))
@@ -183,7 +182,6 @@ $(".previewbutton").click(function() {
       "name": $("#id_name").val(),
       "inventorynumber": $("#id_inventorynumber").val(),
       "serialnumber": $("#id_serialnumber").val(),
-      "macaddress": $("#id_macaddress").val(),
       "manufacturer": $("#id_manufacturer").val(),
       "hostname": $("#id_hostname").val(),
       "description": $("#id_description").val(),

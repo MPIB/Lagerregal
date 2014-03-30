@@ -132,7 +132,6 @@ class DeviceForm(forms.ModelForm):
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
 
-    macaddresses = forms.CharField(required=False)
     description = forms.CharField(widget=forms.Textarea(attrs={'style':"height:80px"}), max_length=1000, required=False)
     webinterface = forms.URLField(max_length=60, required=False)
     creator =  forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
@@ -147,7 +146,6 @@ class DeviceForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(DeviceForm, self).clean()
-        cleaned_data["macaddresses"] = cleaned_data["macaddresses"].split(",")
         unclean_data = []
         if cleaned_data["emailrecipients"] and not cleaned_data["emailtemplate"]:
             self._errors["emailtemplate"] = self.error_class([_("You specified recipients, but didn't select a template")])
@@ -163,9 +161,6 @@ class DeviceForm(forms.ModelForm):
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
-        if kwargs["instance"]:
-            addresslist = [address[0] for address in kwargs["instance"].macaddresses.all().values_list("macaddress")]
-            kwargs["initial"]["macaddresses"] = ", ".join(addresslist)
         super(DeviceForm, self).__init__(*args, **kwargs)
 
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
@@ -202,8 +197,6 @@ class DeviceForm(forms.ModelForm):
                 except:
                     pass
             self.fields.keyOrder.insert(self.fields.keyOrder.index("room"), self.fields.keyOrder.pop(self.fields.keyOrder.index('attribute_{index}'.format(index=attribute.pk))))
-
-        self.fields.keyOrder.insert(self.fields.keyOrder.index("manufacturer"), self.fields.keyOrder.pop(self.fields.keyOrder.index("macaddresses")))
 
 
 class AddForm(forms.ModelForm):

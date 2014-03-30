@@ -47,11 +47,6 @@
           <td>{% history_compare previous.serialnumber this_version.serialnumber %}</td>
           <td>{% history_compare this_version.serialnumber current.serialnumber %}</td>
         </tr>
-        <tr><td>{% trans "MAC-Address" %}</td>
-          <td>{{previous.macaddress}}</td>
-          <td>{% history_compare previous.macaddress this_version.macaddress %}</td>
-          <td>{% history_compare this_version.macaddress current.macaddress %}</td>
-        </tr>
         <tr><td>{% trans "Hostname" %}</td>
           <td>{{previous.hostname}}</td>
           <td>{% history_compare previous.hostname this_version.hostname %}</td>
@@ -96,10 +91,6 @@
         <tr><td>{% trans "Serialnumber" %}</td>
           <td>{{this_version.serialnumber}}</td>
           <td>{% history_compare this_version.serialnumber current.serialnumber %}</td>
-        </tr>
-        <tr><td>{% trans "MAC-Address" %}</td>
-          <td>{{this_version.macaddress}}</td>
-          <td>{% history_compare this_version.macaddress current.macaddress %}</td>
         </tr>
         <tr><td>{% trans "Hostname" %}</td>
           <td>{{this_version.hostname }}</td>

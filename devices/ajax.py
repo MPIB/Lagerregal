@@ -136,7 +136,6 @@ class PreviewMail(View):
             "group": request.POST.get("device[group]", ""),
             "hostname": request.POST.get("device[hostname]", ""),
             "inventorynumber": request.POST.get("device[inventorynumber]", ""),
-            "macaddress": request.POST.get("device[macaddress]", ""),
             "manufacturer": request.POST.get("device[manufacturer]", ""),
             "name": request.POST.get("device[name]", ""),
             "room": request.POST.get("device[room]", "") ,
