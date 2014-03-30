@@ -75,6 +75,29 @@ class DeviceApiBookmark(APIView):
                 note.save()
             return Response({"success": "added bookmark"})
 
+class DeviceApiLend(APIView):
+    def post(self, request, pk):
+        lending = Lending()
+        if "pk" in self.kwargs:        
+            device = Device.objects.get(pk=pk)
+            device = get_object_or_404(Device, pk=deviceid)
+
+            if device.archived != None:
+                messages.error(self.request, _("Archived Devices can't be lent"))
+                return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+            if form.cleaned_data["room"]:
+                device.room = form.cleaned_data["room"]
+                reversion.set_comment(_("Device lent and moved to room {0}").format(device.room))
+            lending.device = device
+        else:
+            lending.smalldevice = form.cleaned_data["smalldevice"]
+        lending.owner = get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)
+        lending.duedate = form.cleaned_data["duedate"]
+        lending.save()
+        reversion.set_ignore_duplicates(True)
+        return Response({"success":"Mark as lendt."})
+
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Type
