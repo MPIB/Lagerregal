@@ -68,6 +68,23 @@ class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
         model = Device
         fields = ("url", "name")
 
+class LendingSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lending
+        exclude = ("lenddate", "duedate_email", "returndate")
+
+    def validate(self, attrs):
+        if attrs["device"] and attrs["smalldevice"]:
+            raise serializers.ValidationError("can not set both device and smalldevice")
+        elif not attrs["device"] and not attrs["smalldevice"]:
+            raise serializers.ValidationError("you have to either set device or smalldevice")
+        elif attrs["device"]:
+            if attrs["device"].currentlending:
+                raise serializers.ValidationError("this device is already lend.")
+        return attrs
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     groups = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Group.objects.all())

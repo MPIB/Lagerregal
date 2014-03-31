@@ -75,28 +75,17 @@ class DeviceApiBookmark(APIView):
                 note.save()
             return Response({"success": "added bookmark"})
 
-class DeviceApiLend(APIView):
-    def post(self, request, pk):
-        lending = Lending()
-        if "pk" in self.kwargs:        
-            device = Device.objects.get(pk=pk)
-            device = get_object_or_404(Device, pk=deviceid)
+class DeviceApiLend(generics.CreateAPIView):
+    model = Lending
+    serializer_class = LendingSerializer
 
-            if device.archived != None:
-                messages.error(self.request, _("Archived Devices can't be lent"))
-                return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-
-            if form.cleaned_data["room"]:
-                device.room = form.cleaned_data["room"]
-                reversion.set_comment(_("Device lent and moved to room {0}").format(device.room))
-            lending.device = device
-        else:
-            lending.smalldevice = form.cleaned_data["smalldevice"]
-        lending.owner = get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)
-        lending.duedate = form.cleaned_data["duedate"]
-        lending.save()
-        reversion.set_ignore_duplicates(True)
-        return Response({"success":"Mark as lendt."})
+    def post(self, request):
+        response = super(DeviceApiLend, self).post(request)
+        if request.POST["device"] != "" and response.status_code == 200:
+            device = Device.objects.get(pk=request.POST["device"])
+            device.currentlending = self.object
+            device.save()
+        return response
 
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
