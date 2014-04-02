@@ -540,7 +540,7 @@ class DeviceLend(FormView):
         if "pk" in self.kwargs:
             device.currentlending = lending
             device.save()
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":pk}))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":lending.owner.pk}))
 
