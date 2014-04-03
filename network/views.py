@@ -158,7 +158,6 @@ class UserIpAddress(FormView):
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         user = form.cleaned_data["user"]
-        print user.__unicode__()
         reversion.set_comment(_("Assigned to User {0}").format(user.__unicode__()))
         for ipaddress in ipaddresses:
             ipaddress.user = user
