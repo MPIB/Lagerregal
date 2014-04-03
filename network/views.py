@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from users.models import Lageruser
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+import reversion
 
 class IpAddressList(PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'

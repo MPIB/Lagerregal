@@ -145,7 +145,7 @@
   </div>
 {% if perms.users.change_user %}
 <div class="col-xs-12 col-md-6" style="margin-top:40px">
-<form method="post" action="{% url 'user-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
+<form method="post" action="{% url 'user-ipaddress' profileuser.pk %}" style="margin:0px;">{% csrf_token %}
 {{ipaddressform.ipaddresses}}
 <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
 <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}</button>
