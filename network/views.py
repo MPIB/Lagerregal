@@ -1,3 +1,4 @@
+# coding: utf-8
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy
 from network.models import IpAddress
@@ -157,7 +158,8 @@ class UserIpAddress(FormView):
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         user = form.cleaned_data["user"]
-        reversion.set_comment(_("Assigned to User {0}".format(user.__unicode__())))
+        print user.__unicode__()
+        reversion.set_comment(_("Assigned to User {0}").format(user.__unicode__()))
         for ipaddress in ipaddresses:
             ipaddress.user = user
             ipaddress.save()
