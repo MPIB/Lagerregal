@@ -38,7 +38,7 @@ reversion.register(Building)
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
-    section =  models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms")
+    section =  models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms", blank=True)
 
     def __unicode__(self):
         if self.building:

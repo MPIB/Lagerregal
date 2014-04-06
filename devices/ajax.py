@@ -96,6 +96,8 @@ class AddDeviceField(View):
                 elif classname == "room":
                     newitem = Room()
                     newitem.name = form.cleaned_data["name"]
+                    newitem.building = form.cleaned_data["building"]
+                    newitem.section = form.cleaned_data["section"]
                     newitem.save()
                 elif classname == "group":
                     newitem = Devicegroup()
@@ -105,6 +107,7 @@ class AddDeviceField(View):
                 data["name"] = newitem.name
                 data["classname"] = classname
         else:
+            print form.errors
             data["error"] = "Error: {0}".format(form.non_field_errors())
         return HttpResponse(json.dumps(data), content_type='application/json')
 
