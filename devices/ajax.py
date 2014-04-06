@@ -246,6 +246,10 @@ class AjaxSearch(View):
 
             if key == "manufacturer":
                 value = value.split("-", 1)[0]
+                try:
+                    value = int(value)
+                except:
+                    break
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("manufacturer", _("Manufacturer")))
                     searchvalues.append("manufacturer__name")
@@ -256,6 +260,10 @@ class AjaxSearch(View):
 
             elif key == "room":
                 value = value.split("-", 1)[0]
+                try:
+                    value = int(value)
+                except:
+                    break
                 if "room__in" in dictionary:
                     dictionary["room__in"].append(value)
                 else:
@@ -263,6 +271,10 @@ class AjaxSearch(View):
 
             elif key == "devicetype":
                 value = value.split("-", 1)[0]
+                try:
+                    value = int(value)
+                except:
+                    break
                 if "devicetype__in" in dictionary:
                     dictionary["devicetype__in"].append(value)
                 else:
@@ -270,6 +282,10 @@ class AjaxSearch(View):
 
             elif key == "devicegroup":
                 value = value.split("-", 1)[0]
+                try:
+                    value = int(value)
+                except:
+                    break
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("group", _("Group")))
                     searchvalues.append("group__name")
@@ -280,6 +296,10 @@ class AjaxSearch(View):
 
             elif key == "user":
                 value = value.split("-", 1)[0]
+                try:
+                    value = int(value)
+                except:
+                    break
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("user", _("User")))
                     searchvalues.append("currentlending__owner__username")
@@ -316,6 +336,10 @@ class AjaxSearch(View):
 
             elif key == "tag":
                 value = value.split("-", 1)[0]
+                try:
+                    value = int(value)
+                except:
+                    break
                 if "tags__in" in dictionary:
                     dictionary["tags__in"].append(value)
                 else:
