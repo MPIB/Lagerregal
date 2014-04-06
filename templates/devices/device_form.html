@@ -249,4 +249,11 @@ $("#id_emailedit").change(function() {
   }
 });
 
+$('#modal-form').bind('keypress', function(e) {
+    if ( e.which == 13 ) {
+      e.preventDefault();
+      $("#addbutton").click();
+    };
+});
+
 {% endblock %}
