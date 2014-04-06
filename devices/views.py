@@ -503,8 +503,8 @@ class DeviceLend(FormView):
         context = super(DeviceLend, self).get_context_data(**kwargs)
         context['actionstring'] = "Mark device as lend"
         context['form_scripts'] = "$('#id_owner').select2();"
-        if "pk" in self.kwargs:
-            deviceid = self.kwargs["pk"]
+        if "device" in self.request.POST:
+            deviceid = self.request.POST["device"]
             device = get_object_or_404(Device, pk=deviceid)
             context["breadcrumbs"] = [
                 (reverse("device-list"), _("Devices")),
@@ -518,10 +518,8 @@ class DeviceLend(FormView):
 
     def form_valid(self, form):
         lending = Lending()
-        if "pk" in self.kwargs:
-            deviceid = self.kwargs["pk"]
-            device = get_object_or_404(Device, pk=deviceid)
-
+        if form.cleaned_data["device"]:
+            device = form.cleaned_data["device"]
             if device.archived != None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
@@ -529,7 +527,7 @@ class DeviceLend(FormView):
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 reversion.set_comment(_("Device lent and moved to room {0}").format(device.room))
-            lending.device = device
+            lending.device = form.cleaned_data["device"]
         else:
             lending.smalldevice = form.cleaned_data["smalldevice"]
         lending.owner = get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)
@@ -537,12 +535,12 @@ class DeviceLend(FormView):
         lending.save()
         reversion.set_ignore_duplicates(True)
         messages.success(self.request, _('Device is marked as lent to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
-        if "pk" in self.kwargs:
+        if form.cleaned_data["device"]:
             device.currentlending = lending
             device.save()
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
-            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":lending.owner.pk}))
+            return HttpResponseRedirect(reverse("userpr ofile", kwargs={"pk":lending.owner.pk}))
 
 class DeviceInventoried(View):
 

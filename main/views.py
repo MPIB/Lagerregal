@@ -10,6 +10,7 @@ from main.models import DashboardWidget, widgets, get_progresscolor
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
 from Lagerregal.utils import PaginationMixin
+from devices.forms import LendForm
 
 def get_widget_data(user, widgetlist=[]):
     context = {}
@@ -71,6 +72,7 @@ class Home(TemplateView):
             for w in context["widgets_right"]:
                 del userwidget_list[w.widgetname]
             context["widgets_list"] = userwidget_list
+            context["lendform"] = LendForm()
             context["breadcrumbs"] = [("", _("Dashboard"))]
         else:
             context["breadcrumbs"] = [("", _("Home"))]

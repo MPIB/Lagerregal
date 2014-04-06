@@ -6,6 +6,15 @@
 {% block header %}
 {% trans "Home" %}
 {% endblock %}
+
+{% block pullright %}
+{% if user.is_staff %}
+  {% if perms.devices.lend_device %}
+    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend Device" %}</a>
+{% endif %}
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="row">
 {% if user.is_staff %}
@@ -64,6 +73,8 @@
 {% block scriptend %}
   {% if user.is_staff %}
 $(function() {
+    $("select").select2()
+    $( "#id_duedate" ).datepicker();
     $( ".dashboard" ).sortable({
       connectWith: ".dashboard",
       placeholder: "alert alert-success dashboard-placeholder",
@@ -148,5 +159,8 @@ $(function() {
 <a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success"><i class="fa fa-plus"></i></a>
   
 {% include "snippets/modals/addwidget.html" with modalname="addWidgetModal" %}
+{% if perms.devices.lend_device %}
+{% include "snippets/modals/lendingHome.html" with modalname="lendModal" %}
+{% endif %}
   {% endif %}
   {% endblock %}

@@ -101,14 +101,30 @@ class SearchForm(forms.Form):
     lender = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search Lender", "class":"form-control input-sm"}), required=False)
 
 class LendForm(forms.Form):
-    error_css_class = 'has_error'
+    error_css_class = 'has-error'
     owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Lendt to"))
     device = forms.ModelChoiceField(Device.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Device"), required=False)
     smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control input-sm"}), required=False)
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
 '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
-'%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y', '%d.%m.%y'))
+'%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y', '%d.%m.%y'), widget=forms.TextInput(attrs={"class":"form-control input-sm"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
+
+    def clean(self):
+        cleaned_data = super(LendForm, self).clean()
+        if "device" in cleaned_data and "smalldevice" in cleaned_data:
+            if cleaned_data["device"] and cleaned_data["smalldevice"]:
+                raise forms.ValidationError("can not set both device and smalldevice")
+            elif not cleaned_data["device"] and not cleaned_data["smalldevice"]:
+                raise forms.ValidationError("you have to either set device or smalldevice")
+        return cleaned_data
+
+    def clean_device(self):
+        device = self.cleaned_data["device"]
+        if device.currentlending:
+            print "bla"
+            raise forms.ValidationError("this device is already lend.")
+        return device
 
 class DeviceViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
@@ -224,12 +240,12 @@ class DeviceMailForm(forms.Form):
         super(DeviceMailForm, self).__init__(*args, **kwargs)
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
-    error_css_class = 'has_error'
+    error_css_class = 'has-error'
     emailrecipients = forms.MultipleChoiceField()
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
 
 class DeviceStorageForm(forms.Form):
-    error_css_class = 'has_error'
+    error_css_class = 'has-error'
     send_mail = forms.BooleanField(required=False)
