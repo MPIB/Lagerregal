@@ -356,7 +356,8 @@ class DeviceCreate(CreateView):
             initial += get_object_or_404(Template, pk=templateid).get_as_dict()
         copyid = self.kwargs.pop("copyid", None)
         if copyid != None:
-            initial += get_object_or_404(Device, pk=copyid).get_as_dict()
+            for key, value in get_object_or_404(Device, pk=copyid).get_as_dict().items():
+                initial[key] = value
             initial["deviceid"] = copyid
         initial["creator"] = creator
         try:
