@@ -40,7 +40,12 @@
       <th>{% trans "Devicetype" %}</th>
       <th>{% trans "Room" %}</th>
       <th>{% trans "Devicegroup" %}</th>
-      <th style="width:60px">{% trans "Available" %}</th>
+      {% if viewfilter == "lent" %}
+        <th>{% trans "Owner" %}</th>
+        <th>{% trans "Duedate" %}</th>
+      {% else %}
+        <th style="width:60px">{% trans "Available" %}</th>
+      {% endif %}
     </tr>
   </thead>
   <tbody>
@@ -51,7 +56,12 @@
       <td>{{ device.devicetype__name }}</td>
       <td>{{ device.room__name }} ({{device.room__building__name}})</td>
       <td>{{ device.group__name }}</td>
+      {% if viewfilter == "lent" %}
+        <td>{{device.currentlending.owner}}</td>
+        <td>{{device.currentlending.duedate}}</td>
+      {% else %}
       <td>{% if device.currentlending == None %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
+      {% endif %}
     </tr>
      {% endfor %}
   </tbody>

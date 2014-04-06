@@ -66,6 +66,7 @@ class DeviceList(PaginationMixin, ListView):
         context = super(DeviceList, self).get_context_data(**kwargs)
         context["viewform"] = DeviceViewForm(initial={'viewfilter': self.viewfilter, "viewsorting":self.viewsorting})
         context["template_list"] = Template.objects.all()
+        context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
@@ -90,7 +91,6 @@ class DeviceDetail(DetailView):
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
         context["notes"] = Note.objects.select_related("creator").filter(device=context["device"]).order_by("-id")
-
         mailinitial = {}
         if context["device"].currentlending != None:
             currentowner = context["device"].currentlending.owner

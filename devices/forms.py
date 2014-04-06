@@ -21,7 +21,7 @@ VIEWFILTER = (
     ('active', _('Active Devices')),
     ('all', _('All Devices')),
     ('available', _('Available Devices')),
-    ('lendt', _('Lendt Devices')),
+    ('lent', _('Lent Devices')),
     ('archived', _('Archived Devices')),
     ('trashed', _('Trashed Devices')),
     ('overdue', _('Overdue Devices')),
