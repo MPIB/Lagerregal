@@ -19,7 +19,7 @@
     {% if "device" in LABEL_TEMPLATES %}
     <li><a href="#" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a></li>
     {% endif %}
-    {% if perms.devices.change_device %}<li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Inventoried" %}</a></li>{% endif %}
+    {% if perms.devices.add_device %}<li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Inventoried" %}</a></li>{% endif %}
     {% if perms.devices.create_device %}<li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a></li>{% endif %}
     {% if perms.devices.change_device or perms.devices.delete_device %}<li class="divider"></li>{% endif %}
     {% if perms.devices.change_device %}
