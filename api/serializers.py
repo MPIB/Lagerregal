@@ -7,12 +7,14 @@ from network.models import IpAddress
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='building-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
     class Meta:
         model = Building
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='room-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
     building = BuildingSerializer()
 
     class Meta:
@@ -20,6 +22,7 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
 
 class ManufacturerSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='manufacturer-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
 
     class Meta:
         model = Manufacturer
@@ -31,12 +34,14 @@ class TypeAttributeSerializer(serializers.ModelSerializer):
 
 class TypeSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='type-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
     typeattribute_set = TypeAttributeSerializer()
     class Meta:
         model = Type
 
 class TemplateSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='template-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
 
     class Meta:
         model = Template
@@ -49,6 +54,7 @@ class LendingSerializer(serializers.ModelSerializer):
 
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
     manufacturer = serializers.SlugRelatedField(slug_field="name")
     room = serializers.SlugRelatedField(slug_field="name")
     devicetype = serializers.SlugRelatedField(slug_field="name")
@@ -63,6 +69,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
 
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
 
     class Meta:
         model = Device
@@ -87,6 +94,7 @@ class LendingSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
     groups = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Group.objects.all())
     user_permissions = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Permission.objects.all())
 
@@ -102,6 +110,7 @@ class UserAvatarSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
 
     class Meta:
         model = Lageruser
@@ -110,6 +119,7 @@ class UserListSerializer(serializers.HyperlinkedModelSerializer):
 
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ipaddress-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
 
     device = serializers.SlugRelatedField(slug_field="name")
     class Meta:
