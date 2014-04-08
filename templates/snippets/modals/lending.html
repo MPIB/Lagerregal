@@ -9,7 +9,7 @@
 
 {% block modalBody %}
 <div class="form-group {{form.owner.css_classes}}">
-    <label for="owner" class="col-lg-4 control-label">{% trans "Lent to"}*</label>
+    <label for="owner" class="col-lg-4 control-label">{% trans "Lent to" %}*</label>
     <div class="col-lg-8">
       {{lendform.owner}}
     <p class="help-block">{% if form.owner.errors %}{% for error in form.owner.errors %}{{error}}, {% endfor %}{% endif %}</p>    </div>
