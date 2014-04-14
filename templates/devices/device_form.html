@@ -18,7 +18,7 @@
 {% if field.html_name == "creator" %}
 {{ field }}
 {% elif field|is_checkbox %}
-<div class="form-group">
+<div class="form-group" id="div_{{field.html_name}}">
     <div class="col-lg-offset-3 col-lg-9">
       <div class="checkbox">
         <label>
@@ -32,17 +32,17 @@
 <div class="form-group {{field.css_classes}}"
 {% if field.html_name == "emailsubject" or field.html_name == "emailbody"%}
 style="display:none;"
-{% endif %}>
+{% endif %} id="div_{{field.html_name}}">
     <label for="{{field.html_name}}" class="col-lg-3 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
     <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplate" %}7{% else %}8{% endif %}{% else %}9{% endif %}">
-      {% if field|is_select or field|is_selectmultiple %}{{field}}{% else %}{{ field|add_class:'form-control'}}{% endif %}
+      {% if field|is_select or field|is_selectmultiple %}{{field}}{% else %}{{ field|add_class:'form-control input-sm'}}{% endif %}
       <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% endif %}</p>
     </div>
     {% if field|is_select %}
       {% if field.html_name == "emailtemplate" %}
-      <div class="col-lg-2" style="padding-left:0px"><a class="previewbutton btn btn-default btn-sm pull-right" data-name="{{field.label}}"><i class="fa fa-eye"></i> {% trans "Preview" %}</a></div>
+      <div class="col-lg-2" style="padding-left:0px"><a class="previewbutton btn btn-default btn-xs pull-right" data-name="{{field.label}}"><i class="fa fa-eye"></i> {% trans "Preview" %}</a></div>
       {% else %}
-        <div class="col-lg-1" style="padding-left:0px"><a class="modalbutton btn btn-default btn-sm pull-right" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="fa fa-plus"></i></a></div>
+        <div class="col-lg-1" style="padding-left:0px"><a class="modalbutton btn btn-default btn-xs pull-right" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="fa fa-plus"></i></a></div>
       {% endif %}
     {% endif %}
   </div>

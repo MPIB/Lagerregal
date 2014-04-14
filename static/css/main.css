@@ -170,3 +170,15 @@ a:hover {
 #alternativebox {
     margin-top:10px;
 }
+
+.form-group {
+    margin-bottom:5px;
+}
+
+.form-horizontal .checkbox {
+    padding-top:0;
+}
+
+#div_templending {
+    margin-bottom:25px;
+}
