@@ -121,9 +121,9 @@ class LendForm(forms.Form):
 
     def clean_device(self):
         device = self.cleaned_data["device"]
-        if device.currentlending:
-            print "bla"
-            raise forms.ValidationError("this device is already lend.")
+        if device:
+            if device.currentlending:
+                raise forms.ValidationError("this device is already lend.")
         return device
 
 class DeviceViewForm(forms.Form):

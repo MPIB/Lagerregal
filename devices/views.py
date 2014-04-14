@@ -519,7 +519,7 @@ class DeviceLend(FormView):
 
     def form_valid(self, form):
         lending = Lending()
-        if form.cleaned_data["device"]:
+        if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
             if device.archived != None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
@@ -541,7 +541,7 @@ class DeviceLend(FormView):
             device.save()
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
-            return HttpResponseRedirect(reverse("userpr ofile", kwargs={"pk":lending.owner.pk}))
+            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":lending.owner.pk}))
 
 class DeviceInventoried(View):
 
