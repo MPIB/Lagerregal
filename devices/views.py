@@ -562,7 +562,7 @@ class DeviceReturn(FormView):
     form_class = ReturnForm
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceLend, self).get_context_data(**kwargs)
+        context = super(DeviceReturn, self).get_context_data(**kwargs)
         context['actionstring'] = "Mark device as returned"
         context["breadcrumbs"] = [
                 (reverse("device-list"), _("Devices")),
@@ -571,7 +571,7 @@ class DeviceReturn(FormView):
 
     def form_valid(self, form):
         device = None
-        lending = form.cleaned_data["lending"]
+        lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
         if lending.device and lending.device != "":
             device = lending.device
 

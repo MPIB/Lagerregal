@@ -101,11 +101,11 @@
                               {% for lending in lendings %}
                                   <tr>
                                       {% if lending.device.pk %}
-                                        <td><a href="{% url 'device-detail' lending.device.pk %}">{{lending.device.name}}</a></td>
+                                        <td><a href="{% url 'device-detail' lending.device.pk %}">{{lending.device.name}}</a>
                                       {% else %}
-                                        <td>{{lending.smalldevice}}</td>
-
+                                        <td>{{lending.smalldevice}}
                                       {% endif %}
+                                      <a href="{% url "device-return" lending.pk %}" class="pull-right"><i class="fa fa-reply"></i></a></td>
                                       <td>{{lending.lenddate}}</td>
                                       <td>{{lending.duedate}}{% if lending.duedate < weekago %}<span class="error-icon">!</span>
     {% elif lending.duedate < today %}<span class="warning-icon">!</span>

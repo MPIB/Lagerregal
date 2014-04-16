@@ -5,7 +5,7 @@
           <h4 class="modal-title">{% trans "Mark device as returned" %}</h4>
 {% endblock %}
 
-{% block modalUrl %}{% url "device-return" %}{% endblock %}
+{% block modalUrl %}{% url "device-return" device.currentlending.id %}{% endblock %}
 
 {% block modalBody %}
 <div class="form-group {{form.room.css_classes}}">
@@ -14,7 +14,6 @@
       {{lendform.room}}
     <p class="help-block">{% if form.room.errors %}{% for error in form.room.errors %}{{error}}, {% endfor %}{% endif %}</p>    </div>
   </div>
-  <input type="hidden" name="lending" value="{{device.currentlending.id }}">
 {% endblock %}
 
 {% block modalFooter %}

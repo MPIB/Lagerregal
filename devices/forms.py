@@ -128,7 +128,6 @@ class LendForm(forms.Form):
 
 class ReturnForm(forms.Form):
     error_css_class = 'has-error'
-    lending = forms.ModelChoiceField(Lending.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Lent to"))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
 
 class DeviceViewForm(forms.Form):
