@@ -298,6 +298,7 @@
 {% block htmlend %}
 {% if perms.devices.lend_device %}
 {% include "snippets/modals/lending.html" with modalname="lendModal" %}
+{% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
 
 {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
 {% endif %}
@@ -370,29 +371,6 @@ $("#trashbutton").popover({
     title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
 content : "<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default dropdown-cancel' onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-          "</form>"
-          })
-{% endif %}
-{% if perms.devices.lend_device and device.currentlending != None %}
-$("#returnbutton").popover({
-    html: 'true',
-    placement: "bottom",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-          "</form>"
-          })
-{% endif %}
-
-{% if perms.devices.lend_device and device.currentlending != None %}
-$(".deletenotebutton").popover({
-    html: 'true',
-    placement: "bottom",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "device-return" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#returnbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
           "</form>"
           })
