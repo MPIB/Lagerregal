@@ -97,7 +97,7 @@
     {% if device.currentlending != None %}
       <table class="table table-bordered table-striped">
       <tbody>
-        <tr><td>{% trans "Lent to" %}</td><td>{{device.currentlending.owner}}</td></tr>
+        <tr><td>{% trans "Lent to" %}</td><td><a href="{% url "userprofile" device.currentlending.owner.pk %} ">{{device.currentlending.owner}}</a></td></tr>
         <tr><td>{% trans "Since" %}</td><td>{{device.currentlending.lenddate}}</td></tr>
         <tr><td>{% trans "Due to" %}</td><td>{{device.currentlending.duedate}}
 {% if device.currentlending.duedate < weekago %}<span class="error-icon"><i class="fa fa-exclamation-circle"></i></span>
