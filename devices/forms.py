@@ -1,6 +1,6 @@
 from django import forms
 from network.models import IpAddress
-from devices.models import Device, Type, Room, Manufacturer
+from devices.models import Device, Type, Room, Manufacturer, Lending
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from users.models import Lageruser
@@ -102,7 +102,7 @@ class SearchForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has-error'
-    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Lendt to"))
+    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Lent to"))
     device = forms.ModelChoiceField(Device.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Device"), required=False)
     smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control input-sm"}), required=False)
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
@@ -125,6 +125,11 @@ class LendForm(forms.Form):
             if device.currentlending:
                 raise forms.ValidationError("this device is already lend.")
         return device
+
+class ReturnForm(forms.Form):
+    error_css_class = 'has-error'
+    lending = forms.ModelChoiceField(Lending.objects.all(), widget=forms.Select(attrs={"style":"width:100%;"}), label=_("Lent to"))
+    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
 
 class DeviceViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,

@@ -47,7 +47,7 @@
 
 {% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
-    <a href="#"  id="returnbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
+    <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
   {% else %}
     <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
   {% endif %}

@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
 from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm
-from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm
+from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm, ReturnForm
 from devicetags.forms import DeviceTagForm
 import datetime
 from django.utils.timezone import utc
@@ -557,25 +557,38 @@ class DeviceInventoried(View):
     def post(self, request, **kwargs):
         return self.get(request, **kwargs)
 
-class DeviceReturn(View):
+class DeviceReturn(FormView):
+    template_name = 'devices/base_form.html'
+    form_class = ReturnForm
 
-    def get(self, request, **kwargs):
-        deviceid = kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        if device.archived != None:
-            messages.error(request, _("Archived Devices can't be returned"))
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-        lending = device.currentlending
-        lending.returndate = datetime.datetime.utcnow().replace(tzinfo=utc)
-        lending.save()
-        device.currentlending = None
-        device.save()
+    def get_context_data(self, **kwargs):
+        context = super(DeviceLend, self).get_context_data(**kwargs)
+        context['actionstring'] = "Mark device as returned"
+        context["breadcrumbs"] = [
+                (reverse("device-list"), _("Devices")),
+                ("", _("Lend"))]
+        return context
+
+    def form_valid(self, form):
+        device = None
+        lending = form.cleaned_data["lending"]
+        if lending.device and lending.device != "":
+            device = lending.device
+
+            if form.cleaned_data["room"]:
+                device.room = form.cleaned_data["room"]
+                reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
+        else:
+            owner = lending.owner
+        lending.delete()
         reversion.set_ignore_duplicates(True)
-        messages.success(request, _('Device is marked as returned.'))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-
-    def post(self, request, **kwargs):
-        return self.get(request, **kwargs)
+        messages.success(self.request, _('Device is marked as returned'))
+        if device != None:
+            device.currentlending = lending
+            device.save()
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        else:
+            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":owner.pk}))
 
 class DeviceMail(FormView):
     template_name = 'devices/base_form.html'
