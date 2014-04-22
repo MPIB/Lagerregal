@@ -574,18 +574,20 @@ class DeviceReturn(FormView):
         lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
         if lending.device and lending.device != "":
             device = lending.device
-
+            print device, device.currentlending
+            device.currentlending = None
+            device.save()
+            print device, device.currentlending
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
         else:
             owner = lending.owner
-        lending.delete()
+        lending.returndate = datetime.datetime.now()
+        lending.save()
         reversion.set_ignore_duplicates(True)
         messages.success(self.request, _('Device is marked as returned'))
         if device != None:
-            device.currentlending = lending
-            device.save()
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
         else:
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":owner.pk}))

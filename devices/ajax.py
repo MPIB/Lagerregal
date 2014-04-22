@@ -234,7 +234,7 @@ class UserLendings(View):
         user = get_object_or_404(Lageruser, pk=user)
         data = {}
         data["devices"] = [ [device["device__name"] if device["device__name"] else device["smalldevice"], device["device__inventorynumber"], device["device__serialnumber"], device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "", device["pk"]]
-            for device in user.lending_set.all().values("pk", "device__name", "device__inventorynumber", "device__serialnumber", "smalldevice", "duedate")]
+            for device in user.lending_set.filter(returndate=None).values("pk", "device__name", "device__inventorynumber", "device__serialnumber", "smalldevice", "duedate")]
 
         return HttpResponse(json.dumps(data), content_type='application/json')
 
