@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load devicetags %}
+{% load staticfiles %}
 {% block title %}{% trans "Main" %}{% endblock %}
 
 {% block header %}
@@ -11,6 +12,7 @@
 {% if user.is_staff %}
   {% if perms.devices.lend_device %}
     <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend Device" %}</a>
+    <a  href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-reply" style="margin-right:7px"></i>{% trans "Return Device" %}</a>
 {% endif %}
 {% endif %}
 {% endblock %}
@@ -156,11 +158,14 @@ $(function() {
 
   {% block htmlend %}
   {% if user.is_staff %}
+<script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
+<script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
 <a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success"><i class="fa fa-plus"></i></a>
   
 {% include "snippets/modals/addwidget.html" with modalname="addWidgetModal" %}
 {% if perms.devices.lend_device %}
 {% include "snippets/modals/lendingHome.html" with modalname="lendModal" %}
+{% include "snippets/modals/lendingReturnHome.html" with modalname="returnModal" %}
 {% endif %}
   {% endif %}
   {% endblock %}

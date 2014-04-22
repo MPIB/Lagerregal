@@ -1,0 +1,55 @@
+{% extends "snippets/modals/base.html" %}
+{% load i18n %}{% load devicetags %}
+
+{% block modalHeader %}
+          <h4 class="modal-title">{% trans "Mark device as returned" %}</h4>
+{% endblock %}
+
+{% block modalBody %}
+<select name="users" id="return_userlist">
+	{% for user in userlist %}
+	{% if user.first_name == "" %}
+		<option value="{{user.pk}}">{{user.username}}</option>
+		{% else %}
+      <option value="{{user.pk}}">{{user.first_name}} {{user.last_name}}</option>
+      {% endif %}
+     {% endfor %}
+    </select>
+
+    <div id="listwrapper">
+    </div>
+{% endblock %}
+
+{% block modalFooter %}
+          <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+<script>
+var lendingTable = 0
+$("#return_userlist").on("select2-selecting", function(e) {
+	$("#listwrapper").html('<table id="lendinglist"class="table table-bordered table-striped"></table>');
+	$.ajax({
+          type: "POST",
+          context: $(this),
+          url: "{% url "get-user-lendings" %}",
+          data: {"user":e.val}
+        }).done(function(data) {
+        	console.log(data)
+        	lendingTable = $("#lendinglist").dataTable({
+        		"aaData" : data["devices"],
+        		"aoColumns" : [
+        			{ "sTitle": "Device",
+				"fnRender": function(obj) {
+					var pk = obj.aData[4];
+					
+					return "<a href='/devices/return/" + pk + "'>" + obj.aData[0] + "</a>";
+				}},
+					{ "sTitle": "Inventorynumber" },
+					{ "sTitle": "Serialnumber" },
+					{ "sTitle": "Duedate" },
+        		],
+        		"bLengthChange": false,
+        		"bFilter": false,
+        	})
+    });
+});
+</script>
+{% endblock %}

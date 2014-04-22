@@ -226,6 +226,18 @@ class LoadSearchoptions(View):
                 for object in items]
         return HttpResponse(json.dumps(data), content_type='application/json')
 
+class UserLendings(View):
+    def post(self, request):
+        user = request.POST["user"]
+        if user == "":
+            return HttpResponse("")
+        user = get_object_or_404(Lageruser, pk=user)
+        data = {}
+        data["devices"] = [ [device["device__name"] if device["device__name"] else device["smalldevice"], device["device__inventorynumber"], device["device__serialnumber"], device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "", device["pk"]]
+            for device in user.lending_set.all().values("pk", "device__name", "device__inventorynumber", "device__serialnumber", "smalldevice", "duedate")]
+
+        return HttpResponse(json.dumps(data), content_type='application/json')
+
 class AjaxSearch(View):
     def post(self, request):
         search = json.loads(request.POST["search"])

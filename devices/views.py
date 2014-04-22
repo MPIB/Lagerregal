@@ -566,7 +566,7 @@ class DeviceReturn(FormView):
         context['actionstring'] = "Mark device as returned"
         context["breadcrumbs"] = [
                 (reverse("device-list"), _("Devices")),
-                ("", _("Lend"))]
+                ("", _("Return"))]
         return context
 
     def form_valid(self, form):
