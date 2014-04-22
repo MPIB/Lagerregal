@@ -105,7 +105,7 @@
                                       {% else %}
                                         <td>{{lending.smalldevice}}
                                       {% endif %}
-                                      <a href="{% url "device-return" lending.pk %}" class="pull-right"><i class="fa fa-reply"></i></a></td>
+                                      <a href="{% url "device-return" lending.pk %}" class="pull-right" title="{% trans "Mark as returned" %}"><i class="fa fa-reply"></i></a></td>
                                       <td>{{lending.lenddate}}</td>
                                       <td>{{lending.duedate}}{% if lending.duedate < weekago %}<span class="error-icon">!</span>
     {% elif lending.duedate < today %}<span class="warning-icon">!</span>
