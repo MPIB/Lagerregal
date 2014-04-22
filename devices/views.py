@@ -14,7 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm
+from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm, ReturnForm
 from devicetags.forms import DeviceTagForm
 import datetime
@@ -169,6 +169,34 @@ class DeviceIpAddress(FormView):
         for ipaddress in ipaddresses:
             ipaddress.device = device
             ipaddress.save()
+
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+
+class DeviceIpAddressPurpose(FormView):
+    template_name = 'devices/assign_ipaddress.html'
+    form_class = IpAddressPurposeForm
+    success_url = "/devices"
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceIpAddressPurpose, self).get_context_data(**kwargs)
+        device = get_object_or_404(Device, pk=self.kwargs["pk"])
+        ipaddress = get_object_or_404(IpAddress, pk=self.kwargs["ipaddress"])
+        if ipaddress.purpose:
+            context["form"].fields["purpose"].initial = ipaddress.purpose
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            ("", _("Set Purpose for {0}").format(ipaddress.address))]
+        return context
+
+    def form_valid(self, form):
+        purpose = form.cleaned_data["purpose"]
+        device = get_object_or_404(Device, pk=self.kwargs["pk"])
+        ipaddress = get_object_or_404(IpAddress, pk=self.kwargs["ipaddress"])
+        reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
+        ipaddress.purpose = purpose
+        ipaddress.save()
+        print ipaddress.purpose, ipaddress
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 

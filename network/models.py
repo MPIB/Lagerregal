@@ -11,6 +11,7 @@ class IpAddress(models.Model):
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(Lageruser, blank=True, null=True, on_delete=models.SET_NULL)
     last_seen = models.DateTimeField(null=True, blank=True)
+    purpose = models.CharField(max_length=200, null=True, blank=True)
 
     def __unicode__(self):
         return self.address

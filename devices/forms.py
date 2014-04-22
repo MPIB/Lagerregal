@@ -76,6 +76,10 @@ class IpAddressForm(forms.Form):
         widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
     device = forms.ModelChoiceField(Device.objects.all())
 
+class IpAddressPurposeForm(forms.Form):
+    error_css_class = 'has-error'
+    purpose = forms.CharField()
+
 class SearchForm(forms.Form):
     error_css_class = 'has-error'
     searchname = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Search name", "class":"form-control input-sm"}), required=False)

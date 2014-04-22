@@ -117,7 +117,10 @@
   <div class="panel-heading">{% trans "IP-Addresses" %}</div>
   <ul class="list-group">
     {% for address in device.ipaddress_set.all %}
-        <li class="list-group-item ipaddress-list"><a href="{% url "ipaddress-detail" address.pk %}">{{address.address}} <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="fa fa-times"></i></a></li>
+        <li class="list-group-item ipaddress-list">
+        <a href="{% url "ipaddress-detail" address.pk %}">{{address.address}}</a> <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="fa fa-times"></i></a> <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
+        <br/><small style="margin-top:0px;color:#999">{{address.purpose|default:""}}</small>
+        </li>
       {% endfor %}
   </ul>
 
