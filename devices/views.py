@@ -139,6 +139,7 @@ class DeviceIpAddressRemove(DeleteView):
         device = get_object_or_404(Device, pk=kwargs["pk"])
         ipaddress = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         ipaddress.device = None
+        ipaddress.purpose = None
         reversion.set_comment(_("Removed from Device {0}".format(device.name)))
         ipaddress.save()
 
@@ -196,7 +197,6 @@ class DeviceIpAddressPurpose(FormView):
         reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
         ipaddress.purpose = purpose
         ipaddress.save()
-        print ipaddress.purpose, ipaddress
 
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
