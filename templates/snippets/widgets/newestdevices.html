@@ -20,7 +20,7 @@
         {% for device in newest_devices %}
             <tr>
                 <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                <td>{{device.created_at}}</td>
+                <td>{{device.created_at|date:"d.m.y  H:i"}}</td>
                 <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
             </tr>
         {% endfor %}
