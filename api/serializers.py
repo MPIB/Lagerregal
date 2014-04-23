@@ -84,7 +84,10 @@ class LendingSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if "smalldevice" in attrs and "device" in attrs:
-            raise serializers.ValidationError("can not set both device and smalldevice")
+            if attrs["device"] and attrs["smalldevice"]:
+                raise serializers.ValidationError("can not set both device and smalldevice")
+            elif not attrs["device"] and not attrs["smalldevice"]:
+                raise serializers.ValidationError("you have to either set device or smalldevice")
         elif not "smalldevice" in attrs and not "device" in attrs:
             raise serializers.ValidationError("you have to either set device or smalldevice")
         elif "device" in attrs:

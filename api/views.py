@@ -10,6 +10,7 @@ import rest_framework.reverse
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+import reversion
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -79,9 +80,10 @@ class DeviceApiLend(generics.CreateAPIView):
     serializer_class = LendingSerializer
 
     def post(self, request):
-        if request.POST["room"] != "" and request.POST["room"] != 0:
-            roomid = request.POST["room"][0]
-            room = get_object_or_404(Room, pk=roomid)
+        if "room" in request.POST:
+            if request.POST["room"] != "" and request.POST["room"] != 0:
+                roomid = request.POST["room"][0]
+                room = get_object_or_404(Room, pk=roomid)
         else:
             room = None
         response = super(DeviceApiLend, self).post(request)
@@ -90,6 +92,9 @@ class DeviceApiLend(generics.CreateAPIView):
             device.currentlending = self.object
             if room:
                 device.room = room
+                reversion.set_user(request.user)
+                reversion.set_comment("Device marked as lend")
+            reversion.set_ignore_duplicates(True)
             device.save()
         return response
 

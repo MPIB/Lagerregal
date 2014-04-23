@@ -565,7 +565,7 @@ class DeviceLend(FormView):
         lending.duedate = form.cleaned_data["duedate"]
         lending.save()
         reversion.set_ignore_duplicates(True)
-        messages.success(self.request, _('Device is marked as lent to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
+        messages.success(self.request, _('Device is marked as lend to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         if form.cleaned_data["device"]:
             device.currentlending = lending
             device.save()
@@ -604,10 +604,8 @@ class DeviceReturn(FormView):
         lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
         if lending.device and lending.device != "":
             device = lending.device
-            print device, device.currentlending
             device.currentlending = None
             device.save()
-            print device, device.currentlending
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
