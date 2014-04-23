@@ -534,15 +534,17 @@ class DeviceLend(FormView):
         context['form_scripts'] = "$('#id_owner').select2();"
         if "device" in self.request.POST:
             deviceid = self.request.POST["device"]
-            device = get_object_or_404(Device, pk=deviceid)
-            context["breadcrumbs"] = [
-                (reverse("device-list"), _("Devices")),
-                (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
-                ("", _("Lend"))]
-        else:
-            context["breadcrumbs"] = [
-                (reverse("device-list"), _("Devices")),
-                ("", _("Lend"))]
+            if deviceid != "":
+                device = get_object_or_404(Device, pk=deviceid)
+                context["breadcrumbs"] = [
+                    (reverse("device-list"), _("Devices")),
+                    (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+                    ("", _("Lend"))]
+                return context
+
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            ("", _("Lend"))]
         return context
 
     def form_valid(self, form):
