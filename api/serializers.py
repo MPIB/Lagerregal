@@ -83,11 +83,11 @@ class LendingSerializer(serializers.ModelSerializer):
         exclude = ("lenddate", "duedate_email", "returndate")
 
     def validate(self, attrs):
-        if attrs["device"] and attrs["smalldevice"]:
+        if "smalldevice" in attrs and "device" in attrs:
             raise serializers.ValidationError("can not set both device and smalldevice")
-        elif not attrs["device"] and not attrs["smalldevice"]:
+        elif not "smalldevice" in attrs and not "device" in attrs:
             raise serializers.ValidationError("you have to either set device or smalldevice")
-        elif attrs["device"]:
+        elif "device" in attrs:
             if attrs["device"].currentlending:
                 raise serializers.ValidationError("this device is already lend.")
         return attrs

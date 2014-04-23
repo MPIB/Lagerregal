@@ -79,7 +79,7 @@ class DeviceApiLend(generics.CreateAPIView):
     serializer_class = LendingSerializer
 
     def post(self, request):
-        if request.POST["room"] != "":
+        if request.POST["room"] != "" and request.POST["room"] != 0:
             roomid = request.POST["room"][0]
             room = get_object_or_404(Room, pk=roomid)
         else:
