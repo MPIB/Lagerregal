@@ -73,7 +73,7 @@ class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Device
-        fields = ("url", "name")
+        fields = ("url", "id", "name")
 
 class LendingSerializer(serializers.ModelSerializer):
 
@@ -114,7 +114,7 @@ class UserListSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Lageruser
-        fields = ("url", "username", "first_name", "last_name", "email")
+        fields = ("url", "id", "username", "first_name", "last_name", "email")
 
 
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
