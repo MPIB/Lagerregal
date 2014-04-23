@@ -32,9 +32,9 @@ def get_widget_data(user, widgetlist=[]):
     if "newestdevices" in widgetlist:
         context['newest_devices'] = Device.objects.select_related().all().order_by("-pk")[:10]
     if "overdue" in widgetlist:
-        context["overdue"] = Device.objects.select_related("currentlending",
-            "currentlending__owner").filter(currentlending__duedate__lt = context["today"]
-            ).order_by("currentlending__duedate")[:10]
+        context["overdue"] = Lending.objects.select_related("device",
+            "owner").filter(duedate__lt = context["today"]
+            ).order_by("duedate")[:10]
     if "groups" in widgetlist:
         context["groups"] = Devicegroup.objects.all()
     if "sections" in widgetlist:
@@ -47,9 +47,9 @@ def get_widget_data(user, widgetlist=[]):
         context["bookmarks"] = user.bookmarks.all()[:10]
     if "returnsoon" in widgetlist:
         soon = context["today"] + datetime.timedelta(days=10)
-        context["returnsoon"] = Device.objects.select_related("currentlending", 
-            "currentlending__owner").filter(currentlending__duedate__lte = soon, 
-            currentlending__duedate__gt = context["today"]).order_by("currentlending__duedate")[:10]
+        context["returnsoon"] = Lending.objects.select_related("device", 
+            "owner").filter(duedate__lte = soon, 
+            duedate__gt = context["today"]).order_by("duedate")[:10]
     return context
 
 class Home(TemplateView):

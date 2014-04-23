@@ -17,11 +17,17 @@
         </tr>
     </thead>
     <tbody>
-        {% for device in overdue %}
+        {% for lending in overdue %}
             <tr>
-                <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                <td>{{device.currentlending.duedate}}</td>
-                <td><a href="{% url 'userprofile' device.currentlending.owner.pk %}">{{ device.currentlending.owner }}</a></td>
+                <td>
+                {% if lending.device %}
+                    <a href="{% url 'device-detail' device.pk %}">{{lending.device.name}}</a>
+                {% else %}
+                    {{lending.smalldevice}}</a>
+                {% endif %}
+                </td>
+                <td>{{lending.duedate}}</td>
+                <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
             </tr>
         {% endfor %}
     </tbody>
