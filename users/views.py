@@ -64,8 +64,10 @@ class ProfileView(DetailView):
         # Call the base implementation first to get a context
         context = super(ProfileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
-        context['lendings'] = Lending.objects.filter(owner = context["profileuser"], returndate=None)
+        context['edits'] = Version.objects.select_related("revision", "revision__user"
+            ).filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
+        context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
+            "owner").filter(owner = context["profileuser"], returndate=None)
         context['ipaddresses'] = IpAddress.objects.filter(user = context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
@@ -82,8 +84,10 @@ class UserprofileView(TemplateView):
         context = super(UserprofileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["profileuser"] = self.request.user
-        context['edits'] = Version.objects.filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
-        context['lendings'] = Lending.objects.filter(owner = context["profileuser"], returndate=None)
+        context['edits'] = Version.objects.select_related("revision", "revision__user"
+            ).filter(content_type_id=ContentType.objects.get(model='device').id, revision__user = context["profileuser"]).order_by("-pk")
+        context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
+            "owner").filter(owner = context["profileuser"], returndate=None)
         context['ipaddresses'] = IpAddress.objects.filter(user = context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
