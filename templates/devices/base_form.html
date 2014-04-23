@@ -63,6 +63,17 @@ $( "input:text[name=name]" ).keyup(function() {
   $(function() {
     $( "#id_duedate" ).datepicker();
   });
+  $( "input:text[name=smalldevice]" ).autocomplete({
+      minLength: 2,
+      source: function( request, response ) {
+        var term = request.term;
+        $.ajax({
+          type: "POST",
+          url: "{% url "autocomplete-smalldevice" %}",
+          data: {'name':term}
+        }).done(response);
+      }
+    });
 {% autoescape off %}{{ form_scripts }}{% endautoescape %}
 $("select").select2();
 {% endblock %}

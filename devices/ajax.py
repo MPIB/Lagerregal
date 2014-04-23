@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from devices.models import Device, Room, Building, Manufacturer
+from devices.models import Device, Room, Building, Manufacturer, Lending
 from devicetypes.models import Type
 from devicegroups.models import Devicegroup
 from users.models import Lageruser
@@ -39,6 +39,16 @@ class AutocompleteDevice(View):
             results.append(device_json)
         return HttpResponse(json.dumps(results), content_type='application/json')
 
+class AutocompleteSmallDevice(View):
+    def post(self, request):
+        name = request.POST["name"]
+        devices = Lending.objects.filter(smalldevice__icontains = name ).values("smalldevice").distinct()
+        results = []
+        for device in devices:
+            device_json = {}
+            device_json['label'] = device["smalldevice"]
+            results.append(device_json)
+        return HttpResponse(json.dumps(results), content_type='application/json')
 
 class AutocompleteName(View):
     def post(self, request):
@@ -53,6 +63,9 @@ class AutocompleteName(View):
         elif classtype == "building":
             objects = Building.objects.filter(name__icontains = name )[:20]
             urlname = "building-detail"
+        elif classtype == "manufacturer":
+            objects = Manufacturer.objects.filter(name__icontains = name )[:20]
+            urlname = "manufacturer-detail"
         elif classtype == "manufacturer":
             objects = Manufacturer.objects.filter(name__icontains = name )[:20]
             urlname = "manufacturer-detail"

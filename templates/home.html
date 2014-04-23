@@ -11,7 +11,7 @@
 {% block pullright %}
 {% if user.is_staff %}
   {% if perms.devices.lend_device %}
-    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend Device" %}</a>
+    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-share" style="margin-right:7px"></i>{% trans "Lend Device" %}</a>
     <a  href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-reply" style="margin-right:7px"></i>{% trans "Return Device" %}</a>
 {% endif %}
 {% endif %}

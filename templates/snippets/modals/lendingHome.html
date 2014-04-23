@@ -56,4 +56,18 @@
           {% if device.templending %}<span class="text-danger pull-left">Note: This device is intended for short term lending</span>{% endif %}
           <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
           <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" />
+<script>
+$( "input:text[name=smalldevice]" ).autocomplete({
+      minLength: 2,
+      source: function( request, response ) {
+        var term = request.term;
+        $.ajax({
+          type: "POST",
+          url: "{% url "autocomplete-smalldevice" %}",
+          data: {'name':term}
+        }).done(response);
+      },
+    });
+$( "input:text[name=smalldevice]" ).autocomplete( "option", "appendTo", "#{{modalname}}-form" );
+</script>
 {% endblock %}
