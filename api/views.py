@@ -76,14 +76,20 @@ class DeviceApiBookmark(APIView):
             return Response({"success": "added bookmark"})
 
 class DeviceApiLend(generics.CreateAPIView):
-    model = Lending
     serializer_class = LendingSerializer
 
     def post(self, request):
+        if request.POST["room"] != "":
+            roomid = request.POST["room"][0]
+            room = get_object_or_404(Room, pk=roomid)
+        else:
+            room = None
         response = super(DeviceApiLend, self).post(request)
-        if request.POST["device"] != "" and response.status_code == 200:
+        if request.POST["device"] != "" and response.status_code == 201:
             device = Device.objects.get(pk=request.POST["device"])
             device.currentlending = self.object
+            if room:
+                device.room = room
             device.save()
         return response
 

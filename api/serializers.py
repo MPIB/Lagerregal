@@ -76,6 +76,7 @@ class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
         fields = ("url", "id", "name")
 
 class LendingSerializer(serializers.ModelSerializer):
+    room = serializers.PrimaryKeyRelatedField(queryset=Room.objects.select_related("building").all(), required=False)
 
     class Meta:
         model = Lending
@@ -90,6 +91,20 @@ class LendingSerializer(serializers.ModelSerializer):
             if attrs["device"].currentlending:
                 raise serializers.ValidationError("this device is already lend.")
         return attrs
+
+    def restore_object(self, attrs, instance=None):
+        if self.context["request"].POST:
+            del attrs["room"]
+            del self.fields["room"]
+        obj = super(LendingSerializer, self).restore_object(attrs, instance=instance)
+        return obj
+
+    def to_native(self, obj):
+        if self.context["request"].POST:
+            if "room" in self.fields:
+                del self.fields["room"]
+        return super(LendingSerializer, self).to_native(obj)
+
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
