@@ -9,7 +9,6 @@ from mail.views import *
 from devicegroups.views import *
 from devicetags.views import *
 from locations.views import *
-from history.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch, UserLendings
