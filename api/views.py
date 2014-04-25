@@ -61,20 +61,27 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
         device = Device.objects.get(pk=pk)
-        if device.bookmarkers.filter(id=request.user.id).exists():
-            bookmark = Bookmark.objects.get(user=request.user, device=device)
-            bookmark.delete()
-            return Response({"success": "removed bookmark"})
-        else:
-            bookmark = Bookmark(device=device, user=request.user)
-            bookmark.save()
+        if "bookmarked" in request.POST:
             if "note" in request.POST:
-                note = Note()
-                note.device = device
-                note.creator = request.user
-                note.note = request.POST["note"]
-                note.save()
-            return Response({"success": "added bookmark"})
+                if request.POST["room"] != "":
+                    note = Note()
+                    note.device = device
+                    note.creator = request.user
+                    note.note = request.POST["note"]
+                    note.save()
+            if request.POST["bookmarked"] and not device.bookmarkers.filter(id=request.user.id).exists():
+                bookmark = Bookmark(device=device, user=request.user)
+                bookmark.save()
+                return Response({"success": "added bookmark"})
+            elif device.bookmarkers.filter(id=request.user.id).exists():
+                bookmark = Bookmark.objects.get(user=request.user, device=device)
+                bookmark.delete()
+                return Response({"success": "removed bookmark"})
+            else:
+                return Response({"success": "added note"})
+        else:
+            return Response({"error": "the 'bookmarked' argument is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
+                
 
 class DeviceApiLend(generics.CreateAPIView):
     serializer_class = LendingSerializer
