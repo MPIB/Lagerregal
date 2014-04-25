@@ -84,6 +84,8 @@ class DeviceApiLend(generics.CreateAPIView):
             if request.POST["room"] != "" and request.POST["room"] != 0:
                 roomid = request.POST["room"][0]
                 room = get_object_or_404(Room, pk=roomid)
+            else:
+                room = None
         else:
             room = None
         response = super(DeviceApiLend, self).post(request)

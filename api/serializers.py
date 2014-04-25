@@ -90,7 +90,7 @@ class LendingSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("you have to either set device or smalldevice")
         elif not "smalldevice" in attrs and not "device" in attrs:
             raise serializers.ValidationError("you have to either set device or smalldevice")
-        elif "device" in attrs:
+        if "device" in attrs:
             if attrs["device"].currentlending:
                 raise serializers.ValidationError("this device is already lend.")
         return attrs
