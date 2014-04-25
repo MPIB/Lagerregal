@@ -176,9 +176,8 @@ urlpatterns = patterns('',
     url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
     url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
 
-    url(r'^history/global$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
-    url(r'^history/global/(?P<page>[0-9]*)$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
-    url(r'^history/version/(?P<version>[0-9]*)$', permission_required("devices.change_device")(DeviceHistory.as_view()), name="device-history"),
+    url(r'^globalhistory/$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
+    url(r'^globalhistory/(?P<page>[0-9]*)$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
