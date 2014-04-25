@@ -142,3 +142,9 @@ class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     device = serializers.SlugRelatedField(slug_field="name")
     class Meta:
         model = IpAddress
+
+class SmallDeviceSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Lending
+        fields = ("smalldevice",)

@@ -196,3 +196,7 @@ class IpAddressApiCreate(generics.CreateAPIView):
 class IpAddressApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = IpAddress
     serializer_class = IpAddressSerializer
+
+class SmallDeviceApiList(generics.ListAPIView):
+    queryset = Lending.objects.exclude(smalldevice=None).exclude(smalldevice="").values("smalldevice").distinct()
+    serializer_class = SmallDeviceSerializer
