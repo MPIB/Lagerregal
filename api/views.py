@@ -73,7 +73,7 @@ class DeviceApiBookmark(APIView):
                 bookmark = Bookmark(device=device, user=request.user)
                 bookmark.save()
                 return Response({"success": "added bookmark"})
-            elif device.bookmarkers.filter(id=request.user.id).exists():
+            elif not request.POST["bookmarked"] and device.bookmarkers.filter(id=request.user.id).exists():
                 bookmark = Bookmark.objects.get(user=request.user, device=device)
                 bookmark.delete()
                 return Response({"success": "removed bookmark"})
