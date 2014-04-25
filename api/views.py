@@ -63,7 +63,7 @@ class DeviceApiBookmark(APIView):
         device = Device.objects.get(pk=pk)
         if "bookmarked" in request.POST:
             if "note" in request.POST:
-                if request.POST["room"] != "":
+                if request.POST["note"] != "":
                     note = Note()
                     note.device = device
                     note.creator = request.user
