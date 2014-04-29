@@ -1,15 +1,19 @@
 {% load devicetags %}
 
 {% for field in form %}
-{% if field.html_name == "classname" %}
-{{field}}
-{% else %}
-<div class="form-group {{field.css_classes}}">
-    <label for="{{field.html_name}}" class="col-lg-4 control-label">{{ field.label }}{% if field.field.required %}*{% endif %}</label>
-    <div class="col-lg-8">
-    {{ field|add_class:'form-control'}}
-      {% if field.errors or field.help_text != "" %}<p class="help-block">{% if field.errors %}{% for error in field.errors %}{{error}}, {% endfor %}{% else %}{{field.help_text}}{% endif %}</p>{% endif %}
-    </div>
-</div>
-{% endif %}
+    {% if field.html_name == "classname" %}
+        {{ field }}
+    {% else %}
+        <div class="form-group {{ field.css_classes }}">
+            <label for="{{ field.html_name }}" class="col-lg-4 control-label">
+                {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+
+            <div class="col-lg-8">
+                {{ field|add_class:'form-control' }}
+                {% if field.errors or field.help_text != "" %}<p class="help-block">
+                    {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% else %}
+                        {{ field.help_text }}{% endif %}</p>{% endif %}
+            </div>
+        </div>
+    {% endif %}
 {% endfor %}

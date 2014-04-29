@@ -3,39 +3,40 @@
 {% block title %}{% trans "Mailtemplates" %}{% endblock %}
 
 {% block header %}
-{% trans "Mailtemplates" %}
+    {% trans "Mailtemplates" %}
 {% endblock %}
 
 {% block pullright %}
-{% if perms.mail.add_mailtemplate %}<a href="{% url 'mail-add' %}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Mailtemplate" %}</a>{% endif %}
+    {% if perms.mail.add_mailtemplate %}<a href="{% url 'mail-add' %}" class="btn btn-success btn-sm pull-right">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Mailtemplate" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-xs-12 col-md-12">
-{% include "snippets/pagination_simple.html" with listurl='mail-list' %}
-<table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "Name" %}</th>
-      <th>{% trans "Subject" %}</th>
-      <th>{% trans "Usage" %}</th>
-    </tr>
-  </thead>
-  {% for mail in mail_list %}
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Subject" %}</th>
+                    <th>{% trans "Usage" %}</th>
+                </tr>
+                </thead>
+                {% for mail in mail_list %}
 
-    <tr>
-      <td><a href="{% url 'mail-detail' mail.id %}">{{mail.name}}</a></td>
-          <td>{{mail.subject}}</td>
-          <td>{{mail.get_usage_display}}</td>
-    </tr>
-  {% endfor %}
-</table>
-{% include "snippets/pagination_simple.html" with listurl='mail-list' %}
-</div>
-</div>
+                    <tr>
+                        <td><a href="{% url 'mail-detail' mail.id %}">{{ mail.name }}</a></td>
+                        <td>{{ mail.subject }}</td>
+                        <td>{{ mail.get_usage_display }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block scriptend %}
-{% include "snippets/pagination_simple_js.html" with pageurl="mail-list" %}
+    {% include "snippets/pagination_simple_js.html" with pageurl="mail-list" %}
 {% endblock %}

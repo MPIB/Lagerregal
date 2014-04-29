@@ -1,33 +1,35 @@
 {% extends "snippets/widgets/basewidget.html" %}
- {% load i18n %}
+{% load i18n %}
 
- {% block title %}
-{% trans 'Newest devices' %}
- {% endblock %}
+{% block title %}
+    {% trans 'Newest devices' %}
+{% endblock %}
 
 {% block widgetname %}newestdevices{% endblock %}
 
- {% block content %}
-<table class="table table-bordered"{% if widget.minimized and usestable %}style="display: none;"{% endif %}>
-    <thead>
+{% block content %}
+    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+        <thead>
         <tr>
             <th scope="col">{% trans 'Name' %}</th>
             <th scope="col">{% trans 'Creation date' %}</th>
             <th scope="col">{% trans 'Creator' %}</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         {% for device in newest_devices %}
             <tr>
-                <td><a href="{% url 'device-detail' device.pk %}">{{device.name}}</a></td>
-                <td>{{device.created_at|date:"d.m.y  H:i"}}</td>
+                <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
+                <td>{{ device.created_at|date:"d.m.y  H:i" }}</td>
                 <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
             </tr>
         {% endfor %}
-    </tbody>
-</table>
-<div class="panel-footer">
-<a href="{% url 'device-list' filter='active' sorting='-created_at' %}" class="pull-right">{% trans "More…" %}</a>
-<div class="clearfix"></div>
-</div>
+        </tbody>
+    </table>
+    <div class="panel-footer">
+        <a href="{% url 'device-list' filter='active' sorting='-created_at' %}"
+           class="pull-right">{% trans "More…" %}</a>
+
+        <div class="clearfix"></div>
+    </div>
 {% endblock %}

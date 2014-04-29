@@ -3,42 +3,46 @@
 {% block title %}{% trans "Users" %}{% endblock %}
 
 {% block header %}
-{% trans "Users" %}
+    {% trans "Users" %}
 {% endblock %}
 
 {% block pullright %}
-{{filterform.filterstring}}
+    {{ filterform.filterstring }}
 {% endblock %}
 
 {% block content %}
-{% include "snippets/userpagination.html" with listurl='user-list' %}
-<table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "Name" %}</th>
-      <th>{% trans "Username" %}</th>
-      <th>{% trans "Staff" %}</th>
-      <th>{% trans "Admin" %}</th>
-      <th>{% trans "Last Login" %}</th>
-    </tr>
-  </thead>
-  {% for user in user_list %}
+    {% include "snippets/userpagination.html" with listurl='user-list' %}
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Username" %}</th>
+            <th>{% trans "Staff" %}</th>
+            <th>{% trans "Admin" %}</th>
+            <th>{% trans "Last Login" %}</th>
+        </tr>
+        </thead>
+        {% for user in user_list %}
 
-    <tr>
-      <td><a href="{% url 'userprofile' user.id %}">{{user}}</a></td>
-      <td>{{user.username}}</td>
-      <td>{% if user.is_staff %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
-      <td>{% if user.is_superuser %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
-      <td>{{user.last_login}}</td>
-    </tr>
-  {% endfor %}
-</table>
-{% include "snippets/userpagination.html" with listurl='user-list' %}
+            <tr>
+                <td><a href="{% url 'userprofile' user.id %}">{{ user }}</a></td>
+                <td>{{ user.username }}</td>
+                <td>{% if user.is_staff %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                    {% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}
+                </td>
+                <td>{% if user.is_superuser %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                    {% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}
+                </td>
+                <td>{{ user.last_login }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include "snippets/userpagination.html" with listurl='user-list' %}
 {% endblock %}
 
 {% block scriptend %}
-$('#id_filterstring').change(function() {
+    $('#id_filterstring').change(function() {
     window.location = "/users/filter/" + $(this).val()
-});
-{% include "snippets/userpagination_js.html" with pageurl="user-list" %}
+    });
+    {% include "snippets/userpagination_js.html" with pageurl="user-list" %}
 {% endblock %}

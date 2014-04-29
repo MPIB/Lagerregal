@@ -3,40 +3,43 @@
 {% block title %}{% trans "Manufacturers" %}{% endblock %}
 
 {% block header %}
-{% trans "Manufacturers" %}
+    {% trans "Manufacturers" %}
 {% endblock %}
 
 {% block pullright %}
-{{filterform.filterstring}}
-{{viewform.viewsorting}}
-{% if perms.devices.add_manufacturer %}<a href="{% url 'manufacturer-add' %}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Manufacturer" %}</a>{% endif %}
+    {{ filterform.filterstring }}
+    {{ viewform.viewsorting }}
+    {% if perms.devices.add_manufacturer %}
+        <a href="{% url 'manufacturer-add' %}" class="btn btn-success btn-sm pull-right">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Manufacturer" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-xs-12 col-md-5">
-{% include "snippets/pagination.html" with listurl='manufacturer-list' %}
-<div class="list-group">
-  {% for manufacturer in manufacturer_list %}
-  <a href="{% url 'manufacturer-detail' manufacturer.id %}" class="list-group-item">{{manufacturer.name | default:"(None)"}}</a>
-  {% endfor %}
-</div>
-{% include "snippets/pagination.html" with listurl='manufacturer-list' %}
+    <div class="row">
+        <div class="col-xs-12 col-md-5">
+            {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
+            <div class="list-group">
+                {% for manufacturer in manufacturer_list %}
+                    <a href="{% url 'manufacturer-detail' manufacturer.id %}"
+                       class="list-group-item">{{ manufacturer.name | default:"(None)" }}</a>
+                {% endfor %}
+            </div>
+            {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
 
-</div>
-</div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block scriptend %}
-$('#id_viewsorting').change(function() {
+    $('#id_viewsorting').change(function() {
     if ($("#id_filterstring").val() != "") {
-        window.location = "/manufacturers/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+    window.location = "/manufacturers/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
     } else {
-        window.location = "/manufacturers/sorting/" + $(this).val()
+    window.location = "/manufacturers/sorting/" + $(this).val()
     }
-});
-$('#id_filterstring').change(function() {
+    });
+    $('#id_filterstring').change(function() {
     window.location = "/manufacturers/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
-});
-{% include "snippets/pagination_js.html" with pageurl="manufacturer-list" %}
+    });
+    {% include "snippets/pagination_js.html" with pageurl="manufacturer-list" %}
 {% endblock %}

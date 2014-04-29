@@ -1,411 +1,563 @@
 {% extends "base.html" %}
-{%  load devicetags %}
+{% load devicetags %}
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{device.name}}{% endblock %}
+{% block title %}{{ device.name }}{% endblock %}
 
 {% block header %}
-{% trans "Device" %}: {{device.name}}
+    {% trans "Device" %}: {{ device.name }}
 {% endblock %}
 
 {% block pullright %}
-{% if device.archived == None and device.trashed == None %}
-<div class="btn-group pull-right" style="margin-left:10px">
-  <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-    {% trans "Manage" %} <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    {% if "device" in LABEL_TEMPLATES %}
-    <li><a href="#" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a></li>
+    {% if device.archived == None and device.trashed == None %}
+        <div class="btn-group pull-right" style="margin-left:10px">
+            <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+                {% trans "Manage" %} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% if "device" in LABEL_TEMPLATES %}
+                    <li><a href="#" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print"
+                                                                                         style="margin-right:7px"></i>{% trans "Print Label" %}
+                    </a></li>
+                {% endif %}
+                {% if perms.devices.add_device %}
+                    <li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check"
+                                                                              style="margin-right:7px"></i>{% trans "Inventoried" %}
+                </a></li>{% endif %}
+                {% if perms.devices.create_device %}
+                    <li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy"
+                                                                           style="margin-right:7px"></i>{% trans "Create Copy" %}
+                </a></li>{% endif %}
+                {% if perms.devices.change_device or perms.devices.delete_device %}
+                    <li class="divider"></li>{% endif %}
+                {% if perms.devices.change_device %}
+                    <li><a href="#" id="storagebutton" data-toggle="popover" class="dropdown-cancel"><i
+                            class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
+                    <li><a href="#" id="archivebutton" data-toggle="popover" class="dropdown-cancel"><i
+                            class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
+                    <li><a href="#" id="trashbutton" data-toggle="popover" class="dropdown-cancel"><i
+                            class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
+                {% endif %}
+                {% if perms.devices.delete_device %}
+                    <li>
+                    <a href="#" id="deletebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-times"
+                                                                                                   style="margin-right:7px"></i>{% trans "Delete" %}
+                    </a></li>{% endif %}
+            </ul>
+        </div>
+
+
+        {% if perms.devices.change_device %}
+            <form action='{% url "device-bookmark" object.id %}' method='post'
+                  class='form-inline pull-right'>{% csrf_token %}
+                {% with is_bookmarked=device|check_bookmark:user %}
+                    {% if is_bookmarked %}
+                        <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;'><i
+                                class="fa fa-bookmark" style="margin-right:7px"></i>{% trans "Remove Bookmark" %}
+                        </button>
+                    {% else %}
+                        <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;'><i
+                                class="fa fa-bookmark-o" style="margin-right:7px"></i>{% trans "Bookmark" %}</button>
+                    {% endif %}
+                {% endwith %}
+            </form>
+            <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm"
+               style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+        {% endif %}
+        {% if perms.devices.change_device or perms.devices.lend_device %}
+            <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal"
+               data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>
+        {% endif %}
+
+        {% if perms.devices.lend_device %}
+            {% if device.currentlending != None %}
+                <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
+                   style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}
+                </a>
+            {% else %}
+                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
+                   style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
+            {% endif %}
+        {% endif %}
+    {% else %}
+
+
+        {% if device.archived != None and perms.devices.change_device %}
+            <a href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"
+               style="margin-left:10px"><i class="fa fa-folder-open"
+                                           style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
+
+        {% if device.trashed != None and perms.devices.change_device %}
+            <a href="#" id="trashbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"
+               style="margin-left:10px"><i class="fa fa-folder-open"
+                                           style="margin-right:7px"></i>{% trans "Remove from Trash" %}</a>{% endif %}
     {% endif %}
-    {% if perms.devices.add_device %}<li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Inventoried" %}</a></li>{% endif %}
-    {% if perms.devices.create_device %}<li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}</a></li>{% endif %}
-    {% if perms.devices.change_device or perms.devices.delete_device %}<li class="divider"></li>{% endif %}
-    {% if perms.devices.change_device %}
-    <li><a   href="#" id="storagebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
-    <li><a   href="#" id="archivebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
-    <li><a   href="#" id="trashbutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
-    {% endif %}
-    {% if perms.devices.delete_device %}<li><a  href="#" id="deletebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a></li>{% endif %}
-  </ul>
-</div>
-
-
-{% if perms.devices.change_device %}
-<form action='{% url "device-bookmark" object.id %}' method='post' class='form-inline pull-right'>{% csrf_token %}
-  {% with is_bookmarked=device|check_bookmark:user %}
-  {% if is_bookmarked  %}
-    <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;' ><i class="fa fa-bookmark" style="margin-right:7px"></i>{% trans "Remove Bookmark" %}</button>
-  {% else %}
-    <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;' ><i class="fa fa-bookmark-o" style="margin-right:7px"></i>{% trans "Bookmark" %}</button>
-  {% endif %}
-  {% endwith %}
-</form>
-<a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
-{% if perms.devices.change_device or perms.devices.lend_device %}<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal" data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>{% endif %}
-
-{% if perms.devices.lend_device %}
-  {% if device.currentlending != None %}
-    <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
-  {% else %}
-    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
-  {% endif %}
-{% endif %}
-{% else %}
-
-
-{% if device.archived != None and perms.devices.change_device %}
-  <a  href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder-open" style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
-
-{% if device.trashed != None and perms.devices.change_device %}
-  <a  href="#" id="trashbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-folder-open" style="margin-right:7px"></i>{% trans "Remove from Trash" %}</a>{% endif %}
-{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-xs-12 col-md-4">
-    <table class="table table-bordered table-striped">
-      <tbody>
-        <tr><td>{% trans "Inventorynumber" %}</td><td>{{device.inventorynumber}}</td></tr>
-        <tr><td>{% trans "Serialnumber" %}</td><td>{{device.serialnumber}}</td></tr>
-        <tr><td>{% trans "Devicetype" %}</td><td>{% if device.devicetype %}<a href="{% url 'type-detail' device.devicetype.pk %}">{{device.devicetype}}</a>{% else %}-{% endif %}</td></tr>
-        <tr><td>{% trans "Manufacturer" %}</td><td>{% if device.manufacturer %}<a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">{{device.manufacturer}}</a>{% else %}-{% endif %}</td></tr>
-        <tr><td>{% trans "Room" %}</td><td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{device.room}}</a>{% else %}-{% endif %}</td></tr>
-  {% for attributevalue in attributevalue_list %}
-        <tr><td>{{attributevalue.typeattribute.name}}</td><td>{{attributevalue}}</td></tr>
-{% endfor %}
-        <tr><td>{% trans "Devicegroup" %}</td><td>{% if device.group %}<a href="{% url 'devicegroup-detail' device.group.pk %}">{{device.group}}</a>{% else %}-{% endif %}</td></tr>
-        <tr><td>{% trans "Short term device" %}</td><td>{% if device.templending %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-times-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td></tr>
-        <tr><td>{% trans "Created by" %}</td><td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td></tr>
-        <tr><td>{% trans "Last edited" %}</td><td>{% if lastedit != None %}<a href="{% url 'device-history' device.pk lastedit.revision.pk %}">{{lastedit.revision.date_created}}</a> by {{lastedit.revision.user}}{% else %}{% trans "Not edited yet" %}{% endif %}</td></tr>
-        {% if device.trashed %}<tr><td>{% trans "Trashed on" %}</td><td>{{device.trashed}}</td></tr>{% endif %}
-        {% if device.inventoried %}<tr><td>{% trans "Last inventoried on" %}</td><td>{{device.inventoried}}</td></tr>{% endif %}
-      </tbody>
-    </table>
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                <tr>
+                    <td>{% trans "Inventorynumber" %}</td>
+                    <td>{{ device.inventorynumber }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Serialnumber" %}</td>
+                    <td>{{ device.serialnumber }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Devicetype" %}</td>
+                    <td>{% if device.devicetype %}<a href="{% url 'type-detail' device.devicetype.pk %}">
+                        {{ device.devicetype }}</a>{% else %}-{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Manufacturer" %}</td>
+                    <td>{% if device.manufacturer %}<a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">
+                        {{ device.manufacturer }}</a>{% else %}-{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Room" %}</td>
+                    <td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}
+                        </a>{% else %}-{% endif %}</td>
+                </tr>
+                {% for attributevalue in attributevalue_list %}
+                    <tr>
+                        <td>{{ attributevalue.typeattribute.name }}</td>
+                        <td>{{ attributevalue }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td>{% trans "Devicegroup" %}</td>
+                    <td>{% if device.group %}<a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}
+                        </a>{% else %}-{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Short term device" %}</td>
+                    <td>{% if device.templending %}<i class="fa fa-check-circle text-success" style="font-size:1.3em">
+                        </i>{% else %}<i class="fa fa-times-circle text-danger" style="font-size:1.3em"></i>{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Created by" %}</td>
+                    <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                </tr>
+                <tr>
+                    <td>{% trans "Last edited" %}</td>
+                    <td>{% if lastedit != None %}<a href="{% url 'device-history' device.pk lastedit.revision.pk %}">
+                        {{ lastedit.revision.date_created }}</a> by {{ lastedit.revision.user }}{% else %}
+                        {% trans "Not edited yet" %}{% endif %}</td>
+                </tr>
+                {% if device.trashed %}
+                    <tr>
+                    <td>{% trans "Trashed on" %}</td>
+                    <td>{{ device.trashed }}</td></tr>{% endif %}
+                {% if device.inventoried %}
+                    <tr>
+                    <td>{% trans "Last inventoried on" %}</td>
+                    <td>{{ device.inventoried }}</td></tr>{% endif %}
+                </tbody>
+            </table>
 
-{% if device.webinterface != "" %}<a href="{{device.webinterface}}" target="_blank">{% trans "Go to webinterface" %}</a>{% endif %}
+            {% if device.webinterface != "" %}<a href="{{ device.webinterface }}" target="_blank">
+                {% trans "Go to webinterface" %}</a>{% endif %}
 
-{% if device.description %}
-<h4>{% trans "Description" %}</h4>
-{{device.description|linebreaks}}
-{% endif %}
-  </div>
-<div class="col-xs-12 col-md-5">
-<h4>{% trans "Current Lending information" %}</h4>
-    {% if device.currentlending != None %}
-      <table class="table table-bordered table-striped">
-      <tbody>
-        <tr><td>{% trans "Lent to" %}</td><td><a href="{% url "userprofile" device.currentlending.owner.pk %} ">{{device.currentlending.owner}}</a></td></tr>
-        <tr><td>{% trans "Since" %}</td><td>{{device.currentlending.lenddate}}</td></tr>
-        <tr><td>{% trans "Due to" %}</td><td>{{device.currentlending.duedate}}
-{% if device.currentlending.duedate < weekago %}<span class="error-icon"><i class="fa fa-exclamation-circle"></i></span>
-{% elif device.currentlending.duedate < today %}<span class="warning-icon"><i class="fa fa-exclamation-circle"></i></span>
-{% endif %}
- </td></tr>
-<tr><td>{% trans "Overdue notification" %}</td><td>{{device.currentlending.duedate_email|default_if_none:"Not sent"}}</td></tr>
-      </tbody>
-    </table>
-    {% else %}
-    <p>{% trans "Currently not lent" %}</p>
-    {% endif %}
-</div>
-  <div class="col-xs-12 col-md-3">
-<div class="panel panel-primary">
-  <!-- Default panel contents -->
-  <div class="panel-heading">{% trans "IP-Addresses" %}</div>
-  <ul class="list-group">
-    {% for address in device.ipaddress_set.all %}
-        <li class="list-group-item ipaddress-list">
-        <a href="{% url "ipaddress-detail" address.pk %}">{{address.address}}</a> <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="fa fa-times"></i></a> <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
-        <br/><small style="margin-top:0;color:#999">{{address.purpose|default:""}}</small>
-        </li>
-      {% endfor %}
-  </ul>
+            {% if device.description %}
+                <h4>{% trans "Description" %}</h4>
+                {{ device.description|linebreaks }}
+            {% endif %}
+        </div>
+        <div class="col-xs-12 col-md-5">
+            <h4>{% trans "Current Lending information" %}</h4>
+            {% if device.currentlending != None %}
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                    <tr>
+                        <td>{% trans "Lent to" %}</td>
+                        <td>
+                            <a href="{% url "userprofile" device.currentlending.owner.pk %} ">{{ device.currentlending.owner }}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Since" %}</td>
+                        <td>{{ device.currentlending.lenddate }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Due to" %}</td>
+                        <td>{{ device.currentlending.duedate }}
+                            {% if device.currentlending.duedate < weekago %}<span class="error-icon">
+                                <i class="fa fa-exclamation-circle"></i></span>
+                                {% elif device.currentlending.duedate < today %}<span class="warning-icon"><i
+                                        class="fa fa-exclamation-circle"></i></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Overdue notification" %}</td>
+                        <td>{{ device.currentlending.duedate_email|default_if_none:"Not sent" }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <p>{% trans "Currently not lent" %}</p>
+            {% endif %}
+        </div>
+        <div class="col-xs-12 col-md-3">
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">{% trans "IP-Addresses" %}</div>
+                <ul class="list-group">
+                    {% for address in device.ipaddress_set.all %}
+                        <li class="list-group-item ipaddress-list">
+                            <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a> <a
+                                href="{% url 'device-ipaddress-remove' device.pk address.pk %}"
+                                class="close delete right"><i class="fa fa-times"></i></a> <a
+                                href="{% url 'device-ipaddress-purpose' device.pk address.pk %}"
+                                class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
+                            <br/>
+                            <small style="margin-top:0;color:#999">{{ address.purpose|default:"" }}</small>
+                        </li>
+                    {% endfor %}
+                </ul>
 
-          {% if device.archived == None and perms.devices.change_device %}
-  <div class="panel-footer">
-      <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0;">{% csrf_token %}
-        {{ipaddressform.ipaddresses}}
-        <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
-        <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}</button>
-    </div>
-    <input type="hidden" name="device" value="{{ device.pk }}" />
-      </form>
-  </div>
-    {% endif %}
-</div>
-
-
-  <div class="panel panel-primary">
-    <!-- Default panel contents -->
-    <div class="panel-heading">{% trans "Tags" %}</div>
-    <ul class="list-group">
-      {% for tag in device.tags.all %}
-          <li class="list-group-item tag-list">{{tag.name}} <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right"><i class="fa fa-times"></i></a></li>
-        {% endfor %}
-    </ul>
-
-    <div class="panel-footer">
-        <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0;">{% csrf_token %}
-          {{tagform.tags}}
-          <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
-          <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submittags"><i class="fa fa-plus"></i> {% trans "Assign Tags" %}</button>
-      </div>
-      <input type="hidden" name="device" value="{{ device.pk }}" />
-        </form>
-    </div>
-  </div>
-    </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-<ul class="nav nav-tabs" style="margin-top:20px">
-  {% if perms.devices.change_device %}<li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>{% endif %}
-  {% if perms.devices.lend_device %}<li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endif %}
-  {% if perms.devices.change_device %}<li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endif %}
-  {% if perms.devices.lend_device %}<li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endif %}
-</ul>
-
-<div class="tab-content">
-{% if perms.devices.lend_device %}
-  <div class="tab-pane active" id="notes">
-<ul class="list-unstyled" style="padding-top:20px;">
-  {% for note in notes %}
-    <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
-        <div class="row">
-            <div class="col-xs-2 col-md-1">
-                {% if note.creator.avatar %}
-                <img src="{{note.creator.avatar.url}}" class="img-rounded img-responsive" alt="" />
+                {% if device.archived == None and perms.devices.change_device %}
+                    <div class="panel-footer">
+                        <form method="post" action="{% url 'device-ipaddress' device.pk %}"
+                              style="margin:0;">{% csrf_token %}
+                            {{ ipaddressform.ipaddresses }}
+                            <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
+                                <button type="submit" class="btn btn-success btn-sm pull-right disabled"
+                                        id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
+                                </button>
+                            </div>
+                            <input type="hidden" name="device" value="{{ device.pk }}"/>
+                        </form>
+                    </div>
                 {% endif %}
-                <p style="padding-top:5px;margin-bottom:0">{{note.creator}}</p>
             </div>
-            <div class="col-xs-10 col-md-11">
-                <div class="comment-text">
-                    {{note.note|linebreaks}}
-                </div>
-                {% if note.creator == user %}
-                <div class="action">
-                    <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
-                        <i class="fa fa-edit"></i>
-                    </button>
-                    <form action='{% url "device-note-delete" device.id note.id %}' method='post' class='form-inline pull-left' style="margin-left:10px">{% csrf_token %}
-                    <button class="btn btn-danger btn-xs" title="Delete" type="submit">
-                        <i class="fa fa-trash-o"></i>
-                    </button>
+
+
+            <div class="panel panel-primary">
+                <!-- Default panel contents -->
+                <div class="panel-heading">{% trans "Tags" %}</div>
+                <ul class="list-group">
+                    {% for tag in device.tags.all %}
+                        <li class="list-group-item tag-list">{{ tag.name }} <a
+                                href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right"><i
+                                class="fa fa-times"></i></a></li>
+                    {% endfor %}
+                </ul>
+
+                <div class="panel-footer">
+                    <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0;">{% csrf_token %}
+                        {{ tagform.tags }}
+                        <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
+                            <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submittags"><i
+                                    class="fa fa-plus"></i> {% trans "Assign Tags" %}</button>
+                        </div>
+                        <input type="hidden" name="device" value="{{ device.pk }}"/>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="nav nav-tabs" style="margin-top:20px">
+                {% if perms.devices.change_device %}
+                    <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>{% endif %}
+                {% if perms.devices.lend_device %}
+                    <li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endif %}
+                {% if perms.devices.change_device %}
+                    <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endif %}
+                {% if perms.devices.lend_device %}
+                    <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endif %}
+            </ul>
+
+            <div class="tab-content">
+                {% if perms.devices.lend_device %}
+                    <div class="tab-pane active" id="notes">
+                        <ul class="list-unstyled" style="padding-top:20px;">
+                            {% for note in notes %}
+                                <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
+                                    <div class="row">
+                                        <div class="col-xs-2 col-md-1">
+                                            {% if note.creator.avatar %}
+                                                <img src="{{ note.creator.avatar.url }}"
+                                                     class="img-rounded img-responsive" alt=""/>
+                                            {% endif %}
+                                            <p style="padding-top:5px;margin-bottom:0">{{ note.creator }}</p>
+                                        </div>
+                                        <div class="col-xs-10 col-md-11">
+                                            <div class="comment-text">
+                                                {{ note.note|linebreaks }}
+                                            </div>
+                                            {% if note.creator == user %}
+                                                <div class="action">
+                                                    <button type="button" class="btn btn-primary btn-xs pull-left"
+                                                            title="Edit">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <form action='{% url "device-note-delete" device.id note.id %}'
+                                                          method='post' class='form-inline pull-left'
+                                                          style="margin-left:10px">{% csrf_token %}
+                                                        <button class="btn btn-danger btn-xs" title="Delete"
+                                                                type="submit">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <form action='{% url "device-note-create" device.pk %}' method='post'
+                              class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0">
+                            {% csrf_token %}
+                            <textarea class="form-control" name="note" id="id_note"></textarea>
+                            <input type="hidden" name="device" value="{{ device.pk }}"/>
+                            <input type="hidden" name="creator" value="{{ user.pk }}"/>
+                            <button type="submit" class="btn btn-success btn-sm pull-right" style="margin-top:10px">
+                                <i class="fa fa-pencil"></i> {% trans "Add note" %}
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+                {% if perms.devices.lend_device %}
+                    <div class="tab-pane" id="lending">
+                        <h4>{% trans "10 last lendings" %}</h4>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>{% trans "User" %}</th>
+                                <th>{% trans "Since" %}</th>
+                                <th>{% trans "Duedate" %}</th>
+                                <th>{% trans "Returned" %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for lending in lending_list %}
+                                <tr>
+                                    <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
+                                    <td>{{ lending.lenddate }}</td>
+                                    <td>{{ lending.duedate|default_if_none:"never" }}</td>
+                                    <td>{{ lending.returndate|default_if_none:"not returned" }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i
+                                class="fa fa-book" style="margin-right:7px"></i>{% trans "View lending history" %}</a>
+                    </div>
+                {% endif %}
+
+                {% if perms.devices.change_device %}
+                    <div class="tab-pane" id="edit">
+                        <h4>{% trans "10 last edits" %}</h4>
+                        <table id="change-history" class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col">{% trans 'Date/time' %}</th>
+                                <th scope="col">{% trans 'User' %}</th>
+                                <th scope="col">{% trans 'Comment' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for action in version_list %}
+                                <tr>
+                                    <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}"
+                                                       title="{{ action.revision.date_created|date:'c' }}"
+                                                       class="edit-date">{{ action.revision.date_created }}</a></th>
+                                    <td>
+                                        <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                                    </td>
+                                    <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i
+                                class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
+                    </div>
+                {% endif %}
+
+                {% if perms.devices.lend_device %}
+                    <div class="tab-pane" id="mail">
+                        <h4>{% trans "10 last sent mails" %}</h4>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Mailtemplate" %}</th>
+                                <th>{% trans "Subject" %}</th>
+                                <th>{% trans "Sent by" %}</th>
+                                <th>{% trans "Sent at" %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for mail in mail_list %}
+                                <tr>
+                                    <td>{{ mail.mailtemplate.name }}</td>
+                                    <td>{{ mail.subject }}</td>
+                                    <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{ mail.sent_by }}</a></td>
+                                    <td><span title="{{ mail.sent_at|date:'c' }}"
+                                              class="mail-date">{{ mail.sent_at }}</span></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 {% endif %}
             </div>
         </div>
-    </li>
-{% endfor %}
-</ul>
-
-<form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0">
-  {% csrf_token %}
-  <textarea class="form-control" name="note" id="id_note"></textarea>
-  <input type="hidden" name="device" value="{{ device.pk }}" />
-  <input type="hidden" name="creator" value="{{ user.pk }}" />
-  <button type="submit" class="btn btn-success btn-sm pull-right" style="margin-top:10px">
-                        <i class="fa fa-pencil"></i> {% trans "Add note" %}
-                    </button>
-</form>
-  </div>
-{% endif %}
-  {% if perms.devices.lend_device %}
-  <div class="tab-pane" id="lending">
-<h4>{% trans "10 last lendings" %}</h4>
-    <table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "User" %}</th>
-      <th>{% trans "Since" %}</th>
-      <th>{% trans "Duedate" %}</th>
-      <th>{% trans "Returned" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for lending in lending_list %}
-    <tr>
-      <td><a href="{% url 'userprofile' lending.owner.pk %}">{{lending.owner}}</a></td>
-      <td>{{lending.lenddate}}</td>
-      <td>{{lending.duedate|default_if_none:"never"}}</td>
-      <td>{{lending.returndate|default_if_none:"not returned"}}</td>
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-<a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i class="fa fa-book" style="margin-right:7px"></i>{% trans "View lending history" %}</a>
-</div>
-{% endif %}
-
-{% if perms.devices.change_device %}
-  <div class="tab-pane" id="edit">
-<h4>{% trans "10 last edits" %}</h4>
-    <table id="change-history" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Date/time' %}</th>
-                            <th scope="col">{% trans 'User' %}</th>
-                            <th scope="col">{% trans 'Comment' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for action in version_list %}
-                            <tr>
-                                <th scope="row"><a href="{% url 'device-history' device.pk action.revision.pk %}" title="{{action.revision.date_created|date:'c'}}" class="edit-date">{{action.revision.date_created}}</a></th>
-                                <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{action.revision.user}}</a></td>
-                                <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-<a href="{% url 'device-history-list' device.pk %}" class="btn btn-default"><i class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
-</div>
-{% endif %}
-
-  {% if perms.devices.lend_device %}
-  <div class="tab-pane" id="mail">
-<h4>{% trans "10 last sent mails" %}</h4>
-    <table class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "Mailtemplate" %}</th>
-      <th>{% trans "Subject" %}</th>
-      <th>{% trans "Sent by" %}</th>
-      <th>{% trans "Sent at" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for mail in mail_list %}
-    <tr>
-      <td>{{mail.mailtemplate.name}}</td>
-      <td>{{mail.subject}}</td>
-      <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{mail.sent_by}}</a></td>
-      <td><span  title="{{mail.sent_at|date:'c'}}" class="mail-date">{{mail.sent_at}}</span></td>
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-</div>
-{% endif %}
-</div>
-</div>
-</div>
+    </div>
 
 {% endblock %}
 
 {% block htmlend %}
-{% if perms.devices.lend_device %}
-{% include "snippets/modals/lending.html" with modalname="lendModal" %}
-{% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
+    {% if perms.devices.lend_device %}
+        {% include "snippets/modals/lending.html" with modalname="lendModal" %}
+        {% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
 
-{% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
-{% endif %}
+        {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
+    {% endif %}
 
 
-{% if "device" in LABEL_TEMPLATES %}
-{% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.device.0 %}
-{% endif %}
+    {% if "device" in LABEL_TEMPLATES %}
+        {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.device.0 %}
+    {% endif %}
 {% endblock %}
 
 {% block scriptend %}
-$("#id_ipaddresses").select2({
+    $("#id_ipaddresses").select2({
     tokenSeparators: [",", " "]}).
     on("change", function(e) {
     if (e.val.length != 0) {
     $("#submitipaddress").removeClass("disabled")
-  } else {
+    } else {
     $("#submitipaddress").addClass("disabled")
-  }
-  });
+    }
+    });
 
-$("#id_tags").select2({
+    $("#id_tags").select2({
     tokenSeparators: [",", " "]}).
     on("change", function(e) {
     if (e.val.length != 0) {
     $("#submittags").removeClass("disabled")
-  } else {
+    } else {
     $("#submittags").addClass("disabled")
-  }
-  });
+    }
+    });
 
 
-{% if perms.devices.delete_device %}
-$("#deletebutton").popover({
-    html: 'true',
-    placement: "left",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default dropdown-cancel' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;' />"+
-          "</form>"
-          })
-{% endif %}
-{% if perms.devices.change_device %}
-$("#archivebutton").popover({
-    html: 'true',
-    placement: "left",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default dropdown-cancel' onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-          "</form>"
-          })
+    {% if perms.devices.delete_device %}
+        $("#deletebutton").popover({
+        html: 'true',
+        placement: "left",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        content :"
+        <form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <button type='button' class='btn btn-default dropdown-cancel'
+                    onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>
+            "+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'
+                    style='margin-left:10px;'/>"+
+            "
+        </form>"
+        })
+    {% endif %}
+    {% if perms.devices.change_device %}
+        $("#archivebutton").popover({
+        html: 'true',
+        placement: "left",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        content :"
+        <form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <button type='button' class='btn btn-default dropdown-cancel'
+                    onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>
+            "+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'
+                    style='margin-left:10px;'/>"+
+            "
+        </form>"
+        })
 
-$("#storagebutton").popover({
-    html: 'true',
-    placement: "left",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
-content : "<form action='{% url "device-storage" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<div class='form-group dropdown-cancel'><label for='id_send_mail' class='col-sm-10 control-label'>Send room-changed email</label><div class='col-sm-'>"+
-            "<input id='id_send_mail' name='send_mail' type='checkbox' class='form-control dropdown-cancel'></div></div>"+
-            "<button type='button' class='btn btn-default dropdown-cancel' onclick='$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);'>{% trans "Cancel" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-          "</form>"
-          })
+        $("#storagebutton").popover({
+        html: 'true',
+        placement: "left",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
+        content :"
+        <form action='{% url "device-storage" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <div class='form-group dropdown-cancel'><label for='id_send_mail' class='col-sm-10 control-label'>Send
+                room-changed email</label>
 
-$("#trashbutton").popover({
-    html: 'true',
-    placement: "left",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default dropdown-cancel' onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-          "</form>"
-          })
-{% endif %}
+                <div class='col-sm-'>"+
+                    "<input id='id_send_mail' name='send_mail' type='checkbox' class='form-control dropdown-cancel'>
+                </div>
+            </div>
+            "+
+            "
+            <button type='button' class='btn btn-default dropdown-cancel'
+                    onclick='$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);'>{% trans "Cancel" %}</button>
+            "+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'
+                    style='margin-left:10px;'/>"+
+            "
+        </form>"
+        })
 
-  $(function() {
+        $("#trashbutton").popover({
+        html: 'true',
+        placement: "left",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        content :"
+        <form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <button type='button' class='btn btn-default dropdown-cancel'
+                    onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>
+            "+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'
+                    style='margin-left:10px;'/>"+
+            "
+        </form>"
+        })
+    {% endif %}
+
+    $(function() {
     $( "#id_duedate" ).datepicker();
-  });
-  $(document).ready(function() {
+    });
+    $(document).ready(function() {
     $(".edit-date").timeago();
     $(".mail-date").timeago();
 
     $("select").select2()
-$("#id_mailtemplate").change(function() {
-  if ($(this).val() === "") {
-  } else {
+    $("#id_mailtemplate").change(function() {
+    if ($(this).val() === "") {
+    } else {
     $.ajax({
-      type: "POST",
-      url: "{% url "load-mailtemplate" %}",
-      data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")}
+    type: "POST",
+    url: "{% url "load-mailtemplate" %}",
+    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")}
     }).done(function(data) {
-      $("#id_emailsubject").val(data.subject)
-      $("#id_emailbody").val(data.body)
-      $('#id_emailrecipients').select2('val', data.recipients)
+    $("#id_emailsubject").val(data.subject)
+    $("#id_emailbody").val(data.body)
+    $('#id_emailrecipients').select2('val', data.recipients)
     })
-  }
-});
-  });
+    }
+    });
+    });
 
-$(document).ready(function() {
-        $(document).on('click', '.dropdown-cancel', function (e) {
-            e.stopPropagation();
-        });
+    $(document).ready(function() {
+    $(document).on('click', '.dropdown-cancel', function (e) {
+    e.stopPropagation();
+    });
     });
 {% endblock %}

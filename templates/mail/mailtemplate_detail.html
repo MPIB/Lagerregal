@@ -1,65 +1,92 @@
 {% extends "base.html" %}
-{%  load devicetags %}
+{% load devicetags %}
 {% load i18n %}
 {% load staticfiles %}
-{% block title %}{{mailtemplate.name}}{% endblock %}
+{% block title %}{{ mailtemplate.name }}{% endblock %}
 
 {% block header %}
-{% trans "Mailtemplate" %}: {{mailtemplate.name}}
+    {% trans "Mailtemplate" %}: {{ mailtemplate.name }}
 {% endblock %}
 {% block pullright %}
-{% if perms.mail.delete_mailtemplate %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if perms.mail.change_mailtemplate %}<a href="{{object.get_edit_url}}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+    {% if perms.mail.delete_mailtemplate %}
+        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
+           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+    {% endif %}
+    {% if perms.mail.change_mailtemplate %}
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
+        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-md-5 col-xs-12">
-    <table class="table table-bordered table-striped">
-      <tbody>
-        <tr><td>{% trans "Subject" %}</td><td>{{mailtemplate.subject}}</td></tr>
-          <tr><td>{% trans "Usage" %}</td><td>{{mailtemplate.get_usage_display }}</td></tr>
-          <tr><td>{% trans "Body" %}</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
-          <tr><td>{% trans "Default recipients" %}</td>
-            <td>
-              {% for recipient in mailtemplate.default_recipients.all %}
-              {{recipient}}<br>
-              {% endfor %}
-            </td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="col-md-5 col-xs-12">
-  <h4>{% trans "Preview" %}
-    <table class="table table-bordered table-striped">
-      <tbody id="mailpreview">
-        <tr><td>{% trans "Subject" %}</td><td>{{mailtemplate.subject}}</td></tr>
-          <tr><td>{% trans "Body" %}</td><td>{{mailtemplate.body|linebreaks}}</td></tr>
-      </tbody>
-    </table>
-  </div>
-</div>
+    <div class="row">
+        <div class="col-md-5 col-xs-12">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                <tr>
+                    <td>{% trans "Subject" %}</td>
+                    <td>{{ mailtemplate.subject }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Usage" %}</td>
+                    <td>{{ mailtemplate.get_usage_display }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Body" %}</td>
+                    <td>{{ mailtemplate.body|linebreaks }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Default recipients" %}</td>
+                    <td>
+                        {% for recipient in mailtemplate.default_recipients.all %}
+                            {{ recipient }}<br>
+                        {% endfor %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-5 col-xs-12">
+            <h4>{% trans "Preview" %}
+                <table class="table table-bordered table-striped">
+                    <tbody id="mailpreview">
+                    <tr>
+                        <td>{% trans "Subject" %}</td>
+                        <td>{{ mailtemplate.subject }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Body" %}</td>
+                        <td>{{ mailtemplate.body|linebreaks }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+        </div>
+    </div>
 {% endblock %}
 
 {% block htmlend %}
-<script src="{% static "js/mustache.js" %}"></script>
+    <script src="{% static "js/mustache.js" %}"></script>
 {% endblock %}
 
 {% block scriptend %}
-{% if perms.mail.delete_mailtemplate %}
-$("#deletebutton").popover({
-    html: 'true',
-    placement: "bottom",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "mail-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
-          "</form>"
-          })
-{% endif %}
+    {% if perms.mail.delete_mailtemplate %}
+        $("#deletebutton").popover({
+        html: 'true',
+        placement: "bottom",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        content :"
+        <form action='{% url "mail-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <button type='button' class='btn btn-default'
+                    onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>
+            "+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
+            "
+        </form>"
+        })
+    {% endif %}
 
-var data = {
-  "device" : {
+    var data = {
+    "device" : {
     "currentlending": "",
     "description": "",
     "devicetype": "Laptop",
@@ -74,19 +101,19 @@ var data = {
     "templending": false,
     "trashed": "",
     "webinterface": "http://example.com"
-  },
-  "user" : {
+    },
+    "user" : {
     "username" : "testuser",
     "first_name" : "Test",
     "last_name" : "User"
-  },
-  "owner" : {
+    },
+    "owner" : {
     "username" : "seconduser",
     "first_name" : "Second",
     "last_name" : "User"
-  }
-}
+    }
+    }
 
-out = Mustache.render($("#mailpreview").html(), data)
-$("#mailpreview").html(out)
+    out = Mustache.render($("#mailpreview").html(), data)
+    $("#mailpreview").html(out)
 {% endblock %}

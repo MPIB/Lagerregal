@@ -3,46 +3,47 @@
 {% block title %}{% trans "Rooms" %}{% endblock %}
 
 {% block header %}
-{% trans "Rooms" %}
+    {% trans "Rooms" %}
 {% endblock %}
 
 {% block pullright %}
-{{filterform.filterstring}}
-{{viewform.viewsorting}}
-{% if perms.devices.add_room %}<a href="{% url 'room-add' %}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Room" %}</a>{% endif %}
+    {{ filterform.filterstring }}
+    {{ viewform.viewsorting }}
+    {% if perms.devices.add_room %}<a href="{% url 'room-add' %}" class="btn btn-success btn-sm pull-right">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Room" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
-{% include "snippets/pagination.html" with listurl='room-list' %}
+    {% include "snippets/pagination.html" with listurl='room-list' %}
     <table width="100%" id="roomtable" class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "Name" %}</th>
-      <th>{% trans "Building" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-  	{% for room in room_list %}
-    <tr>
-      <td><a href="{% url 'room-detail' room.id %}">{{ room.name | default:"(None)" }}</a></td>
-      <td>{{ room.building }}</td>
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-{% include "snippets/pagination.html" with listurl='room-list' %}
+        <thead>
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Building" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for room in room_list %}
+            <tr>
+                <td><a href="{% url 'room-detail' room.id %}">{{ room.name | default:"(None)" }}</a></td>
+                <td>{{ room.building }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/pagination.html" with listurl='room-list' %}
 {% endblock %}
 
 {% block scriptend %}
-$('#id_viewsorting').change(function() {
+    $('#id_viewsorting').change(function() {
     if ($("#id_filterstring").val() != "") {
-        window.location = "/rooms/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+    window.location = "/rooms/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
     } else {
-        window.location = "/rooms/sorting/" + $(this).val()
+    window.location = "/rooms/sorting/" + $(this).val()
     }
-});
-$('#id_filterstring').change(function() {
+    });
+    $('#id_filterstring').change(function() {
     window.location = "/rooms/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
-});
-{% include "snippets/pagination_js.html" with pageurl="room-list" %}
+    });
+    {% include "snippets/pagination_js.html" with pageurl="room-list" %}
 {% endblock %}

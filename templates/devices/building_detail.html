@@ -1,90 +1,116 @@
 {% extends "base.html" %}
-{%  load devicetags %}
+{% load devicetags %}
 {% load i18n %}
-{% block title %}{{building.name}}{% endblock %}
+{% block title %}{{ building.name }}{% endblock %}
 
 {% block header %}
-{% trans "Building" %}: {{building.name}}
+    {% trans "Building" %}: {{ building.name }}
 {% endblock %}
 
 {% block pullright %}
-{% if perms.devices.delete_building %}<a  href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right" style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>{% endif %}
-{% if "building" in LABEL_TEMPLATES %}
-<a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
-{% endif %}
-{% if perms.devices.change_building %}<a href="{% url 'building-edit' building.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-<a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
-<div class="btn-group">
-  <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-    <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-  {% for merge in merge_list %}
-  <li><a href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
-  {% endfor %}
-  </ul>
-</div>{% endif %}
+    {% if perms.devices.delete_building %}
+        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
+           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+    {% endif %}
+    {% if "building" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
+           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
+    {% endif %}
+    {% if perms.devices.change_building %}
+        <a href="{% url 'building-edit' building.id %}" class="btn btn-primary btn-sm pull-right"
+           style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
+        <div class="btn-group">
+            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% for merge in merge_list %}
+                    <li><a href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>{% endif %}
 
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <div class="col-xs-12 col-md-5">
-    <table class="table table-bordered table-striped">
-      <tbody>
-        <tr><td>{% trans "Street" %}</td><td>{{building.street}} {{building.number}}</td></tr>
-        <tr><td>{% trans "ZIP Code" %}</td><td>{{building.zipcode}}</td></tr>
-        <tr><td>{% trans "City" %}</td><td>{{building.city}}</td></tr>
-        <tr><td>{% trans "State" %}</td><td>{{building.state}}</td></tr>
-        <tr><td>{% trans "Country" %}</td><td>{{building.country}}</td></tr>
-      </tbody>
-    </table>
-  </div>
-<div class="col-xs-12 col-md-7">
-{% if device_list %}
-<h4>{% trans "Devices" %}</h4>
-    <table width="100%" id="devicetable" class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "Name" %}</th>
-      <th>{% trans "Inventorynumber" %}</th>
-      <th>{% trans "Devicetype" %}</th>
-      <th>{% trans "Room" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for device in device_list %}
-    <tr>
-      <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-      <td>{{ device.inventorynumber }}</td>
-      <td>{{ device.devicetype__name }}</td>
-      <td>{{ device.room__name }}</td>
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-{% endif %}
-</div>
-</div>
-</div>
+    <div class="row">
+        <div class="col-xs-12 col-md-5">
+            <table class="table table-bordered table-striped">
+                <tbody>
+                <tr>
+                    <td>{% trans "Street" %}</td>
+                    <td>{{ building.street }} {{ building.number }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "ZIP Code" %}</td>
+                    <td>{{ building.zipcode }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "City" %}</td>
+                    <td>{{ building.city }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "State" %}</td>
+                    <td>{{ building.state }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Country" %}</td>
+                    <td>{{ building.country }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-xs-12 col-md-7">
+            {% if device_list %}
+                <h4>{% trans "Devices" %}</h4>
+                <table width="100%" id="devicetable" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Inventorynumber" %}</th>
+                        <th>{% trans "Devicetype" %}</th>
+                        <th>{% trans "Room" %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for device in device_list %}
+                        <tr>
+                            <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+                            <td>{{ device.inventorynumber }}</td>
+                            <td>{{ device.devicetype__name }}</td>
+                            <td>{{ device.room__name }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+    </div>
+    </div>
 {% endblock %}
 
-{%block htmlend %}
-{% if "building" in LABEL_TEMPLATES %}
-{% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.building.0 %}
-{% endif %}
+{% block htmlend %}
+    {% if "building" in LABEL_TEMPLATES %}
+        {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.building.0 %}
+    {% endif %}
 {% endblock %}
 
 {% block scriptend %}
-{% if perms.devices.delete_building %}
-$("#deletebutton").popover({
-    html: 'true',
-    placement: "bottom",
-    title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-content : "<form action='{% url "building-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' />"+
-          "</form>"
-          })
-{% endif %}
+    {% if perms.devices.delete_building %}
+        $("#deletebutton").popover({
+        html: 'true',
+        placement: "bottom",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        content :"
+        <form action='{% url "building-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <button type='button' class='btn btn-default'
+                    onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>
+            "+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
+            "
+        </form>"
+        })
+    {% endif %}
 {% endblock %}

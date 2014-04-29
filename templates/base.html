@@ -1,135 +1,165 @@
 {% load i18n %}{% load staticfiles %}<!DOCTYPE html>
-<html lang="{{user.language|default:"en"}}">
+<html lang="{{ user.language|default:"en" }}">
 <head>
-	<meta charset="utf-8" />
-	<title>{% block title %}{% endblock %} &middot; {{SITE_NAME}}</title>
-	<link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
-  <link rel="stylesheet" href="{% static "css/select2.css" %}">
-  <link rel="stylesheet" href="{% static "css/main.css" %}">
-  <link rel="stylesheet" href="{% static "css/jquery-ui.min.css" %}">
-  <link href="{% static "css/font-awesome.css" %}" rel="stylesheet">
-  <link rel="stylesheet" href="{% static "css/jquery.dataTables.css" %}">
-  <link rel="stylesheet" href="{% static "css/bootstrap-formhelpers.css" %}">
-  <link rel="stylesheet" href="{% static "css/ladda-themeless.min.css" %}">
-  
-  <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
-  <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
+    <meta charset="utf-8"/>
+    <title>{% block title %}{% endblock %} &middot; {{ SITE_NAME }}</title>
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static "css/select2.css" %}">
+    <link rel="stylesheet" href="{% static "css/main.css" %}">
+    <link rel="stylesheet" href="{% static "css/jquery-ui.min.css" %}">
+    <link href="{% static "css/font-awesome.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "css/jquery.dataTables.css" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap-formhelpers.css" %}">
+    <link rel="stylesheet" href="{% static "css/ladda-themeless.min.css" %}">
 
-  <link href="{% static "css/visualsearch.css" %}" media="screen" rel="stylesheet" type="text/css" />
-  {% block extracss %}{% endblock %}
+    <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
+    <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
+
+    <link href="{% static "css/visualsearch.css" %}" media="screen" rel="stylesheet" type="text/css"/>
+    {% block extracss %}{% endblock %}
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-      <span class="sr-only">{% trans "Toggle navigation" %}</span>
-      <span class="fa fa-bar"></span>
-      <span class="fa fa-bar"></span>
-      <span class="fa fa-bar"></span>
-    </button>
-    <a class="navbar-brand" href="/"><i class="fa fa-archive"></i> {{SITE_NAME}}</a>
-  </div>
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">{% trans "Toggle navigation" %}</span>
+            <span class="fa fa-bar"></span>
+            <span class="fa fa-bar"></span>
+            <span class="fa fa-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/"><i class="fa fa-archive"></i> {{ SITE_NAME }}</a>
+    </div>
 
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav">
-      {% if perms.devices.read_device or perms.devices.read_type or perms.devices.read_manufacturer %}
-      <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">{% trans "Devices" %} <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          {% if perms.devices.read_device %}<li><a href="{% url 'device-list' %}">{% trans "Devices" %}</a></li>{% endif %}
-          {% if perms.devicetypes.read_type %}<li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>{% endif %}
-          {% if perms.devices.read_manufacturer %}<li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>{% endif %}
-          {% if perms.devicegroups.read_devicegroup %}<li><a href="{% url 'devicegroup-list' %}">{% trans "Devicegroups" %}</a></li>{% endif %}
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+            {% if perms.devices.read_device or perms.devices.read_type or perms.devices.read_manufacturer %}
+                <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle"
+                                        data-toggle="dropdown">{% trans "Devices" %} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% if perms.devices.read_device %}
+                            <li><a href="{% url 'device-list' %}">{% trans "Devices" %}</a></li>{% endif %}
+                        {% if perms.devicetypes.read_type %}
+                            <li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>{% endif %}
+                        {% if perms.devices.read_manufacturer %}
+                            <li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>{% endif %}
+                        {% if perms.devicegroups.read_devicegroup %}
+                            <li><a href="{% url 'devicegroup-list' %}">{% trans "Devicegroups" %}</a></li>{% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if perms.devices.read_room or perms.devices.read_building %}
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Locations" %}
+                    <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% if perms.devices.read_room %}
+                            <li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>{% endif %}
+                        {% if perms.devices.read_building %}
+                            <li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>{% endif %}
+                        {% if perms.locations.read_section %}
+                            <li><a href="{% url 'section-list' %}">{% trans "Sections" %}</a></li>{% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if perms.mail.read_mailtemplate or users.read_user %}
+                <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle"
+                                        data-toggle="dropdown">{% trans "Manage" %} <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% if perms.network.read_ipaddress %}
+                            <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
+                        {% if perms.mail.read_mailtemplate %}
+                            <li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
+                        {% if perms.users.read_user %}
+                            <li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>{% endif %}
+                        {% if perms.devicetags.read_devicetag %}
+                            <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>{% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if perms.network.read_ipaddress and not perms.mail.read_mailtemplate and not users.read_user %}
+                <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
         </ul>
-      </li>
-      {% endif %}
-      {% if perms.devices.read_room or perms.devices.read_building %}
-      <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Locations" %} <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          {% if perms.devices.read_room %}<li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>{% endif %}
-          {% if perms.devices.read_building %}<li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>{% endif %}
-          {% if perms.locations.read_section %}<li><a href="{% url 'section-list' %}">{% trans "Sections" %}</a></li>{% endif %}
-        </ul>
-      </li>
-      {% endif %}
-      {% if perms.mail.read_mailtemplate or users.read_user %}
-      <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">{% trans "Manage" %} <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          {% if perms.network.read_ipaddress %}<li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
-          {% if perms.mail.read_mailtemplate %}<li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
-          {% if perms.users.read_user %}<li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>{% endif %}
-          {% if perms.devicetags.read_devicetag %}<li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>{% endif %}
-        </ul>
-      </li>
-      {% endif %}
-      {% if perms.network.read_ipaddress and not perms.mail.read_mailtemplate and not users.read_user %}<li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
-    </ul>
 
-    <ul class="nav navbar-nav navbar-right">
-    {% if user.is_authenticated %}
-    {% if perms.devices.read_device %}
-      <li class="visible-lg visible-md">
-        <form method="post" action="{% url 'search' %}" class="navbar-form">{% csrf_token %}
-          <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
-          <div class="form-group">
-                <div class="input-group" style="width: 200px;">
-            <input id="id_searchname" name="searchname" placeholder="{% trans 'Search Name' %}" type="text" class="form-control input-sm">
+        <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                {% if perms.devices.read_device %}
+                    <li class="visible-lg visible-md">
+                        <form method="post" action="{% url 'search' %}" class="navbar-form">{% csrf_token %}
+                            <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
+
+                            <div class="form-group">
+                                <div class="input-group" style="width: 200px;">
+                                    <input id="id_searchname" name="searchname" placeholder="{% trans 'Search Name' %}"
+                                           type="text" class="form-control input-sm">
                     <span class="input-group-btn">
           <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i></button>
                     </span>
-                </div>
-          </div>
-        </form>
-      </li>
-      <li class="visible-lg"><a href="{% url 'search' %}">{% trans "Advanced Search" %}</a></li>
-      <li class="visible-xs visible-sm visible-md"><a href="{% url 'search' %}">{% trans "Search" %}</a></li>
-      {% endif %}
-      <li class="dropdown"><a href="#"  data-toggle="dropdown" class="dropdown-toggle {% if user.avatar %}navbar-user"><img class="navbar-avatar img-rounded" src="{{user.avatar.url }}"> {% else %}"> {% endif %}{{ user }} <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-          <li><a href="{% url 'userprofile' %}"><i class="fa fa-user"></i>&nbsp; {% trans "Profile" %}</a></li>
-          <li><a href="{% url 'usersettings' %}"><i class="fa fa-cog"></i>&nbsp; {% trans "Settings" %}</a></li>
-          {% if user.is_staff %}
-          <li><a href="{% url 'admin:index' %}"><i class="fa fa-lock"></i>&nbsp; {% trans "Admin" %}</a></li>
-          {% endif %}
-          <li><a href="{% url 'django.contrib.auth.views.logout' %}" ><i class="fa fa-sign-out"></i>&nbsp; {% trans "Logout" %}</a></li>
+                                </div>
+                            </div>
+                        </form>
+                    </li>
+                    <li class="visible-lg"><a href="{% url 'search' %}">{% trans "Advanced Search" %}</a></li>
+                    <li class="visible-xs visible-sm visible-md"><a href="{% url 'search' %}">{% trans "Search" %}</a>
+                    </li>
+                {% endif %}
+                <li class="dropdown"><a href="#" data-toggle="dropdown"
+                                        class="dropdown-toggle {% if user.avatar %}navbar-user">
+                                            <img class="navbar-avatar img-rounded"
+                                                 src="{{ user.avatar.url }}"> {% else %}"> {% endif %}{{ user }} <b
+                                                class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'userprofile' %}"><i class="fa fa-user"></i>&nbsp; {% trans "Profile" %}</a>
+                        </li>
+                        <li><a href="{% url 'usersettings' %}"><i class="fa fa-cog"></i>&nbsp; {% trans "Settings" %}
+                        </a></li>
+                        {% if user.is_staff %}
+                            <li><a href="{% url 'admin:index' %}"><i class="fa fa-lock"></i>&nbsp; {% trans "Admin" %}
+                            </a></li>
+                        {% endif %}
+                        <li><a href="{% url 'django.contrib.auth.views.logout' %}"><i
+                                class="fa fa-sign-out"></i>&nbsp; {% trans "Logout" %}</a></li>
+                    </ul>
+                </li>
+            {% else %}
+                <li id="loginbutton"><a href="{% url 'users.views.login' %}" class="button button-success"><i
+                        class="fa fa-sign-in"></i> {% trans "Login" %}</a></li>
+            {% endif %}
         </ul>
-      </li>
-      {% else %}
-      <li id="loginbutton"><a href="{% url 'users.views.login' %}" class="button button-success"><i class="fa fa-sign-in"></i> {% trans "Login" %}</a></li>
-    {% endif %}
-    </ul>
-  </div><!-- /.navbar-collapse -->
+    </div>
+    <!-- /.navbar-collapse -->
 </nav>
 
 <div class="container">
-<div class="page-header row">
-  <h1 style="font-size:1.9em"><ol class="breadcrumb" style="margin-bottom:0px;">
-    {% for crumb in breadcrumbs %}
-    {% if forloop.last %}
-  <li class="active">{{crumb.1}}</li>
-  {% else %}
-  <li><a href="{{crumb.0}}">{{crumb.1}}</a></li>
-{% endif %}
-  {% endfor %}
-  <small class="pull-right">{% block  pullright %}{% endblock %}</small>
-</ol></h1>
-</div>
-<div class="row">
-	<div class="col-md-12">{% block content %}{% endblock %}</div>
-</div>
-<div id="footer">
-      <div class="pull-right">
-        powered by <a href="https://github.com/viirus/Lagerregal">Lagerregal</a>
-      </div>
-  </div>
+    <div class="page-header row">
+        <h1 style="font-size:1.9em">
+            <ol class="breadcrumb" style="margin-bottom:0px;">
+                {% for crumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="active">{{ crumb.1 }}</li>
+                    {% else %}
+                        <li><a href="{{ crumb.0 }}">{{ crumb.1 }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                <small class="pull-right">{% block  pullright %}{% endblock %}</small>
+            </ol>
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">{% block content %}{% endblock %}</div>
+    </div>
+    <div id="footer">
+        <div class="pull-right">
+            powered by <a href="https://github.com/viirus/Lagerregal">Lagerregal</a>
+        </div>
+    </div>
 </div>
 
 <script src="{% static "js/jquery.min.js" %}"></script>
-	<script src="{% static "js/bootstrap.min.js" %}"></script>
-  <script src="{% static "js/select2.min.js" %}"></script>
-  <script src="{% static "js/jquery-ui.min.js" type="text/javascript" %}"></script>
-  <script type="text/javascript" src="{% static "js/noty/jquery.noty.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<script src="{% static "js/select2.min.js" %}"></script>
+<script src="{% static "js/jquery-ui.min.js" type="text/javascript" %}"></script>
+<script type="text/javascript" src="{% static "js/noty/jquery.noty.js" %}"></script>
 
 <script type="text/javascript" src="{% static "js/noty/layouts/top.js" %}"></script>
 <script type="text/javascript" src="{% static "js/noty/layouts/topCenter.js" %}"></script>
@@ -138,69 +168,73 @@
 <!-- You can add more layouts if you want -->
 
 <script type="text/javascript" src="{% static "js/noty/themes/default.js" %}"></script>
-<script type="text/javascript" language="javascript" src="{% static "js/bootstrap-formhelpers-datepicker.js" %}"></script>
-<script type="text/javascript" language="javascript" src="{% static "js/bootstrap-formhelpers-datepicker.en_US.js" %}"></script>
+<script type="text/javascript" language="javascript"
+        src="{% static "js/bootstrap-formhelpers-datepicker.js" %}"></script>
+<script type="text/javascript" language="javascript"
+        src="{% static "js/bootstrap-formhelpers-datepicker.en_US.js" %}"></script>
 
 <script src="{% static "js/jquery.timeago.js" %}"></script>
 {% if user.language != "en" %}
-<script src="{% static "js/jquery.timeago.de.js" %}"></script>
+    <script src="{% static "js/jquery.timeago.de.js" %}"></script>
 {% endif %}
 
 <script src="{% static "js/spin.min.js" %}"></script>
 <script src="{% static "js/ladda.min.js" %}"></script>
 
 {% block htmlend %}{% endblock %}
-	<script>
-$(document).ajaxSend(function(event, xhr, settings) {
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie != '') {
-            var cookies = document.cookie.split(';');
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+<script>
+    $(document).ajaxSend(function (event, xhr, settings) {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
                 }
             }
+            return cookieValue;
         }
-        return cookieValue;
-    }
-    function sameOrigin(url) {
-        // url could be relative or scheme relative or absolute
-        var host = document.location.host; // host + port
-        var protocol = document.location.protocol;
-        var sr_origin = '//' + host;
-        var origin = protocol + sr_origin;
-        // Allow absolute or scheme relative URLs to same origin
-        return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
-            (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
-            // or any other URL that isn't scheme relative or absolute i.e relative.
-            !(/^(\/\/|http:|https:).*/.test(url));
-    }
-    function safeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
 
-    if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
-        xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-    }
-});
+        function sameOrigin(url) {
+            // url could be relative or scheme relative or absolute
+            var host = document.location.host; // host + port
+            var protocol = document.location.protocol;
+            var sr_origin = '//' + host;
+            var origin = protocol + sr_origin;
+            // Allow absolute or scheme relative URLs to same origin
+            return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+                    (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+                // or any other URL that isn't scheme relative or absolute i.e relative.
+                    !(/^(\/\/|http:|https:).*/.test(url));
+        }
 
-  {% block scriptend %}{% endblock %}
-  {% if messages %}
-  $(document).ready(function () {
-    {% for message in messages %}
-  noty({
-    text     : '{{message|safe }}',
-    type     : '{{message.tags}}',
-    layout  : 'topCenter',
-    timeout : 3000
-  });
-    {% endfor %}
-});
-{% endif %}
+        function safeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+
+        if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
+            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        }
+    });
+
+    {% block scriptend %}{% endblock %}
+    {% if messages %}
+        $(document).ready(function () {
+            {% for message in messages %}
+                noty({
+                    text: '{{message|safe }}',
+                    type: '{{message.tags}}',
+                    layout: 'topCenter',
+                    timeout: 3000
+                });
+            {% endfor %}
+        });
+    {% endif %}
 </script>
 </body>
 

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}{% load staticfiles %}
-{% block title %}{{profileuser}}{% endblock %}
+{% block title %}{{ profileuser }}{% endblock %}
 
 {% block header %}
-{{profileuser}}
+    {{ profileuser }}
 {% endblock %}
 
 {% block pullright %}
@@ -11,232 +11,258 @@
 {% endblock %}
 
 {% block content %}
-<div class="row">
-  <ul class="nav nav-tabs" id="myTab">
-{% if perms.users.read_user %}
-  <li class="active"><a href="#about" data-toggle="tab" data-tab="about">About</a></li>
-  <li><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
-{% else %}
-    <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
-{% endif %}
-  <li><a href="#ipaddresses" data-toggle="tab" data-tab="edits">IP-Addresses</a></li>
-{% if perms.users.read_user %}
-  <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
-{% endif %}
-</ul>
+    <div class="row">
+    <ul class="nav nav-tabs" id="myTab">
+        {% if perms.users.read_user %}
+            <li class="active"><a href="#about" data-toggle="tab" data-tab="about">About</a></li>
+            <li><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+        {% else %}
+            <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+        {% endif %}
+        <li><a href="#ipaddresses" data-toggle="tab" data-tab="edits">IP-Addresses</a></li>
+        {% if perms.users.read_user %}
+            <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
+        {% endif %}
+    </ul>
 
-<div class="tab-content">
-{% if perms.users.read_user %}
-  <div class="tab-pane active" id="about">
-  <div data-spy="affix" data-offset-top="160" class="affix-container">
-  {% if profileuser.avatar %}
-  <div class="col-sm-12 col-md-2" style="margin-top:20px">
-    <a data-toggle="modal" data-target="#avatarModal" class="thumbnail">
-      <img src="{{profileuser.avatar.url}}" alt="Avatar">
-    </a>
-  </div>
-  {% endif %}
-  <div class="col-sm-12 col-md-5" style="margin-top:20px">
-    <table class="table table-bordered">
-      <tr>
-        <td>{% trans "Name" %}</td><td>{{profileuser.first_name}} {{profileuser.last_name}}</td>
-      </tr>
-      <tr>
-        <td>{% trans "Groups" %}</td>
-        <td>
-          {% for group in profileuser.groups.all %}
-          {{group.name}}<br>
-          {% endfor %}
-        </td>
-      </tr>
-      <tr>
-        <td>{% trans "Last Login" %}</td>
-        <td><span title="{{profileuser.last_login|date:"c"}}" class="profile-date">{{profileuser.last_login}}</span></td>
-      </tr>
-      <tr>
-        <td>{% trans "Is Staff" %}</td>
-        <td>{% if profileuser.id_staff %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
-      </tr>
-      <tr>
-        <td>{% trans "Is Superuser" %}</td>
-        <td>{% if profileuser.is_superuser %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
-      </tr>
-    </table>
-  </div>
-</div>
-  <div class="col-sm-12 col-md-5 pull-right" style="margin-top:20px">
-    <table class="table table-bordered">
-      <tr>
-        <th>{% trans "Permission" %}</th><th>{% trans "User" %}</th><th>{% trans "Group" %}</th>
-      </tr>
-      {% for permission in permission_list %}
-        <tr>
-          <td>{{permission.name}}</td>
-          <td>{% if permission.codename in userperms %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
-          <td>{% if permission.codename in groupperms %}<i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>{% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}</td>
-        </tr>
-      {% endfor %}
-    </table>
-  </div>
-</div>
-
-
-<div class="tab-pane" id="devices">
-{% else %}
-<div class="tab-pane active" id="devices">
-{% endif %}
-    <div class="col-xs-12 col-md-12">
-      <h4>{% trans "Owned devices" %}</h4>
-    {% if lendings %}
-      <table id="devicetable" class="table table-bordered table-striped">
-                          <thead>
-                              <tr>
-                                  <th scope="col">{% trans 'Device' %}</th>
-                                  <th scope="col">{% trans 'Lent since' %}</th>
-                                  <th scope="col">{% trans 'Duedate' %}</th>
-                                  <th scope="col">{% trans 'Room' %}</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              {% for lending in lendings %}
-                                  <tr>
-                                      {% if lending.device.pk %}
-                                        <td><a href="{% url 'device-detail' lending.device.pk %}">{{lending.device.name}}</a>
-                                      {% else %}
-                                        <td>{{lending.smalldevice}}
-                                      {% endif %}
-                                      <a href="{% url "device-return" lending.pk %}" class="pull-right" title="{% trans "Mark as returned" %}"><i class="fa fa-reply"></i></a></td>
-                                      <td>{{lending.lenddate}}</td>
-                                      <td>{{lending.duedate}}{% if lending.duedate < weekago %}<span class="error-icon">!</span>
-    {% elif lending.duedate < today %}<span class="warning-icon">!</span>
-    {% endif %}</td>
-                                      <td>{{lending.device.room}}</td>
-                                  </tr>
-                              {% endfor %}
-                          </tbody>
-                      </table>
-    {% else %}
-      <h5>{% trans "User doesn't own any devices." %}</h5>
-      {% endif %}
-    </div>
-</div>
-<div class="tab-pane" id="ipaddresses">
-  <div class="col-xs-12 col-md-6">
-    <h4>{% trans "Owned IP-Addresses" %}</h4>
-  {% if ipaddresses %}
-    <table id="ipaddresstable" class="table table-bordered table-striped">
-                        <thead>
+    <div class="tab-content">
+        {% if perms.users.read_user %}
+            <div class="tab-pane active" id="about">
+                <div data-spy="affix" data-offset-top="160" class="affix-container">
+                    {% if profileuser.avatar %}
+                        <div class="col-sm-12 col-md-2" style="margin-top:20px">
+                            <a data-toggle="modal" data-target="#avatarModal" class="thumbnail">
+                                <img src="{{ profileuser.avatar.url }}" alt="Avatar">
+                            </a>
+                        </div>
+                    {% endif %}
+                    <div class="col-sm-12 col-md-5" style="margin-top:20px">
+                        <table class="table table-bordered">
                             <tr>
-                                <th scope="col">{% trans 'Address' %}</th>
+                                <td>{% trans "Name" %}</td>
+                                <td>{{ profileuser.first_name }} {{ profileuser.last_name }}</td>
                             </tr>
+                            <tr>
+                                <td>{% trans "Groups" %}</td>
+                                <td>
+                                    {% for group in profileuser.groups.all %}
+                                        {{ group.name }}<br>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Last Login" %}</td>
+                                <td><span title="{{ profileuser.last_login|date:"c" }}"
+                                          class="profile-date">{{ profileuser.last_login }}</span></td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Is Staff" %}</td>
+                                <td>{% if profileuser.id_staff %}
+                                    <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                                    {% else %}<i class="fa fa-exclamation-circle text-danger"
+                                                 style="font-size:1.3em"></i>{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Is Superuser" %}</td>
+                                <td>{% if profileuser.is_superuser %}
+                                    <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                                    {% else %}<i class="fa fa-exclamation-circle text-danger"
+                                                 style="font-size:1.3em"></i>{% endif %}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-sm-12 col-md-5 pull-right" style="margin-top:20px">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>{% trans "Permission" %}</th>
+                            <th>{% trans "User" %}</th>
+                            <th>{% trans "Group" %}</th>
+                        </tr>
+                        {% for permission in permission_list %}
+                            <tr>
+                                <td>{{ permission.name }}</td>
+                                <td>{% if permission.codename in userperms %}
+                                    <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                                    {% else %}<i class="fa fa-exclamation-circle text-danger"
+                                                 style="font-size:1.3em"></i>{% endif %}</td>
+                                <td>{% if permission.codename in groupperms %}
+                                    <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                                    {% else %}<i class="fa fa-exclamation-circle text-danger"
+                                                 style="font-size:1.3em"></i>{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="tab-pane" id="devices">
+        {% else %}
+            <div class="tab-pane active" id="devices">
+        {% endif %}
+        <div class="col-xs-12 col-md-12">
+            <h4>{% trans "Owned devices" %}</h4>
+            {% if lendings %}
+                <table id="devicetable" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans 'Device' %}</th>
+                        <th scope="col">{% trans 'Lent since' %}</th>
+                        <th scope="col">{% trans 'Duedate' %}</th>
+                        <th scope="col">{% trans 'Room' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for lending in lendings %}
+                        <tr>
+                            {% if lending.device.pk %}
+                                <td><a href="{% url 'device-detail' lending.device.pk %}">{{ lending.device.name }}</a>
+                                    {% else %}
+                                <td>{{ lending.smalldevice }}
+                            {% endif %}
+                            <a href="{% url "device-return" lending.pk %}" class="pull-right"
+                               title="{% trans "Mark as returned" %}"><i class="fa fa-reply"></i></a></td>
+                            <td>{{ lending.lenddate }}</td>
+                            <td>{{ lending.duedate }}{% if lending.duedate < weekago %}<span class="error-icon">!</span>
+                                {% elif lending.duedate < today %}<span class="warning-icon">!</span>
+                            {% endif %}</td>
+                            <td>{{ lending.device.room }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h5>{% trans "User doesn't own any devices." %}</h5>
+            {% endif %}
+        </div>
+        </div>
+        <div class="tab-pane" id="ipaddresses">
+            <div class="col-xs-12 col-md-6">
+                <h4>{% trans "Owned IP-Addresses" %}</h4>
+                {% if ipaddresses %}
+                    <table id="ipaddresstable" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Address' %}</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            {% for ipaddress in ipaddresses %}
-                                <tr>
-                                    <td><a href="{% url 'ipaddress-detail' ipaddress.pk %}">{{ipaddress.address}}</a> <a href="{% url 'user-ipaddress-remove' profileuser.pk ipaddress.pk %}" class="close delete right"><i class="fa fa-times"></i></a></td>
-                                </tr>
-                            {% endfor %}
+                        {% for ipaddress in ipaddresses %}
+                            <tr>
+                                <td><a href="{% url 'ipaddress-detail' ipaddress.pk %}">{{ ipaddress.address }}</a> <a
+                                        href="{% url 'user-ipaddress-remove' profileuser.pk ipaddress.pk %}"
+                                        class="close delete right"><i class="fa fa-times"></i></a></td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
-  {% else %}
-    <h5>{% trans "User doesn't own any IP-Addresses." %}</h5>
+                {% else %}
+                    <h5>{% trans "User doesn't own any IP-Addresses." %}</h5>
+                {% endif %}
+
+            </div>
+            {% if perms.users.change_user %}
+                <div class="col-xs-12 col-md-6" style="margin-top:40px">
+                    <form method="post" action="{% url 'user-ipaddress' profileuser.pk %}"
+                          style="margin:0px;">{% csrf_token %}
+                        {{ ipaddressform.ipaddresses }}
+                        <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
+                            <button type="submit" class="btn btn-success btn-sm pull-right disabled"
+                                    id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
+                            </button>
+                        </div>
+                        <input type="hidden" name="user" value="{{ profileuser.pk }}"/>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+        {% if perms.users.read_user %}
+
+            <div class="tab-pane" id="edits">
+                <div class="col-xs-12 col-md-12">
+                    <h4>{% trans "Edits" %}</h4>
+                    {% if edits %}
+                        <table id="changehistory" class="table table-bordered table-striped" style="">
+                            <thead>
+                            <tr>
+                                <th scope="col">{% trans 'Device' %}</th>
+                                <th scope="col">{% trans 'Date/time' %}</th>
+                                <th scope="col">{% trans 'Comment' %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for action in edits %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'device-detail' action.object_id %}">{{ action.field_dict.name }}</a>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'device-history' action.object_id action.pk %}">{{ action.revision.date_created }}</a>
+                                    </td>
+                                    <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% else %}
+                        <h5>{% trans "User hasn't edited anything." %}</h5>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+        </div>
+    </div>
+    {% if perms.users.read_user and profileuser.avatar %}
+        {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
     {% endif %}
-
-  </div>
-{% if perms.users.change_user %}
-<div class="col-xs-12 col-md-6" style="margin-top:40px">
-<form method="post" action="{% url 'user-ipaddress' profileuser.pk %}" style="margin:0px;">{% csrf_token %}
-{{ipaddressform.ipaddresses}}
-<div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
-<button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}</button>
-</div>
-<input type="hidden" name="user" value="{{ profileuser.pk }}" />
-</form>
-</div>
-{% endif %}
-</div>
-{% if perms.users.read_user %}
-
-  <div class="tab-pane" id="edits">
-<div class="col-xs-12 col-md-12">
-  <h4>{% trans "Edits" %}</h4>
-  {% if edits %}
-  <table id="changehistory" class="table table-bordered table-striped" style="">
-                      <thead>
-                          <tr>
-                              <th scope="col">{% trans 'Device' %}</th>
-                              <th scope="col">{% trans 'Date/time' %}</th>
-                              <th scope="col">{% trans 'Comment' %}</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          {% for action in edits %}
-                              <tr>
-                                  <td><a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}</a></td>
-                                  <td><a href="{% url 'device-history' action.object_id action.pk %}">{{action.revision.date_created}}</a></td>
-                                  <td>{{action.revision.comment|linebreaksbr|default:""}}</td>
-                              </tr>
-                          {% endfor %}
-                      </tbody>
-                  </table>
-  {% else %}
-  <h5>{% trans "User hasn't edited anything." %}</h5>
-  {% endif %}
-</div>
-  </div>
-  {% endif %}
-</div>
-</div>
-{% if perms.users.read_user and profileuser.avatar %}
-{% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
-{% endif %}
 {% endblock %}
 
 {% block htmlend %}
-<script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
 {% endblock %}
 
 {% block scriptend %}
 
-$("#id_ipaddresses").select2({
+    $("#id_ipaddresses").select2({
     tokenSeparators: [",", " "]}).
     on("change", function(e) {
     if (e.val.length != 0) {
     $("#submitipaddress").removeClass("disabled")
-  } else {
+    } else {
     $("#submitipaddress").addClass("disabled")
-  }
-  });
+    }
+    });
 
-var device_initialized = false;
-{% if perms.users.read_user %}
-var change_initialized = false;
+    var device_initialized = false;
+    {% if perms.users.read_user %}
+        var change_initialized = false;
 
-$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-   e.target // activated tab
-   e.relatedTarget // previous tab
-   if ($(e.target).data("tab") === "edits") {
-      if (!change_initialized) {
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+        e.target // activated tab
+        e.relatedTarget // previous tab
+        if ($(e.target).data("tab") === "edits") {
+        if (!change_initialized) {
         $('#changehistory').dataTable({});
         change_initialized = true;
-      }
-   }
-});
-{% endif %}
- if (!device_initialized) {
-         $('#devicetable').dataTable({});
-         device_initialized = true;
-      }
+        }
+        }
+        });
+    {% endif %}
+    if (!device_initialized) {
+    $('#devicetable').dataTable({});
+    device_initialized = true;
+    }
 
-$(function() {
-   var $affix = $(".affix-container"),
-       $parent = $affix.parent(),
-       resize = function() { $affix.width($parent.width()); };
-   $(window).resize(resize);
-   resize();
-});
+    $(function() {
+    var $affix = $(".affix-container"),
+    $parent = $affix.parent(),
+    resize = function() { $affix.width($parent.width()); };
+    $(window).resize(resize);
+    resize();
+    });
 
-$(document).ready(function() {
+    $(document).ready(function() {
     $(".profile-date").timeago();
-  });
+    });
 {% endblock %}

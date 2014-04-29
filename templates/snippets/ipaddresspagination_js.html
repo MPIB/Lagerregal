@@ -4,6 +4,6 @@ $(".pageselect").change(function() {
 {% else %}
     urlpart = "{% url pageurl 1 viewform.viewfilter.value filterform.filterstring.value %}"
 {% endif %}
-    urlpart = urlpart.replace("page/1", "page/" + $(this).val())
-    window.location = urlpart
+urlpart = urlpart.replace("page/1", "page/" + $(this).val())
+window.location = urlpart
 });

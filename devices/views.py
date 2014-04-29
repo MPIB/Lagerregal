@@ -38,6 +38,7 @@ class DeviceList(PaginationMixin, ListView):
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "active")
+        devices = None
         if self.viewfilter == "all":
             devices = Device.objects.all()
         elif self.viewfilter == "available":
@@ -402,6 +403,7 @@ class DeviceLend(FormView):
 
     def form_valid(self, form):
         lending = Lending()
+        device = None
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
             if device.archived is not None:
@@ -448,12 +450,13 @@ class DeviceReturn(FormView):
         context = super(DeviceReturn, self).get_context_data(**kwargs)
         context['actionstring'] = "Mark device as returned"
         context["breadcrumbs"] = [
-                (reverse("device-list"), _("Devices")),
-                ("", _("Return"))]
+            (reverse("device-list"), _("Devices")),
+            ("", _("Return"))]
         return context
 
     def form_valid(self, form):
         device = None
+        owner = None
         lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
         if lending.device and lending.device != "":
             device = lending.device

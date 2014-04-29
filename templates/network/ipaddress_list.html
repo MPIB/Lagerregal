@@ -3,62 +3,67 @@
 {% block title %}IP-Addresses{% endblock %}
 
 {% block header %}
-IP-Addresses
+    IP-Addresses
 {% endblock %}
 
 {% block pullright %}
-{{filterform.filterstring}}
-{{viewform.viewfilter}}
-{% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
+    {{ filterform.filterstring }}
+    {{ viewform.viewfilter }}
+    {% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
 {% endblock %}
 {% block content %}
 
-{% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+    {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
     <table width="100%" id="adresstable" class="table table-bordered table-striped">
-  <thead>
-    <tr>
-      <th>{% trans "IP Address" %}</th>
-      <th>{% trans "Used by" %}</th>
-    </tr>
-  </thead>
-  <tbody>
-  	{% for ipaddress in ipaddress_list %}
-    <tr>
-      <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
-    {% if ipaddress.device__pk %}
-        <td>{% trans "Device" %}: <a href="{% url 'device-detail' ipaddress.device__pk %}">{{ipaddress.device__name}}</a></td>
-    {% elif ipaddress.user__pk %}
-        <td>{% trans "User" %}: <a href="{% url 'userprofile' ipaddress.user__pk %}">{% if ipaddress.user__first_name and ipaddress.user__last_name %}{{ipaddress.user__first_name}} {{ipaddress.user__last_name}}{% else %}{{ipaddress.user__username}}{% endif %}</a></td>
-    {% else %}
-          <td>Not assigned</td>
-    {% endif %}
-    </tr>
-     {% endfor %}
-  </tbody>
-</table>
-{% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+        <thead>
+        <tr>
+            <th>{% trans "IP Address" %}</th>
+            <th>{% trans "Used by" %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ipaddress in ipaddress_list %}
+            <tr>
+                <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
+                {% if ipaddress.device__pk %}
+                    <td>{% trans "Device" %}: <a
+                            href="{% url 'device-detail' ipaddress.device__pk %}">{{ ipaddress.device__name }}</a></td>
+                {% elif ipaddress.user__pk %}
+                    <td>{% trans "User" %}: <a href="{% url 'userprofile' ipaddress.user__pk %}">
+                        {% if ipaddress.user__first_name and ipaddress.user__last_name %}
+                            {{ ipaddress.user__first_name }} {{ ipaddress.user__last_name }}{% else %}
+                            {{ ipaddress.user__username }}{% endif %}</a></td>
+                {% else %}
+                    <td>Not assigned</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
 {% endblock %}
 
 {% block scriptend %}
-$(document).ready(function() {
+    $(document).ready(function() {
     $('#devicetable tr').click(function() {
-        var href = $(this).find("a").attr("href");
-        if(href) {
-            window.location = href;
-        }
+    var href = $(this).find("a").attr("href");
+    if(href) {
+    window.location = href;
+    }
     });
 
-$('#id_viewfilter').change(function() {
+    $('#id_viewfilter').change(function() {
     if ($("#id_filterstring").val() != "") {
-        window.location = "/ipaddresses/page/1/filter/" + $(this).val() + "/search/" + $("#id_filterstring").val()
+    window.location = "/ipaddresses/page/1/filter/" + $(this).val() + "/search/" + $("#id_filterstring").val()
     } else {
-        window.location = "/ipaddresses/page/1/filter/" + $(this).val()
+    window.location = "/ipaddresses/page/1/filter/" + $(this).val()
     }
-});
-$('#id_filterstring').change(function() {
+    });
+    $('#id_filterstring').change(function() {
     window.location = "/ipaddresses/page/1/filter/" + $("#id_viewfilter").val() + "/search/" + $(this).val()
-});
+    });
 
-});
-{% include "snippets/ipaddresspagination_js.html" with pageurl="ipaddress-list" %}
+    });
+    {% include "snippets/ipaddresspagination_js.html" with pageurl="ipaddress-list" %}
 {% endblock %}

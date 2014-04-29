@@ -1,37 +1,37 @@
 {% extends "snippets/widgets/basewidget.html" %}
- {% load i18n %}
+{% load i18n %}
 
- {% block title %}
- {% trans 'Recent lendings' %}
- {% endblock %}
+{% block title %}
+    {% trans 'Recent lendings' %}
+{% endblock %}
 
 {% block widgetname %}recentlendings{% endblock %}
 
- {% block content %}
-<table class="table table-bordered"{% if widget.minimized and usestable %}style="display: none;"{% endif %}>
-    <thead>
+{% block content %}
+    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+        <thead>
         <tr>
             <th scope="col">{% trans 'Name' %}</th>
             <th scope="col">{% trans 'Lent on' %}</th>
             <th scope="col">{% trans 'Duedate' %}</th>
             <th scope="col">{% trans 'Lent to' %}</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         {% for lending in recentlendings %}
             <tr>
                 <td>
-                {% if lending.device %}
-                    <a href="{% url 'device-detail' device.pk %}">{{lending.device.name}}</a>
-                {% else %}
-                    {{lending.smalldevice}}</a>
-                {% endif %}
+                    {% if lending.device %}
+                        <a href="{% url 'device-detail' device.pk %}">{{ lending.device.name }}</a>
+                    {% else %}
+                        {{ lending.smalldevice }}</a>
+                    {% endif %}
                 </td>
-                <td>{{lending.lenddate}}</td>
-                <td>{{lending.duedate}}</td>
+                <td>{{ lending.lenddate }}</td>
+                <td>{{ lending.duedate }}</td>
                 <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
             </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 {% endblock %}

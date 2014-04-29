@@ -3,21 +3,24 @@
 {% block title %}{% trans "Devicetypes" %}{% endblock %}
 
 {% block header %}
-{% trans "Templates" %}
+    {% trans "Templates" %}
 {% endblock %}
 
 {% block pullright %}
-{% if perms.devices.add_template %}<a href="{% url 'template-add' %}" class="btn btn-success btn-sm"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Template" %}</a>{% endif %}
+    {% if perms.devices.add_template %}<a href="{% url 'template-add' %}" class="btn btn-success btn-sm">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Template" %}</a>{% endif %}
 {% endblock %}
 
 {% include "snippets/pagination_simple.html" with listurl='template-list' %}
 {% block content %}
-<ul>
-  {% for template in template_list %}
-  <li><a href="{% url 'template-edit' template.id %}">{{template.name}}</a>{% if perms.devices.delete_template %}<a href="{% url 'template-delete' template.pk %}" style="margin-left:20px">X</a>{% endif %}</li>
-  {% endfor %}
-</ul>
-{% include "snippets/pagination_simple.html" with listurl='template-list' %}
+    <ul>
+        {% for template in template_list %}
+            <li>
+                <a href="{% url 'template-edit' template.id %}">{{ template.name }}</a>{% if perms.devices.delete_template %}
+                <a href="{% url 'template-delete' template.pk %}" style="margin-left:20px">X</a>{% endif %}</li>
+        {% endfor %}
+    </ul>
+    {% include "snippets/pagination_simple.html" with listurl='template-list' %}
 {% endblock %}
 
 {% block scriptend %}

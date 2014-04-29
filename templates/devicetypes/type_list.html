@@ -3,39 +3,41 @@
 {% block title %}{% trans "Devicetypes" %}{% endblock %}
 
 {% block header %}
-{% trans "Devicetypes" %}
+    {% trans "Devicetypes" %}
 {% endblock %}
 
 {% block pullright %}
-{{filterform.filterstring}}
-{{viewform.viewsorting}}
-{% if perms.devicetypes.add_type %}<a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicetype" %}</a>{% endif %}
+    {{ filterform.filterstring }}
+    {{ viewform.viewsorting }}
+    {% if perms.devicetypes.add_type %}<a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicetype" %}</a>{% endif %}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-xs-12 col-md-5">
-{% include "snippets/pagination.html" with listurl='type-list' %}
-<div class="list-group">
-  {% for type in type_list %}
-  <a href="{% url 'type-detail' type.id %}" class="list-group-item">{{type.name | default:"(None)"}}</a>
-  {% endfor %}
-</div>
-{% include "snippets/pagination.html" with listurl='type-list' %}
-</div>
-</div>
+    <div class="row">
+        <div class="col-xs-12 col-md-5">
+            {% include "snippets/pagination.html" with listurl='type-list' %}
+            <div class="list-group">
+                {% for type in type_list %}
+                    <a href="{% url 'type-detail' type.id %}"
+                       class="list-group-item">{{ type.name | default:"(None)" }}</a>
+                {% endfor %}
+            </div>
+            {% include "snippets/pagination.html" with listurl='type-list' %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block scriptend %}
-$('#id_viewsorting').change(function() {
+    $('#id_viewsorting').change(function() {
     if ($("#id_filterstring").val() != "") {
-        window.location = "/types/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+    window.location = "/types/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
     } else {
-        window.location = "/types/sorting/" + $(this).val()
+    window.location = "/types/sorting/" + $(this).val()
     }
-});
-$('#id_filterstring').change(function() {
+    });
+    $('#id_filterstring').change(function() {
     window.location = "/types/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
-});
-{% include "snippets/pagination_js.html" with pageurl="type-list" %}
+    });
+    {% include "snippets/pagination_js.html" with pageurl="type-list" %}
 {% endblock %}

@@ -1,36 +1,36 @@
 {% load i18n %}{% load devicetags %}
 <table id="devicetable" class="table table-bordered table-striped">
-  <thead>
+    <thead>
     <tr>
-      <th>{% trans "Name" %}</th>
-      <th>{% trans "Inventorynumber" %}</th>
-      <th>{% trans "Serialnumber" %}</th>
-      <th>{% trans "Devicetype" %}</th>
-      <th>{% trans "Room" %}</th>
-      {% for column in columns %}
-        <th>{{column.1}}</th>
-      {% endfor %}
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Inventorynumber" %}</th>
+        <th>{% trans "Serialnumber" %}</th>
+        <th>{% trans "Devicetype" %}</th>
+        <th>{% trans "Room" %}</th>
+        {% for column in columns %}
+            <th>{{ column.1 }}</th>
+        {% endfor %}
     </tr>
-  </thead>
-  <tbody>
-  	{% for device in device_list %}
-    <tr>
-      <td><a href="{% url 'device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
-      <td>{{ device.inventorynumber }}</td>
-      <td>{{ device.serialnumber }}</td>
-      <td >{{ device.devicetype__name }}</td>
-      <td>{{ device.room__name }} ({{device.room__building__name}})</td>
-      {% for column in columns %}
-        <td>
-          {% if column.0 == "ipaddress" %}{{device.ipaddress__address}}
-          {% elif column.0 == "manufacturer" %}{{device.manufacturer__name}}
-          {% elif column.0 == "group" %}{{device.group__name}}
-          {% elif column.0 == "user" %}{{device.currentlending__user__username}}
-          {% else %}{{device|get_attribute_from_list:column.0}}
-          {% endif %}
-        </td>
-      {% endfor %}
-    </tr>
-     {% endfor %}
-  </tbody>
+    </thead>
+    <tbody>
+    {% for device in device_list %}
+        <tr>
+            <td><a href="{% url 'device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
+            <td>{{ device.inventorynumber }}</td>
+            <td>{{ device.serialnumber }}</td>
+            <td>{{ device.devicetype__name }}</td>
+            <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
+            {% for column in columns %}
+                <td>
+                    {% if column.0 == "ipaddress" %}{{ device.ipaddress__address }}
+                        {% elif column.0 == "manufacturer" %}{{ device.manufacturer__name }}
+                        {% elif column.0 == "group" %}{{ device.group__name }}
+                        {% elif column.0 == "user" %}{{ device.currentlending__user__username }}
+                        {% else %}{{ device|get_attribute_from_list:column.0 }}
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
 </table>

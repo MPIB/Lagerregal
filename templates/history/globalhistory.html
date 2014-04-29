@@ -3,24 +3,24 @@
 {% block title %}{% trans "Global edit history" %}{% endblock %}
 
 {% block header %}
-{% trans "Global edit history" %}
+    {% trans "Global edit history" %}
 {% endblock %}
 
 {% block content %}
-{% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
-<table id="change-history" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">{% trans 'Changed Objects' %}</th>
-                            <th scope="col">{% trans 'Date/time' %}</th>
-                            <th scope="col">{% trans 'User' %}</th>
-                            <th scope="col">{% trans 'Comment' %}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for revision in revision_list %}
-                            <tr>
-                                {% comment %}
+    {% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
+    <table id="change-history" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col">{% trans 'Changed Objects' %}</th>
+            <th scope="col">{% trans 'Date/time' %}</th>
+            <th scope="col">{% trans 'User' %}</th>
+            <th scope="col">{% trans 'Comment' %}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for revision in revision_list %}
+            <tr>
+                {% comment %}
                                 <td>{{action.content_type}}</td>
                                 <td>
                                     {% if action.content_type.model == "ipaddress" %}
@@ -50,52 +50,53 @@
                                 {% endif %}
                                 </td>
                                 {% endcomment %}
-                                <td>
-                                {% if revision.version_set.count == 1 %}
-                                    {% with version=revision.version_set.all.0 %}
-                                    {{version.content_type}}: 
-                                        {% if version.content_type.model == "ipaddress" %}
-                                            <a>{{version.field_dict.address}}
-                                        {% else %}
-                                            <a>{{version.field_dict.name}}
-                                        {% endif %}
-                                        </a>
-                                    {% endwith %}
-                                {% else %}
-                                    
-                                    <div class="dropdown">
-                                      <a data-toggle="dropdown" href="#">{{revision.version_set.count}} Changes made</a>
-                                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                        {% for version in revision.version_set.all %}
-                                        <li>{{version.content_type}}: 
-                                        {% if version.content_type.model == "ipaddress" %}
-                                            <a>{{version.field_dict.address}}
-                                        {% else %}
-                                            <a>{{version.field_dict.name}}
-                                        {% endif %}
-                                        </a>
-                                        {% endfor %}
-                                        </li>
-                                      </ul>
-                                    </div>
-                                {% endif %}
-                                </td>
-                                <td><span  title="{{revision.date_created|date:'c'}}" class="edit-date">{{action.revision.date_created}}</span></td>
-                                <td><a href="{% url 'userprofile' revision.user.pk %}">{{revision.user}}</a></td>
-                                <td>{{revision.comment|linebreaksbr|default:""}}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <td>
+                    {% if revision.version_set.count == 1 %}
+                        {% with version=revision.version_set.all.0 %}
+                            {{ version.content_type }}:
+                            {% if version.content_type.model == "ipaddress" %}
+                                <a>{{ version.field_dict.address }}
+                            {% else %}
+                                <a>{{ version.field_dict.name }}
+                            {% endif %}
+                        </a>
+                        {% endwith %}
+                    {% else %}
 
-{% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
+                        <div class="dropdown">
+                            <a data-toggle="dropdown" href="#">{{ revision.version_set.count }} Changes made</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                {% for version in revision.version_set.all %}
+                                    <li>{{ version.content_type }}:
+                                    {% if version.content_type.model == "ipaddress" %}
+                                        <a>{{ version.field_dict.address }}
+                                    {% else %}
+                                        <a>{{ version.field_dict.name }}
+                                    {% endif %}
+                                </a>
+                                {% endfor %}
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </td>
+                <td><span title="{{ revision.date_created|date:'c' }}"
+                          class="edit-date">{{ action.revision.date_created }}</span></td>
+                <td><a href="{% url 'userprofile' revision.user.pk %}">{{ revision.user }}</a></td>
+                <td>{{ revision.comment|linebreaksbr|default:"" }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
 {% endblock %}
 
 {% block scriptend %}
-$(document).ready(function() {
+    $(document).ready(function() {
     $(".edit-date").timeago();
-  });
+    });
 
 
-{% include "snippets/pagination_simple_js.html" with pageurl="globalhistory" %}
+    {% include "snippets/pagination_simple_js.html" with pageurl="globalhistory" %}
 {% endblock %}

@@ -1,27 +1,27 @@
 {% extends "snippets/widgets/basewidget.html" %}
- {% load i18n %}
+{% load i18n %}
 
- {% block title %}
- {% trans 'Sections' %}
- {% endblock %}
+{% block title %}
+    {% trans 'Sections' %}
+{% endblock %}
 
 {% block widgetname %}sections{% endblock %}
 
- {% block content %}
-<table class="table table-bordered"{% if widget.minimized and usestable %}style="display: none;"{% endif %}>
-    <thead>
+{% block content %}
+    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+        <thead>
         <tr>
             <th scope="col">{% trans 'Name' %}</th>
             <th scope="col">{% trans 'Rooms' %}</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         {% for section in sections %}
             <tr>
-                <td><a href="{% url 'devicegroup-detail' section.pk %}">{{section.name}}</a></td>
-                <td>{{section.rooms.count}}</td>
+                <td><a href="{% url 'devicegroup-detail' section.pk %}">{{ section.name }}</a></td>
+                <td>{{ section.rooms.count }}</td>
             </tr>
         {% endfor %}
-    </tbody>
-</table>
+        </tbody>
+    </table>
 {% endblock %}
