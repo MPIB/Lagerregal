@@ -42,11 +42,6 @@
                 <dt>{% trans "Building" %}</dt>
                 <dd><a href="{% url 'building-detail' room.building.id %}">{{ room.building }}</a></dd>
             </dl>
-            <tr>
-                <td></td>
-            </tr>
-            </tbody>
-            </table>
         </div>
         <div class="col-xs-12 col-md-7">
             {% if perms.devices.read_device %}

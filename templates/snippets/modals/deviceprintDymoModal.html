@@ -6,8 +6,8 @@
             type="text/javascript" charset="UTF-8"></script>
     <script>
         $('#printDymoModal').on('show.bs.modal', function (e) {
-            loadPrinters()
-            labelXml = "{% filter escapejs %}{% ssi label_path %}{% endfilter %}"
+            loadPrinters();
+            labelXml = "{% filter escapejs %}{% ssi label_path %}{% endfilter %}";
             label = dymo.label.framework.openLabelXml(labelXml);
             {% autoescape off %}{{label_js}}{% endautoescape %}
             updatePreview(label);
@@ -31,7 +31,7 @@
     <script>
         function updatePreview(label) {
             if (!label)
-                return
+                return;
 
             var pngData = label.render();
             var labelImage = document.getElementById('labelImage');

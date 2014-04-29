@@ -23,7 +23,7 @@
 {% block modalFooter %}
     <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
     <script>
-        var lendingTable = 0
+        var lendingTable = 0;
         $("#return_userlist").on("select2-selecting", function (e) {
             $("#listwrapper").html('<table id="lendinglist"class="table table-bordered table-striped"></table>');
             $.ajax({
@@ -32,7 +32,6 @@
                 url: "{% url "get-user-lendings" %}",
                 data: {"user": e.val}
             }).done(function (data) {
-                console.log(data)
                 lendingTable = $("#lendinglist").dataTable({
                     "aaData": data["devices"],
                     "aoColumns": [

@@ -24,7 +24,7 @@
                     {% if lending.device %}
                         <a href="{% url 'device-detail' device.pk %}">{{ lending.device.name }}</a>
                     {% else %}
-                        {{ lending.smalldevice }}</a>
+                        {{ lending.smalldevice }}
                     {% endif %}
                 </td>
                 <td>{{ lending.lenddate }}</td>

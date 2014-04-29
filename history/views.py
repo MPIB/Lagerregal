@@ -1,6 +1,5 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.views.generic import ListView, View
+from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
@@ -9,8 +8,9 @@ from django.template import RequestContext
 from reversion.models import Version, Revision
 
 from Lagerregal.utils import PaginationMixin
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
-from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
+from devices.models import Device, Room, Manufacturer
+from devicetypes.models import Type, TypeAttributeValue
+
 
 # Create your views here.
 class DeviceHistory(View):
@@ -94,6 +94,7 @@ class DeviceHistory(View):
         ]
         return render_to_response('history/device_history.html', context, RequestContext(request))
 
+    # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
     def post(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
@@ -185,6 +186,7 @@ class Globalhistory(PaginationMixin, ListView):
 
 
 class HistoryDetail(View):
+    # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
     def get(self, request, **kwargs):
         versionid = kwargs["version"]
         current_version = get_object_or_404(Device, pk=kwargs["pk"])
