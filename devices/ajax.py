@@ -14,6 +14,7 @@ from django.template import RequestContext
 from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 from django.utils.dateparse import parse_date
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
@@ -23,7 +24,8 @@ from devicetypes.models import Type
 from devices.forms import AddForm
 from devicegroups.models import Devicegroup
 from devicetags.models import Devicetag
-
+from Lagerregal.utils import  UnicodeWriter
+from csv import QUOTE_ALL
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -289,7 +291,7 @@ class AjaxSearch(View):
                 except:
                     break
                 if len(displayed_columns) < 8:
-                    displayed_columns.append(("manufacturer", _("Manufacturer")))
+                    displayed_columns.append(("manufacturer", ugettext("Manufacturer")))
                     searchvalues.append("manufacturer__name")
                 if "manufacturer__in" in dictionary:
                     dictionary["manufacturer__in"].append(value)
@@ -325,7 +327,7 @@ class AjaxSearch(View):
                 except:
                     break
                 if len(displayed_columns) < 8:
-                    displayed_columns.append(("group", _("Group")))
+                    displayed_columns.append(("group", ugettext("Group")))
                     searchvalues.append("group__name")
                 if "group__in" in dictionary:
                     dictionary["group__in"].append(value)
@@ -346,7 +348,7 @@ class AjaxSearch(View):
 
             elif key == "ipaddress":
                 if len(displayed_columns) < 8:
-                    displayed_columns.append(("ipaddress", _("IP-Address")))
+                    displayed_columns.append(("ipaddress", ugettext("IP-Address")))
                     searchvalues.append("ipaddress__address")
                 if value.lower() == "null":
                     dictionary["ipaddress"] = None
@@ -430,6 +432,21 @@ class AjaxSearch(View):
                 devices = devices.filter(Q(name__icontains=textfilter) |
                                          Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
                     serialnumber__icontains=textfilter.replace(" ", "")))
+        if "format" in request.POST:
+            if request.POST["format"] == "csv":
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
+
+                writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
+                headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
+                           ugettext("Devicetype"), ugettext("Room"), ugettext("Building")]
+                if (len(displayed_columns) > 0):
+                    headers.extend([col[1] for col in displayed_columns])
+                writer.writerow(headers)
+                for device in devices.values_list(*searchvalues):
+                    writer.writerow(device)
+
+                return response
         context = {
             "device_list": devices.values(*searchvalues),
             "columns": displayed_columns
