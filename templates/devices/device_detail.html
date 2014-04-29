@@ -47,9 +47,9 @@
 
 {% if perms.devices.lend_device %}
   {% if device.currentlending != None %}
-    <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
+    <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}</a>
   {% else %}
-    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
+    <a  href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
   {% endif %}
 {% endif %}
 {% else %}
@@ -103,8 +103,8 @@
 {% if device.currentlending.duedate < weekago %}<span class="error-icon"><i class="fa fa-exclamation-circle"></i></span>
 {% elif device.currentlending.duedate < today %}<span class="warning-icon"><i class="fa fa-exclamation-circle"></i></span>
 {% endif %}
+ </td></tr>
 <tr><td>{% trans "Overdue notification" %}</td><td>{{device.currentlending.duedate_email|default_if_none:"Not sent"}}</td></tr>
-</td></tr>
       </tbody>
     </table>
     {% else %}
@@ -119,16 +119,16 @@
     {% for address in device.ipaddress_set.all %}
         <li class="list-group-item ipaddress-list">
         <a href="{% url "ipaddress-detail" address.pk %}">{{address.address}}</a> <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right"><i class="fa fa-times"></i></a> <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
-        <br/><small style="margin-top:0px;color:#999">{{address.purpose|default:""}}</small>
+        <br/><small style="margin-top:0;color:#999">{{address.purpose|default:""}}</small>
         </li>
       {% endfor %}
   </ul>
 
           {% if device.archived == None and perms.devices.change_device %}
   <div class="panel-footer">
-      <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0px;">{% csrf_token %}
+      <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0;">{% csrf_token %}
         {{ipaddressform.ipaddresses}}
-        <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
+        <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
         <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}</button>
     </div>
     <input type="hidden" name="device" value="{{ device.pk }}" />
@@ -148,9 +148,9 @@
     </ul>
 
     <div class="panel-footer">
-        <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0px;">{% csrf_token %}
+        <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0;">{% csrf_token %}
           {{tagform.tags}}
-          <div class="row" style="margin-top:10px; margin-left:0px; margin-right:0px;">
+          <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
           <button type="submit" class ="btn btn-success btn-sm pull-right disabled" id="submittags"><i class="fa fa-plus"></i> {% trans "Assign Tags" %}</button>
       </div>
       <input type="hidden" name="device" value="{{ device.pk }}" />
@@ -180,7 +180,7 @@
                 {% if note.creator.avatar %}
                 <img src="{{note.creator.avatar.url}}" class="img-rounded img-responsive" alt="" />
                 {% endif %}
-                <p style="padding-top:5px;margin-bottom:0px">{{note.creator}}</p>
+                <p style="padding-top:5px;margin-bottom:0">{{note.creator}}</p>
             </div>
             <div class="col-xs-10 col-md-11">
                 <div class="comment-text">
@@ -204,7 +204,7 @@
 {% endfor %}
 </ul>
 
-<form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0px">
+<form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0">
   {% csrf_token %}
   <textarea class="form-control" name="note" id="id_note"></textarea>
   <input type="hidden" name="device" value="{{ device.pk }}" />

@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     'users',
     'api',
     'mail',
+    'history',
     'reversion',
     'rest_framework',
     'south',

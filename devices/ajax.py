@@ -1,19 +1,10 @@
 # -*- coding: utf-8 -*-
-from devices.models import Device, Room, Building, Manufacturer, Lending
-from devicetypes.models import Type
-from devicegroups.models import Devicegroup
-from users.models import Lageruser
-from network.models import IpAddress
-from mail.models import MailTemplate
-from django.shortcuts import get_object_or_404
-from devicetypes.models import Type
 import json
+
+from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from devices.forms import AddForm
 from django.forms.models import modelform_factory
 from django.template.loader import render_to_string
-from django.template import Template, Context
-from devicegroups.models import Devicegroup
 from django.views.generic.base import View
 from django.http import HttpResponse
 import pystache
@@ -24,7 +15,15 @@ from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.dateparse import parse_date
+
+from devices.models import Device, Room, Building, Manufacturer, Lending
+from users.models import Lageruser
+from mail.models import MailTemplate
+from devicetypes.models import Type
+from devices.forms import AddForm
+from devicegroups.models import Devicegroup
 from devicetags.models import Devicetag
+
 
 class AutocompleteDevice(View):
     def post(self, request):

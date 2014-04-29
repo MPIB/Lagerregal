@@ -1,14 +1,15 @@
-from django.utils import unittest
+import os.path
+
 from django.test.client import Client
 from django.test import TestCase
-from devices.models import Device, Building, Room, Manufacturer, Template, Note
-from users.models import Lageruser
-from network.models import IpAddress
-from django.utils import timezone
 from model_mommy import mommy
 from django.core.urlresolvers import reverse
 from casper.tests import CasperTestCase
-import os.path
+
+from devices.models import Device, Building, Room, Manufacturer, Template, Note
+from users.models import Lageruser
+from network.models import IpAddress
+
 
 class DeviceTests(CasperTestCase):
 

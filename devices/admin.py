@@ -1,5 +1,8 @@
-from devices.models import *
 from django.contrib import admin
+
+from devices.models import *
+
+
 class DeviceAdmin(admin.ModelAdmin):
 
     # List display

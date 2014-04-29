@@ -9,6 +9,7 @@ from mail.views import *
 from devicegroups.views import *
 from devicetags.views import *
 from locations.views import *
+from history.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch, UserLendings
@@ -211,7 +212,6 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/devices/(?P<pk>\d+)/bookmark/$', DeviceApiBookmark.as_view(), name='device-api-bookmark'),
     url(r'^api/devices/lend/$', DeviceApiLend.as_view(), name='device-api-lend'),
 
-    url(r'^api/smalldevices/$', SmallDeviceApiList.as_view(), name='smalldevice-api-list'),
 
     url(r'^api/manufacturers/$', ManufacturerApiList.as_view(), name='manufacturer-api-list'),
     url(r'^api/manufacturers/create/$', ManufacturerApiCreate.as_view(), name='manufacturer-api-create'),

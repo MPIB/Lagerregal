@@ -40,9 +40,9 @@ style="display:none;"
     </div>
     {% if field|is_select %}
       {% if field.html_name == "emailtemplate" %}
-      <div class="col-lg-2" style="padding-left:0px"><a class="previewbutton btn btn-default btn-xs pull-right" data-name="{{field.label}}"><i class="fa fa-eye"></i> {% trans "Preview" %}</a></div>
+      <div class="col-lg-2" style="padding-left:0"><a class="previewbutton btn btn-default btn-xs pull-right" data-name="{{field.label}}"><i class="fa fa-eye"></i> {% trans "Preview" %}</a></div>
       {% else %}
-        <div class="col-lg-1" style="padding-left:0px"><a class="modalbutton btn btn-default btn-xs pull-right" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="fa fa-plus"></i></a></div>
+        <div class="col-lg-1" style="padding-left:0"><a class="modalbutton btn btn-default btn-xs pull-right" data-classname="{{field.html_name}}" data-name="{{field.label}}"><i class="fa fa-plus"></i></a></div>
       {% endif %}
     {% endif %}
   </div>

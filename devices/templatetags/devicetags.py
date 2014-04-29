@@ -1,7 +1,9 @@
-from django.template import Library, Node, TemplateSyntaxError
 import re
+
+from django.template import Library
 from django.utils.safestring import mark_safe
 from django.forms import CheckboxInput
+
 register = Library()
 
 @register.simple_tag

@@ -1,14 +1,17 @@
+import re
+
 from django import forms
+from django.contrib.auth.models import Group
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
+
 from network.models import IpAddress
-from devices.models import Device, Type, Room, Manufacturer, Lending
+from devices.models import Device, Type, Room, Manufacturer
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from users.models import Lageruser
-from django.contrib.auth.models import Group
-import re
-from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
 from mail.models import MailTemplate
+
 
 CHARMODIFIER = (
     ('icontains',_('Contains')),

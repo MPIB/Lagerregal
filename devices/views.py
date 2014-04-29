@@ -1,39 +1,40 @@
 # coding: utf-8
+import datetime
+
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
 from django.contrib.auth.models import Group
-from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
-from network.models import IpAddress
-from mail.models import MailTemplate, MailHistory
 from django.shortcuts import render_to_response
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
-from django.utils.formats import localize
 from django.contrib import messages
-from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
-from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm, ReturnForm
-from devicetags.forms import DeviceTagForm
-import datetime
 from django.utils.timezone import utc
 from django.utils import timezone
 import reversion
-from django.contrib.auth.models import Permission
-from users.models import Lageruser
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
 from django.db.transaction import commit_on_success
 from django.conf import settings
+
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
+from devicetypes.models import TypeAttribute, TypeAttributeValue
+from network.models import IpAddress
+from mail.models import MailTemplate, MailHistory
+from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
+from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm, ReturnForm
+from devicetags.forms import DeviceTagForm
+from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
 
+
 class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
+    viewfilter = None
+    viewsorting = None
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "active")
@@ -48,7 +49,7 @@ class DeviceList(PaginationMixin, ListView):
         elif self.viewfilter == "trashed":
             devices = Device.objects.exclude(trashed=None)
         elif self.viewfilter == "overdue":
-            devices = Device.objects.filter(currentlending__duedate__lt = datetime.date.today())
+            devices = Device.objects.filter(currentlending__duedate__lt=datetime.date.today())
         elif self.viewfilter == "temporary":
             devices = Device.active().filter(templending=True)
         elif self.viewfilter == "bookmark":
@@ -64,13 +65,14 @@ class DeviceList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
-        context["viewform"] = DeviceViewForm(initial={'viewfilter': self.viewfilter, "viewsorting":self.viewsorting})
+        context["viewform"] = DeviceViewForm(initial={'viewfilter': self.viewfilter, "viewsorting": self.viewsorting})
         context["template_list"] = Template.objects.all()
         context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
+
 
 class DeviceDetail(DetailView):
     queryset = Device.objects.select_related("manufacturer", "devicetype", "currentlending")
@@ -92,7 +94,7 @@ class DeviceDetail(DetailView):
         context["lendform"] = LendForm()
         context["notes"] = Note.objects.select_related("creator").filter(device=context["device"]).order_by("-id")
         mailinitial = {}
-        if context["device"].currentlending != None:
+        if context["device"].currentlending is not None:
             currentowner = context["device"].currentlending.owner
             mailinitial["owner"] = currentowner
             mailinitial["emailrecipients"] = ("u" + str(currentowner.id), currentowner.username)
@@ -117,23 +119,22 @@ class DeviceDetail(DetailView):
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name)]
+            (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
         return context
+
 
 class DeviceIpAddressRemove(DeleteView):
     template_name = 'devices/unassign_ipaddress.html'
     model = IpAddress
 
     def get(self, request, *args, **kwargs):
-        context = {}
-        context["device"] = get_object_or_404(Device, pk=kwargs["pk"])
-        context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
+        context = {"device": get_object_or_404(Device, pk=kwargs["pk"]),
+                   "ipaddress": get_object_or_404(IpAddress, pk=kwargs["ipaddress"])}
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Unassign IP-Addresses"))]
         return render_to_response(self.template_name, context, RequestContext(request))
-
 
     def post(self, request, *args, **kwargs):
         device = get_object_or_404(Device, pk=kwargs["pk"])
@@ -143,7 +144,7 @@ class DeviceIpAddressRemove(DeleteView):
         reversion.set_comment(_("Removed from Device {0}".format(device.name)))
         ipaddress.save()
 
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
 class DeviceIpAddress(FormView):
@@ -156,22 +157,23 @@ class DeviceIpAddress(FormView):
         device = context["form"].cleaned_data["device"]
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
             ("", _("Assign IP-Addresses"))]
         return context
 
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         device = form.cleaned_data["device"]
-        if device.archived != None:
+        if device.archived is not None:
             messages.error(self.request, _("Archived Devices can't get new IP-Addresses"))
-            return HttpResponseRedirect(self.reverse("device-detail", kwargs={"pk":device.pk}))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
         reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
         for ipaddress in ipaddresses:
             ipaddress.device = device
             ipaddress.save()
 
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class DeviceIpAddressPurpose(FormView):
     template_name = 'devices/assign_ipaddress.html'
@@ -186,7 +188,7 @@ class DeviceIpAddressPurpose(FormView):
             context["form"].fields["purpose"].initial = ipaddress.purpose
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
             ("", _("Set Purpose for {0}").format(ipaddress.address))]
         return context
 
@@ -198,158 +200,7 @@ class DeviceIpAddressPurpose(FormView):
         ipaddress.purpose = purpose
         ipaddress.save()
 
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-
-class DeviceHistory(View):
-
-    def get(self, request, **kwargs):
-        revisionid = kwargs["revision"]
-        device = get_object_or_404(Device, pk=kwargs["pk"])
-        this_version = get_object_or_404(Version,
-            revision_id=revisionid,
-            object_id=device.id,
-            content_type_id=ContentType.objects.get(model='device').id)
-
-        previous_version = Version.objects.filter(object_id=device.pk,
-            revision__date_created__lt=this_version.revision.date_created,
-            content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
-        if len(previous_version) == 0:
-            previous_version = None
-            previouscomment=None
-        else:
-            revisionpk = previous_version[0].revision.pk
-            previouscomment = previous_version[0].revision.comment
-            previous_version = previous_version[0].field_dict
-            previous_version["revisionpk"] = revisionpk
-            if previous_version["devicetype"] != None:
-                try:
-                    previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
-                except Type.DoesNotExist:
-                    previous_version["devicetype"] = "[deleted]"
-            if previous_version["manufacturer"] != None:
-                try:
-                    previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
-                except Type.DoesNotExist:
-                    previous_version["manufacturer"] = "[deleted]"
-            if previous_version["room"] != None:
-                try:
-                    previous_version["room"] = Room.objects.get(pk=previous_version["room"])
-                except Type.DoesNotExist:
-                    previous_version["room"] = "[deleted]"
-
-        next_version = Version.objects.filter(object_id=device.pk,
-            revision__date_created__gt=this_version.revision.date_created,
-            content_type_id=ContentType.objects.get(model='device').id).order_by("pk")
-        if len(next_version) == 0:
-            next_version = None
-            nextcomment=None
-        else:
-            revisionpk = next_version[0].revision.pk
-            nextcomment = next_version[0].revision.comment
-            next_version = next_version[0].field_dict
-            next_version["revisionpk"] = revisionpk
-
-        if this_version.field_dict["devicetype"] != None:
-            try:
-                this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
-            except Type.DoesNotExist:
-                this_version.field_dict["devicetype"] = "[deleted]"
-        if this_version.field_dict["manufacturer"] != None:
-            try:
-                this_version.field_dict["manufacturer"] = Manufacturer.objects.get(pk=this_version.field_dict["manufacturer"])
-            except Type.DoesNotExist:
-                this_version.field_dict["manufacturer"] = "[deleted]"
-        if this_version.field_dict["room"] != None:
-            try:
-                this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
-            except Type.DoesNotExist:
-                this_version.field_dict["room"] = "[deleted]"
-        context = {"version":this_version,
-            "previous":previous_version,
-            "previouscomment":previouscomment,
-            "this_version":this_version.field_dict,
-            "thiscomment":this_version.revision.comment,
-            "current":device,
-            "next":next_version,
-            "nextcomment":nextcomment}
-        context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
-            (reverse("device-history-list", kwargs={"pk":device.pk}), _("History")),
-            ("", _("Version {0}".format(this_version.revision.pk)))
-            ]
-        return render_to_response('devices/device_history.html', context, RequestContext(request))
-
-    def post(self, request, **kwargs):
-        deviceid = kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        if device.archived != None:
-            messages.error(self.request, _("Archived Devices can't be reverted"))
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-        revisionid = kwargs["revision"]
-
-        version = get_object_or_404(Version,
-            revision_id=revisionid,
-            object_id=deviceid,
-            content_type_id=ContentType.objects.get(model='device').id)
-        currentlending = device.currentlending
-        archived = device.archived
-        version.revision.revert()
-        device = get_object_or_404(Device, pk=deviceid)
-        device.currentlending = currentlending
-        device.archived = archived
-
-        deleted_keys = []
-
-        try:
-            devicetype = device.devicetype
-        except Type.DoesNotExist:
-            device.devicetype = None
-            deleted_keys.append(ugettext("Devicetype"))
-
-        try:
-            manufacturer = device.manufacturer
-        except Manufacturer.DoesNotExist:
-            device.manufacturer = None
-            deleted_keys.append(ugettext("Manufacturer"))
-
-        try:
-            room = device.room
-        except Room.DoesNotExist:
-            device.room = None
-            deleted_keys.append(ugettext("Room"))
-
-        device.save()
-        if version.field_dict["devicetype"] != None:
-            TypeAttributeValue.objects.filter(device = version.object_id).delete()
-        reversion.set_comment("Reverted to version from {0}".format(localize(version.revision.date_created)))
-        reversion.set_ignore_duplicates(True)
-
-        if deleted_keys == []:
-            messages.success(self.request, _('Successfully reverted Device to revision {0}').format(version.revision.id))
-        else:
-            messages.warning(self.request, _("Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}").format(version.revision.id, ",".join(deleted_keys)))
-
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
-
-class DeviceHistoryList(ListView):
-    context_object_name = 'version_list'
-    template_name = 'devices/device_history_list.html'
-
-    def get_queryset(self):
-        deviceid = self.kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        return Version.objects.filter(object_id=device.id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
-
-    def get_context_data(self, **kwargs):
-        context = super(DeviceHistoryList, self).get_context_data(**kwargs)
-        context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
-        context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
-            ("", _("History"))]
-        return context
-
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
 class DeviceLendingList(PaginationMixin, ListView):
@@ -366,7 +217,7 @@ class DeviceLendingList(PaginationMixin, ListView):
         context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Lending"))]
         return context
 
@@ -380,10 +231,10 @@ class DeviceCreate(CreateView):
         initial = super(DeviceCreate, self).get_initial()
         creator = self.request.user.pk
         templateid = self.kwargs.pop("templateid", None)
-        if templateid != None:
+        if templateid is not None:
             initial += get_object_or_404(Template, pk=templateid).get_as_dict()
         copyid = self.kwargs.pop("copyid", None)
-        if copyid != None:
+        if copyid is not None:
             for key, value in get_object_or_404(Device, pk=copyid).get_as_dict().items():
                 initial[key] = value
             initial["deviceid"] = copyid
@@ -434,10 +285,11 @@ class DeviceCreate(CreateView):
             if form.cleaned_data["emailedit"]:
                 template.subject = form.cleaned_data["emailsubject"]
                 template.body = form.cleaned_data["emailbody"]
-            template.send(request=self.request, recipients=recipients, data={"device":self.object, "user":self.request.user})
+            template.send(request=self.request, recipients=recipients, data={"device": self.object, "user": self.request.user})
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
+
 
 class DeviceUpdate(UpdateView):
     model = Device
@@ -451,7 +303,7 @@ class DeviceUpdate(UpdateView):
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Edit"))]
         context["template_list"] = MailTemplate.objects.exclude(usage=None)
         return context
@@ -459,9 +311,9 @@ class DeviceUpdate(UpdateView):
     def form_valid(self, form):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
-        if device.archived != None:
+        if device.archived is not None:
             messages.error(self.request, _("Archived Devices can't be edited"))
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
         if form.cleaned_data["comment"] == "":
             reversion.set_comment(_("Updated"))
@@ -469,15 +321,15 @@ class DeviceUpdate(UpdateView):
             reversion.set_comment(form.cleaned_data["comment"])
         reversion.set_ignore_duplicates(True)
 
-        if device.devicetype != None:
-            if form.cleaned_data["devicetype"] == None or device.devicetype.pk != form.cleaned_data["devicetype"].pk:
-                TypeAttributeValue.objects.filter(device = device.pk).delete()
+        if device.devicetype is not None:
+            if form.cleaned_data["devicetype"] is None or device.devicetype.pk != form.cleaned_data["devicetype"].pk:
+                TypeAttributeValue.objects.filter(device=device.pk).delete()
         for key, value in form.cleaned_data.iteritems():
             if key.startswith("attribute_") and value != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
                 try:
-                    attribute = TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber)
+                    attribute = TypeAttributeValue.objects.filter(device=device.pk).get(typeattribute=attributenumber)
                 except:
                     attribute = TypeAttributeValue()
                     attribute.device = device
@@ -487,7 +339,7 @@ class DeviceUpdate(UpdateView):
             elif key.startswith("attribute_") and value == "":
                 attributenumber = key.split("_")[1]
                 try:
-                    TypeAttributeValue.objects.filter(device = device.pk).get(typeattribute=attributenumber).delete()
+                    TypeAttributeValue.objects.filter(device=device.pk).get(typeattribute=attributenumber).delete()
                 except:
                     pass
 
@@ -504,7 +356,7 @@ class DeviceUpdate(UpdateView):
             if form.cleaned_data["emailedit"]:
                 template.subject = form.cleaned_data["emailsubject"]
                 template.body = form.cleaned_data["emailbody"]
-            template.send(request=self.request, recipients=recipients, data={"device":device, "user":self.request.user})
+            template.send(request=self.request, recipients=recipients, data={"device": device, "user": self.request.user})
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
@@ -520,9 +372,10 @@ class DeviceDelete(DeleteView):
         context = super(DeviceDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("device-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Delete"))]
         return context
+
 
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
@@ -551,7 +404,7 @@ class DeviceLend(FormView):
         lending = Lending()
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
-            if device.archived != None:
+            if device.archived is not None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
 
@@ -920,9 +773,8 @@ class RoomMerge(View):
     model = Room
 
     def get(self,  request, **kwargs):
-        context = {}
-        context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
-        context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+        context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
+                   "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
@@ -1041,9 +893,8 @@ class BuildingMerge(View):
     model = Building
 
     def get(self,  request, **kwargs):
-        context = {}
-        context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
-        context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+        context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
+                   "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
@@ -1164,9 +1015,8 @@ class ManufacturerMerge(View):
     model = Manufacturer
 
     def get(self,  request, **kwargs):
-        context = {}
-        context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
-        context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
+        context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
+                   "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
@@ -1253,15 +1103,15 @@ class Search(TemplateView):
         searchlist = self.request.POST["searchname"].split(" ")
         for i, item in enumerate(searchlist):
             if "." in item:
-                isIP = True
+                is_ip = True
                 for element in item.split("."):
                     try:
                         intelement = int(element)
-                        if not (intelement >= 0 and intelement <= 255):
-                            isIP = False
+                        if not (0 <= intelement <= 255):
+                            is_ip = False
                     except:
-                        isIP = False
-                if isIP:
+                        is_ip = False
+                if is_ip:
                     searchlist[i] = "ipaddress: " + item
             elif len(item) == 7:
                 try:

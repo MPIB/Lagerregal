@@ -1,11 +1,12 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
+import reversion
+
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from locations.models import Section
-from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
-import reversion
 
 
 class Building(models.Model):

@@ -186,3 +186,15 @@ a:hover {
 #listwrapper {
     margin-top:15px;
 }
+
+.ui-autocomplete-input {
+  z-index: 1511;
+}
+.ui-menu .ui-menu-item a:hover {
+  background:#2c3e50 !important;
+  border:0 !important;
+  color:#fff;
+}
+.ui-autocomplete {
+  z-index: 1510 !important;
+}
