@@ -10,12 +10,12 @@ from django.core.urlresolvers import reverse
 # Create your models here.
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
-        choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
+                                choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
     timezone = models.CharField(max_length=50, null=True, blank=True,
-        choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
+                                choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
     pagelength = models.IntegerField(validators=[
-            MaxValueValidator(250)
-        ], default=30)
+        MaxValueValidator(250)
+    ], default=30)
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
 
     def __unicode__(self):

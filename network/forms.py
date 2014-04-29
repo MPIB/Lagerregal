@@ -1,7 +1,9 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+
 from network.models import IpAddress
 from users.models import Lageruser
+
 
 VIEWFILTER = (
     ('all', _('All IP-Addresses')),
@@ -9,10 +11,10 @@ VIEWFILTER = (
     ('used', _('Used IP-Addresses')),
     ('byuser', _('Owned by User')),
     ('bydevice', _('Used by Device'))
- )
+)
+
 
 class IpAddressForm(forms.ModelForm):
-
     class Meta:
         model = IpAddress
 
@@ -22,13 +24,16 @@ class IpAddressForm(forms.ModelForm):
             raise forms.ValidationError(_("IP-Address can not be owned by a user and a device at the same time."))
         return cleaned_data
 
+
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-        widget=forms.Select(attrs={"style":"width:200px;margin-left:10px;", "class":"pull-right input-sm form-control"}))
+                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
+                                                              "class": "pull-right input-sm form-control"}))
+
 
 class UserIpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
-        widget=forms.SelectMultiple(attrs={"style":"width:100%;"}))
+        widget=forms.SelectMultiple(attrs={"style": "width:100%;"}))
     user = forms.ModelChoiceField(Lageruser.objects.all())

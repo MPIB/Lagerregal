@@ -11,12 +11,13 @@ from locations.models import Section
 
 class Building(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
-    street = models.CharField(_('Street'), max_length = 100, blank = True)
-    number = models.CharField(_('Number'), max_length = 30, blank = True)
-    zipcode = models.CharField(_('ZIP code'), max_length = 5, blank = True)
-    city = models.CharField(_('City'), max_length = 100, blank = True)
-    state = models.CharField(_('State'), max_length = 100, blank = True)
-    country = models.CharField(_('Country'), max_length = 100, blank = True)
+    street = models.CharField(_('Street'), max_length=100, blank=True)
+    number = models.CharField(_('Number'), max_length=30, blank=True)
+    zipcode = models.CharField(_('ZIP code'), max_length=5, blank=True)
+    city = models.CharField(_('City'), max_length=100, blank=True)
+    state = models.CharField(_('State'), max_length=100, blank=True)
+    country = models.CharField(_('Country'), max_length=100, blank=True)
+
     def __unicode__(self):
         return self.name
 
@@ -33,13 +34,14 @@ class Building(models.Model):
     def get_edit_url(self):
         return reverse('building-edit', kwargs={'pk': self.pk})
 
+
 reversion.register(Building)
 
 
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
-    section =  models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms", blank=True)
+    section = models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms", blank=True)
 
     def __unicode__(self):
         if self.building:
@@ -59,6 +61,7 @@ class Room(models.Model):
 
     def get_edit_url(self):
         return reverse('room-edit', kwargs={'pk': self.pk})
+
 
 reversion.register(Room)
 
@@ -82,7 +85,9 @@ class Manufacturer(models.Model):
     def get_edit_url(self):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
 
+
 reversion.register(Manufacturer)
+
 
 class Bookmark(models.Model):
     device = models.ForeignKey("Device")
@@ -90,7 +95,7 @@ class Bookmark(models.Model):
 
 
 class Device(models.Model):
-    created_at = models.DateTimeField(auto_now_add = True, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     creator = models.ForeignKey(Lageruser)
     name = models.CharField(_('Name'), max_length=200)
     inventorynumber = models.CharField(_('Inventorynumber'), max_length=50, blank=True)
@@ -104,7 +109,8 @@ class Device(models.Model):
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
 
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
-    currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True, on_delete=models.SET_NULL)
+    currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True,
+                                       on_delete=models.SET_NULL)
 
     archived = models.DateTimeField(null=True, blank=True)
     trashed = models.DateTimeField(null=True, blank=True)
@@ -144,8 +150,8 @@ class Device(models.Model):
     def active():
         return Device.objects.filter(archived=None, trashed=None)
 
-class DeviceInformationType(models.Model):
 
+class DeviceInformationType(models.Model):
     keyname = models.CharField(_('Name'), max_length=200)
     humanname = models.CharField(_('Human readable name'), max_length=200)
 
@@ -156,8 +162,8 @@ class DeviceInformationType(models.Model):
         verbose_name = _('Information Type')
         verbose_name_plural = _('Information Type')
 
-class DeviceInformation(models.Model):
 
+class DeviceInformation(models.Model):
     information = models.CharField(_('Information'), max_length=200)
     device = models.ForeignKey(Device, related_name="information")
     infotype = models.ForeignKey(DeviceInformationType)
@@ -170,10 +176,10 @@ class DeviceInformation(models.Model):
         verbose_name_plural = _('Information')
 
 
-
 reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
-    ["archived", "currentlending", "inventoried", "bookmarks"])
+["archived", "currentlending", "inventoried", "bookmarks"])
 reversion.register(TypeAttributeValue)
+
 
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"))
@@ -183,6 +189,7 @@ class Lending(models.Model):
     returndate = models.DateField(blank=True, null=True)
     device = models.ForeignKey(Device, null=True, blank=True)
     smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
+
 
 class Template(models.Model):
     templatename = models.CharField(_('Templatename'), max_length=200)
@@ -212,11 +219,12 @@ class Template(models.Model):
         dict["devicetype"] = self.devicetype
         return dict
 
+
 class Note(models.Model):
     device = models.ForeignKey(Device, related_name="notes")
     note = models.CharField(max_length=5000)
     creator = models.ForeignKey(Lageruser)
-    created_at = models.DateTimeField(auto_now_add = True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = _("Note")

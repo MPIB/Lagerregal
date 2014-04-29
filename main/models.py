@@ -1,7 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from users.models import Lageruser
 from django.db.models.signals import post_save
+
+from users.models import Lageruser
+
 
 widgets = {
     "edithistory": _("Edit history"),
@@ -16,6 +18,7 @@ widgets = {
     "returnsoon": _("Devices, that are due soon")
 }
 
+
 def get_progresscolor(percent):
     if percent > 90:
         return "danger"
@@ -23,6 +26,7 @@ def get_progresscolor(percent):
         return "warning"
     else:
         return "success"
+
 
 class DashboardWidget(models.Model):
     column = models.CharField(max_length=1, choices=[("l", "left"), ("r", "right")])
@@ -39,6 +43,6 @@ def create_dashboard(sender, instance, created, **kwargs):
         DashboardWidget(column="l", index=2, widgetname="overdue", user=instance, minimized=False).save()
         DashboardWidget(column="r", index=0, widgetname="bookmarks", user=instance, minimized=False).save()
         DashboardWidget(column="r", index=0, widgetname="edithistory", user=instance, minimized=False).save()
-    
+
 
 post_save.connect(create_dashboard, sender=Lageruser)

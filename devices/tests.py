@@ -12,7 +12,6 @@ from network.models import IpAddress
 
 
 class DeviceTests(CasperTestCase):
-
     def setUp(self):
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
@@ -32,23 +31,23 @@ class DeviceTests(CasperTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.context["device_list"]), 30)
         self.assertEqual(resp.context["paginator"].num_pages, 2)
-        url = reverse("device-list", kwargs={"page":2})
+        url = reverse("device-list", kwargs={"page": 2})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(self.casper(
             os.path.join(os.path.dirname(__file__),
-                '../casper-tests/device-list.js')))
+                         '../casper-tests/device-list.js')))
 
     def test_device_detail(self):
         device = mommy.make(Device)
-        ip = IpAddress(address = "127.0.0.1")
+        ip = IpAddress(address="127.0.0.1")
         ip.save()
-        url = reverse("device-detail", kwargs={"pk":1})
+        url = reverse("device-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(self.casper(
             os.path.join(os.path.dirname(__file__),
-                '../casper-tests/device-detail.js')))
+                         '../casper-tests/device-detail.js')))
 
     def test_device_add(self):
         device = mommy.make(Device)
@@ -58,22 +57,22 @@ class DeviceTests(CasperTestCase):
 
     def test_device_edit(self):
         device = mommy.make(Device)
-        url = reverse("device-edit", kwargs={"pk":1})
+        url = reverse("device-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_device_delete(self):
         device = mommy.make(Device)
-        url = reverse("device-edit", kwargs={"pk":1})
+        url = reverse("device-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_device_archive(self):
         device = mommy.make(Device)
-        archiveurl = reverse("device-archive", kwargs={"pk":1})
+        archiveurl = reverse("device-archive", kwargs={"pk": 1})
         resp = self.client.post(archiveurl)
         self.assertEqual(resp.status_code, 302)
-        url = reverse("device-detail", kwargs={"pk":1})
+        url = reverse("device-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(resp.context["device"].archived)
@@ -86,10 +85,10 @@ class DeviceTests(CasperTestCase):
 
     def test_device_trash(self):
         device = mommy.make(Device)
-        trashurl = reverse("device-trash", kwargs={"pk":1})
+        trashurl = reverse("device-trash", kwargs={"pk": 1})
         resp = self.client.post(trashurl)
         self.assertEqual(resp.status_code, 302)
-        url = reverse("device-detail", kwargs={"pk":1})
+        url = reverse("device-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(resp.context["device"].trashed)
@@ -102,18 +101,18 @@ class DeviceTests(CasperTestCase):
 
     def test_device_inventoried(self):
         device = mommy.make(Device)
-        url = reverse("device-inventoried", kwargs={"pk":1})
+        url = reverse("device-inventoried", kwargs={"pk": 1})
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
-        url = reverse("device-detail", kwargs={"pk":1})
+        url = reverse("device-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIsNotNone(resp.context["device"].inventoried)
 
     def test_device_bookmark(self):
         device = mommy.make(Device)
-        bookmarkurl = reverse("device-trash", kwargs={"pk":1})
-        url = reverse("device-detail", kwargs={"pk":1})
+        bookmarkurl = reverse("device-trash", kwargs={"pk": 1})
+        url = reverse("device-detail", kwargs={"pk": 1})
         resp = self.client.post(bookmarkurl)
         self.assertEqual(resp.status_code, 302)
         resp = self.client.get(url)
@@ -130,15 +129,15 @@ class DeviceTests(CasperTestCase):
         device = mommy.make(Device)
         ip = IpAddress(address="127.0.0.1")
         ip.save()
-        url = reverse("device-ipaddress", kwargs={"pk":1})
-        resp = self.client.post(url, {"ipaddresses":[ip.pk], "device":device.pk})
+        url = reverse("device-ipaddress", kwargs={"pk": 1})
+        resp = self.client.post(url, {"ipaddresses": [ip.pk], "device": device.pk})
         self.assertEqual(resp.status_code, 302)
-        deviceurl = reverse("device-detail", kwargs={"pk":1})
+        deviceurl = reverse("device-detail", kwargs={"pk": 1})
         resp = self.client.get(deviceurl)
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.context["device"].ipaddress_set.all()), 1)
 
-        url = reverse("device-ipaddress-remove", kwargs={"pk":1, "ipaddress":1})
+        url = reverse("device-ipaddress-remove", kwargs={"pk": 1, "ipaddress": 1})
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
         resp = self.client.get(deviceurl)
@@ -147,7 +146,6 @@ class DeviceTests(CasperTestCase):
 
 
 class BuildingTests(CasperTestCase):
-
     def setUp(self):
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
@@ -167,17 +165,17 @@ class BuildingTests(CasperTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.context["building_list"]), 30)
         self.assertEqual(resp.context["paginator"].num_pages, 2)
-        url = reverse("building-list", kwargs={"page":2})
+        url = reverse("building-list", kwargs={"page": 2})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(self.casper(
             os.path.join(os.path.dirname(__file__),
-                '../casper-tests/generic-list.js'),
+                         '../casper-tests/generic-list.js'),
             basename="buildings"))
 
     def test_building_detail(self):
         building = mommy.make(Building)
-        url = reverse("building-detail", kwargs={"pk":1})
+        url = reverse("building-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
@@ -189,19 +187,18 @@ class BuildingTests(CasperTestCase):
 
     def test_building_edit(self):
         building = mommy.make(Building)
-        url = reverse("building-edit", kwargs={"pk":1})
+        url = reverse("building-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_building_delete(self):
         building = mommy.make(Building)
-        url = reverse("building-edit", kwargs={"pk":1})
+        url = reverse("building-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
 
 class RoomTests(CasperTestCase):
-
     def setUp(self):
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
@@ -221,17 +218,17 @@ class RoomTests(CasperTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.context["room_list"]), 30)
         self.assertEqual(resp.context["paginator"].num_pages, 2)
-        url = reverse("room-list", kwargs={"page":2})
+        url = reverse("room-list", kwargs={"page": 2})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(self.casper(
             os.path.join(os.path.dirname(__file__),
-                '../casper-tests/generictable-list.js'),
+                         '../casper-tests/generictable-list.js'),
             basename="rooms"))
 
     def test_room_detail(self):
         room = mommy.make(Room)
-        url = reverse("room-detail", kwargs={"pk":1})
+        url = reverse("room-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
@@ -243,19 +240,18 @@ class RoomTests(CasperTestCase):
 
     def test_room_edit(self):
         room = mommy.make(Room)
-        url = reverse("room-edit", kwargs={"pk":1})
+        url = reverse("room-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_room_delete(self):
         room = mommy.make(Room)
-        url = reverse("room-edit", kwargs={"pk":1})
+        url = reverse("room-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
 
 class ManufacturerTests(CasperTestCase):
-
     def setUp(self):
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
@@ -265,7 +261,8 @@ class ManufacturerTests(CasperTestCase):
         manufacturer = mommy.make(Manufacturer)
         self.assertTrue(isinstance(manufacturer, Manufacturer))
         self.assertEqual(manufacturer.__unicode__(), manufacturer.name)
-        self.assertEqual(manufacturer.get_absolute_url(), reverse('manufacturer-detail', kwargs={'pk': manufacturer.pk}))
+        self.assertEqual(manufacturer.get_absolute_url(),
+                         reverse('manufacturer-detail', kwargs={'pk': manufacturer.pk}))
         self.assertEqual(manufacturer.get_edit_url(), reverse('manufacturer-edit', kwargs={'pk': manufacturer.pk}))
 
     def test_manufacturer_list(self):
@@ -275,17 +272,17 @@ class ManufacturerTests(CasperTestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.context["manufacturer_list"]), 30)
         self.assertEqual(resp.context["paginator"].num_pages, 2)
-        url = reverse("manufacturer-list", kwargs={"page":2})
+        url = reverse("manufacturer-list", kwargs={"page": 2})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertTrue(self.casper(
             os.path.join(os.path.dirname(__file__),
-                '../casper-tests/generic-list.js'),
+                         '../casper-tests/generic-list.js'),
             basename="manufacturers"))
 
     def test_manufacturer_detail(self):
         manufacturer = mommy.make(Manufacturer)
-        url = reverse("manufacturer-detail", kwargs={"pk":1})
+        url = reverse("manufacturer-detail", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
@@ -297,19 +294,18 @@ class ManufacturerTests(CasperTestCase):
 
     def test_manufacturer_edit(self):
         manufacturer = mommy.make(Manufacturer)
-        url = reverse("manufacturer-edit", kwargs={"pk":1})
+        url = reverse("manufacturer-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_manufacturer_delete(self):
         manufacturer = mommy.make(Manufacturer)
-        url = reverse("manufacturer-edit", kwargs={"pk":1})
+        url = reverse("manufacturer-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
 
 class TemplateTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
@@ -328,7 +324,7 @@ class TemplateTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(len(resp.context["template_list"]), 30)
         self.assertEqual(resp.context["paginator"].num_pages, 2)
-        url = reverse("template-list", kwargs={"page":2})
+        url = reverse("template-list", kwargs={"page": 2})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
@@ -340,19 +336,18 @@ class TemplateTests(TestCase):
 
     def test_template_edit(self):
         template = mommy.make(Template)
-        url = reverse("template-edit", kwargs={"pk":1})
+        url = reverse("template-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_template_delete(self):
         template = mommy.make(Template)
-        url = reverse("template-edit", kwargs={"pk":1})
+        url = reverse("template-edit", kwargs={"pk": 1})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
 
 class NoteTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")

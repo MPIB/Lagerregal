@@ -1,17 +1,19 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView, View
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.core.urlresolvers import reverse_lazy, reverse
-from locations.models import Section
-from devices.models import Device, Room
 from django.utils.translation import ugettext_lazy as _
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from django.conf import settings
-from Lagerregal.utils import PaginationMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db.transaction import commit_on_success
 import reversion
+
+from locations.models import Section
+from devices.models import Device, Room
+from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from Lagerregal.utils import PaginationMixin
+
 
 class SectionList(PaginationMixin, ListView):
     model = Section
@@ -33,14 +35,15 @@ class SectionList(PaginationMixin, ListView):
         context = super(SectionList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections"))]
-        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
+
 
 class SectionCreate(CreateView):
     model = Section
@@ -67,19 +70,24 @@ class SectionDetail(DetailView):
         context = super(SectionDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Section.objects.exclude(pk=context["object"].pk).order_by("name")
-        context['device_list'] = Device.objects.filter(room__section=context["object"], archived=None, trashed=None).values("id", "name", "inventorynumber", "devicetype__name")
+        context['device_list'] = Device.objects.filter(room__section=context["object"], archived=None,
+                                                       trashed=None).values("id", "name", "inventorynumber",
+                                                                            "devicetype__name")
 
         if "section" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["section"][1]:
                 if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["section"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
+                        context["section"], attribute))
                 else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["section"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(
+                        context["section"], attribute))
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections")),
-            (reverse("section-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
+            (reverse("section-detail", kwargs={"pk": context["object"].pk}), context["object"].name)]
         return context
+
 
 class SectionUpdate(UpdateView):
     model = Section
@@ -91,7 +99,7 @@ class SectionUpdate(UpdateView):
         context = super(SectionUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Section")),
-            (reverse("section-edit", kwargs={"pk":self.object.pk}), self.object)]
+            (reverse("section-edit", kwargs={"pk": self.object.pk}), self.object)]
         return context
 
 
@@ -105,24 +113,25 @@ class SectionDelete(DeleteView):
         context = super(SectionDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections")),
-            (reverse("section-delete", kwargs={"pk":self.object.pk}), self.object)]
+            (reverse("section-delete", kwargs={"pk": self.object.pk}), self.object)]
         return context
+
 
 class SectionMerge(View):
     model = Section
 
-    def get(self,  request, **kwargs):
+    def get(self, request, **kwargs):
         context = {}
         context["oldobject"] = get_object_or_404(self.model, pk=kwargs["oldpk"])
         context["newobject"] = get_object_or_404(self.model, pk=kwargs["newpk"])
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections")),
-            (reverse("section-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            (reverse("section-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @commit_on_success
-    def post(self,  request, **kwargs):
+    def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         rooms = Room.objects.filter(section=oldobject)

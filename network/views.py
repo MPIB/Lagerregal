@@ -1,19 +1,21 @@
 # coding: utf-8
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy
-from network.models import IpAddress
-from network.forms import ViewForm, IpAddressForm, UserIpAddressForm
-from devices.forms import FilterForm
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from Lagerregal.utils import PaginationMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from users.models import Lageruser
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 import reversion
+
+from network.models import IpAddress
+from network.forms import ViewForm, IpAddressForm, UserIpAddressForm
+from devices.forms import FilterForm
+from Lagerregal.utils import PaginationMixin
+from users.models import Lageruser
+
 
 class IpAddressList(PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
@@ -35,13 +37,14 @@ class IpAddressList(PaginationMixin, ListView):
             addresses = IpAddress.objects.all()
         if self.filterstring != "":
             addresses = addresses.filter(address__icontains=self.filterstring)
-        return addresses.values("id", "address", "device__pk", "device__name", "user__pk", "user__username", "user__first_name", "user__last_name")
+        return addresses.values("id", "address", "device__pk", "device__name", "user__pk", "user__username",
+                                "user__first_name", "user__last_name")
 
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         context["breadcrumbs"] = [(reverse("device-list"), _("IP-Addresses"))]
@@ -49,6 +52,7 @@ class IpAddressList(PaginationMixin, ListView):
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
+
 
 class IpAddressDetail(DetailView):
     model = IpAddress
@@ -60,12 +64,15 @@ class IpAddressDetail(DetailView):
         if "ipaddress" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["ipaddress"][1]:
-                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["ipaddress"], attribute))
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute,
+                                                                                          getattr(context["ipaddress"],
+                                                                                                  attribute))
 
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
-            (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address)]
+            (reverse("ipaddress-detail", kwargs={"pk": self.object.pk}), self.object.address)]
         return context
+
 
 class IpAddressCreate(CreateView):
     model = IpAddress
@@ -83,7 +90,8 @@ class IpAddressCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        form.instance.address = ".".join([(x.lstrip("0") if x != "0" else x) for x in form.cleaned_data["address"].split(".")])
+        form.instance.address = ".".join(
+            [(x.lstrip("0") if x != "0" else x) for x in form.cleaned_data["address"].split(".")])
         return super(IpAddressCreate, self).form_valid(form)
 
 
@@ -99,12 +107,13 @@ class IpAddressUpdate(UpdateView):
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
-            (reverse("ipaddress-detail", kwargs={"pk":self.object.pk}), self.object.address),
+            (reverse("ipaddress-detail", kwargs={"pk": self.object.pk}), self.object.address),
             ("", _("Edit"))]
         return context
 
     def form_valid(self, form):
-        form.instance.address = ".".join([(x.lstrip("0") if x != "0" else x) for x in form.cleaned_data["address"].split(".")])
+        form.instance.address = ".".join(
+            [(x.lstrip("0") if x != "0" else x) for x in form.cleaned_data["address"].split(".")])
         return super(IpAddressUpdate, self).form_valid(form)
 
 
@@ -112,9 +121,11 @@ class IpAddressDelete(DeleteView):
     model = IpAddress
     success_url = reverse_lazy('ipaddress-list')
 
+
 class IpAdressAssign(FormView):
     model = IpAddress
     success_url = reverse_lazy('device-list')
+
 
 class UserIpAddressRemove(DeleteView):
     template_name = 'users/unassign_ipaddress.html'
@@ -126,7 +137,7 @@ class UserIpAddressRemove(DeleteView):
         context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),
-            (reverse("userprofile", kwargs={"pk":context["user"].pk}), context["user"].__unicode__()),
+            (reverse("userprofile", kwargs={"pk": context["user"].pk}), context["user"].__unicode__()),
             ("", _("Unassign IP-Address"))]
         return render_to_response(self.template_name, context, RequestContext(request))
 
@@ -138,7 +149,7 @@ class UserIpAddressRemove(DeleteView):
         reversion.set_comment(_("Removed from User {0}".format(user.__unicode__())))
         ipaddress.save()
 
-        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":user.pk}))
+        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": user.pk}))
 
 
 class UserIpAddress(FormView):
@@ -151,7 +162,7 @@ class UserIpAddress(FormView):
         user = context["form"].cleaned_data["user"]
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),
-            (reverse("userprofile", kwargs={"pk":user.pk}), user.__unicode__()),
+            (reverse("userprofile", kwargs={"pk": user.pk}), user.__unicode__()),
             ("", _("Assign IP-Addresses"))]
         return context
 
@@ -163,4 +174,4 @@ class UserIpAddress(FormView):
             ipaddress.user = user
             ipaddress.save()
 
-        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":user.pk}))
+        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": user.pk}))

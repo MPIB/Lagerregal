@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from django import forms
+
 from mail.models import MailTemplate
 from devices.forms import get_emailrecipientlist
+
 
 class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -11,5 +13,6 @@ class MailTemplateForm(forms.ModelForm):
     error_css_class = 'has-error'
     body = forms.CharField(widget=forms.Textarea())
     default_recipients = forms.MultipleChoiceField(required=False)
+
     class Meta:
         model = MailTemplate

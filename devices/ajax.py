@@ -28,7 +28,7 @@ from devicetags.models import Devicetag
 class AutocompleteDevice(View):
     def post(self, request):
         name = request.POST["name"]
-        devices = Device.objects.filter(name__icontains = name )[:20]
+        devices = Device.objects.filter(name__icontains=name)[:20]
         results = []
         for device in devices:
             device_json = {}
@@ -38,10 +38,11 @@ class AutocompleteDevice(View):
             results.append(device_json)
         return HttpResponse(json.dumps(results), content_type='application/json')
 
+
 class AutocompleteSmallDevice(View):
     def post(self, request):
         name = request.POST["name"]
-        devices = Lending.objects.filter(smalldevice__icontains = name ).values("smalldevice").distinct()
+        devices = Lending.objects.filter(smalldevice__icontains=name).values("smalldevice").distinct()
         results = []
         for device in devices:
             device_json = {}
@@ -49,31 +50,32 @@ class AutocompleteSmallDevice(View):
             results.append(device_json)
         return HttpResponse(json.dumps(results), content_type='application/json')
 
+
 class AutocompleteName(View):
     def post(self, request):
         name = request.POST["name"]
         classtype = request.POST["classtype"]
         if classtype == "type":
-            objects = Type.objects.filter(name__icontains = name )[:20]
+            objects = Type.objects.filter(name__icontains=name)[:20]
             urlname = "type-detail"
         elif classtype == "room":
-            objects = Room.objects.filter(name__icontains = name )[:20]
+            objects = Room.objects.filter(name__icontains=name)[:20]
             urlname = "room-detail"
         elif classtype == "building":
-            objects = Building.objects.filter(name__icontains = name )[:20]
+            objects = Building.objects.filter(name__icontains=name)[:20]
             urlname = "building-detail"
         elif classtype == "manufacturer":
-            objects = Manufacturer.objects.filter(name__icontains = name )[:20]
+            objects = Manufacturer.objects.filter(name__icontains=name)[:20]
             urlname = "manufacturer-detail"
         elif classtype == "manufacturer":
-            objects = Manufacturer.objects.filter(name__icontains = name )[:20]
+            objects = Manufacturer.objects.filter(name__icontains=name)[:20]
             urlname = "manufacturer-detail"
         else:
             return HttpResponse("")
         if len(objects) > 0:
             retobjects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
-                reverse(urlname, kwargs={"pk":obj[0]}), obj[1])
-                for obj in objects.values_list("pk", "name")]
+                reverse(urlname, kwargs={"pk": obj[0]}), obj[1])
+                          for obj in objects.values_list("pk", "name")]
             return HttpResponse(json.dumps(retobjects), content_type='application/json')
         else:
             return HttpResponse("")
@@ -138,7 +140,7 @@ class LoadExtraform(View):
         else:
             return HttpResponse("")
 
-        return HttpResponse(render_to_string('snippets/formfields.html', {"form":form}))
+        return HttpResponse(render_to_string('snippets/formfields.html', {"form": form}))
 
 
 class PreviewMail(View):
@@ -153,7 +155,7 @@ class PreviewMail(View):
             "inventorynumber": request.POST.get("device[inventorynumber]", ""),
             "manufacturer": request.POST.get("device[manufacturer]", ""),
             "name": request.POST.get("device[name]", ""),
-            "room": request.POST.get("device[room]", "") ,
+            "room": request.POST.get("device[room]", ""),
             "serialnumber": request.POST.get("device[serialnumber]", ""),
             "templending": request.POST.get("device[templending]", ""),
             "webinterface": request.POST.get("device[webinterface]", "")
@@ -180,14 +182,15 @@ class PreviewMail(View):
         datadict = {}
         datadict["device"] = device
         datadict["user"] = {
-            "username" : request.user.username,
-            "first_name" : request.user.first_name,
-            "last_name" : request.user.last_name
+            "username": request.user.username,
+            "first_name": request.user.first_name,
+            "last_name": request.user.last_name
         }
         data = {}
         data["subject"] = pystache.render(template.subject, datadict)
         data["body"] = pystache.render(template.body, datadict).replace("\n", "<br />")
         return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 class LoadMailtemplate(View):
     def post(self, request):
@@ -202,10 +205,12 @@ class LoadMailtemplate(View):
         if isinstance(recipients, unicode):
             recipients = [recipients]
         newrecipients = [obj for obj in recipients]
-        newrecipients += [obj.content_type.name[0].lower()+str(obj.object_id) for obj in template.default_recipients.all()]
+        newrecipients += [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
+                          template.default_recipients.all()]
         newrecipients = list(set(newrecipients))
         data["recipients"] = newrecipients
         return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 class LoadSearchoptions(View):
     def post(self, request):
@@ -231,12 +236,14 @@ class LoadSearchoptions(View):
         else:
             return HttpResponse("")
         if invert:
-            data = [{"value": "not " + str(object.pk)+"-"+object.__unicode__(), "label" : "not " + object.__unicode__()}
+            data = [
+                {"value": "not " + str(object.pk) + "-" + object.__unicode__(), "label": "not " + object.__unicode__()}
                 for object in items]
         else:
-            data = [{"value": str(object.pk)+"-"+object.__unicode__(), "label" : object.__unicode__()}
-                for object in items]
+            data = [{"value": str(object.pk) + "-" + object.__unicode__(), "label": object.__unicode__()}
+                    for object in items]
         return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 class UserLendings(View):
     def post(self, request):
@@ -245,10 +252,16 @@ class UserLendings(View):
             return HttpResponse("")
         user = get_object_or_404(Lageruser, pk=user)
         data = {}
-        data["devices"] = [ [device["device__name"] if device["device__name"] else device["smalldevice"], device["device__inventorynumber"], device["device__serialnumber"], device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "", device["pk"]]
-            for device in user.lending_set.filter(returndate=None).values("pk", "device__name", "device__inventorynumber", "device__serialnumber", "smalldevice", "duedate")]
+        data["devices"] = [[device["device__name"] if device["device__name"] else device["smalldevice"],
+                            device["device__inventorynumber"], device["device__serialnumber"],
+                            device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "", device["pk"]]
+                           for device in user.lending_set.filter(returndate=None).values("pk", "device__name",
+                                                                                         "device__inventorynumber",
+                                                                                         "device__serialnumber",
+                                                                                         "smalldevice", "duedate")]
 
         return HttpResponse(json.dumps(data), content_type='application/json')
+
 
 class AjaxSearch(View):
     def post(self, request):
@@ -257,8 +270,9 @@ class AjaxSearch(View):
         excludedict = {}
         textfilter = None
         statusfilter = None
-        displayed_columns  = []
-        searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name", "room__building__name"]
+        displayed_columns = []
+        searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name",
+                        "room__building__name"]
         for searchitem in search:
             key, value = searchitem.items()[0]
 
@@ -376,7 +390,9 @@ class AjaxSearch(View):
             elif key == "id":
                 try:
                     value = int(value)
-                    context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")}
+                    context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber",
+                                                                                     "devicetype__name", "room__name",
+                                                                                     "room__building__name")}
                     return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
                 except:
                     return render_to_response('devices/searchempty.html', {}, RequestContext(self.request))
@@ -390,7 +406,7 @@ class AjaxSearch(View):
         devices = devices.exclude(**excludedict)
 
         if statusfilter == "all":
-                pass
+            pass
         elif statusfilter == "available":
             devices = devices.filter(currentlending=None, archived=None, trashed=None)
         elif statusfilter == "unavailable":
@@ -407,11 +423,13 @@ class AjaxSearch(View):
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             try:
                 searchid = int(textfilter.replace(" ", ""))
-                devices = devices.filter(Q(name__icontains=textfilter)|
-                    Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", ""))|Q(id=searchid))
+                devices = devices.filter(Q(name__icontains=textfilter) |
+                                         Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
+                    serialnumber__icontains=textfilter.replace(" ", "")) | Q(id=searchid))
             except ValueError:
-                devices = devices.filter(Q(name__icontains=textfilter)|
-                    Q(inventorynumber__icontains=textfilter.replace( " ", ""))|Q(serialnumber__icontains=textfilter.replace( " ", "")))
+                devices = devices.filter(Q(name__icontains=textfilter) |
+                                         Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
+                    serialnumber__icontains=textfilter.replace(" ", "")))
         context = {
             "device_list": devices.values(*searchvalues),
             "columns": displayed_columns

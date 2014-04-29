@@ -1,13 +1,16 @@
+from rest_framework import serializers
+from django.contrib.auth.models import Group, Permission
+
 from devices.models import Room, Building, Manufacturer, Device, Template, Lending
 from devicetypes.models import Type, TypeAttribute
-from rest_framework import serializers
 from users.models import Lageruser
-from django.contrib.auth.models import Group, Permission
 from network.models import IpAddress
+
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='building-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
+
     class Meta:
         model = Building
 
@@ -20,6 +23,7 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Room
 
+
 class ManufacturerSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='manufacturer-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
@@ -27,17 +31,21 @@ class ManufacturerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Manufacturer
 
+
 class TypeAttributeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TypeAttribute
         exclude = ("devicetype", )
 
+
 class TypeSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='type-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
     typeattribute_set = TypeAttributeSerializer()
+
     class Meta:
         model = Type
+
 
 class TemplateSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='template-api-detail')
@@ -46,11 +54,13 @@ class TemplateSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Template
 
+
 class LendingSerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(slug_field="username")
 
     class Meta:
         model = Lending
+
 
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
@@ -67,6 +77,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
         model = Device
         exclude = ("bookmarkers", )
 
+
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
@@ -74,6 +85,7 @@ class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Device
         fields = ("url", "id", "name")
+
 
 class LendingSerializer(serializers.ModelSerializer):
     room = serializers.PrimaryKeyRelatedField(queryset=Room.objects.select_related("building").all(), required=False)
@@ -109,7 +121,6 @@ class LendingSerializer(serializers.ModelSerializer):
         return super(LendingSerializer, self).to_native(obj)
 
 
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
@@ -120,11 +131,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = Lageruser
         exclude = ("password", )
 
-class UserAvatarSerializer(serializers.ModelSerializer):
 
+class UserAvatarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lageruser
         fields = ("username", "avatar")
+
 
 class UserListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
@@ -140,11 +152,12 @@ class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.CharField(source="pk", read_only=True)
 
     device = serializers.SlugRelatedField(slug_field="name")
+
     class Meta:
         model = IpAddress
 
-class SmallDeviceSerializer(serializers.ModelSerializer):
 
+class SmallDeviceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lending
         fields = ("smalldevice",)

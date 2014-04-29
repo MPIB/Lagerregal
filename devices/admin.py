@@ -4,9 +4,9 @@ from devices.models import *
 
 
 class DeviceAdmin(admin.ModelAdmin):
-
     # List display
     list_display = ('name',)
+
 
 admin.site.register(Device, DeviceAdmin)
 

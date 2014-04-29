@@ -1,16 +1,17 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy, reverse
-from devicetags.models import Devicetag
-from devices.models import Device
 from django.utils.translation import ugettext_lazy as _
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
-from devicetags.forms import TagForm, DeviceTagForm
-from django.conf import settings
-from Lagerregal.utils import PaginationMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
+from devicetags.models import Devicetag
+from devices.models import Device
+from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from devicetags.forms import TagForm, DeviceTagForm
+from Lagerregal.utils import PaginationMixin
+
 
 class DevicetagList(PaginationMixin, ListView):
     model = Devicetag
@@ -32,14 +33,15 @@ class DevicetagList(PaginationMixin, ListView):
         context = super(DevicetagList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicetag-list"), _("Devicetags"))]
-        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
+
 
 class DevicetagCreate(CreateView):
     model = Devicetag
@@ -56,6 +58,7 @@ class DevicetagCreate(CreateView):
             ("", _("Create new devicetag"))]
         return context
 
+
 class DevicetagUpdate(UpdateView):
     model = Devicetag
     success_url = reverse_lazy('devicetag-list')
@@ -67,7 +70,7 @@ class DevicetagUpdate(UpdateView):
         context = super(DevicetagUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicetag-list"), _("Devicetag")),
-            (reverse("devicetag-edit", kwargs={"pk":self.object.pk}), self.object)]
+            (reverse("devicetag-edit", kwargs={"pk": self.object.pk}), self.object)]
         return context
 
 
@@ -81,7 +84,7 @@ class DevicetagDelete(DeleteView):
         context = super(DevicetagDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicetag-list"), _("Devicetags")),
-            (reverse("devicetag-delete", kwargs={"pk":self.object.pk}), self.object)]
+            (reverse("devicetag-delete", kwargs={"pk": self.object.pk}), self.object)]
         return context
 
 
@@ -95,7 +98,7 @@ class DeviceTags(FormView):
         device = context["form"].cleaned_data["device"]
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
             ("", _("Assign Tags"))]
         return context
 
@@ -103,7 +106,8 @@ class DeviceTags(FormView):
         tags = form.cleaned_data["tags"]
         device = form.cleaned_data["device"]
         device.tags.add(*tags)
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class DeviceTagRemove(DeleteView):
     template_name = 'devicetags/remove_tag.html'
@@ -115,7 +119,7 @@ class DeviceTagRemove(DeleteView):
         context["tag"] = get_object_or_404(Devicetag, pk=kwargs["tag"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["device"].pk}), context["device"].name),
+            (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Remove Tag"))]
         return render_to_response(self.template_name, context, RequestContext(request))
 
@@ -126,4 +130,4 @@ class DeviceTagRemove(DeleteView):
         tag.devices.remove(device.pk)
         tag.save()
 
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))

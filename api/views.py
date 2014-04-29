@@ -1,16 +1,17 @@
-from api.serializers import *
-from devices.models import *
-from devicetypes.models import *
-from network.models import *
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from rest_framework.response import Response
 import rest_framework.reverse
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 import reversion
+
+from api.serializers import *
+from devices.models import *
+from devicetypes.models import *
+from network.models import *
+
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -33,7 +34,7 @@ class SearchQuerysetMixin():
         filters = {}
         for param in self.request.QUERY_PARAMS.lists():
             if param[0] in valid_fields:
-                filters[param[0]]=param[1][0]
+                filters[param[0]] = param[1][0]
         queryset = queryset.filter(**filters)
         return queryset
 
@@ -42,9 +43,11 @@ class DeviceApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Device
     serializer_class = DeviceListSerializer
 
+
 class DeviceApiCreate(generics.CreateAPIView):
     model = Device
     serializer_class = DeviceSerializer
+
 
 class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Device
@@ -57,6 +60,7 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
             device = super(DeviceApiDetail, self).get_object()
         device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
         return device
+
 
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
@@ -81,7 +85,7 @@ class DeviceApiBookmark(APIView):
                 return Response({"success": "added note"})
         else:
             return Response({"error": "the 'bookmarked' argument is mandatory"}, status=status.HTTP_400_BAD_REQUEST)
-                
+
 
 class DeviceApiLend(generics.CreateAPIView):
     serializer_class = LendingSerializer
@@ -112,22 +116,26 @@ class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Type
     serializer_class = TypeSerializer
 
+
 class TypeApiCreate(generics.CreateAPIView):
     model = Type
     serializer_class = TypeSerializer
 
+
 class TypeApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Type
-    serializer_class = TypeSerializer       
+    serializer_class = TypeSerializer
 
 
 class RoomApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Room
     serializer_class = RoomSerializer
 
+
 class RoomApiCreate(generics.CreateAPIView):
     model = Room
     serializer_class = RoomSerializer
+
 
 class RoomApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Room
@@ -138,9 +146,11 @@ class BuildingApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Building
     serializer_class = BuildingSerializer
 
+
 class BuildingApiCreate(generics.CreateAPIView):
     model = Building
     serializer_class = BuildingSerializer
+
 
 class BuildingApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Building
@@ -151,9 +161,11 @@ class ManufacturerApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Manufacturer
     serializer_class = ManufacturerSerializer
 
+
 class ManufacturerApiCreate(generics.CreateAPIView):
     model = Manufacturer
     serializer_class = ManufacturerSerializer
+
 
 class ManufacturerApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Manufacturer
@@ -164,9 +176,11 @@ class TemplateApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Template
     serializer_class = TemplateSerializer
 
+
 class TemplateApiCreate(generics.CreateAPIView):
     model = Template
     serializer_class = TemplateSerializer
+
 
 class TemplateApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Template
@@ -177,9 +191,11 @@ class UserApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Lageruser
     serializer_class = UserListSerializer
 
+
 class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Lageruser
     serializer_class = UserSerializer
+
 
 class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
@@ -192,17 +208,21 @@ class UserApiAvatar(generics.RetrieveAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+
 class IpAddressApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = IpAddress
     serializer_class = IpAddressSerializer
+
 
 class IpAddressApiCreate(generics.CreateAPIView):
     model = IpAddress
     serializer_class = IpAddressSerializer
 
+
 class IpAddressApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = IpAddress
     serializer_class = IpAddressSerializer
+
 
 class SmallDeviceApiList(generics.ListAPIView):
     queryset = Lending.objects.exclude(smalldevice=None).exclude(smalldevice="").values("smalldevice").distinct()

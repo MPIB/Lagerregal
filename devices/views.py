@@ -24,7 +24,8 @@ from devicetypes.models import TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
 from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
-from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, DeviceStorageForm, ReturnForm
+from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
+    DeviceStorageForm, ReturnForm
 from devicetags.forms import DeviceTagForm
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
@@ -62,7 +63,8 @@ class DeviceList(PaginationMixin, ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
 
-        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name", "group__name", "currentlending")
+        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name",
+                              "group__name", "currentlending")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
@@ -87,7 +89,9 @@ class DeviceDetail(DetailView):
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
-        context["version_list"] = Version.objects.filter(object_id=context["device"].id, content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")[:10]
+        context["version_list"] = Version.objects.filter(object_id=context["device"].id,
+                                                         content_type_id=ContentType.objects.get(
+                                                             model='device').id).order_by("-pk")[:10]
         context["mail_list"] = MailHistory.objects.filter(device=context["device"]).order_by("-pk")[:10]
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
@@ -114,9 +118,13 @@ class DeviceDetail(DetailView):
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["device"][1]:
                 if attribute == "id":
-                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["device"], attribute))
+                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+                                                                                              getattr(context["device"],
+                                                                                                      attribute))
                 else:
-                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute, getattr(context["device"], attribute))
+                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
+                                                                                          getattr(context["device"],
+                                                                                                  attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -242,7 +250,8 @@ class DeviceCreate(CreateView):
         initial["creator"] = creator
         try:
             initial["emailtemplate"] = MailTemplate.objects.get(usage="new")
-            initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in initial["emailtemplate"].default_recipients.all()]
+            initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
+                                          initial["emailtemplate"].default_recipients.all()]
             initial["emailsubject"] = initial["emailtemplate"].subject
             initial["emailbody"] = initial["emailtemplate"].body
         except:
@@ -286,7 +295,8 @@ class DeviceCreate(CreateView):
             if form.cleaned_data["emailedit"]:
                 template.subject = form.cleaned_data["emailsubject"]
                 template.body = form.cleaned_data["emailbody"]
-            template.send(request=self.request, recipients=recipients, data={"device": self.object, "user": self.request.user})
+            template.send(request=self.request, recipients=recipients,
+                          data={"device": self.object, "user": self.request.user})
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
@@ -357,7 +367,8 @@ class DeviceUpdate(UpdateView):
             if form.cleaned_data["emailedit"]:
                 template.subject = form.cleaned_data["emailsubject"]
                 template.body = form.cleaned_data["emailbody"]
-            template.send(request=self.request, recipients=recipients, data={"device": device, "user": self.request.user})
+            template.send(request=self.request, recipients=recipients,
+                          data={"device": device, "user": self.request.user})
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
@@ -392,7 +403,7 @@ class DeviceLend(FormView):
                 device = get_object_or_404(Device, pk=deviceid)
                 context["breadcrumbs"] = [
                     (reverse("device-list"), _("Devices")),
-                    (reverse("device-detail", kwargs={"pk":device.pk}), device.name),
+                    (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
                     ("", _("Lend"))]
                 return context
 
@@ -408,7 +419,7 @@ class DeviceLend(FormView):
             device = form.cleaned_data["device"]
             if device.archived is not None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
-                return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+                return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
@@ -420,16 +431,17 @@ class DeviceLend(FormView):
         lending.duedate = form.cleaned_data["duedate"]
         lending.save()
         reversion.set_ignore_duplicates(True)
-        messages.success(self.request, _('Device is marked as lend to {0}').format(get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
+        messages.success(self.request, _('Device is marked as lend to {0}').format(
+            get_object_or_404(Lageruser, pk=form.cleaned_data["owner"].pk)))
         if form.cleaned_data["device"]:
             device.currentlending = lending
             device.save()
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
         else:
-            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":lending.owner.pk}))
+            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": lending.owner.pk}))
+
 
 class DeviceInventoried(View):
-
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
@@ -437,10 +449,11 @@ class DeviceInventoried(View):
         device.save()
         reversion.set_ignore_duplicates(True)
         messages.success(request, _('Device is marked as inventoried.'))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
     def post(self, request, **kwargs):
         return self.get(request, **kwargs)
+
 
 class DeviceReturn(FormView):
     template_name = 'devices/base_form.html'
@@ -472,9 +485,10 @@ class DeviceReturn(FormView):
         reversion.set_ignore_duplicates(True)
         messages.success(self.request, _('Device is marked as returned'))
         if device != None:
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
         else:
-            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk":owner.pk}))
+            return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": owner.pk}))
+
 
 class DeviceMail(FormView):
     template_name = 'devices/base_form.html'
@@ -487,7 +501,7 @@ class DeviceMail(FormView):
         context['form_scripts'] = "$('#id_owner').select2();"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":self.device.pk}), self.device.name),
+            (reverse("device-detail", kwargs={"pk": self.device.pk}), self.device.name),
             ("", _("Send Mail"))]
         return context
 
@@ -510,12 +524,13 @@ class DeviceMail(FormView):
         recipients = list(set(recipients))
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
-        template.send(self.request, recipients, {"device":device, "user":self.request.user})
+        template.send(self.request, recipients, {"device": device, "user": self.request.user})
         if template.usage == "reminder" or template.usage == "overdue":
             device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.currentlending.save()
         messages.success(self.request, _('Mail successfully sent'))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
@@ -537,7 +552,8 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         reversion.set_ignore_duplicates(True)
         reversion.set_comment(_("Device was archived".format(device.name)))
         messages.success(request, _("Device was archived."))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
@@ -559,7 +575,8 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         reversion.set_ignore_duplicates(True)
         reversion.set_comment(_("Device was trashed".format(device.name)))
         messages.success(request, _("Device was trashed."))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class DeviceStorage(SingleObjectMixin, FormView):
     model = Device
@@ -577,8 +594,9 @@ class DeviceStorage(SingleObjectMixin, FormView):
             roomid = settings.STORAGE_ROOM
             room = get_object_or_404(Room, id=roomid)
         except:
-            messages.error(self.request, _("Could not move to storage. No room specified. Please contact your administrator."))
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+            messages.error(self.request,
+                           _("Could not move to storage. No room specified. Please contact your administrator."))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
         device.room = room
         device.save()
         for ipaddress in device.ipaddress_set.all():
@@ -597,11 +615,12 @@ class DeviceStorage(SingleObjectMixin, FormView):
                         recipients += recipient.lageruser_set.all().values_list("email")[0]
                     else:
                         recipients.append(recipient.email)
-                template.send(self.request, recipients, {"device":device, "user":self.request.user})
+                template.send(self.request, recipients, {"device": device, "user": self.request.user})
                 messages.success(self.request, _('Mail successfully sent'))
         reversion.set_ignore_duplicates(True)
         messages.success(self.request, _("Device was moved to storage."))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
@@ -616,7 +635,8 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
             bookmark = Bookmark(device=device, user=request.user)
             bookmark.save()
             messages.success(request, _("Device was bookmarked."))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk":device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
 
 class TemplateList(PaginationMixin, ListView):
     model = Template
@@ -626,7 +646,7 @@ class TemplateList(PaginationMixin, ListView):
         context = super(TemplateList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("template-list"), _("Templates")),]
+            (reverse("template-list"), _("Templates")), ]
 
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
@@ -645,6 +665,7 @@ class TemplateCreate(CreateView):
             ("", _("Create new devicetemplate"))]
         return context
 
+
 class TemplateUpdate(UpdateView):
     model = Template
     template_name = 'devices/base_form.html'
@@ -656,6 +677,7 @@ class TemplateUpdate(UpdateView):
             (reverse("template-list"), _("Templates")),
             ("", _("Edit: {0}".format(self.object.templatename)))]
         return context
+
 
 class TemplateDelete(DeleteView):
     model = Template
@@ -669,10 +691,6 @@ class TemplateDelete(DeleteView):
             (reverse("template-list"), _("Templates")),
             ("", _("Delete: {0}".format(self.object.templatename)))]
         return context
-
-
-
-
 
 
 class RoomList(PaginationMixin, ListView):
@@ -694,9 +712,9 @@ class RoomList(PaginationMixin, ListView):
         # Call the base implementation first to get a context
         context = super(RoomList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
-        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -712,21 +730,29 @@ class RoomDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(RoomDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("id", "name", "building__name")
-        context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None, trashed=None).values("id", "name", "inventorynumber", "devicetype__name")
+        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("id", "name",
+                                                                                                    "building__name")
+        context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None,
+                                                                        trashed=None).values("id", "name",
+                                                                                             "inventorynumber",
+                                                                                             "devicetype__name")
 
         if "room" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["room"][1]:
                 if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["room"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
+                        context["room"], attribute))
                 else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["room"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute,
+                                                                                              getattr(context["room"],
+                                                                                                      attribute))
 
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk":context["room"].pk}), context["room"].name)]
+            (reverse("room-detail", kwargs={"pk": context["room"].pk}), context["room"].name)]
         return context
+
 
 class RoomCreate(CreateView):
     model = Room
@@ -743,6 +769,7 @@ class RoomCreate(CreateView):
             ("", _("Create new room"))]
         return context
 
+
 class RoomUpdate(UpdateView):
     model = Room
     template_name = 'devices/base_form.html'
@@ -754,9 +781,10 @@ class RoomUpdate(UpdateView):
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Edit"))]
         return context
+
 
 class RoomDelete(DeleteView):
     model = Room
@@ -768,24 +796,25 @@ class RoomDelete(DeleteView):
         context = super(RoomDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Delete"))]
         return context
+
 
 class RoomMerge(View):
     model = Room
 
-    def get(self,  request, **kwargs):
+    def get(self, request, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            (reverse("room-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @commit_on_success
-    def post(self,  request, **kwargs):
+    def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(room=oldobject)
@@ -816,9 +845,9 @@ class BuildingList(PaginationMixin, ListView):
         # Call the base implementation first to get a context
         context = super(BuildingList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
-        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         return context
@@ -833,20 +862,28 @@ class BuildingDetail(DetailView):
         context = super(BuildingDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Building.objects.exclude(pk=context["building"].pk).order_by("name")
-        context['device_list'] = Device.objects.select_related().filter(room__building=context["building"], archived=None, trashed=None).values("id", "name", "inventorynumber", "devicetype__name", "room__name")
+        context['device_list'] = Device.objects.select_related().filter(room__building=context["building"],
+                                                                        archived=None, trashed=None).values("id",
+                                                                                                            "name",
+                                                                                                            "inventorynumber",
+                                                                                                            "devicetype__name",
+                                                                                                            "room__name")
 
         if "building" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["building"][1]:
                 if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["building"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
+                        context["building"], attribute))
                 else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["building"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(
+                        context["building"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk":context["building"].pk}), context["building"].name)]
+            (reverse("building-detail", kwargs={"pk": context["building"].pk}), context["building"].name)]
         return context
+
 
 class BuildingCreate(CreateView):
     model = Building
@@ -863,6 +900,7 @@ class BuildingCreate(CreateView):
             ("", _("Create new building"))]
         return context
 
+
 class BuildingUpdate(UpdateView):
     model = Building
     template_name = 'devices/base_form.html'
@@ -874,9 +912,10 @@ class BuildingUpdate(UpdateView):
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Edit"))]
         return context
+
 
 class BuildingDelete(DeleteView):
     model = Building
@@ -888,24 +927,25 @@ class BuildingDelete(DeleteView):
         context = super(BuildingDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Delete"))]
         return context
+
 
 class BuildingMerge(View):
     model = Building
 
-    def get(self,  request, **kwargs):
+    def get(self, request, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            (reverse("building-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @commit_on_success
-    def post(self,  request, **kwargs):
+    def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         rooms = Room.objects.filter(building=oldobject)
@@ -934,9 +974,9 @@ class ManufacturerList(PaginationMixin, ListView):
         # Call the base implementation first to get a context
         context = super(ManufacturerList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
-        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -954,20 +994,26 @@ class ManufacturerDetail(DetailView):
         context = super(ManufacturerDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Manufacturer.objects.exclude(pk=context["object"].pk).order_by("name")
-        context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None, trashed=None).values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name")
+        context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None,
+                                                       trashed=None).values("id", "name", "inventorynumber",
+                                                                            "devicetype__name", "room__name",
+                                                                            "room__building__name")
 
         if "manufacturer" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["manufacturer"][1]:
                 if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(context["manufacturer"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
+                        context["manufacturer"], attribute))
                 else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["manufacturer"], attribute))
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(
+                        context["manufacturer"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
-            (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name)]
+            (reverse("manufacturer-detail", kwargs={"pk": context["object"].pk}), context["object"].name)]
         return context
+
 
 class ManufacturerCreate(CreateView):
     model = Manufacturer
@@ -985,6 +1031,7 @@ class ManufacturerCreate(CreateView):
             ("", _("Create new manufacturer"))]
         return context
 
+
 class ManufacturerUpdate(UpdateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
@@ -996,9 +1043,10 @@ class ManufacturerUpdate(UpdateView):
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
-            (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("manufacturer-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Edit"))]
         return context
+
 
 class ManufacturerDelete(DeleteView):
     model = Manufacturer
@@ -1010,24 +1058,25 @@ class ManufacturerDelete(DeleteView):
         context = super(ManufacturerDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
-            (reverse("manufacturer-detail", kwargs={"pk":context["object"].pk}), context["object"].name),
+            (reverse("manufacturer-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
             ("", _("Delete"))]
         return context
+
 
 class ManufacturerMerge(View):
     model = Manufacturer
 
-    def get(self,  request, **kwargs):
+    def get(self, request, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
-            (reverse("manufacturer-detail", kwargs={"pk":context["oldobject"].pk}), context["oldobject"].name),
+            (reverse("manufacturer-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @commit_on_success
-    def post(self,  request, **kwargs):
+    def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(manufacturer=oldobject)
@@ -1054,42 +1103,45 @@ class NoteCreate(CreateView):
         device = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":device.pk}), device),
+            (reverse("device-detail", kwargs={"pk": device.pk}), device),
             ("", _("Notes")),
             ("", _("Create new note"))]
         return context
+
 
 class NoteUpdate(UpdateView):
     model = Note
     template_name = 'devices/base_form.html'
 
     def get_success_url(self):
-        return reverse_lazy("device-detail", kwargs={"pk":self.object.device.pk})
+        return reverse_lazy("device-detail", kwargs={"pk": self.object.device.pk})
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(NoteUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["object"].device.pk}), context["object"].device.name),
+            (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
             ("", _("Edit"))]
         return context
+
 
 class NoteDelete(DeleteView):
     model = Note
     template_name = 'devices/base_delete.html'
 
     def get_success_url(self):
-        return reverse_lazy("device-detail", kwargs={"pk":self.object.device.pk})
+        return reverse_lazy("device-detail", kwargs={"pk": self.object.device.pk})
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(NoteDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk":context["object"].device.pk}), context["object"].device.name),
+            (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
             ("", _("Delete"))]
         return context
+
 
 class Search(TemplateView):
     template_name = 'devices/search.html'

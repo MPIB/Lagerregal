@@ -1,19 +1,14 @@
 # -*- coding: utf-8 -*-
-from devices.models import Device, Room, Building, Manufacturer
-from devicetypes.models import Type
-from network.models import IpAddress
 import json
-from django.core.urlresolvers import reverse
-from main.models import DashboardWidget, widgets, get_progresscolor
+
 from django.db.models import Max
 from django.template.loader import render_to_string
-from reversion.models import Version
-import datetime
-from main.views import get_widget_data
-from django.contrib.contenttypes.models import ContentType
 from django.views.generic.base import View
 from django.http import HttpResponse
-from django.http import QueryDict
+
+from main.models import DashboardWidget, widgets
+from main.views import get_widget_data
+
 
 class WidgetAdd(View):
     def post(self, request):
@@ -36,6 +31,7 @@ class WidgetAdd(View):
         else:
             return HttpResponse("Error: invalid widget name")
 
+
 class WidgetRemove(View):
     def post(self, request):
         widgetname = request.POST["widgetname"]
@@ -44,6 +40,7 @@ class WidgetRemove(View):
             return HttpResponse("")
         else:
             return HttpResponse("Error: invalid widget name")
+
 
 class WidgetToggle(View):
     def post(self, request):
@@ -56,7 +53,7 @@ class WidgetToggle(View):
         else:
             return HttpResponse("Error: invalid widget name")
 
- 
+
 class WidgetMove(View):
     def post(self, request):
         userwidgets = json.loads(request.POST["widgets"])

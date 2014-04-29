@@ -1,12 +1,12 @@
 from django.db import models
-from devices.models import Device
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-import reversion
+
+from devices.models import Device
+
 
 # Create your models here.
 class Devicetag(models.Model):
-
     name = models.CharField(max_length=200, unique=True)
     devices = models.ManyToManyField(Device, related_name="tags")
 

@@ -1,23 +1,26 @@
 # -*- coding: utf-8 -*-
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
-from mail.models import MailTemplate, MailTemplateRecipient
-from mail.forms import MailTemplateForm
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
-from users.models import Lageruser
 from django.shortcuts import get_object_or_404
+
+from mail.models import MailTemplate, MailTemplateRecipient
+from mail.forms import MailTemplateForm
+from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
+
+
 class MailList(PaginationMixin, ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
-    
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(MailList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates"))]
-        
+
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -33,8 +36,9 @@ class MailDetail(DetailView):
         context = super(MailDetail, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
-            (reverse("mail-detail", kwargs={"pk":self.object.pk}), self.object)]
+            (reverse("mail-detail", kwargs={"pk": self.object.pk}), self.object)]
         return context
+
 
 class MailCreate(CreateView):
     form_class = MailTemplateForm
@@ -63,6 +67,7 @@ class MailCreate(CreateView):
             recipient.save()
         return r
 
+
 class MailUpdate(UpdateView):
     form_class = MailTemplateForm
     model = MailTemplate
@@ -70,7 +75,8 @@ class MailUpdate(UpdateView):
 
     def get_initial(self):
         initial = super(MailUpdate, self).get_initial()
-        initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in self.object.default_recipients.all()]
+        initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
+                                         self.object.default_recipients.all()]
         return initial
 
     def get_context_data(self, **kwargs):
@@ -78,7 +84,7 @@ class MailUpdate(UpdateView):
         context = super(MailUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
-            (reverse("mail-detail", kwargs={"pk":self.object.pk}), self.object),
+            (reverse("mail-detail", kwargs={"pk": self.object.pk}), self.object),
             ("", _("Edit"))]
         context["formhelp"] = "mail/help.html"
         return context
@@ -101,6 +107,7 @@ class MailUpdate(UpdateView):
             rec.save()
         return r
 
+
 class MailDelete(DeleteView):
     form_class = MailTemplateForm
     model = MailTemplate
@@ -112,6 +119,6 @@ class MailDelete(DeleteView):
         context = super(MailDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
-            (reverse("mail-detail", kwargs={"pk":self.object.pk}), self.object),
+            (reverse("mail-detail", kwargs={"pk": self.object.pk}), self.object),
             ("", _("Delete"))]
         return context

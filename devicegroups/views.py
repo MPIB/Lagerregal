@@ -1,16 +1,18 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+
 from devicegroups.models import Devicegroup
 from devices.models import Device
-from django.utils.translation import ugettext_lazy as _
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
-from django.conf import settings
 from Lagerregal.utils import PaginationMixin
+
 
 class DevicegroupList(PaginationMixin, ListView):
     model = Devicegroup
     context_object_name = 'devicegroup_list'
-    
+
     def get_queryset(self):
         devicegroups = Devicegroup.objects.all()
         self.filterstring = self.kwargs.pop("filter", None)
@@ -27,9 +29,9 @@ class DevicegroupList(PaginationMixin, ListView):
         context = super(DevicegroupList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups"))]
-        context["viewform"] = ViewForm(initial={"viewsorting":self.viewsorting})
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring":self.filterstring})
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -49,13 +51,15 @@ class DevicegroupDetail(DetailView):
         if "devicegroup" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
             for attribute in settings.LABEL_TEMPLATES["devicegroup"][1]:
-                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(context["devicegroup"], attribute))
+                context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(
+                    context["devicegroup"], attribute))
 
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
-            (reverse("devicegroup-detail", kwargs={"pk":self.object.pk}), self.object)]
+            (reverse("devicegroup-detail", kwargs={"pk": self.object.pk}), self.object)]
         context['device_list'] = Device.objects.filter(group=context["devicegroup"], archived=None)
         return context
+
 
 class DevicegroupCreate(CreateView):
     model = Devicegroup
@@ -70,6 +74,7 @@ class DevicegroupCreate(CreateView):
             ("", _("Create new devicegroup"))]
         return context
 
+
 class DevicegroupUpdate(UpdateView):
     model = Devicegroup
     template_name = 'devices/base_form.html'
@@ -79,7 +84,7 @@ class DevicegroupUpdate(UpdateView):
         context = super(DevicegroupUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
-            (reverse("devicegroup-detail", kwargs={"pk":self.object.pk}), self.object),
+            (reverse("devicegroup-detail", kwargs={"pk": self.object.pk}), self.object),
             ("", _("Edit"))]
         return context
 
@@ -94,6 +99,6 @@ class DevicegroupDelete(DeleteView):
         context = super(DevicegroupDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
-            (reverse("devicegroup-detail", kwargs={"pk":self.object.pk}), self.object),
+            (reverse("devicegroup-detail", kwargs={"pk": self.object.pk}), self.object),
             ("", _("Delete"))]
         return context
