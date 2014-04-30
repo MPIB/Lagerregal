@@ -2,7 +2,6 @@ import datetime
 
 from django.views.generic import TemplateView, ListView
 from reversion.models import Version
-from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.forms import AuthenticationForm
 
 from devices.models import *
@@ -36,8 +35,8 @@ def get_widget_data(user, widgetlist=[]):
         context['newest_devices'] = Device.objects.select_related().all().order_by("-pk")[:10]
     if "overdue" in widgetlist:
         context["overdue"] = Lending.objects.select_related("device",
-                                                            "owner").filter(duedate__lt=context["today"]
-        ).order_by("duedate")[:10]
+                                                            "owner").filter(duedate__lt=context["today"],
+                                                                            returndate=None).order_by("duedate")[:10]
     if "groups" in widgetlist:
         context["groups"] = Devicegroup.objects.all()
     if "sections" in widgetlist:
@@ -52,7 +51,8 @@ def get_widget_data(user, widgetlist=[]):
         soon = context["today"] + datetime.timedelta(days=10)
         context["returnsoon"] = Lending.objects.select_related("device",
                                                                "owner").filter(duedate__lte=soon,
-                                                                               duedate__gt=context["today"]).order_by(
+                                                                               duedate__gt=context["today"],
+                                                                               returndate=None).order_by(
             "duedate")[:10]
     return context
 
