@@ -9,4 +9,3 @@ pytz
 pystache
 model_mommy
 django-casper
-reportlab
