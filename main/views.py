@@ -3,6 +3,7 @@ import datetime
 from django.views.generic import TemplateView, ListView
 from reversion.models import Version
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import ugettext_lazy as _
 
 from devices.models import *
 from network.models import *
@@ -53,7 +54,7 @@ def get_widget_data(user, widgetlist=[]):
                                                                "owner").filter(duedate__lte=soon,
                                                                                duedate__gt=context["today"],
                                                                                returndate=None).order_by(
-            "duedate")[:10]
+                                                                                    "duedate")[:10]
     return context
 
 
