@@ -126,7 +126,9 @@
         }).done(function(data) {
         $(this).slideUp("fast", function() {
         $(this).remove()});
-        $("#widgetlist").append('<li><a href="#" data-name="' + $(this).attr(" id") + '" class="addWidget">' + $(this).find(".panel-title").html() + '</a></li>')
+        $("#widgetlist").append('
+        <li><a href="#" data-name="' + $(this).attr(" id") + '" class="addWidget">' +
+            $(this).find(".panel-title").html() + '</a></li>')
         });
         });
 

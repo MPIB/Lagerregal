@@ -9,7 +9,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render_to_response
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib import messages
 from django.utils.timezone import utc
 from django.utils import timezone
@@ -18,11 +18,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import commit_on_success
 from django.conf import settings
-from reportlab.platypus import BaseDocTemplate, Paragraph, Spacer, Table, PageTemplate, Frame
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.rl_config import defaultPageSize
-from reportlab.lib.units import inch, cm
-from reportlab.lib import colors
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
 from devicetypes.models import TypeAttribute, TypeAttributeValue
@@ -642,55 +637,6 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
             messages.success(request, _("Device was bookmarked."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
-
-class DevicePrint(BaseDetailView):
-    model = Device
-
-    def get(self, request, *args, **kwargs):
-        device = self.get_object()
-        response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="{0}.pdf"'.format(device.name)
-        styles = getSampleStyleSheet()
-
-        doc = BaseDocTemplate(response)
-        doc.addPageTemplates(PageTemplate('normal', [Frame(2.5*cm, 2.5*cm, 15*cm, 25*cm, id='F1'), Frame(2.5*cm, 2.5*cm, 15*cm, 25*cm, id='F2')]))
-        Story = []
-        Story.append(Paragraph(device.name, styles["Heading1"]))
-        Story.append(Spacer(1,0.5*inch))
-        Story.append(Paragraph("Details", styles["Heading3"]))
-        detail_table = Table([["Inventorynumber", device.inventorynumber],
-                            ["Serialnumber",device.serialnumber],
-                            ["Devicetype",device.devicetype],
-                            ["Manufacturer",device.manufacturer],
-                            ["Room",device.room],
-                            ["Devicegroup",device.group],
-                            ["IP-Address","\n".join([ipaddress.address for ipaddress in device.ipaddress_set.all()])],
-                            ["Trashed on",(device.trashed if device.trashed
-                            else "Not trashed")]],
-                           style=[('GRID',(0,0),(-1,-1),0.5,colors.gray),
-                                  ('BOTTOMPADDING',(0,0),(-1,-1),6),
-                                  ('TOPPADDING',(0,0),(-1,-1),6),
-                                  ('RIGHTADDING',(0,0),(-1,-1),12)],
-                           colWidths=[4.5*cm, 4.5*cm])
-        detail_table.hAlign = "LEFT"
-        Story.append(detail_table)
-        if device.currentlending:
-            Story.append(Spacer(1,0.3*inch))
-            Story.append(Paragraph("Lending information", styles["Heading3"]))
-            lend_table = Table([["Lend to", device.currentlending.owner.__unicode__()],
-                        ["Since",device.currentlending.lenddate],
-                        ["Due to",device.currentlending.duedate],
-                        ["Overdue reminder",(device.currentlending.duedate_email if device.currentlending.duedate_email
-                            else "Not sent")]],
-                       style=[('GRID',(0,0),(-1,-1),0.5,colors.gray),
-                              ('BOTTOMPADDING',(0,0),(-1,-1),6),
-                              ('TOPPADDING',(0,0),(-1,-1),6),
-                              ('RIGHTADDING',(0,0),(-1,-1),12)],
-                           colWidths=[4.5*cm, 4.5*cm])
-            lend_table.hAlign = "LEFT"
-            Story.append(lend_table)
-        doc.build(Story)
-        return response
 
 class TemplateList(PaginationMixin, ListView):
     model = Template
