@@ -101,10 +101,15 @@
         html: 'true',
         placement: "bottom",
         title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-        content :"<form action='{% url "building-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
+        content :"
+        <form action='{% url "building-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "
+            <button type='button' class='btn btn-default'
+                    onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>
+            "+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
-            "</form>"
+            "
+        </form>"
         })
     {% endif %}
 {% endblock %}

@@ -46,7 +46,12 @@
     }).done(function(data){
     if (data != "") {
     if ($("#alternatives").length == 0){
-    $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul></div>")
+    $( "input:text[name=name]" ).after("\
+    <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean
+        one of those?\
+        <ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul>
+        \
+    </div>")
     }
     $("#alternatives").empty()
     for (var i=0; i < data.length; i++) {
