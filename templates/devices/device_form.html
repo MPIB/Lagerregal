@@ -99,11 +99,7 @@
     $.each(data, function(index, value) {
     $("#extra_attributes").append('
     <div class="form-group"><label for="id_attribute_' + value.id + '" class="col-lg-3 control-label">' + value.name +
-        '</label>
-
-        <div class="col-lg-9"><input type="text" id="id_attribute_' + value.id + '" name="attribute_' + value.id + '"
-                                     class="form-control"/></div>
-    </div>')
+        '</label><div class="col-lg-9"><input type="text" id="id_attribute_' + value.id + '" name="attribute_' + value.id + '" class="form-control"/></div></div>')
     });
     }
     });
