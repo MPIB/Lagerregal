@@ -76,8 +76,11 @@ def check_bookmark(device, user):
 
 
 @register.filter
-def get_attribute(device, attribute):
-    return getattr(device, attribute)
+def get_attribute(object, attribute):
+    try:
+        return getattr(object, attribute)
+    except AttributeError:
+        return object.get(attribute)
 
 
 @register.filter

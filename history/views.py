@@ -1,174 +1,19 @@
-from django.views.generic import ListView, View
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.views.generic import ListView, View, UpdateView
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from reversion.models import Version, Revision
+import reversion
+from django.db.models import get_model
 
 from Lagerregal.utils import PaginationMixin
 from devices.models import Device, Room, Manufacturer
 from devicetypes.models import Type, TypeAttributeValue
-
-
-# Create your views here.
-class DeviceHistory(View):
-    def get(self, request, **kwargs):
-        revisionid = kwargs["revision"]
-        device = get_object_or_404(Device, pk=kwargs["pk"])
-        this_version = get_object_or_404(Version,
-                                         revision_id=revisionid,
-                                         object_id=device.id,
-                                         content_type_id=ContentType.objects.get(model='device').id)
-
-        previous_version = Version.objects.filter(object_id=device.pk,
-                                                  revision__date_created__lt=this_version.revision.date_created,
-                                                  content_type_id=ContentType.objects.get(model='device').id).order_by(
-            "-pk")
-        if len(previous_version) == 0:
-            previous_version = None
-            previouscomment = None
-        else:
-            revisionpk = previous_version[0].revision.pk
-            previouscomment = previous_version[0].revision.comment
-            previous_version = previous_version[0].field_dict
-            previous_version["revisionpk"] = revisionpk
-            if previous_version["devicetype"] != None:
-                try:
-                    previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
-                except Type.DoesNotExist:
-                    previous_version["devicetype"] = "[deleted]"
-            if previous_version["manufacturer"] != None:
-                try:
-                    previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
-                except Type.DoesNotExist:
-                    previous_version["manufacturer"] = "[deleted]"
-            if previous_version["room"] != None:
-                try:
-                    previous_version["room"] = Room.objects.get(pk=previous_version["room"])
-                except Type.DoesNotExist:
-                    previous_version["room"] = "[deleted]"
-
-        next_version = Version.objects.filter(object_id=device.pk,
-                                              revision__date_created__gt=this_version.revision.date_created,
-                                              content_type_id=ContentType.objects.get(model='device').id).order_by("pk")
-        if len(next_version) == 0:
-            next_version = None
-            nextcomment = None
-        else:
-            revisionpk = next_version[0].revision.pk
-            nextcomment = next_version[0].revision.comment
-            next_version = next_version[0].field_dict
-            next_version["revisionpk"] = revisionpk
-
-        if this_version.field_dict["devicetype"] != None:
-            try:
-                this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
-            except Type.DoesNotExist:
-                this_version.field_dict["devicetype"] = "[deleted]"
-        if this_version.field_dict["manufacturer"] != None:
-            try:
-                this_version.field_dict["manufacturer"] = Manufacturer.objects.get(
-                    pk=this_version.field_dict["manufacturer"])
-            except Type.DoesNotExist:
-                this_version.field_dict["manufacturer"] = "[deleted]"
-        if this_version.field_dict["room"] != None:
-            try:
-                this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
-            except Type.DoesNotExist:
-                this_version.field_dict["room"] = "[deleted]"
-        context = {"version": this_version,
-                   "previous": previous_version,
-                   "previouscomment": previouscomment,
-                   "this_version": this_version.field_dict,
-                   "thiscomment": this_version.revision.comment,
-                   "current": device,
-                   "next": next_version,
-                   "nextcomment": nextcomment}
-        context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
-            (reverse("device-history-list", kwargs={"pk": device.pk}), _("History")),
-            ("", _("Version {0}".format(this_version.revision.pk)))
-        ]
-        return render_to_response('history/device_history.html', context, RequestContext(request))
-
-    # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
-    def post(self, request, **kwargs):
-        deviceid = kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        if device.archived != None:
-            messages.error(self.request, _("Archived Devices can't be reverted"))
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
-        revisionid = kwargs["revision"]
-
-        version = get_object_or_404(Version,
-                                    revision_id=revisionid,
-                                    object_id=deviceid,
-                                    content_type_id=ContentType.objects.get(model='device').id)
-        currentlending = device.currentlending
-        archived = device.archived
-        version.revision.revert()
-        device = get_object_or_404(Device, pk=deviceid)
-        device.currentlending = currentlending
-        device.archived = archived
-
-        deleted_keys = []
-
-        try:
-            devicetype = device.devicetype
-        except Type.DoesNotExist:
-            device.devicetype = None
-            deleted_keys.append(ugettext("Devicetype"))
-
-        try:
-            manufacturer = device.manufacturer
-        except Manufacturer.DoesNotExist:
-            device.manufacturer = None
-            deleted_keys.append(ugettext("Manufacturer"))
-
-        try:
-            room = device.room
-        except Room.DoesNotExist:
-            device.room = None
-            deleted_keys.append(ugettext("Room"))
-
-        device.save()
-        if version.field_dict["devicetype"] != None:
-            TypeAttributeValue.objects.filter(device=version.object_id).delete()
-        reversion.set_comment("Reverted to version from {0}".format(localize(version.revision.date_created)))
-        reversion.set_ignore_duplicates(True)
-
-        if deleted_keys == []:
-            messages.success(self.request,
-                             _('Successfully reverted Device to revision {0}').format(version.revision.id))
-        else:
-            messages.warning(self.request, _(
-                "Reverted Device to revision {0}, but the following fields had to be set to null, as the referenced object was deleted: {1}").format(
-                version.revision.id, ",".join(deleted_keys)))
-
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
-
-
-class DeviceHistoryList(ListView):
-    context_object_name = 'version_list'
-    template_name = 'history/device_history_list.html'
-
-    def get_queryset(self):
-        deviceid = self.kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
-        return Version.objects.filter(object_id=device.id,
-                                      content_type_id=ContentType.objects.get(model='device').id).order_by("-pk")
-
-    def get_context_data(self, **kwargs):
-        context = super(DeviceHistoryList, self).get_context_data(**kwargs)
-        context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
-        context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
-            ("", _("History"))]
-        return context
 
 
 class Globalhistory(PaginationMixin, ListView):
@@ -184,82 +29,130 @@ class Globalhistory(PaginationMixin, ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
+excluded_fields = ["currentlending", "created_at", "archived", "trashed", "inventoried", "bookmarks", "trashed",
+                   "last_seen", "creator"]
 
-class HistoryDetail(View):
-    # noinspection PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences,PyUnresolvedReferences
-    def get(self, request, **kwargs):
-        versionid = kwargs["version"]
-        current_version = get_object_or_404(Device, pk=kwargs["pk"])
-        this_version = get_object_or_404(Version, pk=versionid)
+def cleanup_fielddict(version):
+    del version.field_dict["id"]
+    if version.field_dict.get("devicetype") != None:
+        try:
+            version.field_dict["devicetype"] = Type.objects.get(
+                pk=version.field_dict["devicetype"])
+        except Type.DoesNotExist:
+            version.field_dict["devicetype"] = "[deleted]"
+    if version.field_dict.get("manufacturer") != None:
+        try:
+            version.field_dict["manufacturer"] = Manufacturer.objects.get(
+                pk=version.field_dict["manufacturer"])
+        except Type.DoesNotExist:
+            version.field_dict["manufacturer"] = "[deleted]"
+    if version.field_dict.get("room") != None:
+        try:
+            version.field_dict["room"] = Room.objects.get(
+                pk=version.field_dict["room"])
+        except Type.DoesNotExist:
+            version.field_dict["room"] = "[deleted]"
 
-        previous_version = Version.objects.filter(object_id=device.pk,
-                                                  revision__date_created__lt=this_version.revision.date_created,
-                                                  content_type_id=ContentType.objects.get(model='device').id).order_by(
+    if version.field_dict.get("device") != None:
+        try:
+            version.field_dict["device"] = Device.objects.get(
+                pk=version.field_dict["device"])
+        except Type.DoesNotExist:
+            version.field_dict["device"] = "[deleted]"
+
+    for excluded_field in excluded_fields:
+        if excluded_field in version.field_dict:
+            del version.field_dict[excluded_field]
+
+    return version
+
+
+class HistoryDetail(UpdateView):
+    model = Version
+    template_name = 'history/history_detail.html'
+    context_object_name = "this_version"
+
+    def get_context_data(self, **kwargs):
+        context = super(HistoryDetail, self).get_context_data(**kwargs)
+        context["current_version"] = get_object_or_404(
+            get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
+                                                       id=context["this_version"].object_id)
+
+
+        context["this_version"] = cleanup_fielddict(context["this_version"])
+
+        previous_version = Version.objects.filter(object_id=context["current_version"].pk,
+                                                  revision__date_created__lt=context["this_version"].revision.date_created,
+                                                  content_type_id=context["this_version"].content_type.id).order_by(
             "-pk")
         if len(previous_version) == 0:
-            previous_version = None
-            previouscomment = None
+            context["previous_version"] = None
         else:
-            revisionpk = previous_version[0].revision.pk
-            previouscomment = previous_version[0].revision.comment
-            previous_version = previous_version[0].field_dict
-            previous_version["revisionpk"] = revisionpk
-            if previous_version["devicetype"] != None:
-                try:
-                    previous_version["devicetype"] = Type.objects.get(pk=previous_version["devicetype"])
-                except Type.DoesNotExist:
-                    previous_version["devicetype"] = "[deleted]"
-            if previous_version["manufacturer"] != None:
-                try:
-                    previous_version["manufacturer"] = Manufacturer.objects.get(pk=previous_version["manufacturer"])
-                except Type.DoesNotExist:
-                    previous_version["manufacturer"] = "[deleted]"
-            if previous_version["room"] != None:
-                try:
-                    previous_version["room"] = Room.objects.get(pk=previous_version["room"])
-                except Type.DoesNotExist:
-                    previous_version["room"] = "[deleted]"
+            context["previous_version"] = cleanup_fielddict(previous_version[0])
 
-        next_version = Version.objects.filter(object_id=device.pk,
-                                              revision__date_created__gt=this_version.revision.date_created,
-                                              content_type_id=ContentType.objects.get(model='device').id).order_by("pk")
+        next_version = Version.objects.filter(object_id=context["current_version"].pk,
+                                              revision__date_created__gt=context["this_version"].revision.date_created,
+                                              content_type_id=context["this_version"].content_type.id).order_by("pk")
         if len(next_version) == 0:
-            next_version = None
-            nextcomment = None
+            context["next_version"] = None
         else:
-            revisionpk = next_version[0].revision.pk
-            nextcomment = next_version[0].revision.comment
-            next_version = next_version[0].field_dict
-            next_version["revisionpk"] = revisionpk
+            context["next_version"] = next_version[0]
 
-        if this_version.field_dict["devicetype"] != None:
-            try:
-                this_version.field_dict["devicetype"] = Type.objects.get(pk=this_version.field_dict["devicetype"])
-            except Type.DoesNotExist:
-                this_version.field_dict["devicetype"] = "[deleted]"
-        if this_version.field_dict["manufacturer"] != None:
-            try:
-                this_version.field_dict["manufacturer"] = Manufacturer.objects.get(
-                    pk=this_version.field_dict["manufacturer"])
-            except Type.DoesNotExist:
-                this_version.field_dict["manufacturer"] = "[deleted]"
-        if this_version.field_dict["room"] != None:
-            try:
-                this_version.field_dict["room"] = Room.objects.get(pk=this_version.field_dict["room"])
-            except Type.DoesNotExist:
-                this_version.field_dict["room"] = "[deleted]"
-        context = {"version": this_version,
-                   "previous": previous_version,
-                   "previouscomment": previouscomment,
-                   "this_version": this_version.field_dict,
-                   "thiscomment": this_version.revision.comment,
-                   "current": device,
-                   "next": next_version,
-                   "nextcomment": nextcomment}
         context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
-            (reverse("device-history-list", kwargs={"pk": device.pk}), _("History")),
-            ("", _("Version {0}".format(this_version.revision.pk)))
+            (reverse("{0}-list".format(context["this_version"].content_type.model)),
+                _(context["this_version"].content_type.name)),
+            (context["current_version"].get_absolute_url(), context["current_version"].__unicode__()),
+            (reverse("history-list", kwargs={"content_type_id": context["this_version"].content_type.id,
+                                             "object_id": context["this_version"].object_id} ), _("History")),
+            ("", _("Version {0}".format(context["this_version"].pk)))
         ]
-        return render_to_response('history/device_history.html', context, RequestContext(request))
+
+        return context
+
+
+    def post(self, request, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(**kwargs)
+        version = context["this_version"]
+        object = context["current_version"]
+
+        for name, value in version.field_dict.items():
+            if value == "[deleted]":
+                setattr(object,name, None)
+            else:
+                setattr(object,name, value)
+
+        object.save()
+        if version.field_dict.get("devicetype") != None:
+            TypeAttributeValue.objects.filter(device=version.object_id).delete()
+        reversion.set_comment("Reverted to version from {0}".format(version.revision.date_created))
+        reversion.set_ignore_duplicates(True)
+
+        messages.success(self.request,
+                        _('Successfully reverted Device to revision {0}').format(version.revision.id))
+
+
+        return HttpResponseRedirect(object.get_absolute_url())
+
+class HistoryList(ListView):
+    context_object_name = 'version_list'
+    template_name = 'history/history_list.html'
+
+    def get_queryset(self):
+        object_id = self.kwargs["object_id"]
+        content_type_id = self.kwargs["content_type_id"]
+        self.content_type = get_object_or_404(ContentType, id=content_type_id)
+        self.object = get_object_or_404(get_model(self.content_type.app_label, self.content_type.model), id=object_id)
+        return Version.objects.filter(object_id=self.object.id,
+                                      content_type_id=self.content_type.id).order_by("-pk")
+
+    def get_context_data(self, **kwargs):
+        context = super(HistoryList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("{0}-list".format(self.content_type.model)),
+                _(self.content_type.name)),
+            (self.object.get_absolute_url(), self.object.__unicode__()),
+            (reverse("history-list", kwargs={"content_type_id": self.content_type.id,
+                                             "object_id": self.object.id} ), _("History"))
+        ]
+        return context

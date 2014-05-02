@@ -1,7 +1,7 @@
 import datetime
 
 from django.views.generic import TemplateView, ListView
-from reversion.models import Version
+from reversion.models import Version, Revision
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 
@@ -29,9 +29,8 @@ def get_widget_data(user, widgetlist=[]):
         ) / context["ipaddress_all"]) * 100)
         context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
     if "edithistory" in widgetlist:
-        context['revisions'] = Version.objects.select_related("revision",
-                                                              "revision__user", "content_type").filter().order_by(
-            "-pk")[:20]
+        context['revisions'] = Revision.objects.select_related("version_set", "version_set__content_type", "user"
+                                ).filter().order_by("-date_created")[:20]
     if "newestdevices" in widgetlist:
         context['newest_devices'] = Device.objects.select_related().all().order_by("-pk")[:10]
     if "overdue" in widgetlist:
@@ -44,7 +43,7 @@ def get_widget_data(user, widgetlist=[]):
         context["sections"] = Section.objects.all()
     if "recentlendings" in widgetlist:
         context["recentlendings"] = Lending.objects.select_related().all().order_by("-pk")[:10]
-    if "edithistory" in widgetlist:
+    if "shorttermdevices" in widgetlist:
         context['shorttermdevices'] = Device.objects.filter(templending=True)[:10]
     if "bookmarks" in widgetlist:
         context["bookmarks"] = user.bookmarks.all()[:10]

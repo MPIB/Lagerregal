@@ -177,7 +177,7 @@ class DeviceInformation(models.Model):
 
 
 reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
-["archived", "currentlending", "inventoried", "bookmarks"])
+["archived", "currentlending", "inventoried", "bookmarks", "trashed"])
 reversion.register(TypeAttributeValue)
 
 

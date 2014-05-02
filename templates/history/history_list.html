@@ -3,10 +3,6 @@
 
 {% block title %}{% trans "History for" %} {{ device.name }}{% endblock %}
 
-{% block header %}
-    {% trans "History for" %} <a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a>
-{% endblock %}
-
 {% block content %}
     {% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
     <div class="module">

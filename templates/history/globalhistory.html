@@ -54,10 +54,11 @@
                     {% if revision.version_set.count == 1 %}
                         {% with version=revision.version_set.all.0 %}
                             {{ version.content_type }}:
+                            <a href="{%  url "history-detail" version.pk %}">
                             {% if version.content_type.model == "ipaddress" %}
-                                <a>{{ version.field_dict.address }}
+                                {{ version.field_dict.address }}
                             {% else %}
-                                <a>{{ version.field_dict.name }}
+                                {{ version.field_dict.name }}
                             {% endif %}
                         </a>
                         {% endwith %}
@@ -68,10 +69,11 @@
                             <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                 {% for version in revision.version_set.all %}
                                     <li>{{ version.content_type }}:
+                                    <a href="{%  url "history-detail" version.pk %}">
                                     {% if version.content_type.model == "ipaddress" %}
-                                        <a>{{ version.field_dict.address }}
+                                        {{ version.field_dict.address }}
                                     {% else %}
-                                        <a>{{ version.field_dict.name }}
+                                        {{ version.field_dict.name }}
                                     {% endif %}
                                 </a>
                                 {% endfor %}

@@ -19,40 +19,45 @@
         </tr>
         </thead>
         <tbody>
-        {% for action in revisions %}
+        {% for revision in revisions %}
             <tr>
                 <td>
-                    {% if action.content_type.model == "ipaddress" %}
-                        <a href="{% url 'ipaddress-detail' action.object_id %}">{{ action.field_dict.address }}
-                    {% elif action.content_type.model == "building" %}
-                        <a href="{% url 'building-detail' action.object_id %}">{{ action.field_dict.name }}
-                    {% elif action.content_type.model == "room" %}
-                        <a href="{% url 'room-detail' action.object_id %}">{{ action.field_dict.name }}
-                    {% elif action.content_type.model == "manufacturer" %}
-                        <a href="{% url 'manufacturer-detail' action.object_id %}">{{ action.field_dict.name }}
-                    {% elif action.content_type.model == "type" %}
-                        <a href="{% url 'type-detail' action.object_id %}">{{ action.field_dict.name }}
-                    {% elif action.content_type.model == "mailtemplate" %}
-                        <a href="{% url 'mail-detail' action.object_id %}">{{ action.field_dict.name }}
-                    {% elif action.content_type.model == "devicegroup" %}
-                        <a href="{% url 'devicegroup-detail' action.object_id %}">{{ action.field_dict.name }}
-                    {% elif action.content_type.model == "device" %}
-                        <a href="{% url 'device-detail' action.object_id %}">{{ action.field_dict.name }}
+                    {% if revision.version_set.count == 1 %}
+                        {% with version=revision.version_set.all.0 %}
+                            {{ version.content_type }}:
+                            <a href="{%  url "history-detail" version.pk %}">
+                            {% if version.content_type.model == "ipaddress" %}
+                                {{ version.field_dict.address }}
+                            {% else %}
+                                {{ version.field_dict.name }}
+                            {% endif %}
+                        </a>
+                        {% endwith %}
+                    {% else %}
+                        <div class="dropdown">
+                            <a data-toggle="dropdown" href="#">{{ revision.version_set.count }} Changes made</a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                {% for version in revision.version_set.all %}
+                                    <li>{{ version.content_type }}:
+                                    <a href="{%  url "history-detail" version.pk %}">
+                                    {% if version.content_type.model == "ipaddress" %}
+                                        {{ version.field_dict.address }}
+                                    {% else %}
+                                        {{ version.field_dict.name }}
+                                    {% endif %}
+                                </a>
+                                {% endfor %}
+                                </li>
+                            </ul>
+                        </div>
                     {% endif %}
-                    </a>
                 </td>
                 <td>
-                    {% if action.content_type.model == "device" %}
-                        <a href="{% url 'device-history' action.object_id action.pk %}"
-                           title="{{ action.revision.date_created|date:'c' }}"
-                           class="edit-date">{{ action.revision.date_created }}</a>
-                    {% else %}
-                        <span title="{{ action.revision.date_created|date:'c' }}"
-                              class="edit-date">{{ action.revision.date_created }}</span>
-                    {% endif %}
+                    <span title="{{ revision.date_created|date:'c' }}"
+                              class="edit-date">{{ revision.date_created }}</span>
                 </td>
-                <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a></td>
-                <td class="commentcol">{{ action.revision.comment|linebreaksbr|default:"" }}</td>
+                <td><a href="{% url 'userprofile' revision.user.pk %}">{{ revision.user }}</a></td>
+                <td class="commentcol">{{ revision.comment|linebreaksbr|default:"" }}</td>
             </tr>
         {% endfor %}
         </tbody>
