@@ -36,8 +36,7 @@
                             <label for="{{ field.html_name }}" class="col-lg-3 control-label">
                                 {{ field.label }}{% if field.field.required %}*{% endif %}</label>
 
-                            <div class="col-lg-
-                                    {% if field|is_select %}{% if field.html_name == "emailtemplate" %}7{% else %}8{% endif %}{% else %}9{% endif %}">
+                            <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplate" %}7{% else %}8{% endif %}{% else %}9{% endif %}">
                                 {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
                                     {{ field|add_class:'form-control input-sm' }}{% endif %}
                                 <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{ error }},
@@ -97,8 +96,7 @@
     $("#extra_attributes").empty();
     if (data != "") {
     $.each(data, function(index, value) {
-    $("#extra_attributes").append('
-    <div class="form-group"><label for="id_attribute_' + value.id + '" class="col-lg-3 control-label">' + value.name +
+    $("#extra_attributes").append('<div class="form-group"><label for="id_attribute_' + value.id + '" class="col-lg-3 control-label">' + value.name +
         '</label><div class="col-lg-9"><input type="text" id="id_attribute_' + value.id + '" name="attribute_' + value.id + '" class="form-control"/></div></div>')
     });
     }
@@ -130,8 +128,7 @@
     if (data.error) {
     $("#addform").append("already exists");
     } else {
-    $("#id_" +data.classname).append('
-    <option value="' + data.id + '">' + data.name + '</option>')
+    $("#id_" +data.classname).append('<option value="' + data.id + '">' + data.name + '</option>')
     $("#id_" + data.classname).select2('val', data.id);
     $('#addModal').modal('hide');
     }
