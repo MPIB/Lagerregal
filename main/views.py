@@ -19,15 +19,18 @@ def get_widget_data(user, widgetlist=[]):
     context["today"] = datetime.date.today()
     if "statistics" in widgetlist:
         context['device_all'] = Device.active().count()
-        context['device_available'] = Device.active().filter(currentlending=None).count()
-        context["device_percent"] = 100 - int((float(context["device_available"]
-        ) / context["device_all"]) * 100)
-        context["device_percentcolor"] = get_progresscolor(context["device_percent"])
+        if context['device_all'] != 0:
+            context['device_available'] = Device.active().filter(currentlending=None).count()
+            context["device_percent"] = 100 - int((float(context["device_available"]
+                ) / context["device_all"]) * 100)
+            context["device_percentcolor"] = get_progresscolor(context["device_percent"])
+
         context['ipaddress_all'] = IpAddress.objects.all().count()
-        context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
-        context["ipaddress_percent"] = 100 - int((float(context["ipaddress_available"]
-        ) / context["ipaddress_all"]) * 100)
-        context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
+        if context['ipaddress_all'] != 0:
+            context['ipaddress_available'] = IpAddress.objects.filter(device=None).count()
+            context["ipaddress_percent"] = 100 - int((float(context["ipaddress_available"]
+            ) / context["ipaddress_all"]) * 100)
+            context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
     if "edithistory" in widgetlist:
         context['revisions'] = Revision.objects.select_related("version_set", "version_set__content_type", "user"
                                 ).filter().order_by("-date_created")[:20]
