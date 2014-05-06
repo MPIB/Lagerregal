@@ -15,7 +15,8 @@ usages = {
     "room": _("Room is changed"),
     "owner": _("person currently lending is changed"),
     "reminder": _("Reminder that device is still owned"),
-    "overdue": _("Reminder that device is overdue")
+    "overdue": _("Reminder that device is overdue"),
+    "trashed": _("Device is trashed")
 }
 
 
