@@ -224,6 +224,11 @@ class IpAddressApiDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = IpAddressSerializer
 
 
-class SmallDeviceApiList(generics.ListAPIView):
-    queryset = Lending.objects.exclude(smalldevice=None).exclude(smalldevice="").values("smalldevice").distinct()
-    serializer_class = SmallDeviceSerializer
+class SmallDeviceApiList(APIView):
+    def get(self, request, subpart=None):
+        smalldevices = Lending.objects.exclude(smalldevice=None).exclude(smalldevice="")
+        if subpart:
+            smalldevices = smalldevices.filter(smalldevice__icontains=subpart)
+        smalldevices = smalldevices.values_list("smalldevice").distinct()
+        smalldevices = [smalldevice[0] for smalldevice in smalldevices]
+        return Response(smalldevices, status=rest_framework.status.HTTP_200_OK)
