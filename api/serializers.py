@@ -155,9 +155,3 @@ class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = IpAddress
-
-
-class SmallDeviceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Lending
-        fields = ("smalldevice",)
