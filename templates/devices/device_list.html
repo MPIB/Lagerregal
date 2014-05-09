@@ -45,7 +45,7 @@
             <th>{% trans "Devicetype" %}</th>
             <th>{% trans "Room" %}</th>
             <th>{% trans "Devicegroup" %}</th>
-            {% if viewfilter == "lent" %}
+            {% if viewfilter == "lent" or viewfilter == "overdue" %}
                 <th>{% trans "Owner" %}</th>
                 <th>{% trans "Duedate" %}</th>
             {% else %}
@@ -61,7 +61,7 @@
                 <td>{{ device.devicetype__name }}</td>
                 <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
                 <td>{{ device.group__name }}</td>
-                {% if viewfilter == "lent" %}
+                {% if viewfilter == "lent" or viewfilter == "overdue" %}
                     <td>{{ device.currentlending__owner__username }}</td>
                     <td>{{ device.currentlending__duedate }}</td>
                 {% else %}
