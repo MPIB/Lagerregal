@@ -37,7 +37,7 @@ class DashboardWidget(models.Model):
 
 
 def create_dashboard(sender, instance, created, **kwargs):
-    if created:
+    if created and instance.is_staff:
         DashboardWidget(column="l", index=0, widgetname="statistics", user=instance, minimized=False).save()
         DashboardWidget(column="l", index=1, widgetname="newestdevices", user=instance, minimized=False).save()
         DashboardWidget(column="l", index=2, widgetname="overdue", user=instance, minimized=False).save()
