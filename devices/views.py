@@ -52,6 +52,10 @@ class DeviceList(PaginationMixin, ListView):
             devices = Device.objects.exclude(trashed=None)
         elif self.viewfilter == "overdue":
             devices = Device.objects.filter(currentlending__duedate__lt=datetime.date.today())
+        elif self.viewfilter == "returnsoon":
+            soon = datetime.date.today() + datetime.timedelta(days=10)
+            devices = Device.objects.filter(currentlending__duedate__lte=soon,
+                                            currentlending__duedate__gt=datetime.date.today())
         elif self.viewfilter == "temporary":
             devices = Device.active().filter(templending=True)
         elif self.viewfilter == "bookmark":

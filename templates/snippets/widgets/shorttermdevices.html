@@ -16,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        {% for device in shortterm_devices %}
+        {% for device in shorttermdevices %}
             <tr>
                 <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
                 <td>{% if device.currentlending == None %}
