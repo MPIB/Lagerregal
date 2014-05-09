@@ -62,8 +62,8 @@
                 <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
                 <td>{{ device.group__name }}</td>
                 {% if viewfilter == "lent" %}
-                    <td>{{ device.currentlending.owner }}</td>
-                    <td>{{ device.currentlending.duedate }}</td>
+                    <td>{{ device.currentlending__owner__username }}</td>
+                    <td>{{ device.currentlending__duedate }}</td>
                 {% else %}
                     <td>{% if device.currentlending == None %}
                         <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>

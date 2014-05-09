@@ -64,7 +64,7 @@ class DeviceList(PaginationMixin, ListView):
             devices = devices.order_by(self.viewsorting)
 
         return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name",
-                              "group__name", "currentlending")
+                              "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
