@@ -12,7 +12,8 @@ from locations.views import *
 from history.views import *
 from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
-from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch, UserLendings
+from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, \
+    LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch, UserLendings
 from devicetypes.ajax import GetTypeAttributes
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
@@ -210,6 +211,7 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/devices/create/$', DeviceApiCreate.as_view(), name='device-api-create'),
     url(r'^api/devices/(?P<pk>\d+)/$', DeviceApiDetail.as_view(), name='device-api-detail'),
     url(r'^api/devices/(?P<pk>\d+)/bookmark/$', DeviceApiBookmark.as_view(), name='device-api-bookmark'),
+    url(r'^api/devices/(?P<pk>\d+)/changeroom/$', DeviceApiRoomChange.as_view(), name='device-api-room'),
     url(r'^api/devices/lend/$', DeviceApiLend.as_view(), name='device-api-lend'),
     url(r'^api/smalldevices/$', SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
     url(r'^api/smalldevices/(?P<subpart>[^/]*)/$', SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
@@ -242,6 +244,9 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
     url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
     url(r'^api/useravatar/(?P<username>[^/]*)/$', UserApiAvatar.as_view(), name='user-api-avatar'),
+
+    url(r'^api/groups/$', GroupApiList.as_view(), name='group-api-list'),
+    url(r'^api/groups/(?P<pk>\d+)/$', GroupApiDetail.as_view(), name='group-api-detail'),
 
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ), allowed=["json", "html"])

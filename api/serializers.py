@@ -2,10 +2,14 @@ from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 
 from devices.models import Room, Building, Manufacturer, Device, Template, Lending
+from django.contrib.auth.models import  Group
 from devicetypes.models import Type, TypeAttribute
 from users.models import Lageruser
 from network.models import IpAddress
 
+class UnicodeNameField(serializers.RelatedField):
+    def to_native(self, value):
+        return value.__unicode__()
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='building-api-detail')
@@ -55,8 +59,9 @@ class TemplateSerializer(serializers.HyperlinkedModelSerializer):
         model = Template
 
 
-class LendingSerializer(serializers.ModelSerializer):
-    owner = serializers.SlugRelatedField(slug_field="username")
+class LendingDisplaySerializer(serializers.ModelSerializer):
+    owner = UnicodeNameField()
+    owner_url = serializers.HyperlinkedIdentityField(source="owner", view_name='user-api-detail')
 
     class Meta:
         model = Lending
@@ -66,17 +71,17 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
     manufacturer = serializers.SlugRelatedField(slug_field="name")
-    room = serializers.SlugRelatedField(slug_field="name")
+    room = serializers.SlugRelatedField(slug_field="name", queryset=Room.objects.select_related("building").all())
     devicetype = serializers.SlugRelatedField(slug_field="name")
     ip_addresses = serializers.SlugRelatedField(many=True, source='ipaddress_set', slug_field="address")
-    creator = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
-    currentlending = LendingSerializer()
+    creator = UnicodeNameField()
+    creator_url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
+    currentlending = LendingDisplaySerializer(required=False, read_only=True)
     bookmarked = serializers.BooleanField()
 
     class Meta:
         model = Device
         exclude = ("bookmarkers", )
-
 
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
@@ -85,6 +90,15 @@ class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Device
         fields = ("url", "id", "name")
+
+class DeviceRoomSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
+    room = serializers.PrimaryKeyRelatedField(queryset=Room.objects.select_related("building").all())
+
+    class Meta:
+        model = Device
+        fields = ("url", "id", "room")
 
 
 class LendingSerializer(serializers.ModelSerializer):
@@ -147,6 +161,15 @@ class UserListSerializer(serializers.HyperlinkedModelSerializer):
         model = Lageruser
         fields = ("url", "id", "username", "first_name", "last_name", "email")
 
+
+class GroupSerializer(serializers.HyperlinkedModelSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name='group-api-detail')
+    id = serializers.CharField(source="pk", read_only=True)
+    users = UserListSerializer(many=True, source="user_set")
+    permissions = serializers.SlugRelatedField(slug_field="name", many=True)
+
+    class Meta:
+        model = Group
 
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ipaddress-api-detail')

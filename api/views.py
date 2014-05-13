@@ -11,6 +11,7 @@ from api.serializers import *
 from devices.models import *
 from devicetypes.models import *
 from network.models import *
+from django.contrib.auth.models import Group
 
 
 @api_view(('GET',))
@@ -24,6 +25,7 @@ def api_root(request, format=None):
         'templates': rest_framework.reverse.reverse('template-api-list', request=request),
         'ipaddresses': rest_framework.reverse.reverse('ipaddress-api-list', request=request),
         'users': rest_framework.reverse.reverse('user-api-list', request=request),
+        'groups': rest_framework.reverse.reverse('group-api-list', request=request),
     })
 
 
@@ -61,6 +63,9 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
         device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
         return device
 
+class DeviceApiRoomChange(generics.UpdateAPIView):
+    model = Device
+    serializer_class = DeviceRoomSerializer
 
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
@@ -90,7 +95,7 @@ class DeviceApiBookmark(APIView):
 class DeviceApiLend(generics.CreateAPIView):
     serializer_class = LendingSerializer
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         if "room" in request.POST:
             if request.POST["room"] != "" and request.POST["room"] != 0:
                 roomid = request.POST["room"][0]
@@ -208,6 +213,14 @@ class UserApiAvatar(generics.RetrieveAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+class GroupApiList(SearchQuerysetMixin, generics.ListAPIView):
+    model = Group
+    serializer_class = GroupSerializer
+
+
+class GroupApiDetail(generics.RetrieveUpdateDestroyAPIView):
+    model = Group
+    serializer_class = GroupSerializer
 
 class IpAddressApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = IpAddress
