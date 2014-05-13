@@ -32,8 +32,9 @@ def get_widget_data(user, widgetlist=[]):
             ) / context["ipaddress_all"]) * 100)
             context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
     if "edithistory" in widgetlist:
-        context['revisions'] = Revision.objects.select_related("version_set", "version_set__content_type", "user"
-                                ).filter().order_by("-date_created")[:20]
+        context['revisions'] = Revision.objects.select_related("user").prefetch_related("version_set",
+                                                                                        "version_set__content_type"
+                                                                            ).all().order_by("-date_created")[:20]
     if "newestdevices" in widgetlist:
         context['newest_devices'] = Device.objects.select_related().all().order_by("-pk")[:10]
     if "overdue" in widgetlist:
@@ -45,7 +46,8 @@ def get_widget_data(user, widgetlist=[]):
     if "sections" in widgetlist:
         context["sections"] = Section.objects.all()
     if "recentlendings" in widgetlist:
-        context["recentlendings"] = Lending.objects.select_related().all().order_by("-pk")[:10]
+        context["recentlendings"] = Lending.objects.select_related("device",
+                                                            "owner").all().order_by("-pk")[:10]
     if "shorttermdevices" in widgetlist:
         context['shorttermdevices'] = Device.objects.filter(templending=True)[:10]
     if "bookmarks" in widgetlist:

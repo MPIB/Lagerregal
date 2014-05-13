@@ -17,8 +17,8 @@ from devicetypes.models import Type, TypeAttributeValue
 
 
 class Globalhistory(PaginationMixin, ListView):
-    queryset = Revision.objects.select_related("version_set", "version_set__content_type", "user"
-    ).filter().order_by("-date_created")
+    queryset = Revision.objects.select_related("user").prefetch_related("version_set", "version_set__content_type"
+        ).filter().order_by("-date_created")
     context_object_name = "revision_list"
     template_name = 'history/globalhistory.html'
 
