@@ -89,7 +89,6 @@ var l = Ladda.create(document.querySelector( '#searchbutton' ));
 var baseurl = "{% url "search" %}"
 
 $("#searchbutton").click(function(){
-    console.log(firstLoad);
     if (!firstLoad || !params["searchterm"]) {
         location.hash = $.param({"searchterm": visualSearch.searchBox.value()})
     }
