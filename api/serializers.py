@@ -174,7 +174,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ipaddress-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
-
+    user = UnicodeNameField()
     device = serializers.SlugRelatedField(slug_field="name")
 
     class Meta:
