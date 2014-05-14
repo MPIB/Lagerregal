@@ -206,7 +206,6 @@
         </div>
         <div class="col-xs-12 col-md-3">
             <div class="panel panel-primary">
-                <!-- Default panel contents -->
                 <div class="panel-heading">{% trans "IP-Addresses" %}</div>
                 <ul class="list-group">
                     {% for address in device.ipaddress_set.all %}
@@ -240,7 +239,6 @@
 
 
             <div class="panel panel-primary">
-                <!-- Default panel contents -->
                 <div class="panel-heading">{% trans "Tags" %}</div>
                 <ul class="list-group">
                     {% for tag in device.tags.all %}
@@ -281,17 +279,18 @@
                 {% if perms.devices.lend_device %}
                     <div class="tab-pane active" id="notes">
                         <ul class="list-unstyled" style="padding-top:20px;">
-                            {% for note in notes %}
+                            {% for note in device.notes.all %}
                                 <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
                                     <div class="row">
-                                        <div class="col-xs-2 col-md-1">
+                                        <div class="col-xs-2 col-md-2">
                                             {% if note.creator.avatar %}
                                                 <img src="{{ note.creator.avatar.url }}"
                                                      class="img-rounded img-responsive" alt=""/>
                                             {% endif %}
                                             <p style="padding-top:5px;margin-bottom:0">{{ note.creator }}</p>
+                                            <small style="color:darkgray">{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
                                         </div>
-                                        <div class="col-xs-10 col-md-11">
+                                        <div class="col-xs-10 col-md-10">
                                             <div class="comment-text">
                                                 {{ note.note|linebreaks }}
                                             </div>

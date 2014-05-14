@@ -101,7 +101,6 @@ class DeviceDetail(DetailView):
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
-        context["notes"] = Note.objects.select_related("creator").filter(device=context["device"]).order_by("-id")
         mailinitial = {}
         if context["device"].currentlending is not None:
             currentowner = context["device"].currentlending.owner
