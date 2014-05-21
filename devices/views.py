@@ -426,6 +426,20 @@ class DeviceLend(FormView):
 
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
+                try:
+                    template = MailTemplate.objects.get(usage="room")
+                except:
+                    template = None
+                if not template == None:
+                    recipients = []
+                    for recipient in template.default_recipients.all():
+                        recipient = recipient.content_object
+                        if isinstance(recipient, Group):
+                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                        else:
+                            recipients.append(recipient.email)
+                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                    messages.success(self.request, _('Mail successfully sent'))
                 reversion.set_comment(_("Device lent and moved to room {0}").format(device.room))
             lending.device = form.cleaned_data["device"]
         else:
