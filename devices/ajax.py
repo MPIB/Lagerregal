@@ -30,13 +30,13 @@ from csv import QUOTE_ALL
 class AutocompleteDevice(View):
     def post(self, request):
         name = request.POST["name"]
-        devices = Device.objects.filter(name__icontains=name)[:20]
+        devices = Device.objects.filter(name__icontains=name).values("name").distinct()[:20]
         results = []
         for device in devices:
             device_json = {}
-            device_json['id'] = device.pk
-            device_json['label'] = device.name
-            device_json['value'] = device.name
+            device_json['id'] = device["name"]
+            device_json['label'] = device["name"]
+            device_json['value'] = device["name"]
             results.append(device_json)
         return HttpResponse(json.dumps(results), content_type='application/json')
 
