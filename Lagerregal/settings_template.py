@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'reversion',
     'rest_framework',
     'south',
+    'permission',
     'debug_toolbar',
     'provider',
     'provider.oauth2',
@@ -180,6 +181,11 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'permission.backends.PermissionBackend',
+)
 
 USE_LDAP = False
 

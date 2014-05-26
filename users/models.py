@@ -18,6 +18,8 @@ class Lageruser(AbstractUser):
     ], default=30)
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
 
+    department = models.ForeignKey("users.Department", null=True, blank=True)
+
     def __unicode__(self):
         if self.first_name != "" and self.last_name != "":
             return u"{0} {1}".format(self.first_name, self.last_name)
@@ -33,3 +35,17 @@ class Lageruser(AbstractUser):
 
     def get_absolute_url(self):
         return reverse('userprofile', kwargs={'pk': self.pk})
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=40)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('Department')
+        verbose_name_plural = _('Departments')
+        permissions = (
+            ("read_department", _("Can read Departments")),
+        )

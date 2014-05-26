@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import login_required
 from devices.views import *
 from network.views import *
 from devicetypes.views import *
@@ -21,6 +21,8 @@ from . import settings
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
 admin.autodiscover()
+import permission; permission.autodiscover()
+from permission.decorators import permission_required
 
 urlpatterns = patterns('',
     url(r'^$', login_required(Home.as_view()), name="home"),
@@ -28,34 +30,34 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', 'users.views.login', {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}, name="login"),
     url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}, name="logout"),
 
-    url(r'^devices/$', permission_required("devices.read_device")(DeviceList.as_view()), name="device-list"),
-    url(r'^devices/page/(?P<page>[0-9]*)$', permission_required("devices.read_device")(DeviceList.as_view()), name="device-list"),
-    url(r'^devices/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_device")(DeviceList.as_view()), name="device-list"),
-    url(r'^devices/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_device")(DeviceList.as_view()), name="device-list"),
-    url(r'^devices/add$', permission_required("devices.add_device")(DeviceCreate.as_view()), name="device-add"),
-    url(r'^devices/add/template/(?P<templateid>[0-9]*)$', permission_required("devices.add_device")(DeviceCreate.as_view()), name="device-add"),
-    url(r'^devices/add/copy/(?P<copyid>[0-9]*)$', permission_required("devices.add_device")(DeviceCreate.as_view()), name="device-add-copy"),
-    url(r'^devices/(?P<pk>[0-9]*)$', permission_required("devices.read_device")(DeviceDetail.as_view()), name="device-detail"),
-    url(r'^devices/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_device")(DeviceUpdate.as_view()), name="device-edit"),
-    url(r'^devices/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_device")(DeviceDelete.as_view()), name="device-delete"),
-    url(r'^devices/(?P<pk>[0-9]*)/archive/$', permission_required("devices.change_device")(DeviceArchive.as_view()), name="device-archive"),
-    url(r'^devices/(?P<pk>[0-9]*)/trash/$', permission_required("devices.change_device")(DeviceTrash.as_view()), name="device-trash"),
-    url(r'^devices/(?P<pk>[0-9]*)/storage/$', permission_required("devices.change_device")(DeviceStorage.as_view()), name="device-storage"),
-    url(r'^devices/(?P<pk>[0-9]*)/mail/$', permission_required("devices.lend_device")(DeviceMail.as_view()), name="device-mail"),
-    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/$', permission_required("devices.change_device")(DeviceIpAddress.as_view()), name="device-ipaddress"),
-    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)/remove$', permission_required("devices.change_device")(DeviceIpAddressRemove.as_view()), name="device-ipaddress-remove"),
-    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)/purpose$', permission_required("devices.change_device")(DeviceIpAddressPurpose.as_view()), name="device-ipaddress-purpose"),
-    url(r'^devices/(?P<pk>[0-9]*)/tags/$', permission_required("devices.change_device")(DeviceTags.as_view()), name="device-tags"),
-    url(r'^devices/(?P<pk>[0-9]*)/tags/(?P<tag>[0-9]*)$', permission_required("devices.change_device")(DeviceTagRemove.as_view()), name="device-tag-remove"),
-    url(r'^devices/(?P<pk>[0-9]*)/lending/$', permission_required("devices.lend_device")(DeviceLendingList.as_view()), name="device-lending-list"),
-    url(r'^devices/(?P<pk>[0-9]*)/lending/(?P<page>[0-9]*)$', permission_required("devices.lend_device")(DeviceLendingList.as_view()), name="device-lending-list"),
-    url(r'^devices/(?P<pk>[0-9]*)/inventoried/$', permission_required("devices.change_device")(DeviceInventoried.as_view()), name="device-inventoried"),
-    url(r'^devices/(?P<pk>[0-9]*)/bookmark/$', permission_required("devices.change_device")(DeviceBookmark.as_view()), name="device-bookmark"),
-    url(r'^devices/(?P<pk>[0-9]*)/notes/create/$', permission_required("devices.change_device")(NoteCreate.as_view()), name="device-note-create"),
-    url(r'^devices/(?P<pk>[0-9]*)/notes/edit/$', permission_required("devices.change_device")(NoteUpdate.as_view()), name="device-note-edit"),
-    url(r'^devices/(?P<device>[0-9]*)/notes/(?P<pk>[0-9]*)/delete/$', permission_required("devices.change_device")(NoteDelete.as_view()), name="device-note-delete"),
-    url(r'^devices/lend/$', permission_required("devices.lend_device")(DeviceLend.as_view()), name="device-lend"),
-    url(r'^devices/return/(?P<lending>[0-9]*)$', permission_required("devices.lend_device")(DeviceReturn.as_view()), name="device-return"),
+    url(r'^devices/$', DeviceList.as_view(), name="device-list"),
+    url(r'^devices/page/(?P<page>[0-9]*)$', DeviceList.as_view(), name="device-list"),
+    url(r'^devices/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', DeviceList.as_view(), name="device-list"),
+    url(r'^devices/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', DeviceList.as_view(), name="device-list"),
+    url(r'^devices/add$', DeviceCreate.as_view(), name="device-add"),
+    url(r'^devices/add/template/(?P<templateid>[0-9]*)$', DeviceCreate.as_view(), name="device-add"),
+    url(r'^devices/add/copy/(?P<copyid>[0-9]*)$', DeviceCreate.as_view(), name="device-add-copy"),
+    url(r'^devices/(?P<pk>[0-9]*)$', DeviceDetail.as_view(), name="device-detail"),
+    url(r'^devices/(?P<pk>[0-9]*)/edit/$', DeviceUpdate.as_view(), name="device-edit"),
+    url(r'^devices/(?P<pk>[0-9]*)/delete/$', DeviceDelete.as_view(), name="device-delete"),
+    url(r'^devices/(?P<pk>[0-9]*)/archive/$', DeviceArchive.as_view(), name="device-archive"),
+    url(r'^devices/(?P<pk>[0-9]*)/trash/$', DeviceTrash.as_view(), name="device-trash"),
+    url(r'^devices/(?P<pk>[0-9]*)/storage/$', DeviceStorage.as_view(), name="device-storage"),
+    url(r'^devices/(?P<pk>[0-9]*)/mail/$', DeviceMail.as_view(), name="device-mail"),
+    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/$', DeviceIpAddress.as_view(), name="device-ipaddress"),
+    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)/remove$', DeviceIpAddressRemove.as_view(), name="device-ipaddress-remove"),
+    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)/purpose$', DeviceIpAddressPurpose.as_view(), name="device-ipaddress-purpose"),
+    url(r'^devices/(?P<pk>[0-9]*)/tags/$', DeviceTags.as_view(), name="device-tags"),
+    url(r'^devices/(?P<pk>[0-9]*)/tags/(?P<tag>[0-9]*)$', DeviceTagRemove.as_view(), name="device-tag-remove"),
+    url(r'^devices/(?P<pk>[0-9]*)/lending/$', DeviceLendingList.as_view(), name="device-lending-list"),
+    url(r'^devices/(?P<pk>[0-9]*)/lending/(?P<page>[0-9]*)$', DeviceLendingList.as_view(), name="device-lending-list"),
+    url(r'^devices/(?P<pk>[0-9]*)/inventoried/$', DeviceInventoried.as_view(), name="device-inventoried"),
+    url(r'^devices/(?P<pk>[0-9]*)/bookmark/$', DeviceBookmark.as_view(), name="device-bookmark"),
+    url(r'^devices/(?P<pk>[0-9]*)/notes/create/$', NoteCreate.as_view(), name="device-note-create"),
+    url(r'^devices/(?P<pk>[0-9]*)/notes/edit/$', NoteUpdate.as_view(), name="device-note-edit"),
+    url(r'^devices/(?P<device>[0-9]*)/notes/(?P<pk>[0-9]*)/delete/$', NoteDelete.as_view(), name="device-note-delete"),
+    url(r'^devices/lend/$', DeviceLend.as_view(), name="device-lend"),
+    url(r'^devices/return/(?P<lending>[0-9]*)$', DeviceReturn.as_view(), name="device-return"),
 
     url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
     url(r'^devices/templates/(?P<page>[0-9]*)$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),

@@ -30,8 +30,10 @@ from devicetags.forms import DeviceTagForm
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
+from permission.decorators import permission_required
 
 
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
     viewfilter = None
@@ -80,7 +82,7 @@ class DeviceList(PaginationMixin, ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceDetail(DetailView):
     queryset = Device.objects.select_related("manufacturer", "devicetype", "currentlending")
     context_object_name = 'device'
@@ -135,6 +137,7 @@ class DeviceDetail(DetailView):
         return context
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressRemove(DeleteView):
     template_name = 'devices/unassign_ipaddress.html'
     model = IpAddress
@@ -159,6 +162,7 @@ class DeviceIpAddressRemove(DeleteView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddress(FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = IpAddressForm
@@ -187,6 +191,7 @@ class DeviceIpAddress(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressPurpose(FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = IpAddressPurposeForm
@@ -215,6 +220,7 @@ class DeviceIpAddressPurpose(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceLendingList(PaginationMixin, ListView):
     context_object_name = 'lending_list'
     template_name = 'devices/device_lending_list.html'
@@ -234,6 +240,7 @@ class DeviceLendingList(PaginationMixin, ListView):
         return context
 
 
+@permission_required('devices.add_device', raise_exception=True)
 class DeviceCreate(CreateView):
     model = Device
     template_name = 'devices/device_form.html'
@@ -284,7 +291,9 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
-
+        if self.request.user.department != None:
+            self.object.department = self.request.user.department
+            self.object.save()
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
@@ -305,6 +314,7 @@ class DeviceCreate(CreateView):
         return r
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceUpdate(UpdateView):
     model = Device
     template_name = 'devices/device_form.html'
@@ -377,6 +387,7 @@ class DeviceUpdate(UpdateView):
         return super(DeviceUpdate, self).form_valid(form)
 
 
+@permission_required('devices.delete_device', raise_exception=True)
 class DeviceDelete(DeleteView):
     model = Device
     success_url = reverse_lazy('device-list')
@@ -392,6 +403,7 @@ class DeviceDelete(DeleteView):
         return context
 
 
+@permission_required('devices.lend_device', raise_exception=True)
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
@@ -458,6 +470,7 @@ class DeviceLend(FormView):
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": lending.owner.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceInventoried(View):
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
@@ -472,6 +485,7 @@ class DeviceInventoried(View):
         return self.get(request, **kwargs)
 
 
+@permission_required('devices.lend_device', raise_exception=True)
 class DeviceReturn(FormView):
     template_name = 'devices/base_form.html'
     form_class = ReturnForm
@@ -521,6 +535,7 @@ class DeviceReturn(FormView):
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": owner.pk}))
 
 
+@permission_required('devices.lend_device', raise_exception=True)
 class DeviceMail(FormView):
     template_name = 'devices/base_form.html'
     form_class = DeviceMailForm
@@ -563,6 +578,7 @@ class DeviceMail(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_archive.html'
@@ -586,6 +602,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_trash.html'
@@ -624,6 +641,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceStorage(SingleObjectMixin, FormView):
     model = Device
     form_class = DeviceStorageForm
@@ -668,6 +686,7 @@ class DeviceStorage(SingleObjectMixin, FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
 
