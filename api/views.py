@@ -12,7 +12,7 @@ from devices.models import *
 from devicetypes.models import *
 from network.models import *
 from django.contrib.auth.models import Group
-
+from mail.models import MailTemplate
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -67,6 +67,26 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
     model = Device
     serializer_class = DeviceRoomSerializer
 
+    def post(self, request, pk):
+        return self.put(request, pk)
+
+    def put(self, request, pk, **kwargs):
+        response = super(DeviceApiRoomChange, self).put(request, pk)
+        try:
+            template = MailTemplate.objects.get(usage="room")
+        except:
+            template = None
+        if not template == None:
+            recipients = []
+            for recipient in template.default_recipients.all():
+                recipient = recipient.content_object
+                if isinstance(recipient, Group):
+                    recipients += recipient.lageruser_set.all().values_list("email")[0]
+                else:
+                    recipients.append(recipient.email)
+            template.send(self.request, recipients, {"device": self.object, "user": self.request.user})
+        return response
+
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
         device = Device.objects.get(pk=pk)
@@ -112,6 +132,19 @@ class DeviceApiLend(generics.CreateAPIView):
                 device.room = room
                 reversion.set_user(request.user)
                 reversion.set_comment("Device marked as lend")
+                try:
+                    template = MailTemplate.objects.get(usage="room")
+                except:
+                    template = None
+                if not template == None:
+                    recipients = []
+                    for recipient in template.default_recipients.all():
+                        recipient = recipient.content_object
+                        if isinstance(recipient, Group):
+                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                        else:
+                            recipients.append(recipient.email)
+                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
             reversion.set_ignore_duplicates(True)
             device.save()
         return response
