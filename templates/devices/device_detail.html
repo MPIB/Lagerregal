@@ -2,6 +2,7 @@
 {% load devicetags %}
 {% load i18n %}
 {% load staticfiles %}
+{% load permissionif %}
 
 {% block title %}{{ device.name }}{% endblock %}
 
@@ -21,34 +22,34 @@
                                                                                          style="margin-right:7px"></i>{% trans "Print Label" %}
                     </a></li>
                 {% endif %}
-                {% if perms.devices.add_device %}
+                {% permission user has 'devices.change_device' of device %}
                     <li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check"
                                                                               style="margin-right:7px"></i>{% trans "Inventoried" %}
-                </a></li>{% endif %}
-                {% if perms.devices.create_device %}
+                </a></li>{% endpermission %}
+                {% permission user has 'devices.add_device' of device %}
                     <li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy"
                                                                            style="margin-right:7px"></i>{% trans "Create Copy" %}
-                </a></li>{% endif %}
-                {% if perms.devices.change_device or perms.devices.delete_device %}
-                    <li class="divider"></li>{% endif %}
-                {% if perms.devices.change_device %}
+                </a></li>{% endpermission %}
+                {% permission user has 'devices.change_device' of device or user has 'devices.delete_device' of device %}
+                    <li class="divider"></li>{% endpermission %}
+                {% permission user has 'devices.change_device' of device %}
                     <li><a href="#" id="storagebutton" data-toggle="popover" class="dropdown-cancel"><i
                             class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
                     <li><a href="#" id="archivebutton" data-toggle="popover" class="dropdown-cancel"><i
                             class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
                     <li><a href="#" id="trashbutton" data-toggle="popover" class="dropdown-cancel"><i
                             class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
-                {% endif %}
-                {% if perms.devices.delete_device %}
+                {% endpermission %}
+                {% permission user has 'devices.change_device' of device %}
                     <li>
                     <a href="#" id="deletebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-times"
                                                                                                    style="margin-right:7px"></i>{% trans "Delete" %}
-                    </a></li>{% endif %}
+                    </a></li>{% endpermission %}
             </ul>
         </div>
 
 
-        {% if perms.devices.change_device %}
+        {% permission user has 'devices.change_device' of device %}
             <form action='{% url "device-bookmark" object.id %}' method='post'
                   class='form-inline pull-right'>{% csrf_token %}
                 {% with is_bookmarked=device|check_bookmark:user %}
@@ -64,13 +65,13 @@
             </form>
             <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm"
                style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        {% endif %}
-        {% if perms.devices.change_device or perms.devices.lend_device %}
+        {% endpermission %}
+        {% permission user has 'devices.lend_device' of device %}
             <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal"
                data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>
-        {% endif %}
+        {% endpermission %}
 
-        {% if perms.devices.lend_device %}
+        {% permission user has 'devices.lend_device' of device %}
             {% if device.currentlending != None %}
                 <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
                    style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}
@@ -79,19 +80,19 @@
                 <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
                    style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
             {% endif %}
-        {% endif %}
+        {% endpermission %}
     {% else %}
 
 
-        {% if device.archived != None and perms.devices.change_device %}
+        {% permission user has 'devices.change_device' of device and device.archived != None %}
             <a href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"
                style="margin-left:10px"><i class="fa fa-folder-open"
-                                           style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
+                                           style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endpermission %}
 
-        {% if device.trashed != None and perms.devices.change_device %}
+        {% permission user has 'devices.change_device' of device and device.trashed != None %}
             <a href="#" id="trashbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"
                style="margin-left:10px"><i class="fa fa-folder-open"
-                                           style="margin-right:7px"></i>{% trans "Remove from Trash" %}</a>{% endif %}
+                                           style="margin-right:7px"></i>{% trans "Remove from Trash" %}</a>{% endpermission %}
     {% endif %}
 {% endblock %}
 
@@ -133,6 +134,10 @@
                     <td>{% trans "Devicegroup" %}</td>
                     <td>{% if device.group %}<a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}
                         </a>{% else %}-{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Department" %}</td>
+                    <td>{% if device.department %}{{ device.department }}{% else %}-{% endif %}</td>
                 </tr>
                 <tr>
                     <td>{% trans "Short term device" %}</td>
@@ -221,7 +226,7 @@
                     {% endfor %}
                 </ul>
 
-                {% if device.archived == None and perms.devices.change_device %}
+                {% permission user has 'devices.change_device' of device and device.archived == None%}
                     <div class="panel-footer">
                         <form method="post" action="{% url 'device-ipaddress' device.pk %}"
                               style="margin:0;">{% csrf_token %}
@@ -234,7 +239,7 @@
                             <input type="hidden" name="device" value="{{ device.pk }}"/>
                         </form>
                     </div>
-                {% endif %}
+                {% endpermission %}
             </div>
 
 
@@ -265,18 +270,18 @@
     <div class="row">
         <div class="col-md-12">
             <ul class="nav nav-tabs" style="margin-top:20px">
-                {% if perms.devices.change_device %}
-                    <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>{% endif %}
-                {% if perms.devices.lend_device %}
-                    <li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endif %}
-                {% if perms.devices.change_device %}
-                    <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endif %}
-                {% if perms.devices.lend_device %}
-                    <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endif %}
+                {% permission user has 'devices.change_device' of device %}
+                    <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>{% endpermission %}
+                {% permission user has 'devices.lend_device' of device %}
+                    <li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endpermission %}
+                {% permission user has 'devices.change_device' of device %}
+                    <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endpermission %}
+                {% permission user has 'devices.lend_device' of device %}
+                    <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endpermission %}
             </ul>
 
             <div class="tab-content">
-                {% if perms.devices.lend_device %}
+                {% permission user has 'devices.change_device' of device %}
                     <div class="tab-pane active" id="notes">
                         <ul class="list-unstyled" style="padding-top:20px;">
                             {% for note in device.notes.all %}
@@ -327,8 +332,8 @@
                             </button>
                         </form>
                     </div>
-                {% endif %}
-                {% if perms.devices.lend_device %}
+                {% endpermission %}
+                {% permission user has 'devices.change_device' of device %}
                     <div class="tab-pane" id="lending">
                         <h4>{% trans "10 last lendings" %}</h4>
                         <table class="table table-bordered table-striped">
@@ -354,9 +359,9 @@
                         <a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i
                                 class="fa fa-book" style="margin-right:7px"></i>{% trans "View lending history" %}</a>
                     </div>
-                {% endif %}
+                {% endpermission %}
 
-                {% if perms.devices.change_device %}
+                {% permission user has 'devices.change_device' of device %}
                     <div class="tab-pane" id="edit">
                         <h4>{% trans "10 last edits" %}</h4>
                         <table id="change-history" class="table table-bordered table-striped">
@@ -384,9 +389,9 @@
                         <a href="{% url 'history-list' device.content_type.pk device.pk %}" class="btn btn-default"><i
                                 class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
                     </div>
-                {% endif %}
+                {% endpermission %}
 
-                {% if perms.devices.lend_device %}
+                {% permission user has 'devices.lend_device' of device %}
                     <div class="tab-pane" id="mail">
                         <h4>{% trans "10 last sent mails" %}</h4>
                         <table class="table table-bordered table-striped">
@@ -411,7 +416,7 @@
                             </tbody>
                         </table>
                     </div>
-                {% endif %}
+                {% endpermission %}
             </div>
         </div>
     </div>
@@ -419,12 +424,12 @@
 {% endblock %}
 
 {% block htmlend %}
-    {% if perms.devices.lend_device %}
+    {% permission user has 'devices.lend_device' of device %}
         {% include "snippets/modals/lending.html" with modalname="lendModal" %}
         {% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
 
         {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
-    {% endif %}
+    {% endpermission %}
 
 
     {% if "device" in LABEL_TEMPLATES %}
@@ -454,7 +459,7 @@
     });
 
 
-    {% if perms.devices.delete_device %}
+    {% permission user has 'devices.delete_device' of device %}
         $("#deletebutton").popover({
         html: 'true',
         placement: "left",
@@ -464,8 +469,8 @@
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'style='margin-left:10px;'/>"+
             "</form>"
         })
-    {% endif %}
-    {% if perms.devices.change_device %}
+    {% endpermission %}
+    {% permission user has 'devices.change_device' of device %}
         $("#archivebutton").popover({
         html: 'true',
         placement: "left",
@@ -497,7 +502,7 @@
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
             "</form>"
         })
-    {% endif %}
+    {% endpermission %}
 
     $(function() {
     $( "#id_duedate" ).datepicker();
