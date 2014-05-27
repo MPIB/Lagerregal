@@ -43,6 +43,10 @@
                                 <td>{{ profileuser.first_name }} {{ profileuser.last_name }}</td>
                             </tr>
                             <tr>
+                                <td>{% trans "Department" %}</td>
+                                <td>{{ profileuser.department }}</td>
+                            </tr>
+                            <tr>
                                 <td>{% trans "Groups" %}</td>
                                 <td>
                                     {% for group in profileuser.groups.all %}
