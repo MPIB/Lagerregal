@@ -7,6 +7,7 @@ from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from locations.models import Section
+import datetime
 
 
 class Building(models.Model):
@@ -149,9 +150,18 @@ class Device(models.Model):
         dict["room"] = self.room
         return dict
 
+    def is_overdue(self):
+        if self.currentlending == None:
+            return False
+        if self.currentlending.duedate < datetime.date.today():
+            return True
+        return False
+
     @staticmethod
     def active():
         return Device.objects.filter(archived=None, trashed=None)
+
+
 
 
 class DeviceInformationType(models.Model):

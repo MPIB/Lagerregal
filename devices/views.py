@@ -27,7 +27,7 @@ from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, I
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
     DeviceStorageForm, ReturnForm
 from devicetags.forms import DeviceTagForm
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
 from permission.decorators import permission_required
@@ -71,7 +71,12 @@ class DeviceList(PaginationMixin, ListView):
             self.departmentfilter = self.kwargs.get("department", "all")
 
         if self.departmentfilter != "all":
-            devices = devices.filter(department__id=self.departmentfilter)
+            try:
+                departmentid = int(self.departmentfilter)
+                self.departmentfilter = Department.objects.get(id=departmentid)
+            except:
+                self.departmentfilter = Department.objects.get(name=self.departmentfilter)
+            devices = devices.filter(department=self.departmentfilter)
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
@@ -86,6 +91,7 @@ class DeviceList(PaginationMixin, ListView):
             "viewsorting": self.viewsorting,
             "departmentfilter": self.departmentfilter
         })
+        context["today"] = datetime.datetime.today()
         context["template_list"] = Template.objects.all()
         context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
