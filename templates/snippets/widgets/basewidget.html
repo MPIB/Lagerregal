@@ -1,5 +1,5 @@
 {% load i18n %}
-<div class="panel panel-primary widget" id="{% block widgetname %}{% endblock %}">
+<div class="panel {% block paneltype %}panel-primary{% endblock %} widget" id="{% block widgetname %}{% endblock %}">
     <div class="panel-heading">
         <h3 class="panel-title">{% block title %}{% endblock %}
             <a class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}><i
