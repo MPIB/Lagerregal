@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from network.models import IpAddress
-from users.models import Lageruser
+from users.models import Lageruser, Department
 
 
 VIEWFILTER = (
@@ -17,6 +17,7 @@ VIEWFILTER = (
 class IpAddressForm(forms.ModelForm):
     class Meta:
         model = IpAddress
+        exclude = ("last_seen", )
 
     def clean(self):
         cleaned_data = super(IpAddressForm, self).clean()
@@ -27,6 +28,9 @@ class IpAddressForm(forms.ModelForm):
 
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
+                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
+                                                              "class": "pull-right input-sm form-control"}))
+    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
                                                               "class": "pull-right input-sm form-control"}))
 
