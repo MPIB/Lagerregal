@@ -21,8 +21,8 @@ class IpAddressList(PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
 
     def get_queryset(self):
-        self.viewfilter = self.kwargs.pop("filter", "all")
-        self.filterstring = self.kwargs.pop("search", "")
+        self.viewfilter = self.kwargs.get("filter", "all")
+        self.filterstring = self.kwargs.get("search", "")
         if self.viewfilter == "all":
             addresses = IpAddress.objects.all()
         elif self.viewfilter == "free":
@@ -35,6 +35,15 @@ class IpAddressList(PaginationMixin, ListView):
             addresses = IpAddress.objects.exclude(device=None).filter(user=None)
         else:
             addresses = IpAddress.objects.all()
+
+        if self.request.user.department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.department)
+        else:
+            self.departmentfilter = self.kwargs.get("department", "all")
+
+        if self.departmentfilter != "all":
+            addresses = addresses.filter(department__id=self.departmentfilter)
+
         if self.filterstring != "":
             addresses = addresses.filter(address__icontains=self.filterstring)
         return addresses.values("id", "address", "device__pk", "device__name", "user__pk", "user__username",
@@ -42,9 +51,13 @@ class IpAddressList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
-        context["viewform"] = ViewForm(initial={'viewfilter': self.viewfilter})
+        context["viewform"] = ViewForm(initial={
+                                                'viewfilter': self.viewfilter,
+                                                "departmentfilter": self.departmentfilter})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={
+                "filterstring": self.filterstring
+            })
         else:
             context["filterform"] = FilterForm()
         context["breadcrumbs"] = [(reverse("device-list"), _("IP-Addresses"))]
@@ -84,6 +97,8 @@ class IpAddressCreate(CreateView):
         context = super(IpAddressCreate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new"
+        if self.request.user.department:
+            context["form"].fields["department"].initial = self.request.user.department
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
             ("", _("Create new IP-Address"))]

@@ -29,6 +29,10 @@
                     <td>{% trans "Address" %}</td>
                     <td>{{ ipaddress.address }}</td>
                 </tr>
+                <tr>
+                    <td>{%  trans "Department" %}</td>
+                    <td>{{ ipaddress.department|default:"None" }}</td>
+                </tr>
                 {% if ipaddress.device.pk %}
                     <tr>
                         <td>{% trans "Device" %}</td>
@@ -46,7 +50,7 @@
                     </tr>
                 {% endif %}
                 <tr>
-                    <td>Last seen</td>
+                    <td>{%  trans "Last seen" %}</td>
                     <td>{{ ipaddress.last_seen|default:"never" }}</td>
                 </tr>
                 </tbody>
