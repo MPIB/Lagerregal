@@ -40,7 +40,7 @@ class DeviceList(PaginationMixin, ListView):
     viewsorting = None
 
     def get_queryset(self):
-        self.viewfilter = self.kwargs.pop("filter", "active")
+        self.viewfilter = self.kwargs.get("filter", "active")
         devices = None
         if self.viewfilter == "all":
             devices = Device.objects.all()
@@ -65,6 +65,13 @@ class DeviceList(PaginationMixin, ListView):
                 devices = self.request.user.bookmarks.all()
         else:
             devices = Device.active()
+        if self.request.user.department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.department)
+        else:
+            self.departmentfilter = self.kwargs.get("department", "all")
+
+        if self.departmentfilter != "all":
+            devices = devices.filter(department__id=self.departmentfilter)
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
@@ -74,7 +81,11 @@ class DeviceList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
-        context["viewform"] = DeviceViewForm(initial={'viewfilter': self.viewfilter, "viewsorting": self.viewsorting})
+        context["viewform"] = DeviceViewForm(initial={
+            'viewfilter': self.viewfilter,
+            "viewsorting": self.viewsorting,
+            "departmentfilter": self.departmentfilter
+        })
         context["template_list"] = Template.objects.all()
         context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]

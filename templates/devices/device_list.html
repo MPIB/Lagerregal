@@ -9,6 +9,7 @@
 {% block pullright %}
     {{ viewform.viewsorting }}
     {{ viewform.viewfilter }}
+    {{ viewform.departmentfilter }}
     {% if perms.devices.add_device %}
         <div class="btn-group">
             <a href="{% url 'device-add' %}" class="btn btn-success btn-sm"><i class="fa fa-plus"
@@ -89,12 +90,23 @@
     }
     });
     $('#id_viewfilter').change(function() {
-    window.location = "/devices/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
+    window.location = "/devices/department/" + $("#id_departmentfilter").val() + "/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
     });
 
     $('#id_viewsorting').change(function() {
-    window.location = "/devices/sorting/" + $(this).val() + "/filter/" + $("#id_viewfilter").val()
+    window.location = "/devices/department/" + $("#id_departmentfilter").val() + "/sorting/" + $(this).val() + "/filter/" + $("#id_viewfilter").val()
     });
+
+    $('#id_departmentfilter').change(function() {
+    console.log()
+    if ($(this).val() == "") {
+        value = "all"
+    } else {
+        value = $(this).val()
+    }
+    window.location = "/devices/department/" + value + "/sorting/" + $("#id_viewsorting").val() + "/filter/" + $("#id_viewfilter").val()
+    });
+
     });
 
     {% include "snippets/pagination_js.html" with pageurl="device-list" %}

@@ -9,7 +9,7 @@ from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from mail.models import MailTemplate
 
 
@@ -177,6 +177,9 @@ class DeviceViewForm(forms.Form):
                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                               "class": "pull-right form-control input-sm"}))
     viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
+                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
+                                                               "class": "pull-right form-control input-sm"}))
+    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 

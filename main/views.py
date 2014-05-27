@@ -14,11 +14,15 @@ from Lagerregal.utils import PaginationMixin
 from devices.forms import LendForm
 
 
-def get_widget_data(user, widgetlist=[]):
+def get_widget_data(user, widgetlist=[], department=None):
     context = {}
     context["today"] = datetime.date.today()
     if "statistics" in widgetlist:
-        context['device_all'] = Device.active().count()
+        if department:
+            devices = Device.active().filter(department=department)
+        else:
+            devices = Device.active()
+        context['device_all'] = devices.count()
         if context['device_all'] != 0:
             context['device_available'] = Device.active().filter(currentlending=None).count()
             context["device_percent"] = 100 - int((float(context["device_available"]
@@ -36,29 +40,40 @@ def get_widget_data(user, widgetlist=[]):
                                                                                         "version_set__content_type"
                                                                             ).all().order_by("-date_created")[:20]
     if "newestdevices" in widgetlist:
-        context['newest_devices'] = Device.objects.select_related().all().order_by("-pk")[:10]
+        if department:
+            devices = Device.objects.filter(department=department)
+        else:
+            devices = Device.objects.all()
+        context['newest_devices'] = devices.order_by("-pk")[:10]
     if "overdue" in widgetlist:
-        context["overdue"] = Lending.objects.select_related("device",
-                                                            "owner").filter(duedate__lt=context["today"],
-                                                                            returndate=None).order_by("duedate")[:10]
+        if department:
+            lendings = Lending.objects.select_related("device", "owner").filter(device__department=department)
+        else:
+            lendings = Lending.objects.select_related("device", "owner")
+        context["overdue"] = lendings.filter(duedate__lt=context["today"], returndate=None).order_by("duedate")[:10]
     if "groups" in widgetlist:
         context["groups"] = Devicegroup.objects.all()
     if "sections" in widgetlist:
         context["sections"] = Section.objects.all()
     if "recentlendings" in widgetlist:
-        context["recentlendings"] = Lending.objects.select_related("device",
-                                                            "owner").all().order_by("-pk")[:10]
+        if department:
+            lendings = Lending.objects.select_related("device", "owner").filter(device__department=department)
+        else:
+            lendings = Lending.objects.select_related("device", "owner")
+        context["recentlendings"] = lendings.all().order_by("-pk")[:10]
     if "shorttermdevices" in widgetlist:
         context['shorttermdevices'] = Device.objects.filter(templending=True)[:10]
     if "bookmarks" in widgetlist:
         context["bookmarks"] = user.bookmarks.all()[:10]
     if "returnsoon" in widgetlist:
         soon = context["today"] + datetime.timedelta(days=10)
-        context["returnsoon"] = Lending.objects.select_related("device",
-                                                               "owner").filter(duedate__lte=soon,
-                                                                               duedate__gt=context["today"],
-                                                                               returndate=None).order_by(
-                                                                                    "duedate")[:10]
+        if department:
+            lendings = Lending.objects.select_related("device", "owner").filter(device__department=department)
+        else:
+            lendings = Lending.objects.select_related("device", "owner")
+        context["returnsoon"] = lendings.filter(duedate__lte=soon, duedate__gt=context["today"],
+                                                returndate=None).order_by(
+                                                "duedate")[:10]
     return context
 
 
@@ -75,7 +90,7 @@ class Home(TemplateView):
             userwidget_list = dict(widgets)
             widgetlist = [x[0] for x in DashboardWidget.objects.filter(user=self.request.user
             ).values_list("widgetname")]
-            context.update(get_widget_data(self.request.user, widgetlist))
+            context.update(get_widget_data(self.request.user, widgetlist, self.request.user.department))
             for w in context["widgets_left"]:
                 del userwidget_list[w.widgetname]
 
