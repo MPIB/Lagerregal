@@ -252,7 +252,7 @@ class DepartmentCreate(CreateView):
 class DepartmentDetail(DetailView):
     model = Department
     context_object_name = 'department'
-    template_name = "locations/section_detail.html"
+    template_name = "users/department_detail.html"
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
