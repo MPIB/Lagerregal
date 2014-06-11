@@ -72,6 +72,8 @@
                             <li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
                         {% if perms.users.read_user %}
                             <li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>{% endif %}
+                        {% if perms.users.read_department %}
+                            <li><a href="{% url 'department-list' %}">{% trans "Departments" %}</a></li>{% endif %}
                         {% if perms.devicetags.read_devicetag %}
                             <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>{% endif %}
                     </ul>
