@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, TemplateView, ListView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView
 from reversion.models import Version
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -16,15 +16,16 @@ from django.contrib.sites.models import get_current_site
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
+from django.core.urlresolvers import reverse_lazy, reverse
 
-from users.models import Lageruser
-from devices.models import Lending
+from users.models import Lageruser, Department
+from devices.models import Lending, Device
 from users.forms import SettingsForm, AvatarForm
-from devices.forms import FilterForm
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.models import IpAddress
 from network.forms import UserIpAddressForm
+from devices.forms import ViewForm, VIEWSORTING, FilterForm
 
 
 class UserList(PaginationMixin, ListView):
@@ -201,3 +202,104 @@ def login(request, template_name='registration/login.html',
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
                             current_app=current_app)
+
+
+class DepartmentList(PaginationMixin, ListView):
+    model = Department
+    context_object_name = 'department_list'
+
+    def get_queryset(self):
+        sections = Department.objects.all()
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            sections = sections.filter(name__icontains=self.filterstring)
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+            sections = sections.order_by(self.viewsorting)
+        return sections
+
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DepartmentList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("department-list"), _("Departments"))]
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
+        if context["is_paginated"] and context["page_obj"].number > 1:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
+        return context
+
+
+class DepartmentCreate(CreateView):
+    model = Department
+    success_url = reverse_lazy('department-list')
+    template_name = 'devices/base_form.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DepartmentCreate, self).get_context_data(**kwargs)
+        context['type'] = "section"
+        context["breadcrumbs"] = [
+            (reverse("section-list"), _("Departments")),
+            ("", _("Create new section"))]
+        return context
+
+
+class DepartmentDetail(DetailView):
+    model = Department
+    context_object_name = 'department'
+    template_name = "locations/section_detail.html"
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DepartmentDetail, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['device_list'] = Device.objects.filter(department=context["department"], archived=None,
+                                                       trashed=None).values("id", "name", "inventorynumber",
+                                                                            "devicetype__name")
+
+        if "department" in settings.LABEL_TEMPLATES:
+            context["label_js"] = ""
+            for attribute in settings.LABEL_TEMPLATES["section"][1]:
+                if attribute == "id":
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
+                        context["department"], attribute))
+                else:
+                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(
+                        context["department"], attribute))
+        context["breadcrumbs"] = [
+            (reverse("department-list"), _("Departments")),
+            (reverse("department-detail", kwargs={"pk": context["object"].pk}), context["object"].name)]
+        return context
+
+
+class DepartmentUpdate(UpdateView):
+    model = Department
+    success_url = reverse_lazy('department-list')
+    template_name = 'devices/base_form.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DepartmentUpdate, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("department-list"), _("Departments")),
+            (reverse("department-edit", kwargs={"pk": self.object.pk}), self.object)]
+        return context
+
+
+class DepartmentDelete(DeleteView):
+    model = Department
+    success_url = reverse_lazy('department-list')
+    template_name = 'devices/base_delete.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DepartmentDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("department-list"), _("Departments")),
+            (reverse("department-delete", kwargs={"pk": self.object.pk}), self.object)]
+        return context

@@ -10,7 +10,7 @@ from devicegroups.views import *
 from devicetags.views import *
 from locations.views import *
 from history.views import *
-from users.views import ProfileView, UsersettingsView, UserprofileView, UserList
+from users.views import *
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, \
     LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, AjaxSearch, UserLendings
@@ -156,6 +156,17 @@ urlpatterns = patterns('',
     url(r'^sections/view/(?P<pk>[^/]*)$', permission_required("locations.read_section")(SectionDetail.as_view()), name="section-detail"),
     url(r'^sections/delete/(?P<pk>[^/]*)$', permission_required("locations.delete_section")(SectionDelete.as_view()), name="section-delete"),
     url(r'^sections/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("locations.change_section")(SectionMerge.as_view()), name="section-merge"),
+
+    url(r'^departments/$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
+    url(r'^departments/(?P<page>[0-9]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
+    url(r'^departments/sorting/(?P<sorting>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
+    url(r'^departments/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
+    url(r'^departments/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
+    url(r'^departments/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
+    url(r'^departments/add$', permission_required("users.add_department")(DepartmentCreate.as_view()), name="department-add"),
+    url(r'^departments/edit/(?P<pk>[^/]*)$', permission_required("users.change_department")(DepartmentUpdate.as_view()), name="department-edit"),
+    url(r'^departments/view/(?P<pk>[^/]*)$', permission_required("users.read_department")(DepartmentDetail.as_view()), name="department-detail"),
+    url(r'^departments/delete/(?P<pk>[^/]*)$', permission_required("users.delete_department")(DepartmentDelete.as_view()), name="department-delete"),
 
     url(r'^ipaddresses/$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
