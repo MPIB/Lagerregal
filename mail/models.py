@@ -46,11 +46,6 @@ class MailTemplate(models.Model):
     def send(self, request, recipients=None, data=None):
         datadict = {}
         datadict["device"] = {
-            "currentlending": {
-                "owner":data["device"].currentlending.owner.__unicode__(),
-                "duedate":data["device"].currentlending.duedate,
-                "lenddate":data["device"].currentlending.lenddate
-            },
             "description": data["device"].description,
             "devicetype": (data["device"].devicetype.name if data["device"].devicetype != None else ""),
             "group": data["device"].group,
@@ -66,6 +61,15 @@ class MailTemplate(models.Model):
             "trashed": data["device"].trashed,
             "webinterface": data["device"].webinterface
         }
+        if data["device"].currentlending != None:
+            datadict["device"]["currentlending"] = {
+                "owner":data["device"].currentlending.owner.__unicode__(),
+                "duedate":data["device"].currentlending.duedate,
+                "lenddate":data["device"].currentlending.lenddate
+            },
+        else:
+            datadict["device"]["currentlending"] = ""
+
         datadict["user"] = {
             "username": data["user"].username,
             "first_name": data["user"].first_name,
