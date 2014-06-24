@@ -46,7 +46,11 @@ class MailTemplate(models.Model):
     def send(self, request, recipients=None, data=None):
         datadict = {}
         datadict["device"] = {
-            "currentlending": data["device"].currentlending,
+            "currentlending": {
+                "owner":data["device"].currentlending.owner.__unicode__(),
+                "duedate":data["device"].currentlending.duedate,
+                "lenddate":data["device"].currentlending.lenddate
+            },
             "description": data["device"].description,
             "devicetype": (data["device"].devicetype.name if data["device"].devicetype != None else ""),
             "group": data["device"].group,
@@ -73,8 +77,8 @@ class MailTemplate(models.Model):
                 "first_name": data["owner"].first_name,
                 "last_name": data["owner"].last_name
             }
-        body = pystache.render(self.body, datadict)
-        subject = pystache.render(self.subject, datadict)
+        body = pystache.render(self.body.decode('utf-8'), datadict)
+        subject = pystache.render(self.subject.decode('utf-8'), datadict)
 
         email = EmailMessage(subject=subject, body=body, to=recipients)
         email.send()
