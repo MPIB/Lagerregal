@@ -77,8 +77,8 @@ class MailTemplate(models.Model):
                 "first_name": data["owner"].first_name,
                 "last_name": data["owner"].last_name
             }
-        body = pystache.render(self.body.decode('utf-8'), datadict)
-        subject = pystache.render(self.subject.decode('utf-8'), datadict)
+        body = pystache.render(self.body, datadict)
+        subject = pystache.render(self.subject, datadict)
 
         email = EmailMessage(subject=subject, body=body, to=recipients)
         email.send()
