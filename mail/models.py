@@ -53,7 +53,7 @@ class MailTemplate(models.Model):
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
-            "name": data["device"],
+            "name": data["device"].__unicode__(),
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
                                                                                                       "device"].room != None else ""),
             "serialnumber": data["device"].serialnumber,
