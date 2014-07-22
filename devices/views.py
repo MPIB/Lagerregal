@@ -329,6 +329,7 @@ class DeviceCreate(CreateView):
                 template.body = form.cleaned_data["emailbody"]
             template.send(request=self.request, recipients=recipients,
                           data={"device": self.object, "user": self.request.user})
+            messages.success(self.request, _('Mail successfully sent'))
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
@@ -402,6 +403,8 @@ class DeviceUpdate(UpdateView):
                 template.body = form.cleaned_data["emailbody"]
             template.send(request=self.request, recipients=recipients,
                           data={"device": device, "user": self.request.user})
+            messages.success(self.request, _('Mail successfully sent'))
+
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
