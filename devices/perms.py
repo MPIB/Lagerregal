@@ -77,7 +77,7 @@ class DepartmentPermissionLogic(PermissionLogic):
             return False
         elif user_obj.is_active and user_obj.has_perm(perm):
             if obj.is_private:
-                if user_obj.department == obj.department:
+                if user_obj.main_department == obj.department:
                     return True
             else:
                 return True

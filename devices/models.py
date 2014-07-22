@@ -118,7 +118,7 @@ class Device(models.Model):
     inventoried = models.DateTimeField(null=True, blank=True)
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", null=True, blank=True)
 
-    department = models.ForeignKey("users.Department", null=True, blank=True, related_name="members")
+    department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices")
     is_private = models.BooleanField(default=False)
 
     def __unicode__(self):

@@ -65,8 +65,8 @@ class DeviceList(PaginationMixin, ListView):
                 devices = self.request.user.bookmarks.all()
         else:
             devices = Device.active()
-        if self.request.user.department != None:
-            self.departmentfilter = self.kwargs.get("department", self.request.user.department.id)
+        if self.request.user.main_department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
 
@@ -109,7 +109,7 @@ class DeviceDetail(DetailView):
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
-        if self.request.user.department:
+        if self.request.user.main_department:
             context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
                 department=self.request.user.department)
         context['tagform'] = DeviceTagForm()

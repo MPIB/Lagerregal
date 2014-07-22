@@ -18,7 +18,9 @@ class Lageruser(AbstractUser):
     ], default=30)
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
 
-    department = models.ForeignKey("users.Department", null=True, blank=True)
+    main_department = models.ForeignKey("users.Department", null=True, blank=True)
+    departments = models.ManyToManyField("users.Department", null=True, blank=True, through='users.DepartmentUser',
+                                         related_name="members")
 
     def __unicode__(self):
         if self.first_name != "" and self.last_name != "":
@@ -37,6 +39,7 @@ class Lageruser(AbstractUser):
         return reverse('userprofile', kwargs={'pk': self.pk})
 
 
+
 class Department(models.Model):
     name = models.CharField(max_length=40)
 
@@ -49,3 +52,10 @@ class Department(models.Model):
         permissions = (
             ("read_department", _("Can read Departments")),
         )
+
+
+class DepartmentUser(models.Model):
+    user = models.ForeignKey(Lageruser)
+    department = models.ForeignKey(Department)
+    role = models.CharField(choices=(("a", _("Admin")), ("m", _("Member"))), default="a", max_length=1)
+    member_since = models.DateTimeField(auto_created=True)
