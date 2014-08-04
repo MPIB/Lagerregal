@@ -73,7 +73,7 @@ class DepartmentPermissionLogic(PermissionLogic):
                         return True
             try:
                 if obj.department in user_obj.departments.all():
-                    department_membership = user_obj.departmentuser_set.get(department=obj)
+                    department_membership = user_obj.departmentuser_set.get(department=obj.department)
                     if department_membership.role == "a":
                         return True
             except TypeError:
