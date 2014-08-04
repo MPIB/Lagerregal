@@ -90,7 +90,7 @@ class Home(TemplateView):
             userwidget_list = dict(widgets)
             widgetlist = [x[0] for x in DashboardWidget.objects.filter(user=self.request.user
             ).values_list("widgetname")]
-            context.update(get_widget_data(self.request.user, widgetlist, self.request.user.department))
+            context.update(get_widget_data(self.request.user, widgetlist, self.request.user.main_department))
             for w in context["widgets_left"]:
                 del userwidget_list[w.widgetname]
 

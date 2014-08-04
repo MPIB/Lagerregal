@@ -51,6 +51,8 @@ class Department(models.Model):
         verbose_name_plural = _('Departments')
         permissions = (
             ("read_department", _("Can read Departments")),
+            ("add_department_user", _("Can add a User to a Department")),
+            ("delete_department_user", _("Can remove a User from a Department")),
         )
 
 
@@ -58,4 +60,4 @@ class DepartmentUser(models.Model):
     user = models.ForeignKey(Lageruser)
     department = models.ForeignKey(Department)
     role = models.CharField(choices=(("a", _("Admin")), ("m", _("Member"))), default="a", max_length=1)
-    member_since = models.DateTimeField(auto_created=True)
+    member_since = models.DateTimeField(auto_now_add=True)

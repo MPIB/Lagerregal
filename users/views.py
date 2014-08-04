@@ -1,4 +1,4 @@
-from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
 from reversion.models import Version
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -17,16 +17,18 @@ from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.exceptions import PermissionDenied
 
-from users.models import Lageruser, Department
+from users.models import Lageruser, Department, DepartmentUser
 from devices.models import Lending, Device
-from users.forms import SettingsForm, AvatarForm
+from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.models import IpAddress
 from network.forms import UserIpAddressForm
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
-
+from permission.decorators import permission_required
+from django.shortcuts import get_object_or_404
 
 class UserList(PaginationMixin, ListView):
     model = Lageruser
@@ -245,7 +247,7 @@ class DepartmentCreate(CreateView):
         context['type'] = "section"
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Departments")),
-            ("", _("Create new section"))]
+            ("", _("Create new department"))]
         return context
 
 
@@ -276,7 +278,7 @@ class DepartmentDetail(DetailView):
             (reverse("department-detail", kwargs={"pk": context["object"].pk}), context["object"].name)]
         return context
 
-
+@permission_required('users.change_department', raise_exception=True)
 class DepartmentUpdate(UpdateView):
     model = Department
     success_url = reverse_lazy('department-list')
@@ -287,10 +289,11 @@ class DepartmentUpdate(UpdateView):
         context = super(DepartmentUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
-            (reverse("department-edit", kwargs={"pk": self.object.pk}), self.object)]
+            (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
+            ("", _("Edit"))]
         return context
 
-
+@permission_required('users.delete_department', raise_exception=True)
 class DepartmentDelete(DeleteView):
     model = Department
     success_url = reverse_lazy('department-list')
@@ -301,5 +304,54 @@ class DepartmentDelete(DeleteView):
         context = super(DepartmentDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
-            (reverse("department-delete", kwargs={"pk": self.object.pk}), self.object)]
+            (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
+            ("", _("Delete"))]
+        return context
+
+class DepartmentAddUser(FormView):
+    form_class = DepartmentAddUserForm
+    template_name = 'devices/base_form.html'
+
+    def get_success_url(self):
+        return reverse("department-detail", kwargs={"pk": self.department.pk})
+
+
+    def get_context_data(self, **kwargs):
+        self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
+        if not self.request.user.has_perm("users.add_department_user", self.department):
+            raise PermissionDenied
+        context = super(DepartmentAddUser, self).get_context_data(**kwargs)
+        context["form"].fields["department"].initial = self.department
+        context["form"].fields["user"].queryset = Lageruser.objects.exclude(departments__id=self.department.id)
+
+        context["breadcrumbs"] = [
+            (reverse("department-list"), _("Departments")),
+            (reverse("department-detail", kwargs={"pk": self.department.pk}), self.department),
+            ("", _("Add User"))]
+        return context
+
+    def form_valid(self, form):
+        self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
+        department_user = DepartmentUser(user=form.cleaned_data["user"], department=form.cleaned_data["department"],
+                                         role=form.cleaned_data["role"])
+        department_user.save()
+
+        return HttpResponseRedirect(reverse("department-detail", kwargs={"pk": self.department.pk}))
+
+
+@permission_required('users.delete_department_user', raise_exception=True)
+class DepartmentDeleteUser(DeleteView):
+    model = DepartmentUser
+    template_name = 'devices/base_delete.html'
+
+    def get_success_url(self):
+        return reverse("department-detail", kwargs={"pk": self.object.department.pk})
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(DepartmentDeleteUser, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("department-list"), _("Departments")),
+            (reverse("department-detail", kwargs={"pk": self.object.department.pk}), self.object.department),
+            ("", _("Remove User"))]
         return context

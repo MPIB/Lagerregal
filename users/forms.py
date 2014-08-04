@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
-from users.models import Lageruser
+from users.models import Lageruser, DepartmentUser
 from Lagerregal import settings
 
 
@@ -31,4 +31,13 @@ class AvatarForm(forms.ModelForm):
         fields = ["avatar"]
         widgets = {
             "avatar": forms.FileInput()
+        }
+
+class DepartmentAddUserForm(forms.ModelForm):
+    error_css_class = 'has-error'
+
+    class Meta:
+        model = DepartmentUser
+        widgets = {
+            "department": forms.HiddenInput()
         }
