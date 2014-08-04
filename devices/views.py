@@ -111,7 +111,7 @@ class DeviceDetail(DetailView):
         context['ipaddressform'] = IpAddressForm()
         if self.request.user.main_department:
             context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
-                department=self.request.user.department)
+                department=self.request.user.main_department)
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
@@ -311,8 +311,8 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
-        if self.request.user.department != None:
-            self.object.department = self.request.user.department
+        if self.request.user.main_department != None:
+            self.object.department = self.request.user.main_department
             self.object.save()
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []

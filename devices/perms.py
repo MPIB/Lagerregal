@@ -3,8 +3,9 @@ from permission.logics import PermissionLogic
 from permission.conf import settings
 from django.contrib import auth
 from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied
 
-class DepartmentPermissionLogic(PermissionLogic):
+class DevicePermissionLogic(PermissionLogic):
     def __init__(self,
                  field_name=None,
                  any_permission=None,
@@ -64,29 +65,17 @@ class DepartmentPermissionLogic(PermissionLogic):
         if not user_obj.is_authenticated():
             return False
 
-        change_permission = self.get_full_permission_string('change')
-        delete_permission = self.get_full_permission_string('delete')
-
         if obj is None:
-            backend = auth.get_backends()[0]
-            try:
-                if backend.has_perm(user_obj, perm, obj):
-                    return True
-            except PermissionDenied:
-                return False
             return False
         elif user_obj.is_active and user_obj.has_perm(perm):
             if obj.is_private:
-                if user_obj.main_department == obj.department:
+                if  obj.department in user_obj.departments.all():
                     return True
             else:
                 return True
-
         return False
 
-
-
-
 PERMISSION_LOGICS = (
-    ('devices.Device', DepartmentPermissionLogic()),
+    ('devices.Device', DevicePermissionLogic()),
 )
+
