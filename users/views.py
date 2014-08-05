@@ -117,6 +117,9 @@ class UsersettingsView(TemplateView):
         if self.request.method != "POST":
             context['settingsform'] = SettingsForm(instance=self.request.user)
             context['avatarform'] = AvatarForm(instance=self.request.user)
+        if "settingsform" in context:
+            context['settingsform'].fields["main_department"].queryset = self.request.user.departments.all()
+
         context["breadcrumbs"] = [
             (reverse("userprofile", kwargs={"pk": self.request.user.pk}), self.request.user),
             ("", _("Settings"))]
@@ -126,6 +129,8 @@ class UsersettingsView(TemplateView):
         context = self.get_context_data()
         context["settingsform"] = SettingsForm(instance=request.user)
         context["avatarform"] = AvatarForm(instance=request.user)
+        context['settingsform'].fields["main_department"].queryset = self.request.user.departments.all()
+
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
@@ -139,6 +144,9 @@ class UsersettingsView(TemplateView):
                     request.user.save()
                 if request.user.timezone != form.cleaned_data["timezone"]:
                     request.user.timezone = form.cleaned_data["timezone"]
+                    request.user.save()
+                if request.user.main_department != form.cleaned_data["main_department"]:
+                    request.user.main_department = form.cleaned_data["main_department"]
                     request.user.save()
                 messages.success(self.request, _('Settings were successfully updated'))
             context["settingsform"] = form
