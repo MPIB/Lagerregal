@@ -36,8 +36,8 @@ class IpAddressList(PaginationMixin, ListView):
         else:
             addresses = IpAddress.objects.all()
 
-        if self.request.user.department != None:
-            self.departmentfilter = self.kwargs.get("department", self.request.user.department)
+        if self.request.user.main_department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
 
@@ -97,8 +97,8 @@ class IpAddressCreate(CreateView):
         context = super(IpAddressCreate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new"
-        if self.request.user.department:
-            context["form"].fields["department"].initial = self.request.user.department
+        if self.request.user.main_department:
+            context["form"].fields["department"].initial = self.request.user.main_department
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
             ("", _("Create new IP-Address"))]
