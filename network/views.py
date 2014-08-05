@@ -93,10 +93,9 @@ class IpAddressCreate(CreateView):
     template_name = 'devices/base_form.html'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super(IpAddressCreate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
         context['actionstring'] = "Create new"
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         if self.request.user.main_department:
             context["form"].fields["department"].initial = self.request.user.main_department
         context["breadcrumbs"] = [
@@ -118,7 +117,7 @@ class IpAddressUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(IpAddressUpdate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
