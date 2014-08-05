@@ -18,7 +18,7 @@ class Lageruser(AbstractUser):
     ], default=30)
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
 
-    main_department = models.ForeignKey("users.Department", null=True, blank=True)
+    main_department = models.ForeignKey("users.Department", null=True, blank=True, on_delete=models.SET_NULL)
     departments = models.ManyToManyField("users.Department", null=True, blank=True, through='users.DepartmentUser',
                                          related_name="members")
 
