@@ -33,9 +33,11 @@
             <tr>
                 <td><a href="{% url 'userprofile' member.user.id %}">{{member.user}}</a></td>
                 <td>{{ member.get_role_display }}
-                {% permission user has 'users.add_department_user' of department %}
-                <a href="{% url "department-remove-user" member.id %}" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Remove from Department</span></a>
-                {%  endpermission %}</td>
+                {% if user != member.user %}
+                    {% permission user has 'users.add_department_user' of department %}
+                    <a href="{% url "department-remove-user" member.id %}" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Remove from Department</span></a>
+                    {%  endpermission %}</td>
+                {% endif %}
             </tr>
         {% endfor %}
     </table>
