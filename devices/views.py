@@ -109,9 +109,7 @@ class DeviceDetail(DetailView):
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
-        if self.request.user.main_department:
-            context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
-                department=self.request.user.main_department)
+        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department=self.object.department)
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
