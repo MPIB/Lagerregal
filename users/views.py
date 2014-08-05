@@ -250,6 +250,12 @@ class DepartmentCreate(CreateView):
             ("", _("Create new department"))]
         return context
 
+    def form_valid(self, form):
+        response = super(DepartmentCreate, self).form_valid(form)
+        department_user = DepartmentUser(user=self.request.user, department=self.object, role="a")
+        department_user.save()
+        return response
+
 
 class DepartmentDetail(DetailView):
     model = Department
