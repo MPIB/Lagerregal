@@ -9,7 +9,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render_to_response
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib import messages
 from django.utils.timezone import utc
 from django.utils import timezone
@@ -284,12 +284,14 @@ class DeviceCreate(CreateView):
             initial["emailbody"] = initial["emailtemplate"].body
         except:
             pass
+        if self.request.user.main_department:
+            initial["department"] = self.request.user.main_department
         return initial
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceCreate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = "Create new Device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -297,6 +299,8 @@ class DeviceCreate(CreateView):
         return context
 
     def form_valid(self, form):
+        if not form.cleaned_data["department"] in self.request.user.departments.all():
+            return HttpResponseBadRequest()
         form.cleaned_data["creator"] = self.request.user
         reversion.set_comment(_("Created"))
         r = super(DeviceCreate, self).form_valid(form)
@@ -309,9 +313,6 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
-        if self.request.user.main_department != None:
-            self.object.department = self.request.user.main_department
-            self.object.save()
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
@@ -342,7 +343,7 @@ class DeviceUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceUpdate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -352,6 +353,8 @@ class DeviceUpdate(UpdateView):
         return context
 
     def form_valid(self, form):
+        if not form.cleaned_data["department"] in self.request.user.departments.all():
+            return HttpResponseBadRequest()
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived is not None:
