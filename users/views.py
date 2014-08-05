@@ -347,10 +347,11 @@ class DepartmentAddUser(FormView):
     def form_valid(self, form):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
         if not self.department in form.cleaned_data["user"].departments.all():
-
             department_user = DepartmentUser(user=form.cleaned_data["user"], department=form.cleaned_data["department"],
                                             role=form.cleaned_data["role"])
             department_user.save()
+            if form.cleaned_data["user"].main_department == None:
+                form.cleaned_data["user"].main_department = form.cleaned_data["department"]
 
         return HttpResponseRedirect(reverse("department-detail", kwargs={"pk": self.department.pk}))
 

@@ -6,6 +6,10 @@ from django.core.validators import MaxValueValidator
 from django.conf import settings
 import pytz
 from django.core.urlresolvers import reverse
+from django.dispatch import receiver
+from django_auth_ldap.backend import populate_user
+from django.conf import settings
+import re
 
 # Create your models here.
 class Lageruser(AbstractUser):
@@ -39,9 +43,29 @@ class Lageruser(AbstractUser):
         return reverse('userprofile', kwargs={'pk': self.pk})
 
 
+@receiver(populate_user)
+def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
+    AUTH_LDAP_DEPARTMENT_REGEX = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
+    if AUTH_LDAP_DEPARTMENT_REGEX != None and user.main_department == None:
+        AUTH_LDAP_DEPARTMENT_FIELD = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
+        if AUTH_LDAP_DEPARTMENT_FIELD:
+            fullname = ldap_user.attrs["distinguishedname"][0]
+            match = re.compile(AUTH_LDAP_DEPARTMENT_REGEX).search(fullname)
+            if match:
+                department_name = match.group(1)
+                try:
+                    department = Department.objects.get(name=department_name)
+                except:
+                    department = Department(name=department_name)
+                    department.save()
+                if not department in user.departments.all():
+                    du = DepartmentUser(user=user, department=department, role="m")
+                    du.save()
+                user.main_department = department
+
 
 class Department(models.Model):
-    name = models.CharField(max_length=40)
+    name = models.CharField(max_length=40, unique=True)
 
     def __unicode__(self):
         return self.name
