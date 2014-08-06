@@ -4,17 +4,17 @@
     <ul class="pager">
         {% if page_obj.has_previous %}
 
-            {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" %}
+            {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
                 <li class="previous"><a href="{% url 'device-list' 1 %}" style="margin-right:5px"><i
                         class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
                 <li class="previous"><a href="{% url 'device-list' page_obj.previous_page_number %}"><i
                         class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
             {% else %}
                 <li class="previous"><a
-                        href="{% url 'device-list'  1 viewform.viewsorting.value viewform.viewfilter.value %}"
+                        href="{% url 'device-list'  1 viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}"
                         style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
                 <li class="previous"><a
-                        href="{% url 'device-list' page_obj.previous_page_number viewform.viewsorting.value viewform.viewfilter.value %}"><i
+                        href="{% url 'device-list' page_obj.previous_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}"><i
                         class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
             {% endif %}
         {% else %}
@@ -31,7 +31,7 @@
                 {% endfor %}
             </select> {% trans "of" %} {{ page_obj.paginator.num_pages }}</li>
         {% if page_obj.has_next %}
-            {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" %}
+            {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
                 <li class="next"><a href="{% url 'device-list' page_obj.paginator.num_pages %}"
                                     style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a>
                 </li>
@@ -39,10 +39,10 @@
                         class="fa fa-angle-right"></i></a></li>
             {% else %}
                 <li class="next"><a
-                        href="{% url 'device-list' page_obj.paginator.num_pages viewform.viewsorting.value viewform.viewfilter.value %}"
+                        href="{% url 'device-list' page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}"
                         style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
                 <li class="next"><a
-                        href="{% url 'device-list' page_obj.next_page_number viewform.viewsorting.value viewform.viewfilter.value %}">{% trans "Next" %}
+                        href="{% url 'device-list' page_obj.next_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">{% trans "Next" %}
                     <i class="fa fa-angle-right"></i></a></li>
             {% endif %}
         {% else %}

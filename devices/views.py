@@ -78,7 +78,7 @@ class DeviceList(PaginationMixin, ListView):
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
             devices = devices.filter(department=self.departmentfilter)
         devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.kwargs.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
             devices = devices.order_by(self.viewsorting)
 
