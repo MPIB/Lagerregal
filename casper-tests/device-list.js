@@ -11,7 +11,7 @@ helper.scenario('/devices/',
     	});
 	},
 	function() {
-		helper.assertAbsUrl('/devices/page/2/sorting/name/filter/active');
+		helper.assertAbsUrl('/devices/page/2/department/1/sorting/name/filter/active');
 		this.test.assertElementCount("table tr", 11);
 		this.evaluate(function() {
         	$('#id_viewfilter').val("all").change()
@@ -19,14 +19,14 @@ helper.scenario('/devices/',
     	});
 	},
 	function() {
-		helper.assertAbsUrl('/devices/sorting/name/filter/all');
+		helper.assertAbsUrl('/devices/department/1/sorting/name/filter/all');
 		this.evaluate(function() {
         	$('#id_viewsorting').val("created_at").change()
         	return true;
     	});
 	},
 	function() {
-		helper.assertAbsUrl('/devices/sorting/created_at/filter/all');
+		helper.assertAbsUrl('/devices/department/1/sorting/created_at/filter/all');
 	}
 );
 casper.on("page.error", function(msg, trace) {
