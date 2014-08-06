@@ -42,6 +42,12 @@ class Lageruser(AbstractUser):
     def get_absolute_url(self):
         return reverse('userprofile', kwargs={'pk': self.pk})
 
+    @staticmethod
+    def users_from_departments(departments=[]):
+        if len(departments) == 0:
+            return Lageruser.objects.all()
+        return Lageruser.objects.filter(departments__in=departments)
+
 
 @receiver(populate_user)
 def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):

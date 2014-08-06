@@ -8,6 +8,7 @@ from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from locations.models import Section
 import datetime
+from django.db.models import Q
 
 
 class Building(models.Model):
@@ -160,6 +161,11 @@ class Device(models.Model):
     @staticmethod
     def active():
         return Device.objects.filter(archived=None, trashed=None)
+
+    @staticmethod
+    def devices_for_departments(departments=[]):
+        return Device.objects.filter(department__in=departments).exclude(
+            ~Q(department__in=departments), is_private=True)
 
 
 
