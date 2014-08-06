@@ -43,8 +43,15 @@
                                 <td>{{ profileuser.first_name }} {{ profileuser.last_name }}</td>
                             </tr>
                             <tr>
-                                <td>{% trans "Department" %}</td>
-                                <td>{{ profileuser.department }}</td>
+                                <td>{% trans "Main Department" %}</td>
+                                <td><a href="{% url "department-detail" profileuser.main_department.id %}">{{ profileuser.main_department }}</a></td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Member of Departments" %}</td>
+                                <td>{% for department in profileuser.departments.all %}
+                                        <a href="{% url "department-detail" department.id %}">{{ department.name }}</a><br>
+                                    {% endfor %}
+                                </td>
                             </tr>
                             <tr>
                                 <td>{% trans "Groups" %}</td>
