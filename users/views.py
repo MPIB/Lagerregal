@@ -26,9 +26,10 @@ from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.models import IpAddress
 from network.forms import UserIpAddressForm
-from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm
+from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterForm
 from permission.decorators import permission_required
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 class UserList(PaginationMixin, ListView):
     model = Lageruser
@@ -48,7 +49,7 @@ class UserList(PaginationMixin, ListView):
             users = users.filter(departments__id=self.departmentfilter)
 
         if self.filterstring:
-            users = users.filter(username__icontains=self.filterstring)
+            users = users.filter(Q(username__icontains=self.filterstring) | Q(first_name__icontains=self.filterstring) | Q(last_name__icontains=self.filterstring))
         return users
 
 
