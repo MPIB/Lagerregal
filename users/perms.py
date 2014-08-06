@@ -5,7 +5,7 @@ from django.contrib import auth
 from django.core.exceptions import PermissionDenied
 from django.core.exceptions import PermissionDenied
 
-class DevicePermissionLogic(PermissionLogic):
+class DepartmentPermissionLogic(PermissionLogic):
     def __init__(self,
                  field_name=None,
                  any_permission=None,
@@ -53,44 +53,35 @@ class DevicePermissionLogic(PermissionLogic):
                 settings.PERMISSION_DEFAULT_CPL_FIELD_NAME
         if self.any_permission is None:
             self.any_permission = True
-                settings.PERMISSION_DEFAULT_CPL_ANY_PERMISSION
         if self.change_permission is None:
-            self.change_permission = True
+            self.change_permission = \
                 settings.PERMISSION_DEFAULT_CPL_CHANGE_PERMISSION
         if self.delete_permission is None:
-            self.delete_permission = True
+            self.delete_permission = \
                 settings.PERMISSION_DEFAULT_CPL_DELETE_PERMISSION
 
     def has_perm(self, user_obj, perm, obj=None):
         if not user_obj.is_authenticated():
             return False
 
-        change_permission = self.get_full_permission_string('change')
-        delete_permission = self.get_full_permission_string('delete')
-
         if obj is None:
-            backend = auth.get_backends()[0]
-            try:
-                if backend.has_perm(user_obj, perm, obj):
-                    return True
-            except PermissionDenied:
-                return False
             return False
-        elif user_obj.is_active and user_obj.has_perm(perm):
-            if obj.is_private:
-                if  obj.department in user_obj.departments.all():
-                    return True
-            else:
-                if perm == "devices.read_device":
-                    return True
-                else:
-                    return obj.department in user_obj.departments.all()
+        elif user_obj.is_active:
+            if obj in user_obj.departments.all():
+                    department_membership = user_obj.departmentuser_set.get(department=obj)
+                    if department_membership.role == "a":
+                        return True
+            try:
+                if obj.department in user_obj.departments.all():
+                    department_membership = user_obj.departmentuser_set.get(department=obj.department)
+                    if department_membership.role == "a":
+                        return True
+            except TypeError:
+                return False
+
         return False
 
-
-
-
 PERMISSION_LOGICS = (
-    ('devices.Device', DevicePermissionLogic()),
+    ('users.Department', DepartmentPermissionLogic()),
 )
 

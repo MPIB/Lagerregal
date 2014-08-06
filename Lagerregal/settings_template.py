@@ -214,6 +214,9 @@ if USE_LDAP:
         "is_staff":  "",
     }
 
+    AUTH_LDAP_DEPARTMENT_FIELD = None
+    AUTH_LDAP_DEPARTMENT_REGEX = None
+
 LABEL_TEMPLATES = {
     "device" :
     [

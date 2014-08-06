@@ -197,6 +197,11 @@ class FilterForm(forms.Form):
                                                                  "placeholder": "Filter"}))
 
 
+class DepartmentFilterForm(FilterForm):
+    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
+                                widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
+                                                              "class": "pull-right input-sm form-control"}))
+
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
 

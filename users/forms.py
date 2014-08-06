@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 
-from users.models import Lageruser
+from users.models import Lageruser, DepartmentUser
 from Lagerregal import settings
 
 
@@ -11,9 +11,10 @@ class SettingsForm(forms.ModelForm):
 
     class Meta:
         model = Lageruser
-        fields = ["pagelength", "timezone"]
+        fields = ["pagelength", "timezone", "main_department"]
         help_texts = {
             "pagelength": _("The number of items displayed on one page in a list."),
+            "main_department": _("Your Main department determines, which department devices you create are assigned to."),
         }
 
     def __init__(self, *args, **kwargs):
@@ -31,4 +32,13 @@ class AvatarForm(forms.ModelForm):
         fields = ["avatar"]
         widgets = {
             "avatar": forms.FileInput()
+        }
+
+class DepartmentAddUserForm(forms.ModelForm):
+    error_css_class = 'has-error'
+
+    class Meta:
+        model = DepartmentUser
+        widgets = {
+            "department": forms.HiddenInput()
         }

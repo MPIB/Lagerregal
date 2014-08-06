@@ -12,7 +12,7 @@
             </div>
         {% endif %}
         <form action="" method="post" class="form-horizontal">{% csrf_token %}
-            {% for field in form %}
+            {% for field in form.visible_fields %}
                 <div class="form-group {{ field.css_classes }}">
                     <label for="{{ field.html_name }}" class="col-lg-3 control-label">
                         {{ field.label }}{% if field.field.required %}*{% endif %}</label>
@@ -24,6 +24,9 @@
                             {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}</p>
                     </div>
                 </div>
+            {% endfor %}
+            {% for field in form.hidden_fields %}
+                 <div style="display:none;">{{ field }}</div>
             {% endfor %}
             <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
         </form>
