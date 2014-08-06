@@ -26,7 +26,7 @@ from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.models import IpAddress
 from network.forms import UserIpAddressForm
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm
 from permission.decorators import permission_required
 from django.shortcuts import get_object_or_404
 
@@ -36,11 +36,20 @@ class UserList(PaginationMixin, ListView):
     template_name = "users/user_list.html"
 
     def get_queryset(self):
-        user = Lageruser.objects.all()
+        users = Lageruser.objects.all()
         self.filterstring = self.kwargs.pop("filter", None)
+
+        if self.request.user.main_department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        else:
+            self.departmentfilter = self.kwargs.get("department", "all")
+
+        if self.departmentfilter != "all":
+            users = users.filter(departments__id=self.departmentfilter)
+
         if self.filterstring:
-            user = user.filter(username__icontains=self.filterstring)
-        return user
+            users = users.filter(username__icontains=self.filterstring)
+        return users
 
 
     def get_context_data(self, **kwargs):
@@ -49,9 +58,9 @@ class UserList(PaginationMixin, ListView):
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")), ]
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = DepartmentFilterForm(initial={"filterstring": self.filterstring, "departmentfilter": self.departmentfilter})
         else:
-            context["filterform"] = FilterForm()
+            context["filterform"] = DepartmentFilterForm(initial={"departmentfilter": self.departmentfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context

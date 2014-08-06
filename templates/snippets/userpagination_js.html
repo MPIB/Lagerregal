@@ -1,5 +1,5 @@
 $(".pageselect").change(function() {
-urlpart = "{% url pageurl 1 viewform.viewfilter.value %}"
+urlpart = "{% url pageurl 1 filterform.departmentfilter.value filterform.viewfilter.value %}"
 urlpart = urlpart.replace("page/1", "page/" + $(this).val())
 window.location = urlpart
 });
