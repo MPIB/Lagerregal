@@ -53,13 +53,10 @@ class DevicePermissionLogic(PermissionLogic):
                 settings.PERMISSION_DEFAULT_CPL_FIELD_NAME
         if self.any_permission is None:
             self.any_permission = True
-                settings.PERMISSION_DEFAULT_CPL_ANY_PERMISSION
         if self.change_permission is None:
             self.change_permission = True
-                settings.PERMISSION_DEFAULT_CPL_CHANGE_PERMISSION
         if self.delete_permission is None:
             self.delete_permission = True
-                settings.PERMISSION_DEFAULT_CPL_DELETE_PERMISSION
 
     def has_perm(self, user_obj, perm, obj=None):
         if not user_obj.is_authenticated():
