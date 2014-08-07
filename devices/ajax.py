@@ -438,7 +438,8 @@ class AjaxSearch(View):
             devices = devices.filter(archived=None, trashed=None)
 
         if textfilter != None:
-            if "text" in settings.SEARCHSTRIP:
+            SEARCHSTRIP = getattr(settings, "SERCHSTRIP", None)
+            if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             try:
                 searchid = int(textfilter.replace(" ", ""))
