@@ -92,10 +92,16 @@ class Home(TemplateView):
             ).values_list("widgetname")]
             context.update(get_widget_data(self.request.user, widgetlist, self.request.user.departments.all()))
             for w in context["widgets_left"]:
-                del userwidget_list[w.widgetname]
+                if w.widgetname in userwidget_list:
+                    del userwidget_list[w.widgetname]
+                else:
+                    w.delete()
 
             for w in context["widgets_right"]:
-                del userwidget_list[w.widgetname]
+                if w.widgetname in userwidget_list:
+                    del userwidget_list[w.widgetname]
+                else:
+                    w.delete()
             context["widgets_list"] = userwidget_list
             context["lendform"] = LendForm()
             context["lendform"].fields["device"].choices = [[device[0], str(device[0]) + " - " + device[1]] for device
