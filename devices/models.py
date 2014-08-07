@@ -98,7 +98,7 @@ class Bookmark(models.Model):
 
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    creator = models.ForeignKey(Lageruser)
+    creator = models.ForeignKey(Lageruser, on_delete=models.SET_NULL, null=True)
     name = models.CharField(_('Name'), max_length=200)
     inventorynumber = models.CharField(_('Inventorynumber'), max_length=50, blank=True)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50, blank=True)
@@ -201,7 +201,7 @@ reversion.register(TypeAttributeValue)
 
 
 class Lending(models.Model):
-    owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"))
+    owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"), on_delete=models.SET_NULL, null=True)
     lenddate = models.DateField(auto_now_add=True)
     duedate = models.DateField(blank=True, null=True)
     duedate_email = models.DateField(blank=True, null=True)
@@ -242,7 +242,7 @@ class Template(models.Model):
 class Note(models.Model):
     device = models.ForeignKey(Device, related_name="notes")
     note = models.CharField(max_length=5000)
-    creator = models.ForeignKey(Lageruser)
+    creator = models.ForeignKey(Lageruser, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

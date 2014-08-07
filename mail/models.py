@@ -110,7 +110,7 @@ class MailHistory(models.Model):
     mailtemplate = models.ForeignKey(MailTemplate)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
-    sent_by = models.ForeignKey(Lageruser)
+    sent_by = models.ForeignKey(Lageruser, null=True, on_delete=models.SET_NULL)
     sent_at = models.DateTimeField(auto_now_add=True)
     device = models.ForeignKey("devices.Device", null=True)
 
