@@ -43,7 +43,7 @@ class SearchQuerysetMixin():
                 try:
                     filters[key_name].append(param[1][0])
                 except:
-                    filters[key_name] = [param[1][0]], ]
+                    filters[key_name] = [param[1][0], ]
         queryset = queryset.filter(**filters)
         return queryset
 
