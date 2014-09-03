@@ -258,6 +258,7 @@ urlpatterns += format_suffix_patterns(patterns('',
 
     url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
     url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
+    url(r'^api/users/profile/$$', UserApiProfile.as_view(), name='user-api-profile'),
     url(r'^api/useravatar/(?P<username>[^/]*)/$', UserApiAvatar.as_view(), name='user-api-avatar'),
 
     url(r'^api/groups/$', GroupApiList.as_view(), name='group-api-list'),

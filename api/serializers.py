@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from devices.models import Room, Building, Manufacturer, Device, Template, Lending
 from django.contrib.auth.models import  Group
 from devicetypes.models import Type, TypeAttribute
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from network.models import IpAddress
 
 class UnicodeNameField(serializers.RelatedField):
@@ -141,6 +141,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.CharField(source="pk", read_only=True)
     groups = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Group.objects.all())
     user_permissions = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Permission.objects.all())
+    main_department = serializers.SlugRelatedField(slug_field="name")
+    departments = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Department.objects.all())
 
     class Meta:
         model = Lageruser

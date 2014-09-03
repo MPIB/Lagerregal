@@ -234,6 +234,11 @@ class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Lageruser
     serializer_class = UserSerializer
 
+class UserApiProfile(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
 
 class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
