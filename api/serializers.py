@@ -78,6 +78,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     creator_url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     currentlending = LendingDisplaySerializer(required=False, read_only=True)
     bookmarked = serializers.BooleanField()
+    department = serializers.SlugRelatedField(slug_field="name")
 
     class Meta:
         model = Device
@@ -86,10 +87,11 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
+    department = serializers.SlugRelatedField(slug_field="name")
 
     class Meta:
         model = Device
-        fields = ("url", "id", "name")
+        fields = ("url", "id", "name", "department")
 
 class DeviceRoomSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
