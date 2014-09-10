@@ -39,11 +39,7 @@ class SearchQuerysetMixin():
                 key_name = param[0] + "__in"
                 if param[0] == "department":
                     key_name = "department__name__in"
-                
-                try:
-                    filters[key_name].append(param[1][0])
-                except:
-                    filters[key_name] = [param[1][0], ]
+                filters[key_name] = param[1]
         queryset = queryset.filter(**filters)
         return queryset
 
