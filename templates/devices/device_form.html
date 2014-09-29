@@ -264,6 +264,20 @@
     }
     });
 
+    $("#id_department").change(function() {
+        if ($(this).val() === "") {
+            $("#id_is_private").parents(".form-group:first").slideUp();
+        } else {
+            $("#id_is_private").parents(".form-group:first").slideDown();
+        }
+    });
+
+    if ($("#id_department").val() === "") {
+        $("#id_is_private").parents(".form-group:first").slideUp();
+    } else {
+        $("#id_is_private").parents(".form-group:first").slideDown();
+    }
+
     $('#modal-form').bind('keypress', function(e) {
     if ( e.which == 13 ) {
     e.preventDefault();
