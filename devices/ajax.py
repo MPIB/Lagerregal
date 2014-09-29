@@ -400,6 +400,19 @@ class AjaxSearch(View):
                 else:
                     dictionary["department__in"] = [value]
 
+            elif key == "hostname":
+                if len(displayed_columns) < 8:
+                    displayed_columns.append(("hostname", ugettext("Hostname")))
+                    searchvalues.append("hostname")
+
+                dictionary["hostname__icontains"] = value
+
+            elif key == "inventorynumber":
+                dictionary["inventorynumber__icontains"] = value
+
+            elif key == "serialnumber":
+                dictionary["serialnumber__icontains"] = value
+
             elif key == "text":
                 textfilter = value
 
