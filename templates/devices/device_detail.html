@@ -110,6 +110,10 @@
                     <td>{{ device.serialnumber }}</td>
                 </tr>
                 <tr>
+                    <td>{% trans "Hostname" %}</td>
+                    <td>{{ device.hostname }}</td>
+                </tr>
+                <tr>
                     <td>{% trans "Devicetype" %}</td>
                     <td>{% if device.devicetype %}<a href="{% url 'type-detail' device.devicetype.pk %}">
                         {{ device.devicetype }}</a>{% else %}-{% endif %}</td>
