@@ -45,7 +45,7 @@
             <th>{% trans "Devicetype" %}</th>
             <th>{% trans "Room" %}</th>
             <th>{% trans "Devicegroup" %}</th>
-            {% if viewfilter == "lent" or viewfilter == "overdue" %}
+            {% if viewfilter == "lent" or viewfilter == "overdue" or viewfilter == "returnsoon" %}
                 <th>{% trans "Owner" %}</th>
                 <th>{% trans "Duedate" %}</th>
             {% else %}
@@ -56,17 +56,30 @@
         <tbody>
         {% for device in device_list %}
             <tr>
-                <td><a href="{% url 'device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
-                <td>{{ device.inventorynumber }}</td>
-                <td>{{ device.devicetype__name }}</td>
-                <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
-                <td>{{ device.group__name }}</td>
-                {% if viewfilter == "lent" or viewfilter == "overdue" %}
-                    <td>{{ device.currentlending__owner__username }}</td>
-                    <td>{{ device.currentlending__duedate }}</td>
+                {% if viewfilter == "lent" or viewfilter == "overdue" or viewfilter == "returnsoon" %}
+                    {% if device.smalldevice %}
+                        <td><a href="{% url "userprofile" device.owner__id %}#devices">
+                            {{ device.smalldevice }}
+                        </a></td>
+                    {% else %}
+                        <td><a href="{% url 'device-detail' device.device__id %}">
+                            {{ device.device__name | default:"(None)" }}
+                        </a></td>
+                    {% endif %}
+                    <td>{{ device.device__inventorynumber }}</td>
+                    <td>{{ device.device__devicetype__name }}</td>
+                    <td>{{ device.device__room__name }} ({{ device.device__room__building__name }})</td>
+                    <td>{{ device.device__group__name }}</td>
+                    <td><a href="{% url "userprofile" device.owner__id %}">{{ device.owner__username }}</a></td>
+                    <td>{{ device.duedate }}</td>
                 {% else %}
-                    <td>{% if device.currentlending == None %}
-                        <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                    <td><a href="{% url 'device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
+                    <td>{{ device.inventorynumber }}</td>
+                    <td>{{ device.devicetype__name }}</td>
+                    <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
+                    <td>{{ device.group__name }}</td>
+                    <td>{% if device.currentlending__owner__username == None %}
+                            <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
                         {% else %}<i class="fa fa-exclamation-circle text-danger"
                                      style="font-size:1.3em"></i>{% endif %}</td>
                 {% endif %}
