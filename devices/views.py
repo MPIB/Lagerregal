@@ -34,30 +34,28 @@ from devicetags.models import Devicetag
 
 class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
-    template_name = 'devices/device_list.html'
     viewfilter = None
     viewsorting = None
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.pop("filter", "active")
         devices = None
-        lendings = None
         if self.viewfilter == "all":
             devices = Device.objects.all()
         elif self.viewfilter == "available":
             devices = Device.active().filter(currentlending=None)
         elif self.viewfilter == "lent":
-            lendings = Lending.objects.filter(returndate=None)
+            devices = Device.objects.exclude(currentlending=None)
         elif self.viewfilter == "archived":
             devices = Device.objects.exclude(archived=None)
         elif self.viewfilter == "trashed":
             devices = Device.objects.exclude(trashed=None)
         elif self.viewfilter == "overdue":
-            lendings = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
+            devices = Device.objects.filter(currentlending__duedate__lt=datetime.date.today())
         elif self.viewfilter == "returnsoon":
             soon = datetime.date.today() + datetime.timedelta(days=10)
-            lendings = Lending.objects.filter(returndate=None, duedate__lte=soon,
-                                              duedate__gt=datetime.date.today())
+            devices = Device.objects.filter(currentlending__duedate__lte=soon,
+                                            currentlending__duedate__gt=datetime.date.today())
         elif self.viewfilter == "temporary":
             devices = Device.active().filter(templending=True)
         elif self.viewfilter == "bookmark":
@@ -65,19 +63,12 @@ class DeviceList(PaginationMixin, ListView):
                 devices = self.request.user.bookmarks.all()
         else:
             devices = Device.active()
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
+            devices = devices.order_by(self.viewsorting)
 
-        if self.viewfilter == "lent" or self.viewfilter == "overdue" or self.viewfilter == "returnsoon":
-            return lendings.values("device__id", "device__name", "device__inventorynumber",
-                                       "device__devicetype__name", "device__room__name", "device__group",
-                                       "device__room__building__name", "owner__username", "owner__id",
-                                       "duedate", "smalldevice")
-        else:
-            self.viewsorting = self.kwargs.pop("sorting", "name")
-            if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
-                devices = devices.order_by(self.viewsorting)
-
-            return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
-                    "room__building__name", "group__name", "currentlending__owner__username", "currentlending__duedate")
+        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name",
+                              "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)

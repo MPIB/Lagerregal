@@ -23,7 +23,7 @@
                     {% if lending.device %}
                         <a href="{% url 'device-detail' lending.device.pk %}">{{ lending.device.name }}</a>
                     {% else %}
-                        <a href="{% url "userprofile" lending.owner__id %}#devices">{{ lending.smalldevice }}</a>
+                        {{ lending.smalldevice }}
                     {% endif %}
                 </td>
                 <td>{{ lending.duedate }}</td>
