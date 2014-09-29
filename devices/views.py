@@ -370,8 +370,9 @@ class DeviceUpdate(UpdateView):
         return context
 
     def form_valid(self, form):
-        if not form.cleaned_data["department"] in self.request.user.departments.all():
-            return HttpResponseBadRequest()
+        if form.cleaned_data["department"]:
+            if not form.cleaned_data["department"] in self.request.user.departments.all():
+                return HttpResponseBadRequest()
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived is not None:
