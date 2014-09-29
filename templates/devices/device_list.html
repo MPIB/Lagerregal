@@ -71,7 +71,13 @@
                     <td>{{ lending.device__devicetype__name }}</td>
                     <td>{{ lending.device__room__name }} ({{ lending.device__room__building__name }})</td>
                     <td>{{ lending.device__group__name }}</td>
-                    <td><a href="{% url "userprofile" lending.owner__id %}">{{ lending.owner__username }}</a></td>
+                    <td>
+                    {% if lending.owner__id %}
+                            <a href="{% url "userprofile" lending.owner__id %}#devices">{{ lending.owner__username }}</a>
+                        {% else %}
+                            {{ lending.owner__username }}
+                        {% endif %}
+                    </td>
                     <td>{{ lending.duedate }}</td>
             {% endfor %}
         {% else %}
