@@ -111,7 +111,7 @@ ROOT_URLCONF = 'Lagerregal.urls'
 WSGI_APPLICATION = 'Lagerregal.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '{0}/templates'.format(os.getcwd())
+    '{0}/templates'.format(os.getcwd()),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -147,7 +147,6 @@ INSTALLED_APPS = (
     'history',
     'reversion',
     'rest_framework',
-    'south',
     'permission',
     'debug_toolbar',
     'provider',
