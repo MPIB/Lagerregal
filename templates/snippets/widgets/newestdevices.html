@@ -27,9 +27,10 @@
         </tbody>
     </table>
     <div class="panel-footer">
-        <a href="{% url 'device-list' filter='active' sorting='-created_at' %}"
+    {%  with dep=user.department|default:"all" %}
+        <a href="{% url 'device-list' department=dep filter='active' sorting='-created_at' %}"
            class="pull-right">{% trans "More…" %}</a>
-
+    {%  endwith %}
         <div class="clearfix"></div>
     </div>
 {% endblock %}

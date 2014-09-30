@@ -7,6 +7,14 @@
 
 {% block widgetname %}overdue{% endblock %}
 
+{%  block paneltype %}
+    {%  if overdue %}
+        panel-danger
+    {% else %}
+        panel-primary
+    {% endif %}
+{%  endblock %}
+
 {% block content %}
     <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
         <thead>
@@ -21,9 +29,13 @@
             <tr>
                 <td>
                     {% if lending.device %}
-                        <a href="{% url 'device-detail' lending.device.pk %}">{{ lending.device.name }}</a>
+                        <a href="{% url 'device-detail' lending.device.pk %}" class="text-danger">{{ lending.device.name }}</a>
                     {% else %}
-                        {{ lending.smalldevice }}
+                        {% if lending.owner.id %}
+                            <a href="{% url "userprofile" lending.owner.id %}#devices">{{ lending.smalldevice }}</a>
+                        {% else %}
+                            {{ lending.smalldevice }}
+                        {% endif %}
                     {% endif %}
                 </td>
                 <td>{{ lending.duedate }}</td>
@@ -33,8 +45,9 @@
         </tbody>
     </table>
     <div class="panel-footer">
-        <a href="{% url 'device-list' filter='overdue' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
-
+    {%  with dep=user.department|default:"all" %}
+        <a href="{% url 'device-list' department=dep filter='overdue' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
+    {% endwith %}
         <div class="clearfix"></div>
     </div>
 {% endblock %}

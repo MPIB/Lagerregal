@@ -111,7 +111,7 @@ ROOT_URLCONF = 'Lagerregal.urls'
 WSGI_APPLICATION = 'Lagerregal.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '{0}/templates'.format(os.getcwd())
+    '{0}/templates'.format(os.getcwd()),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -147,7 +147,7 @@ INSTALLED_APPS = (
     'history',
     'reversion',
     'rest_framework',
-    'south',
+    'permission',
     'debug_toolbar',
     'provider',
     'provider.oauth2',
@@ -181,6 +181,11 @@ INTERNAL_IPS = [
 ]
 
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'permission.backends.PermissionBackend',
+)
+
 USE_LDAP = False
 
 if USE_LDAP:
@@ -207,6 +212,9 @@ if USE_LDAP:
     AUTH_LDAP_USER_FLAGS_BY_GROUP = {
         "is_staff":  "",
     }
+
+    AUTH_LDAP_DEPARTMENT_FIELD = None
+    AUTH_LDAP_DEPARTMENT_REGEX = None
 
 LABEL_TEMPLATES = {
     "device" :
@@ -244,3 +252,5 @@ LOGGING = {
         },
     }
 }
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'

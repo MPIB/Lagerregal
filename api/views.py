@@ -36,7 +36,10 @@ class SearchQuerysetMixin():
         filters = {}
         for param in self.request.QUERY_PARAMS.lists():
             if param[0] in valid_fields:
-                filters[param[0]] = param[1][0]
+                key_name = param[0] + "__in"
+                if param[0] == "department":
+                    key_name = "department__name__in"
+                filters[key_name] = param[1]
         queryset = queryset.filter(**filters)
         return queryset
 
@@ -234,6 +237,11 @@ class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Lageruser
     serializer_class = UserSerializer
 
+class UserApiProfile(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
 
 class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)

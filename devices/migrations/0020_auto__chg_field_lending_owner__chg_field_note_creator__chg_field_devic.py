@@ -1,0 +1,217 @@
+# -*- coding: utf-8 -*-
+from south.utils import datetime_utils as datetime
+from south.db import db
+from south.v2 import SchemaMigration
+from django.db import models
+
+
+class Migration(SchemaMigration):
+
+    def forwards(self, orm):
+
+        # Changing field 'Lending.owner'
+        db.alter_column(u'devices_lending', 'owner_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser'], null=True, on_delete=models.SET_NULL))
+
+        # Changing field 'Note.creator'
+        db.alter_column(u'devices_note', 'creator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser'], null=True, on_delete=models.SET_NULL))
+
+        # Changing field 'Device.creator'
+        db.alter_column(u'devices_device', 'creator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser'], null=True, on_delete=models.SET_NULL))
+
+        # Changing field 'Device.department'
+        db.alter_column(u'devices_device', 'department_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, on_delete=models.SET_NULL, to=orm['users.Department']))
+
+    def backwards(self, orm):
+
+        # User chose to not deal with backwards NULL issues for 'Lending.owner'
+        raise RuntimeError("Cannot reverse this migration. 'Lending.owner' and its values cannot be restored.")
+        
+        # The following code is provided here to aid in writing a correct migration
+        # Changing field 'Lending.owner'
+        db.alter_column(u'devices_lending', 'owner_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser']))
+
+        # User chose to not deal with backwards NULL issues for 'Note.creator'
+        raise RuntimeError("Cannot reverse this migration. 'Note.creator' and its values cannot be restored.")
+        
+        # The following code is provided here to aid in writing a correct migration
+        # Changing field 'Note.creator'
+        db.alter_column(u'devices_note', 'creator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser']))
+
+        # User chose to not deal with backwards NULL issues for 'Device.creator'
+        raise RuntimeError("Cannot reverse this migration. 'Device.creator' and its values cannot be restored.")
+        
+        # The following code is provided here to aid in writing a correct migration
+        # Changing field 'Device.creator'
+        db.alter_column(u'devices_device', 'creator_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Lageruser']))
+
+        # Changing field 'Device.department'
+        db.alter_column(u'devices_device', 'department_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['users.Department'], null=True))
+
+    models = {
+        u'auth.group': {
+            'Meta': {'object_name': 'Group'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
+            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
+        },
+        u'auth.permission': {
+            'Meta': {'ordering': "(u'content_type__app_label', u'content_type__model', u'codename')", 'unique_together': "((u'content_type', u'codename'),)", 'object_name': 'Permission'},
+            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['contenttypes.ContentType']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        u'contenttypes.contenttype': {
+            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
+            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        u'devicegroups.devicegroup': {
+            'Meta': {'object_name': 'Devicegroup'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+        },
+        u'devices.bookmark': {
+            'Meta': {'object_name': 'Bookmark'},
+            'device': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Device']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']"})
+        },
+        u'devices.building': {
+            'Meta': {'object_name': 'Building'},
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'country': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'}),
+            'number': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'state': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'street': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),
+            'zipcode': ('django.db.models.fields.CharField', [], {'max_length': '5', 'blank': 'True'})
+        },
+        u'devices.device': {
+            'Meta': {'object_name': 'Device'},
+            'archived': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'bookmarkers': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'bookmarks'", 'to': u"orm['users.Lageruser']", 'through': u"orm['devices.Bookmark']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
+            'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            'currentlending': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'currentdevice'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['devices.Lending']"}),
+            'department': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'devices'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['users.Department']"}),
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '10000', 'blank': 'True'}),
+            'devicetype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devicetypes.Type']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
+            'group': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'devices'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['devicegroups.Devicegroup']"}),
+            'hostname': ('django.db.models.fields.CharField', [], {'max_length': '40', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'inventoried': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'inventorynumber': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'is_private': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'manufacturer': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Manufacturer']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'room': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Room']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
+            'serialnumber': ('django.db.models.fields.CharField', [], {'max_length': '50', 'blank': 'True'}),
+            'templending': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'trashed': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'webinterface': ('django.db.models.fields.CharField', [], {'max_length': '60', 'blank': 'True'})
+        },
+        u'devices.deviceinformation': {
+            'Meta': {'object_name': 'DeviceInformation'},
+            'device': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'information'", 'to': u"orm['devices.Device']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'information': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'infotype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.DeviceInformationType']"})
+        },
+        u'devices.deviceinformationtype': {
+            'Meta': {'object_name': 'DeviceInformationType'},
+            'humanname': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'keyname': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+        },
+        u'devices.lending': {
+            'Meta': {'object_name': 'Lending'},
+            'device': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Device']", 'null': 'True', 'blank': 'True'}),
+            'duedate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'duedate_email': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'lenddate': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            'returndate': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'smalldevice': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
+        },
+        u'devices.manufacturer': {
+            'Meta': {'object_name': 'Manufacturer'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+        },
+        u'devices.note': {
+            'Meta': {'object_name': 'Note'},
+            'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'creator': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            'device': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'notes'", 'to': u"orm['devices.Device']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'note': ('django.db.models.fields.CharField', [], {'max_length': '5000'})
+        },
+        u'devices.room': {
+            'Meta': {'object_name': 'Room'},
+            'building': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Building']", 'null': 'True', 'on_delete': 'models.SET_NULL'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'section': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'rooms'", 'null': 'True', 'on_delete': 'models.SET_NULL', 'to': u"orm['locations.Section']"})
+        },
+        u'devices.template': {
+            'Meta': {'object_name': 'Template'},
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '1000', 'blank': 'True'}),
+            'devicetype': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devicetypes.Type']", 'null': 'True', 'blank': 'True'}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'manufacturer': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['devices.Manufacturer']", 'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'templatename': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+        },
+        u'devicetypes.type': {
+            'Meta': {'object_name': 'Type'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '200'})
+        },
+        u'locations.section': {
+            'Meta': {'object_name': 'Section'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
+        },
+        u'users.department': {
+            'Meta': {'object_name': 'Department'},
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '40'})
+        },
+        u'users.departmentuser': {
+            'Meta': {'object_name': 'DepartmentUser'},
+            'department': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Department']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'member_since': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'role': ('django.db.models.fields.CharField', [], {'default': "'a'", 'max_length': '1'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Lageruser']"})
+        },
+        u'users.lageruser': {
+            'Meta': {'object_name': 'Lageruser'},
+            'avatar': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'departments': ('django.db.models.fields.related.ManyToManyField', [], {'related_name': "'members'", 'to': u"orm['users.Department']", 'through': u"orm['users.DepartmentUser']", 'blank': 'True', 'symmetrical': 'False', 'null': 'True'}),
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
+            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
+            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'language': ('django.db.models.fields.CharField', [], {'default': "'de'", 'max_length': '10', 'null': 'True', 'blank': 'True'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
+            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
+            'main_department': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['users.Department']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
+            'pagelength': ('django.db.models.fields.IntegerField', [], {'default': '30'}),
+            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
+            'timezone': ('django.db.models.fields.CharField', [], {'default': 'None', 'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
+        }
+    }
+
+    complete_apps = ['devices']

@@ -64,6 +64,7 @@ class DevicegroupDetail(DetailView):
 class DevicegroupCreate(CreateView):
     model = Devicegroup
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -78,6 +79,7 @@ class DevicegroupCreate(CreateView):
 class DevicegroupUpdate(UpdateView):
     model = Devicegroup
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

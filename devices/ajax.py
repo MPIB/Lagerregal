@@ -18,7 +18,7 @@ from django.utils.translation import ugettext
 from django.utils.dateparse import parse_date
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from mail.models import MailTemplate
 from devicetypes.models import Type
 from devices.forms import AddForm
@@ -235,6 +235,8 @@ class LoadSearchoptions(View):
             items = Lageruser.objects.filter(username__icontains=term)
         elif facet == "tag":
             items = Devicetag.objects.filter(name__icontains=term)
+        elif facet == "department":
+            items = Department.objects.filter(name__icontains=term)
         else:
             return HttpResponse("")
         if invert:
@@ -269,6 +271,8 @@ class AjaxSearch(View):
     def post(self, request):
         search = json.loads(request.POST["search"])
         searchdict = {}
+        if request.user.main_department:
+            searchdict["department__in"] = [request.user.department.id, ]
         excludedict = {}
         textfilter = None
         statusfilter = None
@@ -383,6 +387,32 @@ class AjaxSearch(View):
                 else:
                     dictionary["tags__in"] = [value]
 
+            elif key == "department":
+                value = value.split("-", 1)[0]
+                if value == "all":
+                    del dictionary["department__in"]
+                try:
+                    value = int(value)
+                except:
+                    break
+                if "department__in" in dictionary:
+                    dictionary["department__in"].append(value)
+                else:
+                    dictionary["department__in"] = [value]
+
+            elif key == "hostname":
+                if len(displayed_columns) < 8:
+                    displayed_columns.append(("hostname", ugettext("Hostname")))
+                    searchvalues.append("hostname")
+
+                dictionary["hostname__icontains"] = value
+
+            elif key == "inventorynumber":
+                dictionary["inventorynumber__icontains"] = value
+
+            elif key == "serialnumber":
+                dictionary["serialnumber__icontains"] = value
+
             elif key == "text":
                 textfilter = value
 
@@ -421,7 +451,8 @@ class AjaxSearch(View):
             devices = devices.filter(archived=None, trashed=None)
 
         if textfilter != None:
-            if "text" in settings.SEARCHSTRIP:
+            SEARCHSTRIP = getattr(settings, "SERCHSTRIP", None)
+            if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             try:
                 searchid = int(textfilter.replace(" ", ""))

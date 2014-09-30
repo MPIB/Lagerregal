@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from devices.models import Room, Building, Manufacturer, Device, Template, Lending
 from django.contrib.auth.models import  Group
 from devicetypes.models import Type, TypeAttribute
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from network.models import IpAddress
 
 class UnicodeNameField(serializers.RelatedField):
@@ -78,6 +78,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     creator_url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     currentlending = LendingDisplaySerializer(required=False, read_only=True)
     bookmarked = serializers.BooleanField()
+    department = serializers.SlugRelatedField(slug_field="name")
 
     class Meta:
         model = Device
@@ -86,10 +87,11 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
+    department = serializers.SlugRelatedField(slug_field="name")
 
     class Meta:
         model = Device
-        fields = ("url", "id", "name")
+        fields = ("url", "id", "name", "department")
 
 class DeviceRoomSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
@@ -141,6 +143,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.CharField(source="pk", read_only=True)
     groups = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Group.objects.all())
     user_permissions = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Permission.objects.all())
+    main_department = serializers.SlugRelatedField(slug_field="name")
+    departments = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Department.objects.all())
 
     class Meta:
         model = Lageruser

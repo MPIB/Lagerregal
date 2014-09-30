@@ -43,6 +43,17 @@
                                 <td>{{ profileuser.first_name }} {{ profileuser.last_name }}</td>
                             </tr>
                             <tr>
+                                <td>{% trans "Main Department" %}</td>
+                                <td><a href="{% url "department-detail" profileuser.main_department.id %}">{{ profileuser.main_department }}</a></td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Member of Departments" %}</td>
+                                <td>{% for department in profileuser.departments.all %}
+                                        <a href="{% url "department-detail" department.id %}">{{ department.name }}</a><br>
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>{% trans "Groups" %}</td>
                                 <td>
                                     {% for group in profileuser.groups.all %}
@@ -264,5 +275,10 @@
 
     $(document).ready(function() {
     $(".profile-date").timeago();
+
+    var url = document.location.toString();
+    if (url.match('#')) {
+        $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+    }
     });
 {% endblock %}

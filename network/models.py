@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from devices.models import Device
-from users.models import Lageruser
+from users.models import Lageruser, Department
 
 # Create your models here.
 import reversion
@@ -15,6 +15,7 @@ class IpAddress(models.Model):
     user = models.ForeignKey(Lageruser, blank=True, null=True, on_delete=models.SET_NULL)
     last_seen = models.DateTimeField(null=True, blank=True)
     purpose = models.CharField(max_length=200, null=True, blank=True)
+    department = models.ForeignKey(Department, null=True, blank=True)
 
     def __unicode__(self):
         return self.address

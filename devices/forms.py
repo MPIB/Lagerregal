@@ -9,7 +9,7 @@ from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from mail.models import MailTemplate
 
 
@@ -179,6 +179,9 @@ class DeviceViewForm(forms.Form):
     viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
+    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
+                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
+                                                               "class": "pull-right form-control input-sm"}))
 
 
 class ViewForm(forms.Form):
@@ -193,6 +196,11 @@ class FilterForm(forms.Form):
                                                                  "class": "pull-right form-control input-sm",
                                                                  "placeholder": "Filter"}))
 
+
+class DepartmentFilterForm(FilterForm):
+    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
+                                widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
+                                                              "class": "pull-right input-sm form-control"}))
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'

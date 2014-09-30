@@ -9,14 +9,14 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render_to_response
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib import messages
 from django.utils.timezone import utc
 from django.utils import timezone
 import reversion
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.db.transaction import commit_on_success
+from django.db.transaction import atomic
 from django.conf import settings
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
@@ -27,35 +27,39 @@ from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, I
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
     DeviceStorageForm, ReturnForm
 from devicetags.forms import DeviceTagForm
-from users.models import Lageruser
+from users.models import Lageruser, Department
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
+from permission.decorators import permission_required
+from django.db.models import Q
 
-
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
+    template_name = 'devices/device_list.html'
     viewfilter = None
     viewsorting = None
 
     def get_queryset(self):
-        self.viewfilter = self.kwargs.pop("filter", "active")
+        self.viewfilter = self.kwargs.get("filter", "active")
         devices = None
+        lendings = None
         if self.viewfilter == "all":
             devices = Device.objects.all()
         elif self.viewfilter == "available":
             devices = Device.active().filter(currentlending=None)
         elif self.viewfilter == "lent":
-            devices = Device.objects.exclude(currentlending=None)
+            lendings = Lending.objects.filter(returndate=None)
         elif self.viewfilter == "archived":
             devices = Device.objects.exclude(archived=None)
         elif self.viewfilter == "trashed":
             devices = Device.objects.exclude(trashed=None)
         elif self.viewfilter == "overdue":
-            devices = Device.objects.filter(currentlending__duedate__lt=datetime.date.today())
+            lendings = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
         elif self.viewfilter == "returnsoon":
             soon = datetime.date.today() + datetime.timedelta(days=10)
-            devices = Device.objects.filter(currentlending__duedate__lte=soon,
-                                            currentlending__duedate__gt=datetime.date.today())
+            lendings = Lending.objects.filter(returndate=None, duedate__lte=soon,
+                                              duedate__gt=datetime.date.today())
         elif self.viewfilter == "temporary":
             devices = Device.active().filter(templending=True)
         elif self.viewfilter == "bookmark":
@@ -63,16 +67,47 @@ class DeviceList(PaginationMixin, ListView):
                 devices = self.request.user.bookmarks.all()
         else:
             devices = Device.active()
-        self.viewsorting = self.kwargs.pop("sorting", "name")
-        if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
-            devices = devices.order_by(self.viewsorting)
 
-        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name",
+        if self.request.user.main_department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        else:
+            self.departmentfilter = self.kwargs.get("department", "all")
+
+        if self.departmentfilter != "all":
+            try:
+                departmentid = int(self.departmentfilter)
+                self.departmentfilter = Department.objects.get(id=departmentid)
+            except:
+                self.departmentfilter = Department.objects.get(name=self.departmentfilter)
+
+        if self.viewfilter == "lent" or self.viewfilter == "overdue" or self.viewfilter == "returnsoon":
+            if self.departmentfilter != "all":
+                lendings = lendings.filter(owner__departments=self.departmentfilter)
+            lendings = lendings.exclude(~Q(device__department__in=self.request.user.departments.all()) &
+                                        ~Q(device=None), device__is_private=True)
+            return lendings.values("device__id", "device__name", "device__inventorynumber",
+                                       "device__devicetype__name", "device__room__name", "device__group",
+                                       "device__room__building__name", "owner__username", "owner__id",
+                                       "duedate", "smalldevice")
+        else:
+            if self.departmentfilter != "all":
+                devices = devices.filter(department=self.departmentfilter)
+            devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
+            self.viewsorting = self.kwargs.get("sorting", "name")
+            if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
+                devices = devices.order_by(self.viewsorting)
+
+            return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name",
                               "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
-        context["viewform"] = DeviceViewForm(initial={'viewfilter': self.viewfilter, "viewsorting": self.viewsorting})
+        context["viewform"] = DeviceViewForm(initial={
+            'viewfilter': self.viewfilter,
+            "viewsorting": self.viewsorting,
+            "departmentfilter": self.departmentfilter
+        })
+        context["today"] = datetime.datetime.today()
         context["template_list"] = Template.objects.all()
         context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
@@ -80,7 +115,7 @@ class DeviceList(PaginationMixin, ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceDetail(DetailView):
     queryset = Device.objects.select_related("manufacturer", "devicetype", "currentlending")
     context_object_name = 'device'
@@ -90,6 +125,7 @@ class DeviceDetail(DetailView):
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
+        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department=self.object.department)
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
@@ -135,6 +171,7 @@ class DeviceDetail(DetailView):
         return context
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressRemove(DeleteView):
     template_name = 'devices/unassign_ipaddress.html'
     model = IpAddress
@@ -159,6 +196,7 @@ class DeviceIpAddressRemove(DeleteView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddress(FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = IpAddressForm
@@ -187,6 +225,7 @@ class DeviceIpAddress(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressPurpose(FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = IpAddressPurposeForm
@@ -215,6 +254,7 @@ class DeviceIpAddressPurpose(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceLendingList(PaginationMixin, ListView):
     context_object_name = 'lending_list'
     template_name = 'devices/device_lending_list.html'
@@ -234,6 +274,7 @@ class DeviceLendingList(PaginationMixin, ListView):
         return context
 
 
+@permission_required('devices.add_device', raise_exception=True)
 class DeviceCreate(CreateView):
     model = Device
     template_name = 'devices/device_form.html'
@@ -259,12 +300,14 @@ class DeviceCreate(CreateView):
             initial["emailbody"] = initial["emailtemplate"].body
         except:
             pass
+        if self.request.user.main_department:
+            initial["department"] = self.request.user.main_department
         return initial
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceCreate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = "Create new Device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -272,6 +315,9 @@ class DeviceCreate(CreateView):
         return context
 
     def form_valid(self, form):
+        if form.cleaned_data["department"]:
+            if not form.cleaned_data["department"] in self.request.user.departments.all():
+                return HttpResponseBadRequest()
         form.cleaned_data["creator"] = self.request.user
         reversion.set_comment(_("Created"))
         r = super(DeviceCreate, self).form_valid(form)
@@ -284,7 +330,6 @@ class DeviceCreate(CreateView):
                 attribute.typeattribute = typeattribute
                 attribute.value = value
                 attribute.save()
-
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
             recipients = []
             for recipient in form.cleaned_data["emailrecipients"]:
@@ -300,11 +345,13 @@ class DeviceCreate(CreateView):
                 template.body = form.cleaned_data["emailbody"]
             template.send(request=self.request, recipients=recipients,
                           data={"device": self.object, "user": self.request.user})
+            messages.success(self.request, _('Mail successfully sent'))
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceUpdate(UpdateView):
     model = Device
     template_name = 'devices/device_form.html'
@@ -313,7 +360,7 @@ class DeviceUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceUpdate, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -323,6 +370,9 @@ class DeviceUpdate(UpdateView):
         return context
 
     def form_valid(self, form):
+        if form.cleaned_data["department"]:
+            if not form.cleaned_data["department"] in self.request.user.departments.all():
+                return HttpResponseBadRequest()
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         if device.archived is not None:
@@ -372,11 +422,14 @@ class DeviceUpdate(UpdateView):
                 template.body = form.cleaned_data["emailbody"]
             template.send(request=self.request, recipients=recipients,
                           data={"device": device, "user": self.request.user})
+            messages.success(self.request, _('Mail successfully sent'))
+
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
 
 
+@permission_required('devices.delete_device', raise_exception=True)
 class DeviceDelete(DeleteView):
     model = Device
     success_url = reverse_lazy('device-list')
@@ -392,6 +445,7 @@ class DeviceDelete(DeleteView):
         return context
 
 
+@permission_required('devices.lend_device', raise_exception=True)
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
@@ -458,6 +512,7 @@ class DeviceLend(FormView):
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": lending.owner.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceInventoried(View):
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
@@ -472,6 +527,7 @@ class DeviceInventoried(View):
         return self.get(request, **kwargs)
 
 
+@permission_required('devices.lend_device', raise_exception=True)
 class DeviceReturn(FormView):
     template_name = 'devices/base_form.html'
     form_class = ReturnForm
@@ -521,6 +577,7 @@ class DeviceReturn(FormView):
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": owner.pk}))
 
 
+@permission_required('devices.lend_device', raise_exception=True)
 class DeviceMail(FormView):
     template_name = 'devices/base_form.html'
     form_class = DeviceMailForm
@@ -563,6 +620,7 @@ class DeviceMail(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_archive.html'
@@ -586,6 +644,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_trash.html'
@@ -624,6 +683,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.change_device', raise_exception=True)
 class DeviceStorage(SingleObjectMixin, FormView):
     model = Device
     form_class = DeviceStorageForm
@@ -668,6 +728,7 @@ class DeviceStorage(SingleObjectMixin, FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
+@permission_required('devices.read_device', raise_exception=True)
 class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
 
@@ -702,6 +763,7 @@ class TemplateList(PaginationMixin, ListView):
 class TemplateCreate(CreateView):
     model = Template
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         context = super(TemplateCreate, self).get_context_data(**kwargs)
@@ -715,6 +777,7 @@ class TemplateCreate(CreateView):
 class TemplateUpdate(UpdateView):
     model = Template
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         context = super(TemplateUpdate, self).get_context_data(**kwargs)
@@ -803,6 +866,7 @@ class RoomDetail(DetailView):
 class RoomCreate(CreateView):
     model = Room
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -819,6 +883,7 @@ class RoomCreate(CreateView):
 class RoomUpdate(UpdateView):
     model = Room
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -859,7 +924,7 @@ class RoomMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -934,6 +999,7 @@ class BuildingDetail(DetailView):
 class BuildingCreate(CreateView):
     model = Building
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -950,6 +1016,7 @@ class BuildingCreate(CreateView):
 class BuildingUpdate(UpdateView):
     model = Building
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -990,7 +1057,7 @@ class BuildingMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -1064,6 +1131,7 @@ class ManufacturerDetail(DetailView):
 class ManufacturerCreate(CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
 
     def get_context_data(self, **kwargs):
@@ -1081,6 +1149,7 @@ class ManufacturerCreate(CreateView):
 class ManufacturerUpdate(UpdateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1121,7 +1190,7 @@ class ManufacturerMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -1137,6 +1206,7 @@ class ManufacturerMerge(View):
 class NoteCreate(CreateView):
     model = Note
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_initial(self):
         initial = super(NoteCreate, self).get_initial()
@@ -1158,6 +1228,7 @@ class NoteCreate(CreateView):
 class NoteUpdate(UpdateView):
     model = Note
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_success_url(self):
         return reverse_lazy("device-detail", kwargs={"pk": self.object.device.pk})
