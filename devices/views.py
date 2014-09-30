@@ -16,7 +16,7 @@ from django.utils import timezone
 import reversion
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.db.transaction import commit_on_success
+from django.db.transaction import atomic
 from django.conf import settings
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
@@ -763,6 +763,7 @@ class TemplateList(PaginationMixin, ListView):
 class TemplateCreate(CreateView):
     model = Template
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         context = super(TemplateCreate, self).get_context_data(**kwargs)
@@ -776,6 +777,7 @@ class TemplateCreate(CreateView):
 class TemplateUpdate(UpdateView):
     model = Template
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         context = super(TemplateUpdate, self).get_context_data(**kwargs)
@@ -864,6 +866,7 @@ class RoomDetail(DetailView):
 class RoomCreate(CreateView):
     model = Room
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -880,6 +883,7 @@ class RoomCreate(CreateView):
 class RoomUpdate(UpdateView):
     model = Room
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -920,7 +924,7 @@ class RoomMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -995,6 +999,7 @@ class BuildingDetail(DetailView):
 class BuildingCreate(CreateView):
     model = Building
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1011,6 +1016,7 @@ class BuildingCreate(CreateView):
 class BuildingUpdate(UpdateView):
     model = Building
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1051,7 +1057,7 @@ class BuildingMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -1125,6 +1131,7 @@ class ManufacturerDetail(DetailView):
 class ManufacturerCreate(CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
 
     def get_context_data(self, **kwargs):
@@ -1142,6 +1149,7 @@ class ManufacturerCreate(CreateView):
 class ManufacturerUpdate(UpdateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1182,7 +1190,7 @@ class ManufacturerMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
@@ -1198,6 +1206,7 @@ class ManufacturerMerge(View):
 class NoteCreate(CreateView):
     model = Note
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_initial(self):
         initial = super(NoteCreate, self).get_initial()
@@ -1219,6 +1228,7 @@ class NoteCreate(CreateView):
 class NoteUpdate(UpdateView):
     model = Note
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_success_url(self):
         return reverse_lazy("device-detail", kwargs={"pk": self.object.device.pk})

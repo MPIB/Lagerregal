@@ -74,6 +74,7 @@ class TypeDetail(DetailView):
 class TypeCreate(CreateView):
     form_class = TypeForm
     template_name = 'devicetypes/type_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -101,6 +102,7 @@ class TypeUpdate(UpdateView):
     form_class = TypeForm
     model = Type
     template_name = 'devicetypes/type_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

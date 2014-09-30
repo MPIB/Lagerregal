@@ -42,3 +42,4 @@ class DepartmentAddUserForm(forms.ModelForm):
         widgets = {
             "department": forms.HiddenInput()
         }
+        fields = '__all__'

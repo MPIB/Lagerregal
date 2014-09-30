@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.db.transaction import commit_on_success
+from django.db.transaction import atomic
 import reversion
 
 from locations.models import Section
@@ -49,6 +49,7 @@ class SectionCreate(CreateView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -93,6 +94,7 @@ class SectionUpdate(UpdateView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -130,7 +132,7 @@ class SectionMerge(View):
             ("", _("Merge with {0}".format(context["newobject"].name)))]
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
-    @commit_on_success
+    @atomic
     def post(self, request, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
