@@ -23,7 +23,7 @@
         </tbody>
     </table>
     <div class="panel-footer">
-    {%  with dep=user.department|default:"all" %}
+    {%  with dep=user.main_department|default:"all" %}
         <a href="{% url 'device-list' department=dep filter='bookmark' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
     {%  endwith %}
         <div class="clearfix"></div>
