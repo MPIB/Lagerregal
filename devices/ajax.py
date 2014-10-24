@@ -272,8 +272,10 @@ class AjaxSearch(View):
         search = json.loads(request.POST["search"])
         searchdict = {}
         if request.user.main_department:
-            searchdict["department__in"] = [request.user.department.id, ]
+            searchdict["department__in"] = [request.user.main_department.id, ]
         excludedict = {}
+        search_q_list = []
+        exclude_q_list = []
         textfilter = None
         statusfilter = None
         displayed_columns = []
@@ -285,8 +287,10 @@ class AjaxSearch(View):
             if value[:4] == "not ":
                 value = value[4:]
                 dictionary = excludedict
+                q_list = exclude_q_list
             else:
                 dictionary = searchdict
+                q_list = search_q_list
 
             if key == "manufacturer":
                 value = value.split("-", 1)[0]
@@ -346,6 +350,11 @@ class AjaxSearch(View):
                 except:
                     if value.lower() == "null":
                         dictionary["currentlending"] = None
+                    else:
+                        q_list.append(Q(currentlending__owner__username__icontains=value) |
+                            Q(currentlending__owner__first_name__icontains=value) |
+                            Q(currentlending__owner__last_name__icontains=value))
+                print q_list
                 if len(displayed_columns) < 8:
                     displayed_columns.append(("user", _("User")))
                     searchvalues.append("currentlending__owner__username")
@@ -434,8 +443,9 @@ class AjaxSearch(View):
                 else:
                     dictionary["templending"] = False
 
-        devices = Device.objects.filter(**searchdict)
-        devices = devices.exclude(**excludedict)
+        print search_q_list, exclude_q_list
+        devices = Device.objects.filter(*search_q_list, **searchdict)
+        devices = devices.exclude(*exclude_q_list, **excludedict)
 
         if statusfilter == "all":
             pass
