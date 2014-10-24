@@ -36,10 +36,10 @@
                     "aaData": data["devices"],
                     "aoColumns": [
                         { "sTitle": "Device",
-                            "fnRender": function (obj) {
-                                var pk = obj.aData[4];
+                            "mRender": function ( data, type, full) {
+                                var pk = full[4];
 
-                                return "<a href='/devices/return/" + pk + "'>" + obj.aData[0] + "</a>";
+                                return "<a href='/devices/return/" + pk + "'>" + data + "</a>";
                             }},
                         { "sTitle": "Inventorynumber" },
                         { "sTitle": "Serialnumber" },
