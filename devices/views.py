@@ -149,6 +149,7 @@ class DeviceDetail(DetailView):
         except:
             pass
         context["mailform"] = DeviceMailForm(initial=mailinitial)
+        context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
         versions = reversion.get_for_object(context["device"])
         if len(versions) != 0:
             context["lastedit"] = versions[0]
@@ -292,22 +293,29 @@ class DeviceCreate(CreateView):
                 initial[key] = value
             initial["deviceid"] = copyid
         initial["creator"] = creator
+
+
+        if self.request.user.main_department:
+            initial["department"] = self.request.user.main_department
+            department = self.request.user.main_department
+        else:
+            department = None
+
         try:
-            initial["emailtemplate"] = MailTemplate.objects.get(usage="new")
+            initial["emailtemplate"] = MailTemplate.objects.get(usage="new",department=department)
             initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
                                           initial["emailtemplate"].default_recipients.all()]
             initial["emailsubject"] = initial["emailtemplate"].subject
             initial["emailbody"] = initial["emailtemplate"].body
-        except:
-            pass
-        if self.request.user.main_department:
-            initial["department"] = self.request.user.main_department
+        except Exception as e:
+            print(e)
         return initial
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceCreate, self).get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
         context['actionstring'] = "Create new Device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -366,7 +374,8 @@ class DeviceUpdate(UpdateView):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Edit"))]
-        context["template_list"] = MailTemplate.objects.exclude(usage=None)
+        context["template_list"] = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
         return context
 
     def form_valid(self, form):

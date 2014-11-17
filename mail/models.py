@@ -26,7 +26,7 @@ class MailTemplate(models.Model):
     body = models.CharField(_('Body'), max_length=10000)
     department = models.ForeignKey(Department, null=True)
 
-    usage = models.CharField(_('Usage'), choices=usages.items(), null=True, blank=True, unique=True, max_length=200)
+    usage = models.CharField(_('Usage'), choices=usages.items(), null=True, blank=True, max_length=200)
 
     def __unicode__(self):
         return self.name
