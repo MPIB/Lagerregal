@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 import pystache
 
-from users.models import Lageruser
+from users.models import Lageruser, Department
 
 
 usages = {
@@ -24,6 +24,7 @@ class MailTemplate(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
+    department = models.ForeignKey(Department, null=True)
 
     usage = models.CharField(_('Usage'), choices=usages.items(), null=True, blank=True, unique=True, max_length=200)
 
@@ -59,7 +60,8 @@ class MailTemplate(models.Model):
             "serialnumber": data["device"].serialnumber,
             "templending": data["device"].templending,
             "trashed": data["device"].trashed,
-            "webinterface": data["device"].webinterface
+            "webinterface": data["device"].webinterface,
+            "department": data["device"].department
         }
         if data["device"].currentlending != None:
             datadict["device"]["currentlending"] = {
