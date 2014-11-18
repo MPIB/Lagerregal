@@ -443,7 +443,6 @@ class AjaxSearch(View):
                 else:
                     dictionary["templending"] = False
 
-        print search_q_list, exclude_q_list
         devices = Device.objects.filter(*search_q_list, **searchdict)
         devices = devices.exclude(*exclude_q_list, **excludedict)
 
@@ -461,7 +460,7 @@ class AjaxSearch(View):
             devices = devices.filter(archived=None, trashed=None)
 
         if textfilter != None:
-            SEARCHSTRIP = getattr(settings, "SERCHSTRIP", None)
+            SEARCHSTRIP = getattr(settings, "SERCHSTRIP", [])
             if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             try:
