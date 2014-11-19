@@ -278,12 +278,8 @@ class DepartmentDetail(DetailView):
     template_name = "users/department_detail.html"
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super(DepartmentDetail, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['device_list'] = Device.objects.filter(department=context["department"], archived=None,
-                                                       trashed=None).values("id", "name", "inventorynumber",
-                                                                            "devicetype__name")
+        context['department_users'] = DepartmentUser.objects.select_related("user").filter(department=self.object)
 
         if "department" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
