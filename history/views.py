@@ -44,20 +44,20 @@ def cleanup_fielddict(version):
         try:
             version.field_dict["manufacturer"] = Manufacturer.objects.get(
                 pk=version.field_dict["manufacturer"])
-        except Type.DoesNotExist:
+        except Manufacturer.DoesNotExist:
             version.field_dict["manufacturer"] = "[deleted]"
     if version.field_dict.get("room") != None:
         try:
             version.field_dict["room"] = Room.objects.get(
                 pk=version.field_dict["room"])
-        except Type.DoesNotExist:
+        except Room.DoesNotExist:
             version.field_dict["room"] = "[deleted]"
 
     if version.field_dict.get("device") != None:
         try:
             version.field_dict["device"] = Device.objects.get(
                 pk=version.field_dict["device"])
-        except Type.DoesNotExist:
+        except Device.DoesNotExist:
             version.field_dict["device"] = "[deleted]"
 
     for excluded_field in excluded_fields:
