@@ -4,7 +4,7 @@ from django.views.generic import TemplateView, ListView
 from reversion.models import Version, Revision
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
-
+from django.shortcuts import redirect
 from devices.models import *
 from network.models import *
 from devicegroups.models import Devicegroup
@@ -114,8 +114,8 @@ class Home(TemplateView):
                 "pk", "username", "first_name", "last_name")
             context["breadcrumbs"] = [("", _("Dashboard"))]
         else:
-            context["breadcrumbs"] = [("", _("Home"))]
-            context["form"] = AuthenticationForm()
+            if self.request.user.is_authenticated:
+                redirect("userprofile")
         return context
 
 
