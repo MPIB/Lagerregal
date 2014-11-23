@@ -11,3 +11,5 @@ settings.py
 .coverage
 htmlcov/
 staticserve
+.DS_Store
+django.mo
