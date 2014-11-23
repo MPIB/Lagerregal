@@ -369,7 +369,7 @@ class DeviceUpdate(UpdateView):
         # Call the base implementation first to get a context
         context = super(DeviceUpdate, self).get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
