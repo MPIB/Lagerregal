@@ -4,20 +4,12 @@
     <div class="pagination-centered">
     <ul class="pager">
         {% if page_obj.has_previous %}
-            {% if filterform.filterstring.value == None %}
-                <li class="previous"><a href="{% url listurl 1 viewform.viewfilter.value %}" style="margin-right:5px"><i
-                        class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
                 <li class="previous"><a
-                        href="{% url listurl page_obj.previous_page_number viewform.viewfilter.value %}"><i
-                        class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
-            {% else %}
-                <li class="previous"><a
-                        href="{% url listurl 1 viewform.viewfilter.value filterform.filterstring.value %}"
+                        href="{% url listurl 1 viewform.departmentfilter.value viewform.viewfilter.value filterform.filterstring.value %}"
                         style="margin-right:5px"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
                 <li class="previous"><a
-                        href="{% url listurl page_obj.previous_page_number viewform.viewfilter.value filterform.filterstring.value %}"><i
+                        href="{% url listurl page_obj.previous_page_number viewform.departmentfilter.value viewform.viewfilter.value filterform.filterstring.value %}"><i
                         class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
-            {% endif %}
         {% else %}
             <li class="previous disabled"><a><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
         {% endif %}
@@ -32,21 +24,12 @@
                 {% endfor %}
             </select> {% trans "of" %} {{ page_obj.paginator.num_pages }}</li>
         {% if page_obj.has_next %}
-            {% if filterform.filterstring.value == None %}
-                <li class="next"><a href="{% url listurl page_obj.paginator.num_pages viewform.viewfilter.value %}"
-                                    style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a>
-                </li>
                 <li class="next"><a
-                        href="{% url listurl page_obj.next_page_number viewform.viewfilter.value %}">{% trans "Next" %}
-                    <i class="fa fa-angle-right"></i></a></li>
-            {% else %}
-                <li class="next"><a
-                        href="{% url listurl page_obj.paginator.num_pages viewform.viewfilter.value filterform.filterstring.value %}"
+                        href="{% url listurl page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewfilter.value filterform.filterstring.value %}"
                         style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
                 <li class="next"><a
-                        href="{% url listurl page_obj.next_page_number viewform.viewfilter.value filterform.filterstring.value %}">{% trans "Next" %}
+                        href="{% url listurl page_obj.next_page_number viewform.departmentfilter.value viewform.viewfilter.value filterform.filterstring.value %}">{% trans "Next" %}
                     <i class="fa fa-angle-right"></i></a></li>
-            {% endif %}
         {% else %}
             <li class="next disabled"><a>{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
         {% endif %}

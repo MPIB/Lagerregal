@@ -15,6 +15,9 @@ class MailList(PaginationMixin, ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
 
+    def get_queryset(self):
+        return MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(MailList, self).get_context_data(**kwargs)
@@ -45,9 +48,16 @@ class MailCreate(CreateView):
     model = MailTemplate
     template_name = 'devices/base_form.html'
 
+    def get_initial(self):
+        initial = super(MailCreate, self).get_initial()
+        if self.request.user.main_department:
+            initial["department"] = self.request.user.main_department
+        return initial
+
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(MailCreate, self).get_context_data(**kwargs)
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['type'] = "mail"
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
@@ -82,6 +92,7 @@ class MailUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(MailUpdate, self).get_context_data(**kwargs)
+        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
             (reverse("mail-detail", kwargs={"pk": self.object.pk}), self.object),

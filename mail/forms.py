@@ -16,4 +16,4 @@ class MailTemplateForm(forms.ModelForm):
 
     class Meta:
         model = MailTemplate
-        fields = ("name", "subject", "body", "usage")
+        fields = ("name", "subject", "body", "usage", "department")

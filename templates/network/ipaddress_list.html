@@ -58,7 +58,7 @@
     if ($("#id_departmentfilter").val() == "") {
         department = "all"
     } else {
-        department = $(this).val()
+        department = $('#id_departmentfilter').val()
     }
     window.location = "/ipaddresses/page/1/department/" + department + "/filter/" + $("#id_viewfilter").val() + "/search/" + $("#id_filterstring").val()
     });
@@ -66,7 +66,7 @@
     if ($("#id_departmentfilter").val() == "") {
         department = "all"
     } else {
-        department = $(this).val()
+        department = $('#id_departmentfilter').val()
     }
     window.location = "/ipaddresses/page/1/department/" + department + "/filter/" + $("#id_viewfilter").val() + "/search/" + $("#id_filterstring").val()
     });
@@ -74,7 +74,7 @@
     if ($("#id_departmentfilter").val() == "") {
         department = "all"
     } else {
-        department = $(this).val()
+        department = $('#id_departmentfilter').val()
     }
     window.location = "/ipaddresses/page/1/department/" + department + "/filter/" + $("#id_viewfilter").val() + "/search/" + $("#id_filterstring").val()
     });

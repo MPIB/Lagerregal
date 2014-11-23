@@ -6,6 +6,8 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 import reversion
+import datetime
+from django.utils.translation import ugettext_lazy as _
 
 from api.serializers import *
 from devices.models import *
@@ -152,6 +154,48 @@ class DeviceApiLend(generics.CreateAPIView):
             device.save()
         return response
 
+class DeviceApiReturn(APIView):
+
+    def post(self, request, *args, **kwargs):
+        if not "lending" in request.DATA:
+            return Response({"error": "you need to provide a valid lending id"}, status=rest_framework.status.HTTP_400_BAD_REQUEST)
+        if "room" in request.DATA:
+            if request.DATA["room"] != "" and request.DATA["room"] != 0:
+                roomid = request.DATA["room"]
+                room = get_object_or_404(Room, pk=roomid)
+            else:
+                room = None
+        else:
+            room = None
+
+        lending = get_object_or_404(Lending, pk=request.DATA["lending"])
+        if lending.device and lending.device != "":
+            device = lending.device
+            device.currentlending = None
+            if room:
+                device.room = room
+                try:
+                    template = MailTemplate.objects.get(usage="room")
+                except:
+                    template = None
+                if not template == None:
+                    recipients = []
+                    for recipient in template.default_recipients.all():
+                        recipient = recipient.content_object
+                        if isinstance(recipient, Group):
+                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                        else:
+                            recipients.append(recipient.email)
+                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
+            device.save()
+        else:
+            pass
+
+        lending.returndate = datetime.datetime.now()
+        lending.save()
+
+        return Response({"success": "device is returned"}, status=rest_framework.status.HTTP_200_OK)
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Type

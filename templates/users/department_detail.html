@@ -33,7 +33,7 @@
             <th>{% trans "Role" %}</th>
         </tr>
         </thead>
-        {% for member in department.departmentuser_set.all %}
+        {% for member in department_users %}
             <tr>
                 <td><a href="{% url 'userprofile' member.user.id %}">{{member.user}}</a></td>
                 <td>{{ member.get_role_display }}
@@ -46,12 +46,6 @@
         {% endfor %}
     </table>
     </div>
-{% endblock %}
-
-{% block htmlend %}
-    {% if "section" in LABEL_TEMPLATES %}
-        {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.section.0 %}
-    {% endif %}
 {% endblock %}
 
 {% block scriptend %}
@@ -68,7 +62,6 @@
             "+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
             "</form>"
-        </form>"
         })
     {% endif %}
 {% endblock %}

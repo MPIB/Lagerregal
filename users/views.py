@@ -38,7 +38,7 @@ class UserList(PaginationMixin, ListView):
 
     def get_queryset(self):
         users = Lageruser.objects.all()
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.kwargs.pop("filter", "")
 
         if self.request.user.main_department != None:
             self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
@@ -48,7 +48,7 @@ class UserList(PaginationMixin, ListView):
         if self.departmentfilter != "all":
             users = users.filter(departments__id=self.departmentfilter)
 
-        if self.filterstring:
+        if self.filterstring != "":
             users = users.filter(Q(username__icontains=self.filterstring) | Q(first_name__icontains=self.filterstring) | Q(last_name__icontains=self.filterstring))
         return users
 
@@ -58,10 +58,7 @@ class UserList(PaginationMixin, ListView):
         context = super(UserList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")), ]
-        if self.filterstring:
-            context["filterform"] = DepartmentFilterForm(initial={"filterstring": self.filterstring, "departmentfilter": self.departmentfilter})
-        else:
-            context["filterform"] = DepartmentFilterForm(initial={"departmentfilter": self.departmentfilter})
+        context["filterform"] = DepartmentFilterForm(initial={"filterstring": self.filterstring, "departmentfilter": self.departmentfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -281,12 +278,8 @@ class DepartmentDetail(DetailView):
     template_name = "users/department_detail.html"
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super(DepartmentDetail, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['device_list'] = Device.objects.filter(department=context["department"], archived=None,
-                                                       trashed=None).values("id", "name", "inventorynumber",
-                                                                            "devicetype__name")
+        context['department_users'] = DepartmentUser.objects.select_related("user").filter(department=self.object)
 
         if "department" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
