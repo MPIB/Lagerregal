@@ -285,8 +285,6 @@ class DeviceForm(forms.ModelForm):
                         typeattribute=attribute.pk)
                 except:
                     pass
-            self.fields.keyOrder.insert(self.fields.keyOrder.index("room"), self.fields.keyOrder.pop(
-                self.fields.keyOrder.index('attribute_{index}'.format(index=attribute.pk))))
 
 
 class AddForm(forms.ModelForm):
