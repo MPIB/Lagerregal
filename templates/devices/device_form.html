@@ -28,7 +28,6 @@
                             </div>
                         </div>
                     {% else %}
-                        {% if field.html_name == "room" %}</div>{% endif %}
                         <div class="form-group {{ field.css_classes }}"
                                 {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}
                              style="display:none;"
@@ -57,8 +56,11 @@
                             {% endif %}
                         </div>
                     {% endif %}
-                    {% if field.html_name == "devicetype" %}
+                    {% if field.html_name == "comment" %}
+                        <h3 class="col-lg-9 col-lg-offset-3">{% trans "Extra Attributes" %}</h3>
                         <div id="extra_attributes">{% endif %}
+
+                        {% if forloop.last %}</div>{% endif %}
                 {% endfor %}
                 <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm pull-right"/>
                 </form>

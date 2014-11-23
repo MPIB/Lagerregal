@@ -228,6 +228,7 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/devices/(?P<pk>\d+)/bookmark/$', DeviceApiBookmark.as_view(), name='device-api-bookmark'),
     url(r'^api/devices/(?P<pk>\d+)/changeroom/$', DeviceApiRoomChange.as_view(), name='device-api-room'),
     url(r'^api/devices/lend/$', DeviceApiLend.as_view(), name='device-api-lend'),
+    url(r'^api/devices/return/$', DeviceApiReturn.as_view(), name='device-api-return'),
     url(r'^api/smalldevices/$', SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
     url(r'^api/smalldevices/(?P<subpart>[^/]*)/$', SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
 

@@ -125,7 +125,7 @@ class DeviceDetail(DetailView):
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
-        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department=self.object.department)
+        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department=self.object.department, device=None, user=None)
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
         context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
@@ -149,6 +149,7 @@ class DeviceDetail(DetailView):
         except:
             pass
         context["mailform"] = DeviceMailForm(initial=mailinitial)
+        context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
         versions = reversion.get_for_object(context["device"])
         if len(versions) != 0:
             context["lastedit"] = versions[0]
@@ -292,22 +293,29 @@ class DeviceCreate(CreateView):
                 initial[key] = value
             initial["deviceid"] = copyid
         initial["creator"] = creator
+
+
+        if self.request.user.main_department:
+            initial["department"] = self.request.user.main_department
+            department = self.request.user.main_department
+        else:
+            department = None
+
         try:
-            initial["emailtemplate"] = MailTemplate.objects.get(usage="new")
+            initial["emailtemplate"] = MailTemplate.objects.get(usage="new",department=department)
             initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
                                           initial["emailtemplate"].default_recipients.all()]
             initial["emailsubject"] = initial["emailtemplate"].subject
             initial["emailbody"] = initial["emailtemplate"].body
-        except:
-            pass
-        if self.request.user.main_department:
-            initial["department"] = self.request.user.main_department
+        except Exception as e:
+            print(e)
         return initial
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceCreate, self).get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
         context['actionstring'] = "Create new Device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -361,12 +369,13 @@ class DeviceUpdate(UpdateView):
         # Call the base implementation first to get a context
         context = super(DeviceUpdate, self).get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Edit"))]
-        context["template_list"] = MailTemplate.objects.exclude(usage=None)
+        context["template_list"] = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
         return context
 
     def form_valid(self, form):
@@ -535,9 +544,18 @@ class DeviceReturn(FormView):
     def get_context_data(self, **kwargs):
         context = super(DeviceReturn, self).get_context_data(**kwargs)
         context['actionstring'] = "Mark device as returned"
+
+        lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
+
+        if lending.device:
+            device_name = lending.device.name
+        else:
+            device_name = lending.smalldevice
+            del context["form"].fields["room"]
+
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            ("", _("Return"))]
+            ("", _("Return {0}").format(device_name))]
         return context
 
     def form_valid(self, form):

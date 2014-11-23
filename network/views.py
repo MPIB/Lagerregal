@@ -54,12 +54,9 @@ class IpAddressList(PaginationMixin, ListView):
         context["viewform"] = ViewForm(initial={
                                                 'viewfilter': self.viewfilter,
                                                 "departmentfilter": self.departmentfilter})
-        if self.filterstring:
-            context["filterform"] = FilterForm(initial={
-                "filterstring": self.filterstring
-            })
-        else:
-            context["filterform"] = FilterForm()
+        context["filterform"] = FilterForm(initial={
+            "filterstring": self.filterstring
+        })
         context["breadcrumbs"] = [(reverse("device-list"), _("IP-Addresses"))]
 
         if context["is_paginated"] and context["page_obj"].number > 1:

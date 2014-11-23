@@ -10,8 +10,8 @@ from django.dispatch import receiver
 from django_auth_ldap.backend import populate_user
 from django.conf import settings
 import re
+import datetime
 
-# Create your models here.
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
@@ -21,6 +21,7 @@ class Lageruser(AbstractUser):
         MaxValueValidator(250)
     ], default=30)
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
+    expiration_date = models.DateField(null=True)
 
     main_department = models.ForeignKey("users.Department", null=True, blank=True, on_delete=models.SET_NULL)
     departments = models.ManyToManyField("users.Department", null=True, blank=True, through='users.DepartmentUser',
@@ -68,6 +69,18 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                     du = DepartmentUser(user=user, department=department, role="m")
                     du.save()
                 user.main_department = department
+
+    if "accountExpires" in ldap_user.attrs:
+        expires_timestamp = (int(ldap_user.attrs["accountExpires"][0])/10000000)-11644473600
+        try:
+            expires_date = datetime.date.fromtimestamp(expires_timestamp)
+        except StandardError:
+            expires_date = None
+        user.expiration_date = expires_date
+
+        if user.expiration_date < datetime.date.today():
+            user.is_active = False
+        user.save()
 
 
 class Department(models.Model):
