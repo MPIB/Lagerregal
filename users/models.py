@@ -21,7 +21,7 @@ class Lageruser(AbstractUser):
         MaxValueValidator(250)
     ], default=30)
     avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
-    expiration_date = models.DateField(null=True)
+    expiration_date = models.DateField(null=True, blank=True)
 
     main_department = models.ForeignKey("users.Department", null=True, blank=True, on_delete=models.SET_NULL)
     departments = models.ManyToManyField("users.Department", null=True, blank=True, through='users.DepartmentUser',
@@ -78,8 +78,9 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
             expires_date = None
         user.expiration_date = expires_date
 
-        if user.expiration_date < datetime.date.today():
-            user.is_active = False
+        if user.expiration_date:
+            if user.expiration_date < datetime.date.today():
+                user.is_active = False
         user.save()
 
 
