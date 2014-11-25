@@ -154,17 +154,24 @@ class DeviceDetail(DetailView):
         if len(versions) != 0:
             context["lastedit"] = versions[0]
 
-        if "device" in settings.LABEL_TEMPLATES:
-            context["label_js"] = ""
-            for attribute in settings.LABEL_TEMPLATES["device"][1]:
-                if attribute == "id":
-                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+        if self.object.department:
+            dep = self.object.department.name
+        else:
+            dep = "all"
+
+        if dep in settings.LABEL_TEMPLATES:
+            if "device" in settings.LABEL_TEMPLATES[dep]:
+                context["display_printbutton"] = True
+                context["label_js"] = ""
+                for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
+                    if attribute == "id":
+                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+                                                                                                  getattr(context["device"],
+                                                                                                          attribute))
+                    else:
+                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
                                                                                               getattr(context["device"],
                                                                                                       attribute))
-                else:
-                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
-                                                                                          getattr(context["device"],
-                                                                                                  attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),

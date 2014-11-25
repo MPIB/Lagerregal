@@ -17,7 +17,7 @@
                 {% trans "Manage" %} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
-                {% if "device" in LABEL_TEMPLATES %}
+                {% if display_printbutton %}
                     <li><a href="#" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print"
                                                                                          style="margin-right:7px"></i>{% trans "Print Label" %}
                     </a></li>
@@ -436,7 +436,7 @@
     {% endpermission %}
 
 
-    {% if "device" in LABEL_TEMPLATES %}
+    {% if display_printbutton %}
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.device.0 %}
     {% endif %}
 {% endblock %}
