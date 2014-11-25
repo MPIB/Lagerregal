@@ -715,7 +715,11 @@ class DeviceStorage(SingleObjectMixin, FormView):
     def form_valid(self, form):
         device = self.get_object()
         try:
-            roomid = settings.STORAGE_ROOM
+            if device.department:
+                dep = device.department.name
+            else:
+                dep = "all"
+            roomid = settings.STORAGE_ROOM[dep]
             room = get_object_or_404(Room, id=roomid)
         except:
             messages.error(self.request,
