@@ -74,14 +74,13 @@ class DevicePermissionLogic(PermissionLogic):
                 return False
             return False
         elif user_obj.is_active and user_obj.has_perm(perm):
-            if obj.is_private:
-                if  obj.department in user_obj.departments.all():
-                    return True
-            else:
-                if perm == "devices.read_device":
-                    return True
-                else:
-                    return obj.department in user_obj.departments.all()
+            try:
+                if not obj.is_private:
+                    if perm == "devices.read_device":
+                        return True
+            except:
+                pass
+            return obj.department in user_obj.departments.all()
         return False
 
 
