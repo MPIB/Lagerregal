@@ -1299,7 +1299,7 @@ class Search(TemplateView):
         context["breadcrumbs"] = [("", _("Search"))]
         return context
 
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         searchlist = self.request.POST["searchname"].split(" ")
         for i, item in enumerate(searchlist):
