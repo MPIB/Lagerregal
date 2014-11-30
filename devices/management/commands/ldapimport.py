@@ -82,17 +82,18 @@ class Command(BaseCommand):
                                 new_value = Department(name=department_name)
                                 new_value.save()
                         elif attr == "accountExpires":
-                            expires_timestamp = (int(userdata["accountExpires"][0])/10000000)-11644473600
-                            new_value = date.fromtimestamp(expires_timestamp)
+                            if int(userdata["accountExpires"][0]) > 0:
+                                expires_timestamp = (int(userdata["accountExpires"][0])/10000000)-11644473600
+                                new_value = date.fromtimestamp(expires_timestamp)
 
-                            if created and new_value < date.today():
-                                skipped_users += 1
-                                saveuser = False
-                                break
+                                if created and new_value < date.today():
+                                    skipped_users += 1
+                                    saveuser = False
+                                    break
 
-                            if user.is_active != (new_value > date.today()):
-                                user.is_active = new_value > date.today()
-                                saveuser = True
+                                if user.is_active != (new_value > date.today()):
+                                    user.is_active = new_value > date.today()
+                                    saveuser = True
                         old_value = getattr(user, field)
                         if old_value != new_value:
                             saveuser = True
