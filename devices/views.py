@@ -154,17 +154,24 @@ class DeviceDetail(DetailView):
         if len(versions) != 0:
             context["lastedit"] = versions[0]
 
-        if "device" in settings.LABEL_TEMPLATES:
-            context["label_js"] = ""
-            for attribute in settings.LABEL_TEMPLATES["device"][1]:
-                if attribute == "id":
-                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+        if self.object.department:
+            dep = self.object.department.name
+        else:
+            dep = "all"
+
+        if dep in settings.LABEL_TEMPLATES:
+            if "device" in settings.LABEL_TEMPLATES[dep]:
+                context["display_printbutton"] = True
+                context["label_js"] = ""
+                for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
+                    if attribute == "id":
+                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+                                                                                                  getattr(context["device"],
+                                                                                                          attribute))
+                    else:
+                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
                                                                                               getattr(context["device"],
                                                                                                       attribute))
-                else:
-                    context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
-                                                                                          getattr(context["device"],
-                                                                                                  attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -715,7 +722,11 @@ class DeviceStorage(SingleObjectMixin, FormView):
     def form_valid(self, form):
         device = self.get_object()
         try:
-            roomid = settings.STORAGE_ROOM
+            if device.department:
+                dep = device.department.name
+            else:
+                dep = "all"
+            roomid = settings.STORAGE_ROOM[dep]
             room = get_object_or_404(Room, id=roomid)
         except:
             messages.error(self.request,
@@ -933,7 +944,7 @@ class RoomDelete(DeleteView):
 class RoomMerge(View):
     model = Room
 
-    def get(self, request, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
@@ -943,7 +954,7 @@ class RoomMerge(View):
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @atomic
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(room=oldobject)
@@ -1066,7 +1077,7 @@ class BuildingDelete(DeleteView):
 class BuildingMerge(View):
     model = Building
 
-    def get(self, request, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
@@ -1076,7 +1087,7 @@ class BuildingMerge(View):
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @atomic
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         rooms = Room.objects.filter(building=oldobject)
@@ -1199,7 +1210,7 @@ class ManufacturerDelete(DeleteView):
 class ManufacturerMerge(View):
     model = Manufacturer
 
-    def get(self, request, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
@@ -1209,7 +1220,7 @@ class ManufacturerMerge(View):
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @atomic
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(manufacturer=oldobject)
@@ -1288,7 +1299,7 @@ class Search(TemplateView):
         context["breadcrumbs"] = [("", _("Search"))]
         return context
 
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         searchlist = self.request.POST["searchname"].split(" ")
         for i, item in enumerate(searchlist):

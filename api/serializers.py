@@ -60,7 +60,7 @@ class TemplateSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class LendingDisplaySerializer(serializers.ModelSerializer):
-    owner = UnicodeNameField()
+    owner = UnicodeNameField(read_only=True)
     owner_url = serializers.HyperlinkedIdentityField(source="owner", view_name='user-api-detail')
 
     class Meta:

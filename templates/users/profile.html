@@ -67,8 +67,12 @@
                                           class="profile-date">{{ profileuser.last_login }}</span></td>
                             </tr>
                             <tr>
+                                <td>{% trans "Account Expires on" %}</td>
+                                <td><span>{{ profileuser.expiration_date|default:"Never" }}</span></td>
+                            </tr>
+                            <tr>
                                 <td>{% trans "Is Staff" %}</td>
-                                <td>{% if profileuser.id_staff %}
+                                <td>{% if profileuser.is_staff %}
                                     <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
                                     {% else %}<i class="fa fa-exclamation-circle text-danger"
                                                  style="font-size:1.3em"></i>{% endif %}</td>

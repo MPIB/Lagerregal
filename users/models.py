@@ -71,17 +71,18 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                 user.main_department = department
 
     if "accountExpires" in ldap_user.attrs:
-        expires_timestamp = (int(ldap_user.attrs["accountExpires"][0])/10000000)-11644473600
-        try:
-            expires_date = datetime.date.fromtimestamp(expires_timestamp)
-        except StandardError:
-            expires_date = None
-        user.expiration_date = expires_date
+        if int(ldap_user.attrs["accountExpires"][0]) > 0:
+            expires_timestamp = (int(ldap_user.attrs["accountExpires"][0])/10000000)-11644473600
+            try:
+                expires_date = datetime.date.fromtimestamp(expires_timestamp)
+            except StandardError:
+                expires_date = None
+            user.expiration_date = expires_date
 
-        if user.expiration_date:
-            if user.expiration_date < datetime.date.today():
-                user.is_active = False
-        user.save()
+            if user.expiration_date:
+                if user.expiration_date < datetime.date.today():
+                    user.is_active = False
+    user.save()
 
 
 class Department(models.Model):
