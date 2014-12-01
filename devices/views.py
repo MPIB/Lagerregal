@@ -944,7 +944,7 @@ class RoomDelete(DeleteView):
 class RoomMerge(View):
     model = Room
 
-    def get(self, request, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
@@ -954,7 +954,7 @@ class RoomMerge(View):
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @atomic
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(room=oldobject)
@@ -1077,7 +1077,7 @@ class BuildingDelete(DeleteView):
 class BuildingMerge(View):
     model = Building
 
-    def get(self, request, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
@@ -1087,7 +1087,7 @@ class BuildingMerge(View):
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @atomic
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         rooms = Room.objects.filter(building=oldobject)
@@ -1210,7 +1210,7 @@ class ManufacturerDelete(DeleteView):
 class ManufacturerMerge(View):
     model = Manufacturer
 
-    def get(self, request, **kwargs):
+    def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
                    "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
         context["breadcrumbs"] = [
@@ -1220,7 +1220,7 @@ class ManufacturerMerge(View):
         return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
 
     @atomic
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
         newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
         devices = Device.objects.filter(manufacturer=oldobject)
