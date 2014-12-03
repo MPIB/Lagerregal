@@ -162,6 +162,7 @@ class DeviceDetail(DetailView):
         if dep in settings.LABEL_TEMPLATES:
             if "device" in settings.LABEL_TEMPLATES[dep]:
                 context["display_printbutton"] = True
+                context["label_path"] = settings.LABEL_TEMPLATES[dep]["device"][0]
                 context["label_js"] = ""
                 for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
                     if attribute == "id":
