@@ -180,9 +180,8 @@ class DeviceDetail(DetailView):
 
 
 @permission_required('devices.change_device', raise_exception=True)
-class DeviceIpAddressRemove(DeleteView):
+class DeviceIpAddressRemove(View):
     template_name = 'devices/unassign_ipaddress.html'
-    model = IpAddress
 
     def get(self, request, *args, **kwargs):
         context = {"device": get_object_or_404(Device, pk=kwargs["pk"]),
