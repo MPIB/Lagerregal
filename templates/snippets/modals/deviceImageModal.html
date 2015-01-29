@@ -6,8 +6,7 @@
 
 
 {% block modalBody %}
-    <form action="{% url "device-api-pictures" device.pk %}" method="POST">
-    </form>
+    <a href="{% url "device-picture-create" device.pk %}" class="btn btn-success">{% trans "Add Picture" %}</a>
 
     {% for picture in device.pictures.all %}
     <div class="row" style="margin-bottom:10px">

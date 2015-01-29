@@ -261,3 +261,6 @@ class Picture(models.Model):
     class Meta:
         verbose_name = _("Picture")
         verbose_name_plural = _("Pictures")
+
+    def get_absolute_url(self):
+        return reverse("device-detail", kwargs={'pk': self.device.pk})
