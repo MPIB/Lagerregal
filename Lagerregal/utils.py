@@ -1,4 +1,5 @@
 import csv, codecs, cStringIO
+import uuid
 
 class PaginationMixin():
     def get_paginate_by(self, queryset):
@@ -36,3 +37,16 @@ class UnicodeWriter:
         for row in rows:
             self.writerow(row)
 
+
+def get_file_location(instance=None, filename=""):
+
+    destination = ""
+
+    if instance:
+        destination += instance.__class__.__name__.lower()
+
+    destination += "/"
+    ext = filename.split(".")[-1]
+    destination += "{0}.{1}".format(uuid.uuid4(), ext)
+
+    return destination

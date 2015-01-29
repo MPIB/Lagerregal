@@ -10,6 +10,7 @@ settings.py
 *.label
 .coverage
 htmlcov/
-staticserve
+staticserve/
 .DS_Store
 django.mo
+media/
