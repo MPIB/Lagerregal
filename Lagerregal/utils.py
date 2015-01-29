@@ -2,7 +2,6 @@ import csv, codecs, cStringIO
 
 class PaginationMixin():
     def get_paginate_by(self, queryset):
-        return self.request.user.pagelength
         if self.request.user.pagelength == None:
             return self.request.user.pagelength
         else:
@@ -36,3 +35,4 @@ class UnicodeWriter:
     def writerows(self, rows):
         for row in rows:
             self.writerow(row)
+
