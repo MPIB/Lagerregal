@@ -197,6 +197,23 @@ class DeviceApiReturn(APIView):
 
         return Response({"success": "device is returned"}, status=rest_framework.status.HTTP_200_OK)
 
+
+class DeviceApiListPictures(generics.ListCreateAPIView):
+    model = Picture
+    serializer_class = PictureSerializer
+
+    def get_queryset(self):
+        return Picture.objects.filter(device__pk=self.kwargs["pk"])
+
+    def create(self, request, *args, **kwargs):
+        serializer = PictureSerializer(data=request.DATA, files=request.FILES)
+        device = get_object_or_404(Device, pk=kwargs["pk"])
+        if serializer.is_valid():
+            serializer.object.device = device
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Type
     serializer_class = TypeSerializer
