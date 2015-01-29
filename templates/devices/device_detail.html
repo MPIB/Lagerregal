@@ -22,6 +22,9 @@
                                                                                          style="margin-right:7px"></i>{% trans "Print Label" %}
                     </a></li>
                 {% endif %}
+                    <li><a href="#" data-target="#pictureModal" data-toggle="modal"><i class="fa fa-picture-o"
+                                                                                         style="margin-right:7px"></i>{% trans "Manage Pictures" %}
+                    </a></li>
                 {% permission user has 'devices.change_device' of device %}
                     <li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check"
                                                                               style="margin-right:7px"></i>{% trans "Inventoried" %}
@@ -462,6 +465,7 @@
         {% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
 
         {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
+        {% include "snippets/modals/deviceImageModal.html" with modalname="pictureModal" %}
     {% endpermission %}
 
 
@@ -566,5 +570,21 @@
     $(document).on('click', '.dropdown-cancel', function (e) {
     e.stopPropagation();
     });
+
+    $(document).on('click', '.delete-picture', function (e) {
+        console.log(e.toElement)
+        var picture_id = e.toElement.id.replace("picture", "")
+        var url = "{% url "device-api-picture" device.pk 0 %}".replace("pictures/0", "pictures/"+picture_id)
+        $.ajax({
+            url: url,
+            type: 'DELETE',
+            success: function() {
+                var row = e.toElement.parentNode.parentNode.parentNode
+                var modalBody = row.parentNode
+                modalBody.removeChild(row)
+
+            },
+        });
     });
+});
 {% endblock %}

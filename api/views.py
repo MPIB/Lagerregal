@@ -214,6 +214,11 @@ class DeviceApiListPictures(generics.ListCreateAPIView):
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
 
+
+class DeviceApiPicture(generics.RetrieveDestroyAPIView):
+    model = Picture
+    serializer_class = PictureSerializer
+
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Type
     serializer_class = TypeSerializer
