@@ -185,8 +185,9 @@
             {% if device.pictures.count > 0 %}
                     <div id="device-carousel" class="carousel slide" data-ride="carousel" data-interval=false>
                       <ol class="carousel-indicators">
-                        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                        <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                        {% for picture in device.pictures.all %}
+                        <li data-target="#device-carousel" data-slide-to="{{ forloop.counter }}" class="{% if forloop.first %}active{% endif %}"></li>
+                        {% endfor %}
                       </ol>
 
                   <div class="carousel-inner" role="listbox">
