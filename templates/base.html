@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{% static "css/jquery.dataTables.css" %}">
     <link rel="stylesheet" href="{% static "css/bootstrap-formhelpers.css" %}">
     <link rel="stylesheet" href="{% static "css/ladda-themeless.min.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "css/clippy.css" %}" media="all">
 
     <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
     <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
@@ -92,7 +93,7 @@
 
                             <div class="form-group">
                                 <div class="input-group" style="width: 200px;">
-                                    <input id="id_searchname" name="searchname" placeholder="{% trans 'Search Name' %}"
+                                    <input id="id_searchname" name="searchname" placeholder="{% trans 'Search for device' %}"
                                            type="text" class="form-control input-sm">
                     <span class="input-group-btn">
           <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i></button>
@@ -182,6 +183,7 @@
 
 <script src="{% static "js/spin.min.js" %}"></script>
 <script src="{% static "js/ladda.min.js" %}"></script>
+<script src="{% static "js/clippy.min.js" %} "></script>
 
 {% block htmlend %}{% endblock %}
 <script>
@@ -222,6 +224,26 @@
         if (!safeMethod(settings.type) && sameOrigin(settings.url)) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
         }
+    });
+
+    var helper;
+    $(document).ready(function() {
+        $("#id_searchname").focusin( function() {
+            window.setTimeout( function() {
+                if ($("#id_searchname").is(":focus")) {
+                    if (helper == undefined) {
+                        clippy.load('Clippy', function (agent) {
+                            helper = agent;
+                            helper.show();
+                            helper.speak("{% trans "Hi! I am Clippy, your Lagerregal assistant. Would you like some assistance totday?" %}");
+                        });
+                    }
+                } else {
+                    helper.animate();
+                }
+            }, 120000 );
+        });
+
     });
 
     {% block scriptend %}{% endblock %}
