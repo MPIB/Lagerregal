@@ -11,6 +11,7 @@ from django_auth_ldap.backend import populate_user
 from django.conf import settings
 import re
 import datetime
+from Lagerregal import utils
 
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
@@ -20,7 +21,7 @@ class Lageruser(AbstractUser):
     pagelength = models.IntegerField(validators=[
         MaxValueValidator(250)
     ], default=30)
-    avatar = models.ImageField(upload_to="avatars", blank=True, null=True)
+    avatar = models.ImageField(upload_to=utils.get_file_location, blank=True, null=True)
     expiration_date = models.DateField(null=True, blank=True)
 
     main_department = models.ForeignKey("users.Department", null=True, blank=True, on_delete=models.SET_NULL)

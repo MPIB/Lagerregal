@@ -252,7 +252,7 @@ class DeviceForm(forms.ModelForm):
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
         if self.data != {}:
             try:
-                attributes = TypeAttribute.objects.filter(devicetype=self.data["devicetype"][0])
+                attributes = TypeAttribute.objects.filter(devicetype__pk=self.data["devicetype"])
             except:
                 return
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 
-from devices.models import Room, Building, Manufacturer, Device, Template, Lending
+from devices.models import Room, Building, Manufacturer, Device, Template, Lending, Picture
 from django.contrib.auth.models import  Group
 from devicetypes.models import Type, TypeAttribute
 from users.models import Lageruser, Department
@@ -67,6 +67,13 @@ class LendingDisplaySerializer(serializers.ModelSerializer):
         model = Lending
 
 
+class PictureSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Picture
+        fields = ("image", "caption")
+
+
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
@@ -79,10 +86,12 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     currentlending = LendingDisplaySerializer(required=False, read_only=True)
     bookmarked = serializers.BooleanField()
     department = serializers.SlugRelatedField(slug_field="name")
+    pictures = PictureSerializer(many=True, read_only=True)
 
     class Meta:
         model = Device
         exclude = ("bookmarkers", )
+
 
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
@@ -92,6 +101,7 @@ class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Device
         fields = ("url", "id", "name", "department")
+
 
 class DeviceRoomSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
@@ -174,6 +184,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Group
+
 
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ipaddress-api-detail')

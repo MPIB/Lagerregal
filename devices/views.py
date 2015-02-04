@@ -19,7 +19,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic
 from django.conf import settings
 
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
@@ -162,6 +162,7 @@ class DeviceDetail(DetailView):
         if dep in settings.LABEL_TEMPLATES:
             if "device" in settings.LABEL_TEMPLATES[dep]:
                 context["display_printbutton"] = True
+                context["label_path"] = settings.LABEL_TEMPLATES[dep]["device"][0]
                 context["label_js"] = ""
                 for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
                     if attribute == "id":
@@ -1281,6 +1282,65 @@ class NoteDelete(DeleteView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(NoteDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
+            ("", _("Delete"))]
+        return context
+
+
+class PictureCreate(CreateView):
+    model = Picture
+    template_name = 'devices/base_form.html'
+    fields = '__all__'
+
+    def get_initial(self):
+        initial = super(PictureCreate, self).get_initial()
+        initial["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
+        initial["creator"] = self.request.user
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(PictureCreate, self).get_context_data(**kwargs)
+        device = get_object_or_404(Device, pk=self.kwargs["pk"])
+        context["enctype"] = "multipart/form-data"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk": device.pk}), device),
+            ("", _("Notes")),
+            ("", _("Create new note"))]
+        return context
+
+
+class PictureUpdate(UpdateView):
+    model = Picture
+    template_name = 'devices/base_form.html'
+    fields = '__all__'
+
+    def get_success_url(self):
+        return reverse_lazy("device-detail", kwargs={"pk": self.object.device.pk})
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(PictureUpdate, self).get_context_data(**kwargs)
+        context["enctype"] = "multipart/form-data"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
+            ("", _("Edit"))]
+        return context
+
+
+class PictureDelete(DeleteView):
+    model = Picture
+    template_name = 'devices/base_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy("device-detail", kwargs={"pk": self.object.device.pk})
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(PictureDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),

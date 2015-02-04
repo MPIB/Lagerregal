@@ -9,7 +9,7 @@ from devicegroups.models import Devicegroup
 from locations.models import Section
 import datetime
 from django.db.models import Q
-
+from Lagerregal import utils
 
 class Building(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
@@ -247,7 +247,20 @@ class Note(models.Model):
 
     class Meta:
         verbose_name = _("Note")
-        verbose_name = _("Notes")
+        verbose_name_plural = _("Notes")
+
+    def get_absolute_url(self):
+        return reverse("device-detail", kwargs={'pk': self.device.pk})
+
+
+class Picture(models.Model):
+    device = models.ForeignKey(Device, related_name="pictures")
+    image = models.ImageField(upload_to=utils.get_file_location)
+    caption = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name = _("Picture")
+        verbose_name_plural = _("Pictures")
 
     def get_absolute_url(self):
         return reverse("device-detail", kwargs={'pk': self.device.pk})
