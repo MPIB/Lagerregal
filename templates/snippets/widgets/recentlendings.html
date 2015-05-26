@@ -22,7 +22,7 @@
             <tr>
                 <td>
                     {% if lending.device %}
-                        <a href="{% url 'device-detail' device.pk %}">{{ lending.device.name }}</a>
+                        <a href="{% url 'device-detail' lending.device.pk %}">{{ lending.device.name }}</a>
                     {% else %}
                         {{ lending.smalldevice }}
                     {% endif %}
