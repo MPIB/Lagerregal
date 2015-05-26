@@ -71,21 +71,21 @@ class PictureSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Picture
-        fields = ("image", "caption")
+        fields = ("id", "image", "caption")
 
 
 class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
-    manufacturer = serializers.SlugRelatedField(slug_field="name")
+    manufacturer = serializers.SlugRelatedField(slug_field="name", queryset=Manufacturer.objects.all())
     room = serializers.SlugRelatedField(slug_field="name", queryset=Room.objects.select_related("building").all())
-    devicetype = serializers.SlugRelatedField(slug_field="name")
-    ip_addresses = serializers.SlugRelatedField(many=True, source='ipaddress_set', slug_field="address")
-    creator = UnicodeNameField()
+    devicetype = serializers.SlugRelatedField(slug_field="name", queryset=Type.objects.all())
+    ip_addresses = serializers.SlugRelatedField(many=True, source='ipaddress_set', slug_field="address", queryset=IpAddress.objects.all())
+    creator = UnicodeNameField(queryset=Lageruser.objects.all())
     creator_url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     currentlending = LendingDisplaySerializer(required=False, read_only=True)
     bookmarked = serializers.BooleanField()
-    department = serializers.SlugRelatedField(slug_field="name")
+    department = serializers.SlugRelatedField(slug_field="name", queryset=Department.objects.all())
     pictures = PictureSerializer(many=True, read_only=True)
 
     class Meta:
@@ -96,7 +96,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
-    department = serializers.SlugRelatedField(slug_field="name")
+    department = serializers.SlugRelatedField(slug_field="name", queryset=Department.objects.all())
 
     class Meta:
         model = Device
@@ -153,7 +153,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.CharField(source="pk", read_only=True)
     groups = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Group.objects.all())
     user_permissions = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Permission.objects.all())
-    main_department = serializers.SlugRelatedField(slug_field="name")
+    main_department = serializers.SlugRelatedField(slug_field="name", read_only=True)
     departments = serializers.SlugRelatedField(many=True, slug_field="name", queryset=Department.objects.all())
 
     class Meta:
@@ -180,7 +180,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='group-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
     users = UserListSerializer(many=True, source="user_set")
-    permissions = serializers.SlugRelatedField(slug_field="name", many=True)
+    permissions = serializers.SlugRelatedField(slug_field="name", many=True, queryset=Permission.objects.all())
 
     class Meta:
         model = Group
@@ -189,8 +189,8 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ipaddress-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
-    user = UnicodeNameField()
-    device = serializers.SlugRelatedField(slug_field="name")
+    user = UnicodeNameField(queryset=Lageruser.objects.all())
+    device = serializers.SlugRelatedField(slug_field="name", queryset=Device.objects.all())
 
     class Meta:
         model = IpAddress
