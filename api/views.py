@@ -90,6 +90,9 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
                 else:
                     recipients.append(recipient.email)
             template.send(self.request, recipients, {"device": self.object, "user": self.request.user})
+
+        reversion.set_user(request.user)
+        reversion.set_comment(_("Device moved to room {0}").format(self.object.room))
         return response
 
 class DeviceApiBookmark(APIView):
@@ -174,6 +177,7 @@ class DeviceApiReturn(APIView):
             device.currentlending = None
             if room:
                 device.room = room
+                reversion.set_user(request.user)
                 try:
                     template = MailTemplate.objects.get(usage="room")
                 except:
