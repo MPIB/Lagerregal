@@ -255,6 +255,7 @@ class DepartmentCreate(CreateView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_form.html'
+    fields = "__all__"
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
