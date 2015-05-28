@@ -59,6 +59,7 @@ class DeviceApiCreate(generics.CreateAPIView):
 class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Device
     serializer_class = DeviceSerializer
+    queryset = Device.objects.all()
 
     def get_object(self, query=None):
         if query:
@@ -317,6 +318,7 @@ class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
     model = Lageruser
     serializer_class = UserAvatarSerializer
+    queryset = Lageruser.objects.all()
 
     def get_object(self, kwargs=None):
         queryset = self.get_queryset()

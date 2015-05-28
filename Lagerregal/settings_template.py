@@ -160,7 +160,7 @@ LANGUAGES = (
 
 AUTH_USER_MODEL = 'users.Lageruser'
 
-SITE_NAME = "Lagerregal (Beta)"
+SITE_NAME = "Lagerregal"
 
 MESSAGE_TAGS = {
     messages.ERROR: 'alert',

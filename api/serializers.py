@@ -7,9 +7,6 @@ from devicetypes.models import Type, TypeAttribute
 from users.models import Lageruser, Department
 from network.models import IpAddress
 
-class UnicodeNameField(serializers.RelatedField):
-    def to_native(self, value):
-        return value.__unicode__()
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='building-api-detail')
@@ -60,7 +57,7 @@ class TemplateSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class LendingDisplaySerializer(serializers.ModelSerializer):
-    owner = UnicodeNameField(read_only=True)
+    owner = serializers.StringRelatedField(read_only=True)
     owner_url = serializers.HyperlinkedIdentityField(source="owner", view_name='user-api-detail')
 
     class Meta:
@@ -81,7 +78,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     room = serializers.SlugRelatedField(slug_field="name", queryset=Room.objects.select_related("building").all())
     devicetype = serializers.SlugRelatedField(slug_field="name", queryset=Type.objects.all())
     ip_addresses = serializers.SlugRelatedField(many=True, source='ipaddress_set', slug_field="address", queryset=IpAddress.objects.all())
-    creator = UnicodeNameField(queryset=Lageruser.objects.all())
+    creator = serializers.StringRelatedField(read_only=True)
     creator_url = serializers.HyperlinkedIdentityField(view_name='user-api-detail')
     currentlending = LendingDisplaySerializer(required=False, read_only=True)
     bookmarked = serializers.BooleanField()
@@ -189,7 +186,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='ipaddress-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
-    user = UnicodeNameField(queryset=Lageruser.objects.all())
+    user = serializers.StringRelatedField(read_only=True)
     device = serializers.SlugRelatedField(slug_field="name", queryset=Device.objects.all())
 
     class Meta:
