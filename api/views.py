@@ -5,6 +5,7 @@ import rest_framework.reverse
 from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+from rest_framework import status
 import reversion
 import datetime
 from django.utils.translation import ugettext_lazy as _
@@ -71,6 +72,7 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class DeviceApiRoomChange(generics.UpdateAPIView):
     model = Device
+    queryset = Device.objects.all()
     serializer_class = DeviceRoomSerializer
 
     def post(self, request, pk):
@@ -98,7 +100,10 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
 
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
-        device = Device.objects.get(pk=pk)
+        try:
+            device = Device.objects.get(pk=pk)
+        except Device.DoesNotExist:
+            return Response({"error": "Not found"}, status=status.HTTP_404_NOT_FOUND)
         if "bookmarked" in request.POST:
             if "note" in request.POST:
                 if request.POST["note"] != "":
@@ -162,7 +167,7 @@ class DeviceApiReturn(APIView):
 
     def post(self, request, *args, **kwargs):
         if not "lending" in request.DATA:
-            return Response({"error": "you need to provide a valid lending id"}, status=rest_framework.status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "you need to provide a valid lending id"}, status=status.HTTP_400_BAD_REQUEST)
         if "room" in request.DATA:
             if request.DATA["room"] != "" and request.DATA["room"] != 0:
                 roomid = request.DATA["room"]
@@ -200,7 +205,7 @@ class DeviceApiReturn(APIView):
         lending.returndate = datetime.datetime.now()
         lending.save()
 
-        return Response({"success": "device is returned"}, status=rest_framework.status.HTTP_200_OK)
+        return Response({"success": "device is returned"}, status=status.HTTP_200_OK)
 
 
 class DeviceApiListPictures(generics.ListCreateAPIView):
@@ -357,4 +362,4 @@ class SmallDeviceApiList(APIView):
             smalldevices = smalldevices.filter(smalldevice__icontains=subpart)
         smalldevices = smalldevices.values_list("smalldevice").distinct()
         smalldevices = [smalldevice[0] for smalldevice in smalldevices]
-        return Response(smalldevices, status=rest_framework.status.HTTP_200_OK)
+        return Response(smalldevices, status=status.HTTP_200_OK)
