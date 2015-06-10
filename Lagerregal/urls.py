@@ -131,8 +131,6 @@ urlpatterns = patterns('',
 
     url(r'^devicegroups/$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
     url(r'^devicegroups/(?P<page>[0-9]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
-    url(r'^devicegroups/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
-    url(r'^devicegroups/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
     url(r'^devicegroups/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
     url(r'^devicegroups/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
     url(r'^devicegroups/add$', permission_required("devicegroups.add_devicegroup")(DevicegroupCreate.as_view()), name="devicegroup-add"),

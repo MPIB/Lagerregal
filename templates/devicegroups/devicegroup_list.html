@@ -18,7 +18,7 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-12 col-md-12">
-            {% include "snippets/pagination.html" with listurl='devicegroup-list' %}
+            {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
             <table class="table table-bordered table-striped">
                 <thead>
                 <tr>
@@ -34,7 +34,7 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% include "snippets/pagination.html" with listurl='devicegroup-list' %}
+            {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
         </div>
     </div>
 {% endblock %}
@@ -63,5 +63,5 @@
     }
     window.location = "/devicegroups/department/" + department + "/sorting/" + $("#id_viewsorting").val() + "/filter/" + $("#id_filterstring").val()
     });
-    {% include "snippets/pagination_js.html" with pageurl="devicegroup-list" %}
+    {% include "snippets/devicegrouppagination_js.html" with pageurl="devicegroup-list" %}
 {% endblock %}

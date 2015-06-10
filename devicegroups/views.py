@@ -17,6 +17,8 @@ class DevicegroupList(PaginationMixin, ListView):
     def get_queryset(self):
         devicegroups = Devicegroup.objects.all()
         self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring == "None":
+            self.filterstring = None
         if self.filterstring:
             devicegroups = devicegroups.filter(name__icontains=self.filterstring)
         self.viewsorting = self.kwargs.pop("sorting", "name")
@@ -36,7 +38,6 @@ class DevicegroupList(PaginationMixin, ListView):
             except:
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
 
-        if self.departmentfilter != "all":
             devicegroups = devicegroups.filter(Q(department=self.departmentfilter) | Q(department=None))
         return devicegroups
 
