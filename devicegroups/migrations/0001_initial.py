@@ -1,29 +1,26 @@
 # -*- coding: utf-8 -*-
-from south.db import db
-from south.v2 import SchemaMigration
+from __future__ import unicode_literals
+
+from django.db import models, migrations
 
 
-class Migration(SchemaMigration):
-    def forwards(self, orm):
-        # Adding model 'Devicegroup'
-        db.create_table(u'devicegroups_devicegroup', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal(u'devicegroups', ['Devicegroup'])
+class Migration(migrations.Migration):
 
+    dependencies = [
+        ('users', '0005_auto_20150526_0403'),
+    ]
 
-    def backwards(self, orm):
-        # Deleting model 'Devicegroup'
-        db.delete_table(u'devicegroups_devicegroup')
-
-
-    models = {
-        u'devicegroups.devicegroup': {
-            'Meta': {'object_name': 'Devicegroup'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
-        }
-    }
-
-    complete_apps = ['devicegroups']
+    operations = [
+        migrations.CreateModel(
+            name='Devicegroup',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=200)),
+            ],
+            options={
+                'verbose_name': 'Devicegroup',
+                'verbose_name_plural': 'Devicegroups',
+                'permissions': (('read_devicegroup', 'Can read Devicegroup'),),
+            },
+        ),
+    ]

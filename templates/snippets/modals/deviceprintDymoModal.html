@@ -58,7 +58,8 @@
                     option.appendChild(document.createTextNode(printerName));
                     printersSelect.appendChild(option);
                 }
-                $("#printersSelect").select2('val', $('#printersSelect option:eq(0)').val());
+                var printerSelect = $('#printerSelect');
+                printersSelect.select2('val', printersSelect.children('option:eq(0)').val());
             }
         }
     </script>

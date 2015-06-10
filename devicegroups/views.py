@@ -5,9 +5,9 @@ from django.conf import settings
 
 from devicegroups.models import Devicegroup
 from devices.models import Device
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from devices.forms import DepartmentViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
-
+from users.models import Department
 
 class DevicegroupList(PaginationMixin, ListView):
     model = Devicegroup
@@ -21,6 +21,22 @@ class DevicegroupList(PaginationMixin, ListView):
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devicegroups = devicegroups.order_by(self.viewsorting)
+
+
+        if self.request.user.main_department != None:
+            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        else:
+            self.departmentfilter = self.kwargs.get("department", "all")
+
+        if self.departmentfilter != "all":
+            try:
+                departmentid = int(self.departmentfilter)
+                self.departmentfilter = Department.objects.get(id=departmentid)
+            except:
+                self.departmentfilter = Department.objects.get(name=self.departmentfilter)
+
+        if self.departmentfilter != "all":
+            devicegroups = devicegroups.filter(department=self.departmentfilter)
         return devicegroups
 
 
@@ -29,7 +45,8 @@ class DevicegroupList(PaginationMixin, ListView):
         context = super(DevicegroupList, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups"))]
-        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
+        context["viewform"] = DepartmentViewForm(initial={"viewsorting": self.viewsorting,
+            "departmentfilter": self.departmentfilter})
         if self.filterstring:
             context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
@@ -70,6 +87,8 @@ class DevicegroupCreate(CreateView):
         # Call the base implementation first to get a context
         context = super(DevicegroupCreate, self).get_context_data(**kwargs)
         context['type'] = "devicegroup"
+        if self.request.user.main_department:
+            context["form"].fields["department"].initial = self.request.user.main_department
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
             ("", _("Create new devicegroup"))]

@@ -190,6 +190,14 @@ class ViewForm(forms.Form):
                                                                "class": "pull-right form-control input-sm"}))
 
 
+class DepartmentViewForm(ViewForm):
+    viewfilter = forms.ChoiceField(choices=VIEWFILTER,
+                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
+                                                              "class": "pull-right input-sm form-control"}))
+    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
+                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
+                                                              "class": "pull-right input-sm form-control"}))
+
 class FilterForm(forms.Form):
     filterstring = forms.CharField(max_length=100,
                                    widget=forms.TextInput(attrs={"style": "width:150px;margin-left:10px;",

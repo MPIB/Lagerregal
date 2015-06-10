@@ -3,10 +3,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 import reversion
 
+from users.models import Department
+
 # Create your models here.
 
 class Devicegroup(models.Model):
     name = models.CharField(max_length=200)
+    department = models.ForeignKey(Department, null=True)
 
     def __unicode__(self):
         return self.name
