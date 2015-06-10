@@ -256,7 +256,7 @@ class Note(models.Model):
 class Picture(models.Model):
     device = models.ForeignKey(Device, related_name="pictures")
     image = models.ImageField(upload_to=utils.get_file_location)
-    caption = models.CharField(max_length=200)
+    caption = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         verbose_name = _("Picture")

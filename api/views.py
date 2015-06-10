@@ -216,10 +216,10 @@ class DeviceApiListPictures(generics.ListCreateAPIView):
         return Picture.objects.filter(device__pk=self.kwargs["pk"])
 
     def create(self, request, *args, **kwargs):
-        serializer = PictureSerializer(data=request.DATA, files=request.FILES)
+        serializer = PictureSerializer(data=request.data)
         device = get_object_or_404(Device, pk=kwargs["pk"])
         if serializer.is_valid():
-            serializer.object.device = device
+            serializer.validated_data["device"] = device
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
