@@ -2,6 +2,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.db.models import Q
 
 from devicegroups.models import Devicegroup
 from devices.models import Device
@@ -36,7 +37,7 @@ class DevicegroupList(PaginationMixin, ListView):
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
 
         if self.departmentfilter != "all":
-            devicegroups = devicegroups.filter(department=self.departmentfilter)
+            devicegroups = devicegroups.filter(Q(department=self.departmentfilter) | Q(department=None))
         return devicegroups
 
 
