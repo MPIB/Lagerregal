@@ -88,13 +88,13 @@ class AddDeviceField(View):
         dform = QueryDict(query_string=unicode(request.POST["form"]).encode('utf-8'))
         classname = dform["classname"]
         if classname == "manufacturer":
-            form = modelform_factory(Manufacturer, form=AddForm)(dform)
+            form = modelform_factory(Manufacturer, exclude=(), form=AddForm)(dform)
         elif classname == "devicetype":
-            form = modelform_factory(Type, form=AddForm)(dform)
+            form = modelform_factory(Type, exclude=(), form=AddForm)(dform)
         elif classname == "room":
-            form = modelform_factory(Room, form=AddForm)(dform)
+            form = modelform_factory(Room, exclude=(), form=AddForm)(dform)
         elif classname == "group":
-            form = modelform_factory(Devicegroup, form=AddForm)(dform)
+            form = modelform_factory(Devicegroup, exclude=(), form=AddForm)(dform)
         else:
             return HttpResponse("")
         data = {}
@@ -132,13 +132,13 @@ class LoadExtraform(View):
     def post(self, request):
         classname = request.POST["classname"]
         if classname == "manufacturer":
-            form = modelform_factory(Manufacturer, form=AddForm)()
+            form = modelform_factory(Manufacturer, exclude=(), form=AddForm)()
         elif classname == "devicetype":
-            form = modelform_factory(Type, form=AddForm)()
+            form = modelform_factory(Type, exclude=(), form=AddForm)()
         elif classname == "room":
-            form = modelform_factory(Room, form=AddForm)()
+            form = modelform_factory(Room, exclude=(), form=AddForm)()
         elif classname == "group":
-            form = modelform_factory(Devicegroup, form=AddForm)()
+            form = modelform_factory(Devicegroup, exclude=(), form=AddForm)()
         else:
             return HttpResponse("")
 
