@@ -227,6 +227,7 @@ class DeviceApiListPictures(generics.ListCreateAPIView):
 
 class DeviceApiPicture(generics.RetrieveDestroyAPIView):
     model = Picture
+    queryset = Picture.objects.all()
     serializer_class = PictureSerializer
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):

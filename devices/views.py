@@ -18,6 +18,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic
 from django.conf import settings
+from django.db.models.query import QuerySet
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
 from devicetypes.models import TypeAttribute, TypeAttributeValue
@@ -68,21 +69,27 @@ class DeviceList(PaginationMixin, ListView):
         else:
             devices = Device.active()
 
-        if self.request.user.main_department != None:
-            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        if self.request.user.departments.count() > 0:
+            self.departmentfilter = self.kwargs.get("department", "my")
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
 
-        if self.departmentfilter != "all":
+        if self.departmentfilter != "all" and self.departmentfilter != "my":
             try:
                 departmentid = int(self.departmentfilter)
                 self.departmentfilter = Department.objects.get(id=departmentid)
             except:
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
+        if self.departmentfilter == "my":
+            self.departmentfilter = self.request.user.departments.all()
 
         if self.viewfilter == "lent" or self.viewfilter == "overdue" or self.viewfilter == "returnsoon":
-            if self.departmentfilter != "all":
+            if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
+                lendings = lendings.filter(owner__departments__in=self.departmentfilter)
+                self.departmentfilter = "my"
+            elif self.departmentfilter != "all":
                 lendings = lendings.filter(owner__departments=self.departmentfilter)
+                self.departmentfilter = self.departmentfilter.id
             lendings = lendings.exclude(~Q(device__department__in=self.request.user.departments.all()) &
                                         ~Q(device=None), device__is_private=True)
             return lendings.values("device__id", "device__name", "device__inventorynumber",
@@ -90,8 +97,12 @@ class DeviceList(PaginationMixin, ListView):
                                        "device__room__building__name", "owner__username", "owner__id",
                                        "duedate", "smalldevice")
         else:
-            if self.departmentfilter != "all":
+            if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
+                devices = devices.filter(department__in=self.departmentfilter)
+                self.departmentfilter = "my"
+            elif self.departmentfilter != "all":
                 devices = devices.filter(department=self.departmentfilter)
+                self.departmentfilter = self.departmentfilter.id
             devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
             self.viewsorting = self.kwargs.get("sorting", "name")
             if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:

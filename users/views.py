@@ -40,13 +40,15 @@ class UserList(PaginationMixin, ListView):
         users = Lageruser.objects.all()
         self.filterstring = self.kwargs.pop("filter", "")
 
-        if self.request.user.main_department != None:
-            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        if self.request.user.departments.count() > 0:
+            self.departmentfilter = self.kwargs.get("department", "my")
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
 
-        if self.departmentfilter != "all":
+        if self.departmentfilter != "all" and self.departmentfilter != "my":
             users = users.filter(departments__id=self.departmentfilter)
+        elif self.departmentfilter == "my":
+            users = users.filter(departments__in=self.request.user.departments.all())
 
         if self.filterstring != "":
             users = users.filter(Q(username__icontains=self.filterstring) | Q(first_name__icontains=self.filterstring) | Q(last_name__icontains=self.filterstring))

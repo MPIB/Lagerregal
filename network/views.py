@@ -36,13 +36,15 @@ class IpAddressList(PaginationMixin, ListView):
         else:
             addresses = IpAddress.objects.all()
 
-        if self.request.user.main_department != None:
-            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        if self.request.user.departments.count() > 0:
+            self.departmentfilter = self.kwargs.get("department", "my")
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
 
-        if self.departmentfilter != "all":
+        if self.departmentfilter != "all" and self.departmentfilter != "my":
             addresses = addresses.filter(department__id=self.departmentfilter)
+        elif self.departmentfilter == "my":
+            addresses = addresses.filter(department__in=self.request.user.departments.all())
 
         if self.filterstring != "":
             addresses = addresses.filter(address__icontains=self.filterstring)

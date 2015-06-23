@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from network.models import IpAddress
 from users.models import Lageruser, Department
-
+from devices.forms import DEPARTMENT_OPTIONS
 
 VIEWFILTER = (
     ('all', _('All IP-Addresses')),
@@ -30,9 +30,9 @@ class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
                                                               "class": "pull-right input-sm form-control"}))
-    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
-                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right input-sm form-control"}))
+    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
+                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
+                                                               "class": "pull-right form-control input-sm"}))
 
 
 class UserIpAddressForm(forms.Form):

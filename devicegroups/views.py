@@ -26,19 +26,23 @@ class DevicegroupList(PaginationMixin, ListView):
             devicegroups = devicegroups.order_by(self.viewsorting)
 
 
-        if self.request.user.main_department != None:
-            self.departmentfilter = self.kwargs.get("department", self.request.user.main_department.id)
+        if self.request.user.departments.count() > 0:
+            self.departmentfilter = self.kwargs.get("department", "my")
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
 
-        if self.departmentfilter != "all":
+        if self.departmentfilter != "all" and self.departmentfilter != "my":
             try:
                 departmentid = int(self.departmentfilter)
                 self.departmentfilter = Department.objects.get(id=departmentid)
             except:
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
-
             devicegroups = devicegroups.filter(Q(department=self.departmentfilter) | Q(department=None))
+            self.departmentfilter = self.departmentfilter.id
+
+        elif self.departmentfilter == "my":
+            departmentfilter = self.request.user.departments.all()
+            devicegroups = devicegroups.filter(Q(department__in=departmentfilter) | Q(department=None))
         return devicegroups
 
 

@@ -56,6 +56,10 @@ VIEWSORTING = (
     ('-id', _('ID descending')),
 )
 
+DEPARTMENT_OPTIONS = [
+    ("all", _("All Departments")),
+    ("my", _("My Departments"))
+]
 
 def get_emailrecipientlist(special=None):
     objects = []
@@ -179,7 +183,7 @@ class DeviceViewForm(forms.Form):
     viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
-    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
+    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 
@@ -194,9 +198,9 @@ class DepartmentViewForm(ViewForm):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
                                                               "class": "pull-right input-sm form-control"}))
-    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
-                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right input-sm form-control"}))
+    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
+                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
+                                                               "class": "pull-right form-control input-sm"}))
 
 class FilterForm(forms.Form):
     filterstring = forms.CharField(max_length=100,
@@ -206,9 +210,9 @@ class FilterForm(forms.Form):
 
 
 class DepartmentFilterForm(FilterForm):
-    departmentfilter = forms.ModelChoiceField(queryset=Department.objects.all(), empty_label=_("All Departments"),
-                                widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right input-sm form-control"}))
+    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
+                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
+                                                               "class": "pull-right form-control input-sm"}))
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
