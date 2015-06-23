@@ -271,8 +271,8 @@ class AjaxSearch(View):
     def post(self, request):
         search = json.loads(request.POST["search"])
         searchdict = {}
-        if request.user.main_department:
-            searchdict["department__in"] = [request.user.main_department.id, ]
+        if request.user.departments.count() > 0:
+            searchdict["department__in"] = request.user.departments.all()
         excludedict = {}
         search_q_list = []
         exclude_q_list = []
