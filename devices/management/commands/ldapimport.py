@@ -95,7 +95,7 @@ class Command(BaseCommand):
                                     user.is_active = new_value > date.today()
                                     saveuser = True
                         old_value = getattr(user, field)
-                        if old_value != new_value and (created or new_value not in settings.AUTH_LDAP_ATTR_NOSYNC):
+                        if old_value != new_value and (created or attr not in settings.AUTH_LDAP_ATTR_NOSYNC):
                             saveuser = True
                             setattr(user, field,new_value)
                     except StandardError as e:
