@@ -203,6 +203,7 @@ if USE_LDAP:
     AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType()
     AUTH_LDAP_MIRROR_GROUPS  = True
 
+    AUTH_LDAP_ATTR_NOSYNC = []
     AUTH_LDAP_USER_ATTR_MAP = {
         "first_name": "",
         "last_name": "",
