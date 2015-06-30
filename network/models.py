@@ -10,7 +10,7 @@ import reversion
 
 
 class IpAddress(models.Model):
-    address = models.IPAddressField(unique=True)
+    address = models.GenericIPAddressField(unique=True)
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(Lageruser, blank=True, null=True, on_delete=models.SET_NULL)
     last_seen = models.DateTimeField(null=True, blank=True)
