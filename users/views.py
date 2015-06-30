@@ -84,6 +84,7 @@ class ProfileView(DetailView):
                                                                              returndate=None)
         context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
+        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department__in=self.object.departments.all(), device=None, user=None)
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
         context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
