@@ -9,7 +9,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from reversion.models import Version, Revision
 import reversion
-from django.db.models import get_model
+from django.apps import apps
 
 from Lagerregal.utils import PaginationMixin
 from devices.models import Device, Room, Manufacturer
@@ -71,11 +71,12 @@ class HistoryDetail(UpdateView):
     model = Version
     template_name = 'history/history_detail.html'
     context_object_name = "this_version"
+    fields = "__all__"
 
     def get_context_data(self, **kwargs):
         context = super(HistoryDetail, self).get_context_data(**kwargs)
         context["current_version"] = get_object_or_404(
-            get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
+            apps.get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
                                                        id=context["this_version"].object_id)
 
 
@@ -142,7 +143,7 @@ class HistoryList(ListView):
         object_id = self.kwargs["object_id"]
         content_type_id = self.kwargs["content_type_id"]
         self.content_type = get_object_or_404(ContentType, id=content_type_id)
-        self.object = get_object_or_404(get_model(self.content_type.app_label, self.content_type.model), id=object_id)
+        self.object = get_object_or_404(apps.get_model(self.content_type.app_label, self.content_type.model), id=object_id)
         return Version.objects.filter(object_id=self.object.id,
                                       content_type_id=self.content_type.id).order_by("-pk")
 
