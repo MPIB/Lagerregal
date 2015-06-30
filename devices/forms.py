@@ -4,6 +4,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
+from django.db.utils import OperationalError
 
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
@@ -60,6 +61,12 @@ DEPARTMENT_OPTIONS = [
     ("all", _("All Departments")),
     ("my", _("My Departments"))
 ]
+
+def get_department_options():
+    try:
+        return DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name"))
+    except OperationalError:
+        return []
 
 def get_emailrecipientlist(special=None):
     objects = []
@@ -183,7 +190,7 @@ class DeviceViewForm(forms.Form):
     viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
-    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
+    departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 
@@ -198,7 +205,7 @@ class DepartmentViewForm(ViewForm):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
                                                               "class": "pull-right input-sm form-control"}))
-    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
+    departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 
@@ -210,7 +217,7 @@ class FilterForm(forms.Form):
 
 
 class DepartmentFilterForm(FilterForm):
-    departmentfilter = forms.ChoiceField(choices=DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name")),
+    departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 

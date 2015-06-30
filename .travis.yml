@@ -7,6 +7,6 @@ install:
   - npm install -g casperjs
   # create the database
   - "cp Lagerregal/settings_template.py Lagerregal/settings.py"
-  - "./manage.py syncdb --noinput"
+  - "./manage.py migrate"
 # command to run tests
 script: "./manage.py test"
