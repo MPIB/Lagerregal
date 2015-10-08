@@ -52,6 +52,10 @@
                     </tr>
                 {% endif %}
                 <tr>
+                    <td>{%  trans "Purpose" %}</td>
+                    <td>{{ ipaddress.purpose|default:"None" }}</td>
+                </tr>
+                <tr>
                     <td>{%  trans "Last seen" %}</td>
                     <td>{{ ipaddress.last_seen|default:"never" }}</td>
                 </tr>
