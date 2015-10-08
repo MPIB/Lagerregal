@@ -574,13 +574,13 @@
 
     $(document).on('click', '.delete-picture', function (e) {
         console.log(e.toElement)
-        var picture_id = e.toElement.id.replace("picture", "")
+        var picture_id = e.target.id.replace("picture", "")
         var url = "{% url "device-api-picture" device.pk 0 %}".replace("pictures/0", "pictures/"+picture_id)
         $.ajax({
             url: url,
             type: 'DELETE',
             success: function() {
-                var row = e.toElement.parentNode.parentNode.parentNode
+                var row = e.target.parentNode.parentNode
                 var modalBody = row.parentNode
                 modalBody.removeChild(row)
 
