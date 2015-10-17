@@ -315,6 +315,11 @@
                     <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endpermission %}
                 {% permission user has 'devices.lend_device' of device %}
                     <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endpermission %}
+                {% if use_puppet %}
+                {% permission user has 'devices.show_puppetdetails' of device %}
+                    <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
+                {% endpermission %}
+                {% endif %}
             </ul>
 
             <div class="tab-content">
@@ -454,6 +459,30 @@
                         </table>
                     </div>
                 {% endpermission %}
+
+                {% if use_puppet %}
+                {% permission user has 'devices.show_puppetdetails' of device %}
+                    <div class="tab-pane" id="puppet">
+                        <h4>{% trans "Puppet facts from puppetdb" %}</h4>
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                            <tr>
+                                <th>{% trans "Fact" %}</th>
+                                <th>{% trans "Value" %}</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id_puppetdetails">
+                                <!-- insert ajax results here
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                -->
+                            </tbody>
+                        </table>
+                    </div>
+                {% endpermission %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -587,5 +616,7 @@
             },
         });
     });
+
+    $("#id_puppetdetails").load("{% url "puppet-details" %}", {"certname":"lip-web.mpib-berlin.mpg.de"});
 });
 {% endblock %}

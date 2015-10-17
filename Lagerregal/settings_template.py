@@ -217,6 +217,19 @@ if USE_LDAP:
     AUTH_LDAP_DEPARTMENT_FIELD = None
     AUTH_LDAP_DEPARTMENT_REGEX = None
 
+USE_PUPPET = True
+
+if USE_PUPPET:
+    PUPPET_SETTINGS = {
+        'puppetdb_url'    : 'https://puppetdb:8081/v3/facts',
+        'puppetdb_host'   : 'puppetdb',
+        'puppetdb_port'   : 8081,
+        'puppetdb_cacert' : '/etc/puppet/ssl/certs/ca.pem',
+        'puppetdb_cert'   : '/etc/puppet/ssl/certs/my_fqdn.pem',
+        'puppetdb_key'    : '/tmp/private_keys/my_fqdn.pem',
+        'puppetdb_req'    : '/v3/facts?',
+    }
+
 LABEL_TEMPLATES = {
     "device" :
     [
