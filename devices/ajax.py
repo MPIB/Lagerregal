@@ -497,20 +497,21 @@ class AjaxSearch(View):
 
 class PuppetDetails(View):
     def post(self, request):
-        certname = request.POST["certname"]
-        params = urllib.urlencode({'query':'["=", "certname", "'+ certname +'"]'})
-        conn = httplib.HTTPSConnection(settings.PUPPET_SETTINGS['puppetdb_host'],
-                                       settings.PUPPET_SETTINGS['puppetdb_port'],
-                                       settings.PUPPET_SETTINGS['puppetdb_key'],
-                                       settings.PUPPET_SETTINGS['puppetdb_cert'])
-        conn.request("GET", settings.PUPPET_SETTINGS['puppetdb_req'] + params)
+        searchvalue = request.POST["id"]
+        params = urllib.urlencode({'query':'["in", "certname",["extract", "certname",'+
+                                           '["select-facts",["and",["=", "name","' +
+                                           settings.PUPPETDB_SETTINGS['query_fact'] + '"],'+
+                                           '["=","value","' + searchvalue + '"]]]]]'})
+        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
+                                       settings.PUPPETDB_SETTINGS['port'],
+                                       settings.PUPPETDB_SETTINGS['key'],
+                                       settings.PUPPETDB_SETTINGS['cert'])
+        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
-        if response.status != httplib.OK:
-            return HttpResponse() # send 500 or so
+        if res.status != httplib.OK:
+            return HttpResponse('Failed to fetch puppet details from ' +
+                                settings.PUPPETDB_SETTINGS['puppetdb_host'])
         context = {
-            'puppetdetails': {
-                json.loads(res.read())
-            }
+            'puppetdetails': json.loads(res.read())
         }
-        return render_to_response('devices/puppetdetails.html',
-                                  context, RequestContext(self.request))
+        return render_to_response('devices/puppetdetails.html', context)

@@ -617,6 +617,6 @@
         });
     });
 
-    $("#id_puppetdetails").load("{% url "puppet-details" %}", {"certname":"lip-web.mpib-berlin.mpg.de"});
+    $("#id_puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
 });
 {% endblock %}

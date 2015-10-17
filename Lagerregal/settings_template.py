@@ -220,14 +220,14 @@ if USE_LDAP:
 USE_PUPPET = True
 
 if USE_PUPPET:
-    PUPPET_SETTINGS = {
-        'puppetdb_url'    : 'https://puppetdb:8081/v3/facts',
-        'puppetdb_host'   : 'puppetdb',
-        'puppetdb_port'   : 8081,
-        'puppetdb_cacert' : '/etc/puppet/ssl/certs/ca.pem',
-        'puppetdb_cert'   : '/etc/puppet/ssl/certs/my_fqdn.pem',
-        'puppetdb_key'    : '/tmp/private_keys/my_fqdn.pem',
-        'puppetdb_req'    : '/v3/facts?',
+    PUPPETDB_SETTINGS = {
+        'host'       : 'puppetdb',
+        'port'       : 8081,
+        'cacert'     : '/var/lib/puppet/ssl/certs/ca.pem',
+        'cert'       : '/var/lib/puppet/ssl/certs/<FQDN>.pem',
+        'key'        : '/var/lib/puppet/ssl/private_keys/<FQDN>.pem',
+        'req'        : '/v3/facts?',
+        'query_fact' : 'fact_containing_pk',
     }
 
 LABEL_TEMPLATES = {
