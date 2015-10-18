@@ -223,7 +223,6 @@ if USE_PUPPET:
     PUPPETDB_SETTINGS = {
         'host'       : 'puppetdb',
         'port'       : 8081,
-        'cacert'     : '/var/lib/puppet/ssl/certs/ca.pem',
         'cert'       : '/var/lib/puppet/ssl/certs/<FQDN>.pem',
         'key'        : '/var/lib/puppet/ssl/private_keys/<FQDN>.pem',
         'req'        : '/v3/facts?',
