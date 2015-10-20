@@ -316,7 +316,7 @@
                 {% permission user has 'devices.lend_device' of device %}
                     <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endpermission %}
                 {% if use_puppet %}
-                {% permission user has 'devices.show_puppetdetails' of device %}
+                {% permission user has 'devices.read_puppetdetails' of device %}
                     <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
                 {% endpermission %}
                 {% endif %}
@@ -461,7 +461,7 @@
                 {% endpermission %}
 
                 {% if use_puppet %}
-                {% permission user has 'devices.show_puppetdetails' of device %}
+                {% permission user has 'devices.read_puppetdetails' of device %}
                     <div class="tab-pane" id="puppet">
                         <h4>{% trans "Puppet facts from puppetdb" %}</h4>
                         <table class="table table-bordered table-striped">
