@@ -188,8 +188,6 @@ class DeviceDetail(DetailView):
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
-        if settings.USE_PUPPET:
-            context["use_puppet"] = True
         return context
 
 
