@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lagerregal\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-20 03:57-0500\n"
+"POT-Creation-Date: 2015-10-20 04:02-0500\n"
 "PO-Revision-Date: 2014-11-23 13:37+0000\n"
 "Last-Translator: viirus <viirus@pherth.net>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/lagerregal/"
@@ -1525,11 +1525,11 @@ msgstr "Ins Lager verschieben"
 msgid "Add Manufacturer"
 msgstr "Hersteller hinzufügen"
 
-#: templates/devices/puppetdetails.html:4
+#: templates/devices/puppetdetails.html:6
 msgid "Fact"
 msgstr "Fakt"
 
-#: templates/devices/puppetdetails.html:5
+#: templates/devices/puppetdetails.html:7
 msgid "Value"
 msgstr "Wert"
 
