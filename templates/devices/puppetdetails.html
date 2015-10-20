@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>{% trans "Fact" %}</th>
+        <th>{% trans "Value" %}</th>
+    </tr>
+    </thead>
+    <tbody id="id_puppetdetails">
+      {% for e in puppetdetails %}
+      <tr>
+        <td>{{ e.name }}</td>
+        <td style="word-break:break-all;">{{ e.value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>

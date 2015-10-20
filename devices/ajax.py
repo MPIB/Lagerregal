@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
+import urllib
+import httplib
 
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -492,3 +494,24 @@ class AjaxSearch(View):
             "columns": displayed_columns
         }
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
+
+class PuppetDetails(View):
+    def post(self, request):
+        searchvalue = request.POST["id"]
+        params = urllib.urlencode({'query':'["in", "certname",["extract", "certname",'+
+                                           '["select-facts",["and",["=", "name","' +
+                                           settings.PUPPETDB_SETTINGS['query_fact'] + '"],'+
+                                           '["=","value","' + searchvalue + '"]]]]]'})
+        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
+                                       settings.PUPPETDB_SETTINGS['port'],
+                                       settings.PUPPETDB_SETTINGS['key'],
+                                       settings.PUPPETDB_SETTINGS['cert'])
+        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
+        res = conn.getresponse()
+        if res.status != httplib.OK:
+            return HttpResponse('Failed to fetch puppet details from ' +
+                                settings.PUPPETDB_SETTINGS['puppetdb_host'])
+        context = {
+            'puppetdetails': json.loads(res.read())
+        }
+        return render_to_response('devices/puppetdetails.html', context)
