@@ -3,6 +3,7 @@ from reversion.models import Version
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from django.utils import translation
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
@@ -144,7 +145,8 @@ class UsersettingsView(TemplateView):
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
-            request.session['django_language'] = request.POST["language"]
+            translation.activate(request.POST["language"])
+            request.session[translation.LANGUAGE_SESSION_KEY] = request.POST["language"]
             return HttpResponseRedirect(reverse("usersettings"))
         elif "pagelength" in request.POST or "timezone" in request.POST:
             form = SettingsForm(request.POST)
