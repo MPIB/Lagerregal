@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-18 11:43-0500\n"
+"POT-Creation-Date: 2015-10-20 03:57-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,7 +30,7 @@ msgstr ""
 msgid "Device moved to room {0}"
 msgstr ""
 
-#: api/views.py:200 devices/views.py:605
+#: api/views.py:200 devices/views.py:603
 #, python-brace-format
 msgid "Device returned and moved to room {0}"
 msgstr ""
@@ -55,9 +55,9 @@ msgstr ""
 msgid "Create new devicegroup"
 msgstr ""
 
-#: devicegroups/views.py:115 devices/views.py:396 devices/views.py:938
-#: devices/views.py:1071 devices/views.py:1204 devices/views.py:1284
-#: devices/views.py:1343 devicetypes/views.py:116 mail/views.py:99
+#: devicegroups/views.py:115 devices/views.py:394 devices/views.py:936
+#: devices/views.py:1069 devices/views.py:1202 devices/views.py:1282
+#: devices/views.py:1341 devicetypes/views.py:116 mail/views.py:99
 #: network/views.py:124 templates/devicegroups/devicegroup_detail.html:13
 #: templates/devices/building_detail.html:21
 #: templates/devices/device_detail.html:70
@@ -72,9 +72,9 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: devicegroups/views.py:130 devices/views.py:473 devices/views.py:953
-#: devices/views.py:1086 devices/views.py:1219 devices/views.py:1301
-#: devices/views.py:1360 devicetypes/views.py:131 mail/views.py:134
+#: devicegroups/views.py:130 devices/views.py:471 devices/views.py:951
+#: devices/views.py:1084 devices/views.py:1217 devices/views.py:1299
+#: devices/views.py:1358 devicetypes/views.py:131 mail/views.py:134
 #: templates/devicegroups/devicegroup_detail.html:9
 #: templates/devices/base_delete.html:4
 #: templates/devices/building_detail.html:13
@@ -348,7 +348,7 @@ msgstr ""
 msgid "People"
 msgstr ""
 
-#: devices/forms.py:153 devices/models.py:204
+#: devices/forms.py:153 devices/models.py:205
 #: templates/devices/device_detail.html:220
 #: templates/snippets/modals/lending.html:12
 #: templates/snippets/widgets/overdue.html:24
@@ -357,7 +357,7 @@ msgstr ""
 msgid "Lent to"
 msgstr ""
 
-#: devices/forms.py:228 devices/models.py:224
+#: devices/forms.py:228 devices/models.py:225
 msgid "Template"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgid "Doesn't match the given regex \"{0}\"."
 msgstr ""
 
 #: devices/models.py:15 devices/models.py:44 devices/models.py:102
-#: devices/models.py:174 devices/models.py:215 devicetypes/models.py:8
+#: devices/models.py:175 devices/models.py:216 devicetypes/models.py:8
 #: mail/models.py:24 templates/devicegroups/devicegroup_detail.html:34
 #: templates/devicegroups/devicegroup_list.html:25
 #: templates/devices/building_detail.html:70
@@ -444,9 +444,9 @@ msgstr ""
 msgid "Country"
 msgstr ""
 
-#: devices/models.py:28 devices/views.py:1000 devices/views.py:1036
-#: devices/views.py:1053 devices/views.py:1069 devices/views.py:1084
-#: devices/views.py:1097 templates/500.html:46 templates/base.html:60
+#: devices/models.py:28 devices/views.py:998 devices/views.py:1034
+#: devices/views.py:1051 devices/views.py:1067 devices/views.py:1082
+#: devices/views.py:1095 templates/500.html:46 templates/base.html:60
 #: templates/devices/building_list.html:3
 #: templates/devices/building_list.html:6
 msgid "Buildings"
@@ -456,9 +456,9 @@ msgstr ""
 msgid "Can read Building"
 msgstr ""
 
-#: devices/models.py:56 devices/views.py:865 devices/views.py:903
-#: devices/views.py:920 devices/views.py:936 devices/views.py:951
-#: devices/views.py:964 templates/500.html:45 templates/base.html:58
+#: devices/models.py:56 devices/views.py:863 devices/views.py:901
+#: devices/views.py:918 devices/views.py:934 devices/views.py:949
+#: devices/views.py:962 templates/500.html:45 templates/base.html:58
 #: templates/devices/room_list.html:3 templates/devices/room_list.html.py:6
 #: templates/locations/section_detail.html:40
 #: templates/snippets/widgets/sections.html:15
@@ -469,9 +469,9 @@ msgstr ""
 msgid "Can read Room"
 msgstr ""
 
-#: devices/models.py:79 devices/views.py:1131 devices/views.py:1168
-#: devices/views.py:1186 devices/views.py:1202 devices/views.py:1217
-#: devices/views.py:1230 templates/500.html:39 templates/base.html:47
+#: devices/models.py:79 devices/views.py:1129 devices/views.py:1166
+#: devices/views.py:1184 devices/views.py:1200 devices/views.py:1215
+#: devices/views.py:1228 templates/500.html:39 templates/base.html:47
 #: templates/devices/manufacturer_list.html:3
 #: templates/devices/manufacturer_list.html:6
 msgid "Manufacturers"
@@ -481,7 +481,7 @@ msgstr ""
 msgid "Can read Manufacturer"
 msgstr ""
 
-#: devices/models.py:107 devices/models.py:217
+#: devices/models.py:107 devices/models.py:218
 #: templates/devices/device_detail.html:180
 #: templates/history/device_history.html:96
 #: templates/history/device_history.html:148
@@ -498,13 +498,13 @@ msgid "For short term lending"
 msgstr ""
 
 #: devices/models.py:130 devices/views.py:124 devices/views.py:189
-#: devices/views.py:204 devices/views.py:230 devices/views.py:262
-#: devices/views.py:292 devices/views.py:341 devices/views.py:394
-#: devices/views.py:471 devices/views.py:491 devices/views.py:497
-#: devices/views.py:577 devices/views.py:629 devices/views.py:797
-#: devices/views.py:813 devices/views.py:827 devices/views.py:841
-#: devices/views.py:1263 devices/views.py:1282 devices/views.py:1299
-#: devices/views.py:1321 devices/views.py:1341 devices/views.py:1358
+#: devices/views.py:202 devices/views.py:228 devices/views.py:260
+#: devices/views.py:290 devices/views.py:339 devices/views.py:392
+#: devices/views.py:469 devices/views.py:489 devices/views.py:495
+#: devices/views.py:575 devices/views.py:627 devices/views.py:795
+#: devices/views.py:811 devices/views.py:825 devices/views.py:839
+#: devices/views.py:1261 devices/views.py:1280 devices/views.py:1297
+#: devices/views.py:1319 devices/views.py:1339 devices/views.py:1356
 #: devicetags/views.py:100 devicetags/views.py:121 templates/500.html:35
 #: templates/500.html.py:37 templates/base.html:40 templates/base.html.py:43
 #: templates/devices/building_detail.html:66
@@ -536,236 +536,240 @@ msgstr ""
 msgid "Can lend Device"
 msgstr ""
 
-#: devices/models.py:175
+#: devices/models.py:137
+msgid "Read Puppet Details"
+msgstr ""
+
+#: devices/models.py:176
 msgid "Human readable name"
 msgstr ""
 
-#: devices/models.py:181 devices/models.py:182
+#: devices/models.py:182 devices/models.py:183
 msgid "Information Type"
 msgstr ""
 
-#: devices/models.py:186 devices/models.py:194 devices/models.py:195
+#: devices/models.py:187 devices/models.py:195 devices/models.py:196
 msgid "Information"
 msgstr ""
 
-#: devices/models.py:210
+#: devices/models.py:211
 msgid "Small Device"
 msgstr ""
 
-#: devices/models.py:214
+#: devices/models.py:215
 msgid "Templatename"
 msgstr ""
 
-#: devices/models.py:225 devices/views.py:798 devices/views.py:814
-#: devices/views.py:828 devices/views.py:842
+#: devices/models.py:226 devices/views.py:796 devices/views.py:812
+#: devices/views.py:826 devices/views.py:840
 #: templates/devices/template_list.html:6
 msgid "Templates"
 msgstr ""
 
-#: devices/models.py:227
+#: devices/models.py:228
 msgid "Can read Template"
 msgstr ""
 
-#: devices/models.py:249
+#: devices/models.py:250
 msgid "Note"
 msgstr ""
 
-#: devices/models.py:250 devices/views.py:1265 devices/views.py:1323
+#: devices/models.py:251 devices/views.py:1263 devices/views.py:1321
 #: templates/devices/device_detail.html:311
 msgid "Notes"
 msgstr ""
 
-#: devices/models.py:262
+#: devices/models.py:263
 msgid "Picture"
 msgstr ""
 
-#: devices/models.py:263
+#: devices/models.py:264
 msgid "Pictures"
 msgstr ""
 
-#: devices/views.py:206
+#: devices/views.py:204
 msgid "Unassign IP-Addresses"
 msgstr ""
 
-#: devices/views.py:214
+#: devices/views.py:212
 #, python-brace-format
 msgid "Removed from Device {0}"
 msgstr ""
 
-#: devices/views.py:232 network/views.py:179
+#: devices/views.py:230 network/views.py:179
 #: templates/devices/assign_ipaddress.html:8
 msgid "Assign IP-Addresses"
 msgstr ""
 
-#: devices/views.py:239
+#: devices/views.py:237
 msgid "Archived Devices can't get new IP-Addresses"
 msgstr ""
 
-#: devices/views.py:241 devices/views.py:271
+#: devices/views.py:239 devices/views.py:269
 #, python-brace-format
 msgid "Assigned to Device {0}"
 msgstr ""
 
-#: devices/views.py:264
+#: devices/views.py:262
 #, python-brace-format
 msgid "Set Purpose for {0}"
 msgstr ""
 
-#: devices/views.py:294
+#: devices/views.py:292
 msgid "Lending"
 msgstr ""
 
-#: devices/views.py:342
+#: devices/views.py:340
 msgid "Create new device"
 msgstr ""
 
-#: devices/views.py:350
+#: devices/views.py:348
 msgid "Created"
 msgstr ""
 
-#: devices/views.py:376 devices/views.py:454 devices/views.py:525
-#: devices/views.py:604 devices/views.py:657 devices/views.py:713
-#: devices/views.py:767
+#: devices/views.py:374 devices/views.py:452 devices/views.py:523
+#: devices/views.py:602 devices/views.py:655 devices/views.py:711
+#: devices/views.py:765
 msgid "Mail successfully sent"
 msgstr ""
 
-#: devices/views.py:378
+#: devices/views.py:376
 msgid "Device was successfully created."
 msgstr ""
 
-#: devices/views.py:392 devicetypes/views.py:109
+#: devices/views.py:390 devicetypes/views.py:109
 msgid "Update"
 msgstr ""
 
-#: devices/views.py:408
+#: devices/views.py:406
 msgid "Archived Devices can't be edited"
 msgstr ""
 
-#: devices/views.py:412
+#: devices/views.py:410
 msgid "Updated"
 msgstr ""
 
-#: devices/views.py:457
+#: devices/views.py:455
 msgid "Device was successfully updated."
 msgstr ""
 
-#: devices/views.py:493 devices/views.py:498
+#: devices/views.py:491 devices/views.py:496
 #: templates/devices/device_detail.html:84
 msgid "Lend"
 msgstr ""
 
-#: devices/views.py:507
+#: devices/views.py:505
 msgid "Archived Devices can't be lent"
 msgstr ""
 
-#: devices/views.py:526
+#: devices/views.py:524
 #, python-brace-format
 msgid "Device lent and moved to room {0}"
 msgstr ""
 
-#: devices/views.py:534
+#: devices/views.py:532
 #, python-brace-format
 msgid "Device is marked as lend to {0}"
 msgstr ""
 
-#: devices/views.py:552
+#: devices/views.py:550
 msgid "Device is marked as inventoried."
 msgstr ""
 
-#: devices/views.py:578
+#: devices/views.py:576
 #, python-brace-format
 msgid "Return {0}"
 msgstr ""
 
-#: devices/views.py:611
+#: devices/views.py:609
 msgid "Device is marked as returned"
 msgstr ""
 
-#: devices/views.py:631 templates/devices/device_detail.html:74
+#: devices/views.py:629 templates/devices/device_detail.html:74
 msgid "Send Mail"
 msgstr ""
 
-#: devices/views.py:680
+#: devices/views.py:678
 msgid "Device was archived"
 msgstr ""
 
-#: devices/views.py:681
+#: devices/views.py:679
 msgid "Device was archived."
 msgstr ""
 
-#: devices/views.py:719
+#: devices/views.py:717
 msgid "Device was trashed"
 msgstr ""
 
-#: devices/views.py:720
+#: devices/views.py:718
 msgid "Device was trashed."
 msgstr ""
 
-#: devices/views.py:746
+#: devices/views.py:744
 msgid ""
 "Could not move to storage. No room specified. Please contact your "
 "administrator."
 msgstr ""
 
-#: devices/views.py:769
+#: devices/views.py:767
 msgid "Device was moved to storage."
 msgstr ""
 
-#: devices/views.py:782
+#: devices/views.py:780
 msgid "Bookmark was removed"
 msgstr ""
 
-#: devices/views.py:786
+#: devices/views.py:784
 msgid "Device was bookmarked."
 msgstr ""
 
-#: devices/views.py:815
+#: devices/views.py:813
 msgid "Create new devicetemplate"
 msgstr ""
 
-#: devices/views.py:829
+#: devices/views.py:827
 #, python-brace-format
 msgid "Edit: {0}"
 msgstr ""
 
-#: devices/views.py:843
+#: devices/views.py:841
 #, python-brace-format
 msgid "Delete: {0}"
 msgstr ""
 
-#: devices/views.py:921
+#: devices/views.py:919
 msgid "Create new room"
 msgstr ""
 
-#: devices/views.py:966 devices/views.py:1099 devices/views.py:1232
+#: devices/views.py:964 devices/views.py:1097 devices/views.py:1230
 #: devicetypes/views.py:145 locations/views.py:132
 #, python-brace-format
 msgid "Merge with {0}"
 msgstr ""
 
-#: devices/views.py:976
+#: devices/views.py:974
 #, python-brace-format
 msgid "Merged Room {0} into {1}"
 msgstr ""
 
-#: devices/views.py:1054
+#: devices/views.py:1052
 msgid "Create new building"
 msgstr ""
 
-#: devices/views.py:1187
+#: devices/views.py:1185
 msgid "Create new manufacturer"
 msgstr ""
 
-#: devices/views.py:1242
+#: devices/views.py:1240
 #, python-brace-format
 msgid "Merged Manufacturer {0} into {1}"
 msgstr ""
 
-#: devices/views.py:1266 devices/views.py:1324
+#: devices/views.py:1264 devices/views.py:1322
 msgid "Create new note"
 msgstr ""
 
-#: devices/views.py:1371 templates/base.html:106
+#: devices/views.py:1369 templates/base.html:106
 #: templates/devices/search.html:3 templates/devices/search.html.py:6
 #: templates/snippets/searchform.html:9
 msgid "Search"
@@ -1133,9 +1137,9 @@ msgstr ""
 
 #: templates/devicegroups/devicegroup_detail.html:65
 #: templates/devices/building_detail.html:103
-#: templates/devices/device_detail.html:527
-#: templates/devices/device_detail.html:538
-#: templates/devices/device_detail.html:560
+#: templates/devices/device_detail.html:520
+#: templates/devices/device_detail.html:531
+#: templates/devices/device_detail.html:553
 #: templates/devices/manufacturer_detail.html:76
 #: templates/devices/room_detail.html:85
 #: templates/devicetypes/type_detail.html:116
@@ -1150,9 +1154,9 @@ msgstr ""
 #: templates/devices/base_delete.html:16
 #: templates/devices/building_detail.html:105
 #: templates/devices/device_archive.html:16
-#: templates/devices/device_detail.html:529
-#: templates/devices/device_detail.html:540
-#: templates/devices/device_detail.html:562
+#: templates/devices/device_detail.html:522
+#: templates/devices/device_detail.html:533
+#: templates/devices/device_detail.html:555
 #: templates/devices/device_trash.html:16
 #: templates/devices/manufacturer_detail.html:78
 #: templates/devices/room_detail.html:87
@@ -1172,10 +1176,10 @@ msgstr ""
 #: templates/devices/base_delete.html:14
 #: templates/devices/building_detail.html:106
 #: templates/devices/device_archive.html:16
-#: templates/devices/device_detail.html:530
-#: templates/devices/device_detail.html:541
-#: templates/devices/device_detail.html:553
-#: templates/devices/device_detail.html:563
+#: templates/devices/device_detail.html:523
+#: templates/devices/device_detail.html:534
+#: templates/devices/device_detail.html:546
+#: templates/devices/device_detail.html:556
 #: templates/devices/device_trash.html:16
 #: templates/devices/manufacturer_detail.html:79
 #: templates/devices/room_detail.html:88
@@ -1437,19 +1441,15 @@ msgstr ""
 msgid "Puppet facts from puppetdb"
 msgstr ""
 
-#: templates/devices/device_detail.html:470
-msgid "Fact"
+#: templates/devices/device_detail.html:468
+msgid "Loading Puppet Facts..."
 msgstr ""
 
-#: templates/devices/device_detail.html:471
-msgid "Value"
-msgstr ""
-
-#: templates/devices/device_detail.html:548
+#: templates/devices/device_detail.html:541
 msgid "Are you sure?"
 msgstr ""
 
-#: templates/devices/device_detail.html:552
+#: templates/devices/device_detail.html:545
 #: templates/devices/device_storage.html:22
 #: templates/snippets/modals/addmodal.html:15
 #: templates/snippets/modals/mailsendconfirm.html:13
@@ -1503,6 +1503,14 @@ msgstr ""
 
 #: templates/devices/manufacturer_list.html:14
 msgid "Add Manufacturer"
+msgstr ""
+
+#: templates/devices/puppetdetails.html:4
+msgid "Fact"
+msgstr ""
+
+#: templates/devices/puppetdetails.html:5
+msgid "Value"
 msgstr ""
 
 #: templates/devices/room_list.html:13
