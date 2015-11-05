@@ -114,6 +114,11 @@ class Device(models.Model):
     currentlending = models.ForeignKey("Lending", related_name="currentdevice", null=True, blank=True,
                                        on_delete=models.SET_NULL)
 
+    manual = models.FileField(upload_to=utils.get_file_location, null=True, blank=True)
+    contact = models.ForeignKey(Lageruser, related_name="as_contact",
+                                help_text=_("Person to contact about using this device"), blank=True,
+                                null=True, on_delete=models.SET_NULL)
+
     archived = models.DateTimeField(null=True, blank=True)
     trashed = models.DateTimeField(null=True, blank=True)
     inventoried = models.DateTimeField(null=True, blank=True)

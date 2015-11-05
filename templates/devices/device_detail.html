@@ -152,6 +152,16 @@
                         </i>{% else %}<i class="fa fa-times-circle text-danger" style="font-size:1.3em"></i>{% endif %}
                     </td>
                 </tr>
+                {% if device.manual %}
+                    <tr>
+                    <td>{% trans "Manual" %}</td>
+                    <td><a href="{{ device.manual.url }}">{{ device.manual|filename }}</a></td></tr>
+                {% endif %}
+                {% if device.contact %}
+                    <tr>
+                    <td>{% trans "Contact" %}</td>
+                    <td><a href="{% url 'userprofile' device.contact.pk %}">{{ device.contact }}</a></td>
+                {% endif %}
                 <tr>
                     <td>{% trans "Created by" %}</td>
                     <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>

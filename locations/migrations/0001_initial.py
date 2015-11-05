@@ -1,29 +1,25 @@
 # -*- coding: utf-8 -*-
-from south.db import db
-from south.v2 import SchemaMigration
+from __future__ import unicode_literals
+
+from django.db import migrations, models
 
 
-class Migration(SchemaMigration):
-    def forwards(self, orm):
-        # Adding model 'Section'
-        db.create_table(u'locations_section', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=200)),
-        ))
-        db.send_create_signal(u'locations', ['Section'])
+class Migration(migrations.Migration):
 
+    dependencies = [
+    ]
 
-    def backwards(self, orm):
-        # Deleting model 'Section'
-        db.delete_table(u'locations_section')
-
-
-    models = {
-        u'locations.section': {
-            'Meta': {'object_name': 'Section'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '200'})
-        }
-    }
-
-    complete_apps = ['locations']
+    operations = [
+        migrations.CreateModel(
+            name='Section',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=200)),
+            ],
+            options={
+                'verbose_name': 'Section',
+                'verbose_name_plural': 'Sections',
+                'permissions': (('read_section', 'Can read Section'),),
+            },
+        ),
+    ]

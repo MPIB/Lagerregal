@@ -203,7 +203,7 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     (r'^i18n/', include('django.conf.urls.i18n')),
 
-    url(r'^oauth2/', include('provider.oauth2.urls', namespace='oauth2')),
+    url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
     url(r'^ajax/add_widget', login_required(WidgetAdd.as_view()), name="widget_add"),
     url(r'^ajax/remove_widget', login_required(WidgetRemove.as_view()), name="widget_remove"),

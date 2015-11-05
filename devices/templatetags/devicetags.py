@@ -1,4 +1,5 @@
 import re
+import os
 
 from django.template import Library
 from django.utils.safestring import mark_safe
@@ -86,3 +87,8 @@ def get_attribute(object, attribute):
 @register.filter
 def get_attribute_from_list(device, attribute):
     return device[attribute]
+
+
+@register.filter
+def filename(value):
+    return os.path.basename(value.file.name)
