@@ -14,12 +14,16 @@ function getHashParams() {
     return hashParams;
 }
 
+
+
 $(document).ready(function() {
     var visualSearch = VS.init({
         container : $('.visual_search'),
         query     : '{{ searchterm }}',
         callbacks : {
-            search       : function(query, searchCollection) {},
+            search       : function(query, searchCollection) {
+                search();
+            },
             // These are the facets that will be autocompleted in an empty input.
             facetMatches : function(callback) {
                 callback([
@@ -89,15 +93,7 @@ $(document).ready(function() {
     }
 });
 
-var l = Ladda.create(document.querySelector( '#searchbutton' ));
-var baseurl = "{% url "search" %}"
-
-
-
-firstLoad = true;
-params = getHashParams()
-
-$("#searchbutton").click(function(){
+function search() {
     if (!firstLoad || !params["searchterm"]) {
         location.hash = $.param({"searchterm": visualSearch.searchBox.value()})
     }
@@ -134,10 +130,24 @@ $("#searchbutton").click(function(){
             l.stop();
         });
     }, 500);
+}
+
+var l = Ladda.create(document.querySelector( '#searchbutton' ));
+var baseurl = "{% url "search" %}"
+
+
+
+firstLoad = true;
+params = getHashParams()
+
+
+
+$("#searchbutton").click(function(){
+    search();
 });
 
 {% if searchterm != None %}
-    $("#searchbutton").trigger("click");
+    search();
 {% endif %}
 
 params = getHashParams()
