@@ -95,7 +95,7 @@ class IpAddressForm(forms.Form):
 
 class IpAddressPurposeForm(forms.Form):
     error_css_class = 'has-error'
-    purpose = forms.CharField()
+    purpose = forms.CharField(required=False)
 
 
 class SearchForm(forms.Form):
