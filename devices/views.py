@@ -19,6 +19,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic
 from django.conf import settings
 from django.db.models.query import QuerySet
+from django.core.exceptions import ImproperlyConfigured
+from django.http import Http404
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
 from devicetypes.models import TypeAttribute, TypeAttributeValue
@@ -1393,3 +1395,59 @@ class Search(TemplateView):
         context["searchterm"] = " ".join(searchlist)
 
         return render_to_response(self.template_name, context, RequestContext(self.request))
+
+
+class PublicDeviceListView(ListView):
+    filterstring = ""
+    viewsorting = None
+    template_name = "devices/public_devices_list.html"
+
+    def get_queryset(self):
+        query_dict = settings.PUBLIC_DEVICES_FILTER
+        if len(query_dict) == 0:
+            raise ImproperlyConfigured
+
+        devices = Device.objects.filter(**query_dict)
+        self.filterstring = self.kwargs.pop("filter", None)
+        if self.filterstring:
+            devices = devices.filter(name__icontains=self.filterstring)
+        self.viewsorting = self.kwargs.pop("sorting", "name")
+        if self.viewsorting in [s[0] for s in VIEWSORTING]:
+            devices = devices.order_by(self.viewsorting)
+        return devices
+
+    def get_context_data(self, **kwargs):
+        context = super(PublicDeviceListView, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
+        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
+        if self.filterstring:
+            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+        else:
+            context["filterform"] = FilterForm()
+        if context["is_paginated"] and context["page_obj"].number > 1:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
+        return context
+
+
+class PublicDeviceDetailView(DetailView):
+    template_name = "devices/device_detail.html"
+    context_object_name = "device"
+
+    def get_queryset(self):
+        query_dict = settings.PUBLIC_DEVICES_FILTER
+        if len(query_dict) == 0:
+            raise ImproperlyConfigured
+
+        devices = Device.objects.prefetch_related("room", "room__building", "manufacturer", "devicetype").filter(**query_dict)
+        devices = devices.filter(id=self.kwargs.get("pk", None))
+        if devices.count() != 1:
+            raise Http404
+
+        return devices
+
+    def get_context_data(self, **kwargs):
+        context = super(PublicDeviceDetailView, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("public-device-list"), _("Public Devices")),
+            (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
+        return context

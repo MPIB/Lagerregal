@@ -267,3 +267,5 @@ LOGGING = {
 }
 
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+
+PUBLIC_DEVICES_FILTER = {}

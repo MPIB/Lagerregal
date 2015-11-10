@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Devices" %}{% endblock %}
+
+{% block header %}
+    {% trans "Devices" %}
+{% endblock %}
+
+{% block pullright %}
+    {{ filterform.filterstring }}
+    {{ viewform.viewsorting }}
+{% endblock %}
+
+{% block content %}
+    {% include "snippets/devicepagination.html" %}
+    <table width="100%" id="devicetable" class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>{% trans "Name" %}</th>
+            <th>{% trans "Inventorynumber" %}</th>
+            <th>{% trans "Devicetype" %}</th>
+            <th>{% trans "Room" %}</th>
+            <th>{% trans "Devicegroup" %}</th>
+            {% if viewfilter == "lent" or viewfilter == "overdue" %}
+                <th>{% trans "Owner" %}</th>
+                <th>{% trans "Duedate" %}</th>
+            {% else %}
+                <th style="width:60px">{% trans "Available" %}</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for device in device_list %}
+            <tr {% if device.currentlending__duedate < today.date %}class="text-danger"{% endif %}>
+                <td><a href="{% url 'public-device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
+                <td>{{ device.inventorynumber }}</td>
+                <td>{{ device.devicetype__name }}</td>
+                <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
+                <td>{{ device.group__name }}</td>
+                <td>{% if device.currentlending__owner__username == None %}
+                        <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                     {% else %}<i class="fa fa-exclamation-circle text-danger"
+                                  style="font-size:1.3em"></i>{% endif %}</td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/pagination_simple.html" %}
+
+
+
+{% endblock %}
+
+{% block scriptend %}
+    $('#id_viewsorting').change(function() {
+    if ($("#id_filterstring").val() != "") {
+    window.location = "/devices/public/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+    } else {
+    window.location = "/devices/public/sorting/" + $(this).val()
+    }
+    });
+    $('#id_filterstring').change(function() {
+    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
+    });
+    {% include "snippets/pagination_simple_js.html" with pageurl="public-device-list" %}
+{% endblock %}

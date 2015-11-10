@@ -35,7 +35,6 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav">
-            {% if perms.devices.read_device or perms.devices.read_type or perms.devices.read_manufacturer %}
                 <li class="dropdown"><a href="{% url 'device-list' %}" class="dropdown-toggle"
                                         data-toggle="dropdown">{% trans "Devices" %} <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -47,9 +46,9 @@
                             <li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>{% endif %}
                         {% if perms.devicegroups.read_devicegroup %}
                             <li><a href="{% url 'devicegroup-list' %}">{% trans "Devicegroups" %}</a></li>{% endif %}
+                        <li><a href="{% url 'public-device-list' %}">{% trans "Public Devices" %}</a></li>
                     </ul>
                 </li>
-            {% endif %}
             {% if perms.devices.read_room or perms.devices.read_building or perms.locations.read_section %}
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Locations" %}
                     <b class="caret"></b></a>

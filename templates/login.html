@@ -98,6 +98,8 @@
         {% else %}
             <input type="hidden" name="next" value="{% url 'home' %}"/>
         {% endif %}
+
+        <a href="{% url "public-device-list" %}" class="btn btn-info btn-block" style="margin-top:30px"><i class="fa fa-globe"></i> {% trans "Public Device List" %}</a>
     </form>
 
 </div>
