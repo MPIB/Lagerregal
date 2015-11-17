@@ -499,7 +499,7 @@ class PuppetDetails(View):
     def post(self, request):
         searchvalue = request.POST["id"]
         params = urllib.urlencode({'query':'["in", "certname",["extract", "certname",'+
-                                           '["select-facts",["and",["=", "name","' +
+                                           '["select_facts",["and",["=", "name","' +
                                            settings.PUPPETDB_SETTINGS['query_fact'] + '"],'+
                                            '["=","value","' + searchvalue + '"]]]]]'})
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
@@ -510,7 +510,7 @@ class PuppetDetails(View):
         res = conn.getresponse()
         if res.status != httplib.OK:
             return HttpResponse('Failed to fetch puppet details from ' +
-                                settings.PUPPETDB_SETTINGS['puppetdb_host'])
+                                settings.PUPPETDB_SETTINGS['host'])
         context = {
             'puppetdetails': json.loads(res.read())
         }

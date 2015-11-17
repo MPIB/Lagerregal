@@ -227,7 +227,7 @@ if USE_PUPPET:
         'port'       : 8081,
         'cert'       : '/var/lib/puppet/ssl/certs/<FQDN>.pem',
         'key'        : '/var/lib/puppet/ssl/private_keys/<FQDN>.pem',
-        'req'        : '/v3/facts?',
+        'req'        : '/pdb/v4/facts?',
         'query_fact' : 'fact_containing_pk',
     }
 
