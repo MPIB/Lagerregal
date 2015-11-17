@@ -1418,7 +1418,7 @@ class PublicDeviceListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(PublicDeviceListView, self).get_context_data(**kwargs)
-        context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
+        context["breadcrumbs"] = [(reverse("public-device-list"), _("Public Devices"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
             context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})

@@ -3,7 +3,7 @@ django-reversion
 djangorestframework
 django-debug-toolbar
 Pillow
-django-oauth2-provider
+django-oauth-toolkit
 pytz
 pystache
 model_mommy

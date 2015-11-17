@@ -149,8 +149,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'permission',
     'debug_toolbar',
-    'provider',
-    'provider.oauth2',
+    'oauth2_provider',
 )
 
 LANGUAGES = (
@@ -169,6 +168,9 @@ MESSAGE_TAGS = {
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'oauth2_provider.ext.rest_framework.OAuth2Authentication',
     )
 }
 
