@@ -37,7 +37,7 @@ class SearchQuerysetMixin():
         queryset = self.model.objects.all()
         valid_fields = self.model._meta.get_all_field_names()
         filters = {}
-        for param in self.request.QUERY_PARAMS.lists():
+        for param in self.request.query_params.lists():
             if param[0] in valid_fields:
                 key_name = param[0] + "__in"
                 if param[0] == "department":
