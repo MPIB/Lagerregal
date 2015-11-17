@@ -510,7 +510,7 @@ class PuppetDetails(View):
         res = conn.getresponse()
         if res.status != httplib.OK:
             return HttpResponse('Failed to fetch puppet details from ' +
-                                settings.PUPPETDB_SETTINGS['puppetdb_host'])
+                                settings.PUPPETDB_SETTINGS['host'])
         context = {
             'puppetdetails': json.loads(res.read())
         }
