@@ -403,7 +403,7 @@ class DeviceUpdate(UpdateView):
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
         deviceid = self.kwargs["pk"]
-        device = get_object_or_404(Device, pk=deviceid)
+        device = self.object
         if device.archived is not None:
             messages.error(self.request, _("Archived Devices can't be edited"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
