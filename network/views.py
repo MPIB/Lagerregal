@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-import reversion
+from reversion import revisions as reversion
 
 from network.models import IpAddress
 from network.forms import ViewForm, IpAddressForm, UserIpAddressForm

@@ -6,7 +6,7 @@ from rest_framework.permissions import AllowAny
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
-import reversion
+from reversion import revisions as reversion
 import datetime
 from django.utils.translation import ugettext_lazy as _
 

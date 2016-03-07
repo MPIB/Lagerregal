@@ -25,7 +25,7 @@ class Lageruser(AbstractUser):
     expiration_date = models.DateField(null=True, blank=True)
 
     main_department = models.ForeignKey("users.Department", null=True, blank=True, on_delete=models.SET_NULL)
-    departments = models.ManyToManyField("users.Department", null=True, blank=True, through='users.DepartmentUser',
+    departments = models.ManyToManyField("users.Department", blank=True, through='users.DepartmentUser',
                                          related_name="members")
 
     def __unicode__(self):

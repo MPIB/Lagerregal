@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from reversion.models import Version, Revision
-import reversion
+from reversion import revisions as reversion
 from django.apps import apps
 
 from Lagerregal.utils import PaginationMixin

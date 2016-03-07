@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-import reversion
+from reversion import revisions as reversion
 
 
 class Type(models.Model):

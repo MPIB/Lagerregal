@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 import pystache
 
 from users.models import Lageruser, Department
@@ -102,7 +102,7 @@ class MailTemplateRecipient(models.Model):
     mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients')
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
         return unicode(self.content_type.name + ": " + self.content_object.__unicode__())

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-import reversion
+from reversion import revisions as reversion
 
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
@@ -122,7 +122,7 @@ class Device(models.Model):
     archived = models.DateTimeField(null=True, blank=True)
     trashed = models.DateTimeField(null=True, blank=True)
     inventoried = models.DateTimeField(null=True, blank=True)
-    bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", null=True, blank=True)
+    bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
     department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)

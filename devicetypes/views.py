@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse_lazy, reverse
-import reversion
+from reversion import revisions as reversion
 from django.conf import settings
 
 from devices.models import Device

@@ -6,7 +6,7 @@ from devices.models import Device
 from users.models import Lageruser, Department
 
 # Create your models here.
-import reversion
+from reversion import revisions as reversion
 
 
 class IpAddress(models.Model):

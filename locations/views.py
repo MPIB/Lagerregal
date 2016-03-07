@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.db.transaction import atomic
-import reversion
+from reversion import revisions as reversion
 
 from locations.models import Section
 from devices.models import Device, Room

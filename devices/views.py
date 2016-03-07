@@ -13,7 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.contrib import messages
 from django.utils.timezone import utc
 from django.utils import timezone
-import reversion
+from reversion import revisions as reversion
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic

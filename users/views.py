@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.models import get_current_site
+from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
@@ -31,6 +31,7 @@ from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterFor
 from permission.decorators import permission_required
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+
 
 class UserList(PaginationMixin, ListView):
     model = Lageruser
@@ -54,7 +55,6 @@ class UserList(PaginationMixin, ListView):
         if self.filterstring != "":
             users = users.filter(Q(username__icontains=self.filterstring) | Q(first_name__icontains=self.filterstring) | Q(last_name__icontains=self.filterstring))
         return users
-
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -190,15 +190,16 @@ def login(request, template_name='registration/login.html',
     """
     Displays the login form and handles the login action.
     """
-    redirect_to = request.REQUEST.get(redirect_field_name, '')
+
 
     if request.method == "POST":
+        redirect_to = request.GET.get(redirect_field_name, '')
         form = authentication_form(data=request.POST)
         if form.is_valid():
 
             # Ensure the user-originating redirection url is safe.
             if not is_safe_url(url=redirect_to, host=request.get_host()):
-                redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
+                redirect_to = resolve_url("/")
 
             # Okay, security check complete. Log the user in.
             auth_login(request, form.get_user())
@@ -208,6 +209,7 @@ def login(request, template_name='registration/login.html',
             request.session['django_language'] = request.user.language
             return HttpResponseRedirect(redirect_to)
     else:
+        redirect_to = request.POST.get(redirect_field_name, '')
         form = authentication_form(request)
 
     request.session.set_test_cookie()
