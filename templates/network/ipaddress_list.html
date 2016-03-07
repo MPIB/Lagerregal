@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n %}{% load staticfiles %}
 {% block title %}IP-Addresses{% endblock %}
 
 {% block header %}
@@ -45,8 +45,21 @@
     {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
 {% endblock %}
 
+{% block htmlend %}
+    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.plugin.ipaddress.js" %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
+{% endblock %}
+
 {% block scriptend %}
     $(document).ready(function() {
+    $('#adresstable').dataTable( {
+        "bFilter": false,
+        "paging": false,
+        columnDefs: [
+            { type: 'ip-address', targets: 0 }
+        ]
+    } );
     $('#devicetable tr').click(function() {
     var href = $(this).find("a").attr("href");
     if(href) {
