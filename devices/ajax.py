@@ -26,8 +26,9 @@ from devicetypes.models import Type
 from devices.forms import AddForm
 from devicegroups.models import Devicegroup
 from devicetags.models import Devicetag
-from Lagerregal.utils import  UnicodeWriter
+from Lagerregal.utils import UnicodeWriter
 from csv import QUOTE_ALL
+
 
 class AutocompleteDevice(View):
     def post(self, request):
@@ -183,29 +184,25 @@ class PreviewMail(View):
             del device["room"]
 
         template = get_object_or_404(MailTemplate, pk=template)
-        datadict = {}
-        datadict["device"] = device
-        datadict["user"] = {
+        datadict = {"device": device, "user": {
             "username": request.user.username,
             "first_name": request.user.first_name,
             "last_name": request.user.last_name
-        }
-        data = {}
-        data["subject"] = pystache.render(template.subject, datadict)
-        data["body"] = pystache.render(template.body, datadict).replace("\n", "<br />")
+        }}
+        data = {"subject": pystache.render(template.subject, datadict),
+                "body": pystache.render(template.body, datadict).replace("\n", "<br />")}
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 class LoadMailtemplate(View):
+
     def post(self, request):
         template = request.POST["template"]
         recipients = request.POST.get("recipients[]", [])
         if template == "":
             return HttpResponse("")
         template = get_object_or_404(MailTemplate, pk=template)
-        data = {}
-        data["subject"] = template.subject
-        data["body"] = template.body
+        data = {"subject": template.subject, "body": template.body}
         if isinstance(recipients, unicode):
             recipients = [recipients]
         newrecipients = [obj for obj in recipients]
@@ -217,6 +214,7 @@ class LoadMailtemplate(View):
 
 
 class LoadSearchoptions(View):
+
     def post(self, request):
         term = request.POST["searchTerm"]
         if term[:4] == "not ":
@@ -282,7 +280,7 @@ class AjaxSearch(View):
         statusfilter = None
         displayed_columns = []
         searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name",
-                        "room__building__name"]
+                        "room__building__name", "currentlending__owner__username", "currentlending__owner__id"]
         for searchitem in search:
             key, value = searchitem.items()[0]
 
@@ -354,12 +352,8 @@ class AjaxSearch(View):
                         dictionary["currentlending"] = None
                     else:
                         q_list.append(Q(currentlending__owner__username__icontains=value) |
-                            Q(currentlending__owner__first_name__icontains=value) |
-                            Q(currentlending__owner__last_name__icontains=value))
-                print q_list
-                if len(displayed_columns) < 8:
-                    displayed_columns.append(("user", _("User")))
-                    searchvalues.append("currentlending__owner__username")
+                                      Q(currentlending__owner__first_name__icontains=value) |
+                                      Q(currentlending__owner__last_name__icontains=value))
 
             elif key == "ipaddress":
                 if len(displayed_columns) < 8:
@@ -437,7 +431,7 @@ class AjaxSearch(View):
                                                                                      "devicetype__name", "room__name",
                                                                                      "room__building__name")}
                     return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
-                except:
+                except Device.DoesNotExist:
                     return render_to_response('devices/searchempty.html', {}, RequestContext(self.request))
             elif key == "shortterm":
                 if value.lower() == "yes":
@@ -462,7 +456,7 @@ class AjaxSearch(View):
             devices = devices.filter(archived=None, trashed=None)
 
         if textfilter != None:
-            SEARCHSTRIP = getattr(settings, "SERCHSTRIP", [])
+            SEARCHSTRIP = getattr(settings, "SEARCHSTRIP", [])
             if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             try:
@@ -482,7 +476,7 @@ class AjaxSearch(View):
                 writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
                 headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
                            ugettext("Devicetype"), ugettext("Room"), ugettext("Building")]
-                if (len(displayed_columns) > 0):
+                if len(displayed_columns) > 0:
                     headers.extend([col[1] for col in displayed_columns])
                 writer.writerow(headers)
                 for device in devices.values_list(*searchvalues):
@@ -495,13 +489,15 @@ class AjaxSearch(View):
         }
         return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
 
+
 class PuppetDetails(View):
+
     def post(self, request):
         searchvalue = request.POST["id"]
-        params = urllib.urlencode({'query':'["in", "certname",["extract", "certname",'+
-                                           '["select_facts",["and",["=", "name","' +
-                                           settings.PUPPETDB_SETTINGS['query_fact'] + '"],'+
-                                           '["=","value","' + searchvalue + '"]]]]]'})
+        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",' +
+                                            '["select_facts",["and",["=", "name","' +
+                                            settings.PUPPETDB_SETTINGS['query_fact'] + '"],' +
+                                            '["=","value","' + searchvalue + '"]]]]]'})
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
                                        settings.PUPPETDB_SETTINGS['key'],
