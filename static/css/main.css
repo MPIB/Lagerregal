@@ -198,3 +198,16 @@ a:hover {
 .ui-autocomplete {
   z-index: 1510 !important;
 }
+
+.table-wrapped td {
+    width: 50%;
+    word-break:break-all;
+}
+
+#puppetdetails_name {
+    width: 30%;
+}
+
+#puppetdetails_value {
+    width: 70%;
+}

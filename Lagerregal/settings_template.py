@@ -227,12 +227,14 @@ USE_PUPPET = True
 
 if USE_PUPPET:
     PUPPETDB_SETTINGS = {
-        'host'       : 'puppetdb',
-        'port'       : 8081,
-        'cert'       : '/var/lib/puppet/ssl/certs/<FQDN>.pem',
-        'key'        : '/var/lib/puppet/ssl/private_keys/<FQDN>.pem',
-        'req'        : '/pdb/v4/facts?',
-        'query_fact' : 'fact_containing_pk',
+        'host'          : 'puppetdb',
+        'port'          : 8081,
+        'cacert'        : '/var/lib/puppet/ssl/certs/ca.pem',
+        'cert'          : '/var/lib/puppet/ssl/certs/<FQDN>.pem',
+        'key'           : '/var/lib/puppet/ssl/private_keys/<FQDN>.pem',
+        'req'           : '/pdb/query/v4/facts?',
+        'query_fact'    : 'fact_containing_pk',
+        'software_fact' : 'software',
     }
 
 LABEL_TEMPLATES = {

@@ -14,7 +14,7 @@ from users.views import *
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, \
     LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, \
-    AjaxSearch, UserLendings, PuppetDetails
+    AjaxSearch, UserLendings, PuppetDetails, PuppetSoftware
 from devicetypes.ajax import GetTypeAttributes
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
@@ -228,6 +228,7 @@ urlpatterns = patterns('',
     url(r'^ajax/searchoptions', login_required(LoadSearchoptions.as_view()), name="load-searchoptions"),
     url(r'^ajax/search', login_required(AjaxSearch.as_view()), name="ajax-search"),
     url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
+    url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
 )
 
 urlpatterns += format_suffix_patterns(patterns('',

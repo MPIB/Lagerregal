@@ -511,3 +511,36 @@ class PuppetDetails(View):
             'puppetdetails': json.loads(res.read())
         }
         return render_to_response('devices/puppetdetails.html', context)
+
+class PuppetSoftware(View):
+
+    def post(self, request):
+        searchvalue = request.POST["id"]
+        software_fact = settings.PUPPETDB_SETTINGS['software_fact']
+        query_fact = settings.PUPPETDB_SETTINGS['query_fact']
+
+        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],' +
+                                            '["in", "certname",["extract", "certname",' +
+                                            '["select_facts",["and",["=", "name","' + query_fact + '"],' +
+                                            '["=","value","' + searchvalue + '"]]]]]]'})
+        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
+                                       settings.PUPPETDB_SETTINGS['port'],
+                                       settings.PUPPETDB_SETTINGS['key'],
+                                       settings.PUPPETDB_SETTINGS['cert'])
+        req = settings.PUPPETDB_SETTINGS['req'] + params
+        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
+        res = conn.getresponse()
+        if res.status != httplib.OK:
+            return HttpResponse('Failed to fetch puppet details from ' +
+                                settings.PUPPETDB_SETTINGS['host'])
+
+        try:
+            res = json.loads(res.read())[0]
+            software = json.loads(res['value'])
+            context = {
+                'puppetsoftware': software.values()
+            }
+        except:
+            return HttpResponse('Malformed puppet software fact.')
+
+        return render_to_response('devices/puppetsoftware.html', context)

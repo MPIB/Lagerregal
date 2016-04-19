@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<table id="puppetsoftware_table" class="table table-bordered table-striped table-wrapped">
+    <thead>
+    <tr>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Version" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+      {% for e in puppetsoftware %}
+      <tr>
+        <td>{{ e.name }}</td>
+        <td>{{ e.version }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+</table>
+<script>
+    $('#puppetsoftware_table').dataTable( {
+        "bFilter": false,
+        "paging": false,
+    } );
+</script>
