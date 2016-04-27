@@ -328,6 +328,7 @@
                 {% if USE_PUPPET %}
                 {% permission user has 'devices.read_puppetdetails' of device %}
                     <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
+                    <li><a href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
                 {% endpermission %}
                 {% endif %}
             </ul>
@@ -478,6 +479,12 @@
                             <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Puppet Facts..." %}
                         </div>
                     </div>
+                    <div class="tab-pane" id="software">
+                        <h4>{% trans "Installed software from puppetdb" %}</h4>
+                        <div id="softwaredetails">
+                            <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
+                        </div>
+                    </div>
                 {% endpermission %}
                 {% endif %}
             </div>
@@ -499,6 +506,7 @@
     {% if display_printbutton %}
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=label_path %}
     {% endif %}
+    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
 {% endblock %}
 
 {% block scriptend %}
@@ -615,5 +623,6 @@
     });
 
     $("#puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
+    $("#softwaredetails").load("{% url "puppet-software" %}", { "id" : "{{ device.pk }}"});
 });
 {% endblock %}
