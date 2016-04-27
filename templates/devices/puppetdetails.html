@@ -1,18 +1,24 @@
 {% load i18n %}
 
-<table class="table table-bordered table-striped">
+<table id="puppetdetails_table" class="table table-bordered table-striped table-wrapped">
     <thead>
     <tr>
         <th>{% trans "Fact" %}</th>
         <th>{% trans "Value" %}</th>
     </tr>
     </thead>
-    <tbody id="id_puppetdetails">
+    <tbody>
       {% for e in puppetdetails %}
       <tr>
-        <td>{{ e.name }}</td>
-        <td style="word-break:break-all;">{{ e.value }}</td>
+        <td id="puppetdetails_name">{{ e.name }}</td>
+        <td id="puppetdetails_value">{{ e.value }}</td>
       </tr>
       {% endfor %}
     </tbody>
 </table>
+<script>
+    $('#puppetdetails_table').dataTable( {
+        "bFilter": false,
+        "paging": false,
+    } );
+</script>
