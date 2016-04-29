@@ -277,3 +277,13 @@ LOGGING = {
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 PUBLIC_DEVICES_FILTER = {}
+
+# get more themes from https://bootswatch.com/ and download them to:
+#   static/css/themes/<name>.min.css
+THEMES = [
+    'default',
+    'darkly',
+    'simplex',
+    'superhero',
+    'unity',
+]
