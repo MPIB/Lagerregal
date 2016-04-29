@@ -148,17 +148,23 @@ class UsersettingsView(TemplateView):
             translation.activate(request.POST["language"])
             request.session[translation.LANGUAGE_SESSION_KEY] = request.POST["language"]
             return HttpResponseRedirect(reverse("usersettings"))
-        elif "pagelength" in request.POST or "timezone" in request.POST:
+        elif "pagelength" in request.POST or "timezone" in request.POST or "theme" in request.POST:
             form = SettingsForm(request.POST)
             if form.is_valid():
+                changed_data = False
                 if request.user.pagelength != form.cleaned_data["pagelength"]:
                     request.user.pagelength = form.cleaned_data["pagelength"]
-                    request.user.save()
+                    changed_data = True
                 if request.user.timezone != form.cleaned_data["timezone"]:
                     request.user.timezone = form.cleaned_data["timezone"]
-                    request.user.save()
+                    changed_data = True
                 if request.user.main_department != form.cleaned_data["main_department"]:
                     request.user.main_department = form.cleaned_data["main_department"]
+                    changed_data = True
+                if request.user.theme != form.cleaned_data["theme"]:
+                    request.user.theme = form.cleaned_data["theme"]
+                    changed_data = True
+                if changed_data:
                     request.user.save()
                 messages.success(self.request, _('Settings were successfully updated'))
             context["settingsform"] = form
