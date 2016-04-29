@@ -16,6 +16,8 @@ from Lagerregal import utils
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
+    theme = models.CharField(max_length=50, null=False, blank=False, default='default',
+                             choices=[(theme, theme) for theme in settings.THEMES])
     timezone = models.CharField(max_length=50, null=True, blank=True,
                                 choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
     pagelength = models.IntegerField(validators=[
