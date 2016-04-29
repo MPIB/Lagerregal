@@ -285,5 +285,5 @@ THEMES = [
     'darkly',
     'simplex',
     'superhero',
-    'unity',
+    'united',
 ]
