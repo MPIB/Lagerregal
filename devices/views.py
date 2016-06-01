@@ -28,13 +28,14 @@ from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
 from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
-    DeviceStorageForm, ReturnForm
+    DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
 from devicetags.forms import DeviceTagForm
 from users.models import Lageruser, Department
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
 from permission.decorators import permission_required
 from django.db.models import Q
+
 
 @permission_required('devices.read_device', raise_exception=True)
 class DeviceList(PaginationMixin, ListView):
@@ -95,9 +96,9 @@ class DeviceList(PaginationMixin, ListView):
             lendings = lendings.exclude(~Q(device__department__in=self.request.user.departments.all()) &
                                         ~Q(device=None), device__is_private=True)
             return lendings.values("device__id", "device__name", "device__inventorynumber",
-                                       "device__devicetype__name", "device__room__name", "device__group",
-                                       "device__room__building__name", "owner__username", "owner__id",
-                                       "duedate", "smalldevice")
+                                   "device__devicetype__name", "device__room__name", "device__group",
+                                   "device__room__building__name", "owner__username", "owner__id",
+                                   "duedate", "smalldevice")
         else:
             if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
                 devices = devices.filter(department__in=self.departmentfilter)
@@ -110,8 +111,9 @@ class DeviceList(PaginationMixin, ListView):
             if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
                 devices = devices.order_by(self.viewsorting)
 
-            return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name", "room__building__name",
-                              "group__name", "currentlending__owner__username", "currentlending__duedate")
+            return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
+                                  "room__building__name",
+                                  "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super(DeviceList, self).get_context_data(**kwargs)
@@ -128,24 +130,41 @@ class DeviceList(PaginationMixin, ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
+
 @permission_required('devices.read_device', raise_exception=True)
 class DeviceDetail(DetailView):
-    queryset = Device.objects.select_related("manufacturer", "devicetype", "currentlending")
+    queryset = Device.objects \
+        .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department", "room", "room__building") \
+        .prefetch_related("pictures", )
     context_object_name = 'device'
+    object = None
+
+    def get_object(self, queryset=None):
+        if self.object is not None:
+            return self.object
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        queryset = self.queryset.filter(pk=pk)
+        self.object = queryset.get()
+        return self.object
+
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
-        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department=self.object.department, device=None, user=None)
+        context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
+            department=self.object.department, device=None, user=None)
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
-        context["lending_list"] = Lending.objects.filter(device=context["device"]).order_by("-pk")[:10]
+        context["lending_list"] = Lending.objects.filter(device=context["device"])\
+                                      .select_related("owner").order_by("-pk")[:10]
         context["version_list"] = Version.objects.filter(object_id=context["device"].id,
                                                          content_type_id=ContentType.objects.get(
-                                                             model='device').id).order_by("-pk")[:10]
-        context["mail_list"] = MailHistory.objects.filter(device=context["device"]).order_by("-pk")[:10]
+                                                             model='device').id) \
+                                      .select_related("revision", "revision__user").order_by("-pk")[:10]
+        context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
+                                   .select_related("sent_by").order_by("-pk")[:10]
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
@@ -162,7 +181,8 @@ class DeviceDetail(DetailView):
         except:
             pass
         context["mailform"] = DeviceMailForm(initial=mailinitial)
-        context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+        context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
+            department__in=self.request.user.departments.all())
         versions = reversion.get_for_object(context["device"])
         if len(versions) != 0:
             context["lastedit"] = versions[0]
@@ -180,8 +200,9 @@ class DeviceDetail(DetailView):
                 for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
                     if attribute == "id":
                         context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
-                                                                                                  getattr(context["device"],
-                                                                                                          attribute))
+                                                                                                  getattr(
+                                                                                                      context["device"],
+                                                                                                      attribute))
                     else:
                         context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
                                                                                               getattr(context["device"],
@@ -314,7 +335,6 @@ class DeviceCreate(CreateView):
             initial["deviceid"] = copyid
         initial["creator"] = creator
 
-
         if self.request.user.main_department:
             initial["department"] = self.request.user.main_department
             department = self.request.user.main_department
@@ -322,7 +342,7 @@ class DeviceCreate(CreateView):
             department = None
 
         try:
-            initial["emailtemplate"] = MailTemplate.objects.get(usage="new",department=department)
+            initial["emailtemplate"] = MailTemplate.objects.get(usage="new", department=department)
             initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
                                           initial["emailtemplate"].default_recipients.all()]
             initial["emailsubject"] = initial["emailtemplate"].subject
@@ -335,7 +355,8 @@ class DeviceCreate(CreateView):
         # Call the base implementation first to get a context
         context = super(DeviceCreate, self).get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
-        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(
+            department__in=self.request.user.departments.all())
         context['actionstring'] = "Create new Device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -395,7 +416,8 @@ class DeviceUpdate(UpdateView):
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Edit"))]
         context["template_list"] = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
-        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(
+            department__in=self.request.user.departments.all())
         return context
 
     def form_valid(self, form):
@@ -452,7 +474,6 @@ class DeviceUpdate(UpdateView):
             template.send(request=self.request, recipients=recipients,
                           data={"device": device, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
-
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
@@ -675,7 +696,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         else:
             device.archived = None
         device.save()
-        #reversion.set_comment("Archived")
+        # reversion.set_comment("Archived")
         reversion.set_ignore_duplicates(True)
         reversion.set_comment(_("Device was archived".format(device.name)))
         messages.success(request, _("Device was archived."))
@@ -714,7 +735,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         else:
             device.trashed = None
         device.save()
-        #reversion.set_comment("Archived")
+        # reversion.set_comment("Archived")
         reversion.set_ignore_duplicates(True)
         reversion.set_comment(_("Device was trashed".format(device.name)))
         messages.success(request, _("Device was trashed."))
@@ -858,7 +879,6 @@ class RoomList(PaginationMixin, ListView):
             rooms = rooms.order_by(self.viewsorting)
         return rooms
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(RoomList, self).get_context_data(**kwargs)
@@ -992,7 +1012,6 @@ class BuildingList(PaginationMixin, ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             buildings = buildings.order_by(self.viewsorting)
         return buildings
-
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1174,7 +1193,6 @@ class ManufacturerCreate(CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
     fields = '__all__'
-
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1399,6 +1417,7 @@ class Search(TemplateView):
 
 class PublicDeviceListView(ListView):
     filterstring = ""
+    groupfilter = None
     viewsorting = None
     template_name = "devices/public_devices_list.html"
 
@@ -1414,7 +1433,12 @@ class PublicDeviceListView(ListView):
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devices = devices.order_by(self.viewsorting)
-        return devices
+        self.groupfilter = self.kwargs.pop("group", "all")
+        if self.groupfilter != "all":
+            devices = devices.filter(group__id=self.groupfilter)
+        return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
+                                  "room__building__name",
+                                  "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super(PublicDeviceListView, self).get_context_data(**kwargs)
@@ -1424,6 +1448,7 @@ class PublicDeviceListView(ListView):
             context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
+        context["groupfilterform"] = DeviceGroupFilterForm(initial={"groupfilter": self.groupfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -1438,7 +1463,8 @@ class PublicDeviceDetailView(DetailView):
         if len(query_dict) == 0:
             raise ImproperlyConfigured
 
-        devices = Device.objects.prefetch_related("room", "room__building", "manufacturer", "devicetype").filter(**query_dict)
+        devices = Device.objects.prefetch_related("room", "room__building", "manufacturer", "devicetype").filter(
+            **query_dict)
         devices = devices.filter(id=self.kwargs.get("pk", None))
         if devices.count() != 1:
             raise Http404

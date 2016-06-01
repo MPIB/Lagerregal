@@ -5,6 +5,8 @@ from django.template import Library
 from django.utils.safestring import mark_safe
 from django.forms import CheckboxInput
 
+from devices.models import Bookmark
+
 register = Library()
 
 
@@ -73,7 +75,7 @@ def get_range(value):
 
 @register.filter
 def check_bookmark(device, user):
-    return device.bookmarkers.filter(id=user.id).exists()
+    return Bookmark.objects.filter(user=user.id, device=device.id).exists()
 
 
 @register.filter

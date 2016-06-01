@@ -9,6 +9,7 @@
 {% block pullright %}
     {{ filterform.filterstring }}
     {{ viewform.viewsorting }}
+    {{ groupfilterform.groupfilter }}
 {% endblock %}
 
 {% block content %}
@@ -33,10 +34,10 @@
         {% for device in device_list %}
             <tr {% if device.currentlending__duedate < today.date %}class="text-danger"{% endif %}>
                 <td><a href="{% url 'public-device-detail' device.id %}">{{ device.name | default:"(None)" }}</a></td>
-                <td>{{ device.inventorynumber }}</td>
-                <td>{{ device.devicetype__name }}</td>
-                <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
-                <td>{{ device.group__name }}</td>
+                <td>{{ device.inventorynumber}}</td>
+                <td>{{ device.devicetype__name|default:"--" }}</td>
+                <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>
+                <td>{{ device.group__name|default:"--" }}</td>
                 <td>{% if device.currentlending__owner__username == None %}
                         <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
                      {% else %}<i class="fa fa-exclamation-circle text-danger"
@@ -62,6 +63,13 @@
     });
     $('#id_filterstring').change(function() {
     window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
+    });
+    $('#id_groupfilter').change(function() {
+    if ($("#id_filterstring").val() != "") {
+    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/group/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+    } else {
+    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/group/" + $(this).val()
+    }
     });
     {% include "snippets/pagination_simple_js.html" with pageurl="public-device-list" %}
 {% endblock %}

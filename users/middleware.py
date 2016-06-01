@@ -2,7 +2,9 @@ from django.utils import timezone
 
 
 class TimezoneMiddleware(object):
-    def process_request(self, request):
-        if request.user.is_authenticated():
-            if request.user.timezone != None:
-                timezone.activate(request.user.timezone)
+    @staticmethod
+    def process_request(request):
+        user = request.user
+        if user.is_authenticated():
+            if user.timezone is not None:
+                timezone.activate(user.timezone)

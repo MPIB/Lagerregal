@@ -62,11 +62,20 @@ DEPARTMENT_OPTIONS = [
     ("my", _("My Departments"))
 ]
 
+
 def get_department_options():
     try:
         return DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name"))
     except OperationalError:
         return []
+
+
+def get_devicegroup_options():
+    try:
+        return [('all', _('All Groups')), ]+list(Devicegroup.objects.all().values_list("id", "name"))
+    except OperationalError:
+        return []
+
 
 def get_emailrecipientlist(special=None):
     objects = []
@@ -220,6 +229,11 @@ class DepartmentFilterForm(FilterForm):
     departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
+
+class DeviceGroupFilterForm(FilterForm):
+    groupfilter = forms.ChoiceField(choices=get_devicegroup_options(),
+                                         widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
+                                                                        "class": "pull-right form-control input-sm"}))
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
