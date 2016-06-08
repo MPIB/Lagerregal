@@ -24,6 +24,7 @@ from django.utils.translation import ugettext_lazy as _
 admin.autodiscover()
 import permission; permission.autodiscover()
 from permission.decorators import permission_required
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 urlpatterns = patterns('',
     url(r'^$', login_required(Home.as_view()), name="home"),
@@ -64,14 +65,14 @@ urlpatterns = patterns('',
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/delete/$', PictureDelete.as_view(), name="device-picture-delete"),
     url(r'^devices/lend/$', DeviceLend.as_view(), name="device-lend"),
     url(r'^devices/return/(?P<lending>[0-9]*)$', DeviceReturn.as_view(), name="device-return"),
-    url(r'^devices/public/$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/(?P<page>[0-9]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/sorting/(?P<sorting>[^/]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
-    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', PublicDeviceListView.as_view(), name="public-device-list"),
+    url(r'^devices/public/$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/(?P<page>[0-9]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/sorting/(?P<sorting>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/(?P<pk>[0-9]*)/$', PublicDeviceDetailView.as_view(), name="public-device-detail"),
 
     url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),

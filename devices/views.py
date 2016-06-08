@@ -23,8 +23,6 @@ from django.conf import settings
 from django.db.models.query import QuerySet
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
-from django.views.decorators.clickjacking import xframe_options_exempt
-from django.utils.decorators import method_decorator
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
 from devicetypes.models import TypeAttribute, TypeAttributeValue
@@ -1461,10 +1459,6 @@ class PublicDeviceListView(ListView):
 class PublicDeviceDetailView(DetailView):
     template_name = "devices/device_detail.html"
     context_object_name = "device"
-
-    @method_decorator(xframe_options_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(PublicDeviceDetailView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         query_dict = settings.PUBLIC_DEVICES_FILTER
