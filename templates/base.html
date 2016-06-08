@@ -22,6 +22,7 @@
     {% block extracss %}{% endblock %}
 </head>
 <body>
+{% if not nochrome %}
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -149,16 +150,18 @@
             </ol>
         </h1>
     </div>
+{% endif %}
     <div class="row">
         <div class="col-md-12">{% block content %}{% endblock %}</div>
     </div>
+{% if not nochrome %}
     <div id="footer">
         <div class="pull-right">
             powered by <a href="https://github.com/viirus/Lagerregal">Lagerregal</a>
         </div>
     </div>
 </div>
-
+{% endif %}
 <script src="{% static "js/jquery.min.js" %}"></script>
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/select2.min.js" %}"></script>
