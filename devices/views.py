@@ -1479,4 +1479,5 @@ class PublicDeviceDetailView(DetailView):
         context["breadcrumbs"] = [
             (reverse("public-device-list"), _("Public Devices")),
             (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
+        context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
