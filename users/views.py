@@ -192,12 +192,10 @@ class UsersettingsView(TemplateView):
 def login(request, template_name='registration/login.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
-          current_app=None, extra_context=None):
+          extra_context=None):
     """
     Displays the login form and handles the login action.
     """
-
-
     if request.method == "POST":
         redirect_to = request.GET.get(redirect_field_name, '')
         form = authentication_form(data=request.POST)
@@ -230,8 +228,7 @@ def login(request, template_name='registration/login.html',
     }
     if extra_context is not None:
         context.update(extra_context)
-    return TemplateResponse(request, template_name, context,
-                            current_app=current_app)
+    return TemplateResponse(request, template_name, context)
 
 
 class DepartmentList(PaginationMixin, ListView):
