@@ -122,12 +122,12 @@
                             <li><a href="{% url 'admin:index' %}"><i class="fa fa-lock"></i>&nbsp; {% trans "Admin" %}
                             </a></li>
                         {% endif %}
-                        <li><a href="{% url 'django.contrib.auth.views.logout' %}"><i
+                        <li><a href="{% url 'logout' %}"><i
                                 class="fa fa-sign-out"></i>&nbsp; {% trans "Logout" %}</a></li>
                     </ul>
                 </li>
             {% else %}
-                <li id="loginbutton"><a href="{% url 'users.views.login' %}" class="button button-success"><i
+                <li id="loginbutton"><a href="{% url 'login' %}" class="button button-success"><i
                         class="fa fa-sign-in"></i> {% trans "Login" %}</a></li>
             {% endif %}
         </ul>
