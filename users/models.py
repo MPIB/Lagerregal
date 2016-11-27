@@ -84,9 +84,10 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
 
     see: https://pythonhosted.org/django-auth-ldap/users.html
     """
-    logger = logging.getLogger('django_auth_ldap')
-    logger.addHandler(logging.StreamHandler())
-    logger.setLevel(logging.DEBUG)
+    if settings.DEBUG:
+        logger = logging.getLogger('django_auth_ldap')
+        logger.addHandler(logging.StreamHandler())
+        logger.setLevel(logging.DEBUG)
     AUTH_LDAP_DEPARTMENT_REGEX = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
     if AUTH_LDAP_DEPARTMENT_REGEX != None and user.main_department == None:
         AUTH_LDAP_DEPARTMENT_FIELD = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
