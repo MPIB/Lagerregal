@@ -14,24 +14,6 @@ from datetime import date, timedelta
 from Lagerregal import utils
 import logging
 
-def convert_ad_accountexpires(timestamp):
-    """
-    returns a datetime.date object
-    returns None when timestamp is 0, larger than date.max or on another error
-    """
-    if timestamp is None or timestamp == 0:
-        return None
-    epoch_start = date(year=1601, month=1,day=1)
-    seconds_since_epoch = timestamp/10**7
-    try:
-        # ad timestamp can be > than date.max, return None (==never expires)
-        new_date = epoch_start + timedelta(seconds=seconds_since_epoch)
-        return new_date
-    except OverflowError:
-        return None
-    except StandardError:
-        print('Cannot convert expiration_date "{0}", falling back to None'.format(self.expiration_date))
-
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
@@ -107,7 +89,7 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                 user.main_department = department
 
     if "accountExpires" in ldap_user.attrs:
-        expiration_date = convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
+        expiration_date = utils.convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
         user.expiration_date = expiration_date
 
         if user.expiration_date and user.expiration_date < date.today():

@@ -3,10 +3,11 @@ import ldap
 from django.conf import settings  # import the settings file
 from django.core.management.base import BaseCommand
 import re
-from users.models import Lageruser, Department, DepartmentUser, convert_ad_accountexpires
+from users.models import Lageruser, Department, DepartmentUser
 from ldap.controls import SimplePagedResultsControl
 from ldap.ldapobject import LDAPObject
 from datetime import date, timedelta
+from Lagerregal import utils
 
 class PagedResultsSearchObject(LDAPObject):
   page_size = 50
@@ -96,7 +97,7 @@ class Command(BaseCommand):
                         if userdata['accountExpires'][0] == '0':
                             new_value = None
                         else:
-                            new_value = convert_ad_accountexpires(int(userdata['accountExpires'][0]))
+                            new_value = utils.convert_ad_accountexpires(int(userdata['accountExpires'][0]))
                             if new_value is not None:
                                 expired = new_value < date.today()
 
