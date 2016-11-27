@@ -1,5 +1,7 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import logout
+from django.views.static import serve
 from devices.views import *
 from network.views import *
 from devicetypes.views import *
@@ -26,11 +28,11 @@ import permission; permission.autodiscover()
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', 'users.views.login', {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}, name="login"),
-    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}, name="logout"),
+    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}, name="login"),
+    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}, name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
@@ -74,7 +76,6 @@ urlpatterns = patterns('',
     url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/(?P<pk>[0-9]*)/$', xframe_options_exempt(PublicDeviceDetailView.as_view()), name="public-device-detail"),
-
     url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
     url(r'^devices/templates/(?P<page>[0-9]*)$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
     url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
@@ -211,7 +212,7 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    (r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
@@ -232,9 +233,9 @@ urlpatterns = patterns('',
     url(r'^ajax/search', login_required(AjaxSearch.as_view()), name="ajax-search"),
     url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
     url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
-)
+]
 
-urlpatterns += format_suffix_patterns(patterns('',
+urlpatterns += format_suffix_patterns([
     url(r'^api/$', api_root),
     url(r'^api/devices/$', DeviceApiList.as_view(), name='device-api-list'),
     url(r'^api/devices/create/$', DeviceApiCreate.as_view(), name='device-api-create'),
@@ -282,10 +283,12 @@ urlpatterns += format_suffix_patterns(patterns('',
     url(r'^api/groups/(?P<pk>\d+)/$', GroupApiDetail.as_view(), name='group-api-detail'),
 
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
-), allowed=["json", "html"])
+], allowed=["json", "html"])
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.MEDIA_ROOT}))
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)$', serve, {
+            'document_root': settings.MEDIA_ROOT,
+        }),
+    ]

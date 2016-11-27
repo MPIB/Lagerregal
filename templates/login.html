@@ -85,7 +85,7 @@
             {% trans "Your username and password didn't match. Please try again." %}
         </div>
     {% endif %}
-    <form method="post" action="{% url 'users.views.login' %}" class="form-signin" role="form">
+    <form method="post" action="{% url 'login' %}" class="form-signin" role="form">
         {% csrf_token %}
         <h2 class="form-signin-heading">{% trans "Please log in" %}</h2>
         <input id="id_username" maxlength="254" name="username" type="text" class="form-control"
