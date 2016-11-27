@@ -50,3 +50,22 @@ def get_file_location(instance=None, filename=""):
     destination += "{0}.{1}".format(uuid.uuid4(), ext)
 
     return destination
+
+
+def convert_ad_accountexpires(timestamp):
+    """
+    returns a datetime.date object
+    returns None when timestamp is 0, larger than date.max or on another error
+    """
+    if timestamp is None or timestamp == 0:
+        return None
+    epoch_start = date(year=1601, month=1,day=1)
+    seconds_since_epoch = timestamp/10**7
+    try:
+        # ad timestamp can be > than date.max, return None (==never expires)
+        new_date = epoch_start + timedelta(seconds=seconds_since_epoch)
+        return new_date
+    except OverflowError:
+        return None
+    except StandardError:
+        print('Cannot convert expiration_date "{0}", falling back to None'.format(self.expiration_date))

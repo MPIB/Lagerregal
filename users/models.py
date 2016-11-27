@@ -10,8 +10,9 @@ from django.dispatch import receiver
 from django_auth_ldap.backend import populate_user
 from django.conf import settings
 import re
-import datetime
+from datetime import date, timedelta
 from Lagerregal import utils
+import logging
 
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
@@ -46,6 +47,11 @@ class Lageruser(AbstractUser):
     def get_absolute_url(self):
         return reverse('userprofile', kwargs={'pk': self.pk})
 
+    def clean(self):
+        # initial ldap population returns a positive int as string
+        # will be set correctly later by populate_ldap_user() / ldapimport cmd
+        self.expiration_date = None
+
     @staticmethod
     def users_from_departments(departments=[]):
         if len(departments) == 0:
@@ -55,6 +61,15 @@ class Lageruser(AbstractUser):
 
 @receiver(populate_user)
 def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
+    """
+    this signal is sent after the user object has been created, to override/add specific fields
+
+    see: https://pythonhosted.org/django-auth-ldap/users.html
+    """
+    if settings.DEBUG:
+        logger = logging.getLogger('django_auth_ldap')
+        logger.addHandler(logging.StreamHandler())
+        logger.setLevel(logging.DEBUG)
     AUTH_LDAP_DEPARTMENT_REGEX = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
     if AUTH_LDAP_DEPARTMENT_REGEX != None and user.main_department == None:
         AUTH_LDAP_DEPARTMENT_FIELD = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
@@ -74,17 +89,12 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                 user.main_department = department
 
     if "accountExpires" in ldap_user.attrs:
-        if int(ldap_user.attrs["accountExpires"][0]) > 0:
-            expires_timestamp = (int(ldap_user.attrs["accountExpires"][0])/10000000)-11644473600
-            try:
-                expires_date = datetime.date.fromtimestamp(expires_timestamp)
-            except StandardError:
-                expires_date = None
-            user.expiration_date = expires_date
+        expiration_date = utils.convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
+        user.expiration_date = expiration_date
 
-            if user.expiration_date:
-                if user.expiration_date < datetime.date.today():
-                    user.is_active = False
+        if user.expiration_date and user.expiration_date < date.today():
+            user.is_active = False
+
     user.save()
 
 
