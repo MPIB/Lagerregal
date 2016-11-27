@@ -109,7 +109,11 @@ class Command(BaseCommand):
                         if user.is_active == expired:
                             user.is_active = not expired
                             saveuser = True
-                            print("{0} has expired".format(dn))
+                            if expired:
+                                print("{0} has expired".format(dn))
+                            else:
+                                print("{0} has been reactivated".format(dn))
+
                     if old_value != new_value and (created or attr not in settings.AUTH_LDAP_ATTR_NOSYNC):
                         saveuser = True
                         setattr(user, field, new_value)
@@ -127,7 +131,7 @@ class Command(BaseCommand):
                             saveuser = True
                             setattr(user, field, userdata["sAMAccountName"][0])
                             continue
-                    print("{0} does not have a value for the attribute {1}".format(dn, attr))
+                    print(u"{0} does not have a value for the attribute {1}".format(dn, attr))
             if saveuser:
                 for field, (old_value, new_value) in changes.iteritems():
                     print(u'{0} changed {1} from {2} to {3}'.format(dn, field, old_value, new_value))
