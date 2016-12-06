@@ -3,8 +3,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 
 from devicetags.models import Devicetag
 from devices.models import Device
@@ -121,7 +120,7 @@ class DeviceTagRemove(DeleteView):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Remove Tag"))]
-        return render_to_response(self.template_name, context, RequestContext(request))
+        return render(request, self.template_name, context)
 
 
     def post(self, request, *args, **kwargs):

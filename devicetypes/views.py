@@ -1,6 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.utils.translation import ugettext_lazy as _
@@ -143,7 +142,7 @@ class TypeMerge(View):
             (reverse("type-list"), _("Devicetypes")),
             (reverse("type-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"]),
             ("", _("Merge with {0}".format(context["newobject"])))]
-        return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+        return render(request, 'devices/base_merge.html', context)
 
     def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])

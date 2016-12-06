@@ -4,8 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.db.transaction import atomic
 from reversion import revisions as reversion
 
@@ -130,7 +129,7 @@ class SectionMerge(View):
             (reverse("section-list"), _("Sections")),
             (reverse("section-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
-        return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+        return render(request, 'devices/base_merge.html', context)
 
     @atomic
     def post(self, request, *args, **kwargs):

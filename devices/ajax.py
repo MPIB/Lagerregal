@@ -11,8 +11,7 @@ from django.views.generic.base import View
 from django.http import HttpResponse
 import pystache
 from django.http import QueryDict
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -430,9 +429,9 @@ class AjaxSearch(View):
                     context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber",
                                                                                      "devicetype__name", "room__name",
                                                                                      "room__building__name")}
-                    return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
+                    return render(request, 'devices/searchresult.html', context)
                 except Device.DoesNotExist:
-                    return render_to_response('devices/searchempty.html', {}, RequestContext(self.request))
+                    return render(request, 'devices/searchempty.html')
             elif key == "shortterm":
                 if value.lower() == "yes":
                     dictionary["templending"] = True
@@ -487,7 +486,7 @@ class AjaxSearch(View):
             "device_list": devices.values(*searchvalues),
             "columns": displayed_columns
         }
-        return render_to_response('devices/searchresult.html', context, RequestContext(self.request))
+        return render(request, 'devices/searchresult.html', context)
 
 
 class PuppetDetails(View):
@@ -510,7 +509,7 @@ class PuppetDetails(View):
         context = {
             'puppetdetails': json.loads(res.read())
         }
-        return render_to_response('devices/puppetdetails.html', context)
+        return render(request, 'devices/puppetdetails.html', context)
 
 class PuppetSoftware(View):
 
@@ -543,4 +542,4 @@ class PuppetSoftware(View):
         except:
             return HttpResponse('Malformed puppet software fact.')
 
-        return render_to_response('devices/puppetsoftware.html', context)
+        return render(request, 'devices/puppetsoftware.html', context)

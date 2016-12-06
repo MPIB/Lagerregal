@@ -5,10 +5,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
-from django.template import RequestContext
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.auth.models import Group
-from django.shortcuts import render_to_response
+from django.shortcuts import render
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
@@ -227,7 +226,7 @@ class DeviceIpAddressRemove(View):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Unassign IP-Addresses"))]
-        return render_to_response(self.template_name, context, RequestContext(request))
+        return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
         device = get_object_or_404(Device, pk=kwargs["pk"])
@@ -986,7 +985,7 @@ class RoomMerge(View):
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
-        return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+        return render(request, 'devices/base_merge.html', context)
 
     @atomic
     def post(self, request, *args, **kwargs):
@@ -1118,7 +1117,7 @@ class BuildingMerge(View):
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
-        return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+        return render(request, 'devices/base_merge.html', context)
 
     @atomic
     def post(self, request, *args, **kwargs):
@@ -1250,7 +1249,7 @@ class ManufacturerMerge(View):
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
             ("", _("Merge with {0}".format(context["newobject"].name)))]
-        return render_to_response('devices/base_merge.html', context, RequestContext(self.request))
+        return render(request, 'devices/base_merge.html', context)
 
     @atomic
     def post(self, request, *args, **kwargs):
@@ -1414,7 +1413,7 @@ class Search(TemplateView):
                     pass
         context["searchterm"] = " ".join(searchlist)
 
-        return render_to_response(self.template_name, context, RequestContext(self.request))
+        return render(request, self.template_name, context)
 
 
 class PublicDeviceListView(ListView):

@@ -5,8 +5,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from reversion.models import Version, Revision
 from reversion import revisions as reversion
 from django.apps import apps

@@ -6,8 +6,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.shortcuts import render
 from reversion import revisions as reversion
 
 from network.models import IpAddress
@@ -152,7 +151,7 @@ class UserIpAddressRemove(DeleteView):
             (reverse("user-list"), _("Users")),
             (reverse("userprofile", kwargs={"pk": context["user"].pk}), context["user"].__unicode__()),
             ("", _("Unassign IP-Address"))]
-        return render_to_response(self.template_name, context, RequestContext(request))
+        return render(request, self.template_name, context)
 
 
     def post(self, request, *args, **kwargs):
