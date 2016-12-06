@@ -105,7 +105,8 @@ function search() {
         $.ajax({
             type: "POST",
             url: "{% url "ajax-search" %}",
-            data: {"search": JSON.stringify(visualSearch.searchQuery.facets())}
+            data: {"search": JSON.stringify(visualSearch.searchQuery.facets())},
+            dataType: 'text',
         }).done(function(data){
             $("#searchresult").html(data)
             var table = $("#devicetable").dataTable({
