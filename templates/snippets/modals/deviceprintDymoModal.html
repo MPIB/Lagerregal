@@ -7,8 +7,8 @@
     <script>
         $('#printDymoModal').on('show.bs.modal', function (e) {
             loadPrinters();
-            labelXml = "{% filter escapejs %}{% ssi label_path %}{% endfilter %}";
-            label = dymo.label.framework.openLabelXml(labelXml);
+            labelUri = "https://{{ request.get_host }}{% static label_path %}";
+            label = dymo.label.framework.openLabelFile(labelUri);
             {% autoescape off %}{{label_js}}{% endautoescape %}
             updatePreview(label);
             printButton.onclick = function () {
