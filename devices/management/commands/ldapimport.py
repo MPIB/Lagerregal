@@ -131,6 +131,20 @@ class Command(BaseCommand):
                             saveuser = True
                             setattr(user, field, userdata["sAMAccountName"][0])
                             continue
+                    if attr == "mail":
+                        # userPrincipalName *might* contain non-ascii
+                        # characters but is a sane fallback for when "mail"
+                        # does not exist
+                        old_value = getattr(user, field)
+                        try:
+                            new_value = userdata["userPrincipalName"][0].decode('ascii')
+                            if old_value != new_value:
+                                saveuser = True
+                                setattr(user, field, new_value)
+                            continue
+                        except StandardError:
+                            pass
+
                     print(u"{0} does not have a value for the attribute {1}".format(dn, attr))
             if saveuser:
                 for field, (old_value, new_value) in changes.iteritems():
