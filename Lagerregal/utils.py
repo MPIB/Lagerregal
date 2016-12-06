@@ -39,6 +39,12 @@ class UnicodeWriter:
             self.writerow(row)
 
 
+class DotDict(dict):
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+
 def get_file_location(instance=None, filename=""):
 
     destination = ""
