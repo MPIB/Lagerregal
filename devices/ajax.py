@@ -535,7 +535,7 @@ class PuppetSoftware(View):
 
         try:
             res = json.loads(res.read())[0]
-            software = json.loads(res['value'])
+            software = res['value']
             context = {
                 'puppetsoftware': software.values()
             }

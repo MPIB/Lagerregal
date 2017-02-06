@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load devicetags %}
 
 <table id="puppetdetails_table" class="table table-bordered table-striped table-wrapped">
     <thead>
@@ -8,10 +9,10 @@
     </tr>
     </thead>
     <tbody>
-      {% for e in puppetdetails %}
+      {% for fact in puppetdetails %}
       <tr>
-        <td id="puppetdetails_name">{{ e.name }}</td>
-        <td id="puppetdetails_value">{{ e.value }}</td>
+        <td id="puppetdetails_name">{{ fact.name }}</td>
+        <td id="puppetdetails_value">{% as_nested_list fact.value %}</td>
       </tr>
       {% endfor %}
     </tbody>

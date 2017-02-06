@@ -95,3 +95,27 @@ def get_attribute_from_list(device, attribute):
 @register.filter
 def filename(value):
     return os.path.basename(value.file.name)
+
+@register.simple_tag
+def as_nested_list(factvalue):
+    res = ''
+    if isinstance(factvalue, dict):
+        res += "<ul>"
+        for key, value in factvalue.items():
+            if isinstance(value, dict):
+                res += u"<li>{}<ul>".format(key)
+                for key, value in value.items():
+                    res += u"<li>{} : {}</li>".format(key, value)
+                res += "</ul></li>"
+            else:
+                res += u"<li>{} : {}</li>".format(key, value)
+        res += "</ul>"
+    elif isinstance(factvalue, list):
+        res += "<ul>"
+        for item in factvalue:
+            res += "<li>{}</li>".format(item)
+        res += "</ul>"
+    else:
+        res += str(factvalue)
+
+    return mark_safe(res)
