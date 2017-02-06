@@ -35,7 +35,7 @@ def api_root(request, format=None):
 class SearchQuerysetMixin():
     def get_queryset(self):
         queryset = self.model.objects.all()
-        valid_fields = self.model._meta.get_all_field_names()
+        valid_fields = self.model._meta.fields
         filters = {}
         for param in self.request.query_params.lists():
             if param[0] in valid_fields:

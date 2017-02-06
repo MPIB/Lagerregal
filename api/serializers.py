@@ -14,6 +14,7 @@ class BuildingSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Building
+        exclude = ()
 
 
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,6 +24,7 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Room
+        exclude = ()
 
 
 class ManufacturerSerializer(serializers.HyperlinkedModelSerializer):
@@ -31,6 +33,7 @@ class ManufacturerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Manufacturer
+        exclude = ()
 
 
 class TypeAttributeSerializer(serializers.ModelSerializer):
@@ -46,6 +49,7 @@ class TypeSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Type
+        exclude = ()
 
 
 class TemplateSerializer(serializers.HyperlinkedModelSerializer):
@@ -54,6 +58,7 @@ class TemplateSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Template
+        exclude = ()
 
 
 class LendingDisplaySerializer(serializers.ModelSerializer):
@@ -62,6 +67,7 @@ class LendingDisplaySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Lending
+        exclude = ()
 
 
 class PictureSerializer(serializers.ModelSerializer):
@@ -84,6 +90,7 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
     bookmarked = serializers.BooleanField()
     department = serializers.SlugRelatedField(slug_field="name", queryset=Department.objects.all())
     pictures = PictureSerializer(many=True, read_only=True)
+    contact = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Device
@@ -181,6 +188,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Group
+        exclude = ()
 
 
 class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
@@ -191,3 +199,4 @@ class IpAddressSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = IpAddress
+        exclude = ()
