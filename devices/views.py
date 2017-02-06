@@ -45,6 +45,12 @@ class DeviceList(PaginationMixin, ListView):
     viewfilter = None
     viewsorting = None
 
+    def post(self, request):
+        if 'deviceid' in request.POST:
+            return HttpResponseRedirect(reverse('device-detail', kwargs={'pk':request.POST['deviceid']}))
+        else:
+            return HttpResponseRedirect(reverse('device-list'))
+
     def get_queryset(self):
         self.viewfilter = self.kwargs.get("filter", "active")
         devices = None
