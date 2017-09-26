@@ -202,7 +202,7 @@ class DeviceInformation(models.Model):
 
 
 reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
-["archived", "currentlending", "inventoried", "bookmarks", "trashed"])
+["archived", "currentlending", "inventoried", "bookmarks", "trashed"], ignore_duplicates = True)
 reversion.register(TypeAttributeValue)
 
 
@@ -214,6 +214,8 @@ class Lending(models.Model):
     returndate = models.DateField(blank=True, null=True)
     device = models.ForeignKey(Device, null=True, blank=True)
     smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
+
+reversion.register(Lending, ignore_duplicates = True)
 
 
 class Template(models.Model):
