@@ -1,10 +1,11 @@
 import os.path
-from datetime import datetime, timedelta
+
 
 from django.test.client import Client
 from django.test import TestCase
 from model_mommy import mommy
 from django.core.urlresolvers import reverse
+from datetime import datetime, timedelta
 
 from devices.models import Device, Building, Room, Manufacturer, Template, Note, Lending, DeviceInformationType, DeviceInformation, Picture
 from users.models import Lageruser
