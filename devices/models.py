@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+#from reversion import revisions as reversion
 import reversion
 
 from users.models import Lageruser
@@ -11,7 +12,7 @@ import datetime
 from django.db.models import Q
 from Lagerregal import utils
 
-
+@reversion.register()
 class Building(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     street = models.CharField(_('Street'), max_length=100, blank=True)
@@ -40,7 +41,7 @@ class Building(models.Model):
 
 
 
-
+@reversion.register()
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
@@ -68,6 +69,7 @@ class Room(models.Model):
 
 
 
+@reversion.register()
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
 
@@ -86,6 +88,7 @@ class Manufacturer(models.Model):
 
     def get_edit_url(self):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
+
 
 
 
@@ -202,9 +205,9 @@ class DeviceInformation(models.Model):
 
 reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
 ["archived", "currentlending", "inventoried", "bookmarks", "trashed"], ignore_duplicates = True)
+reversion.register(TypeAttributeValue)
 
-
-
+@reversion.register(ignore_duplicates = True)
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"), on_delete=models.SET_NULL, null=True)
     lenddate = models.DateField(auto_now_add=True)
@@ -214,7 +217,6 @@ class Lending(models.Model):
     device = models.ForeignKey(Device, null=True, blank=True)
     smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
 
-reversion.register(Lending, ignore_duplicates = True)
 
 
 class Template(models.Model):
