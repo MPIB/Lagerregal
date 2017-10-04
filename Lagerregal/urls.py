@@ -27,7 +27,7 @@ admin.autodiscover()
 import permission; permission.autodiscover()
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
-import debug_toolbar
+
 
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
@@ -287,6 +287,7 @@ urlpatterns += format_suffix_patterns([
 ], allowed=["json", "html"])
 
 if settings.DEBUG:
+    import debug_toolbar
     # static files (images, css, javascript, etc.)
     urlpatterns += [
         url(r'^__debug__/', include(debug_toolbar.urls)),
