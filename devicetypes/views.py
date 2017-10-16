@@ -147,17 +147,18 @@ class TypeDelete(DeleteView):
     success_url = reverse_lazy('type-list')
     template_name = 'devices/base_delete.html'
 
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(TypeDelete, self).get_context_data(**kwargs)
-
-        # should add "Delete" to breadcrumbs
-        context["breadcrumbs"] = [
-            (reverse("type-list"), _("Devicetypes")),
-            (reverse("type-detail", kwargs={"pk": context["object"].pk}), context["object"]),
-            ("", _("Delete"))]
-
-        return context
+    # !!!! there is no forwarding or loading so the code is never run
+    # def get_context_data(self, **kwargs):
+    #     # Call the base implementation first to get a context
+    #     context = super(TypeDelete, self).get_context_data(**kwargs)
+    #
+    #     # should add "Delete" to breadcrumbs
+    #     context["breadcrumbs"] = [
+    #         (reverse("type-list"), _("Devicetypes")),
+    #         (reverse("type-detail", kwargs={"pk": context["object"].pk}), context["object"]),
+    #         ("", _("Delete"))]
+    #
+    #     return context
 
 
 class TypeMerge(View):
