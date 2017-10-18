@@ -286,4 +286,5 @@ THEMES = [
     'simplex',
     'superhero',
     'united',
+    'paper',
 ]
