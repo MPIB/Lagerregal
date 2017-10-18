@@ -78,7 +78,7 @@ class AutocompleteName(View):
             return HttpResponse("")
         if len(objects) > 0:
             retobjects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
-                reverse(urlname, kwargs={"pk": obj[0]}), obj[1])
+                reverse(urlname, kwargs={"pk": obj[0]}), obj[1].decode('utf-8'))
                           for obj in objects.values_list("pk", "name")]
             return HttpResponse(json.dumps(retobjects), content_type='application/json')
         else:
