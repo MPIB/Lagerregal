@@ -109,10 +109,6 @@ class Command(BaseCommand):
                         if user.is_active == expired:
                             user.is_active = not expired
                             saveuser = True
-                            if expired:
-                                print("{0} has expired".format(dn))
-                            else:
-                                print("{0} has been reactivated".format(dn))
 
                     if old_value != new_value and (created or attr not in settings.AUTH_LDAP_ATTR_NOSYNC):
                         saveuser = True
@@ -147,6 +143,11 @@ class Command(BaseCommand):
 
                     print(u"{0} does not have a value for the attribute {1}".format(dn, attr))
             if saveuser:
+                if user.is_active == expired:
+                    if expired:
+                        print("{0} has expired".format(dn))
+                    else:
+                        print("{0} has been reactivated".format(dn))
                 for field, (old_value, new_value) in changes.iteritems():
                     print(u'{0} changed {1} from {2} to {3}'.format(dn, field, old_value, new_value))
                 user.save()
@@ -159,6 +160,7 @@ class Command(BaseCommand):
                 else:
                     updated_users += 1
 
-        print("skipped {0} users.".format(skipped_users))
-        print("imported {0} new users.".format(created_users))
-        print("updated {0} exisitng users.".format(updated_users))
+        if created_users > 0 or updated_users > 0:
+            #print("skipped {0} users.".format(skipped_users))
+            print("imported {0} new users.".format(created_users))
+            print("updated {0} exisitng users.".format(updated_users))
