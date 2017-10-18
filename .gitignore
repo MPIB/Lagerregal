@@ -14,3 +14,6 @@ staticserve/
 .DS_Store
 django.mo
 media/
+scripts/
+exports/
+backup/
