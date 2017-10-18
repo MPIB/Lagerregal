@@ -2,6 +2,7 @@
 import json
 import urllib
 import httplib
+from httplib import ssl
 
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -497,10 +498,12 @@ class PuppetDetails(View):
                                             '["select_facts",["and",["=", "name","' +
                                             settings.PUPPETDB_SETTINGS['query_fact'] + '"],' +
                                             '["=","value","' + searchvalue + '"]]]]]'})
+        context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
+        context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
+                                keyfile=settings.PUPPETDB_SETTINGS['key'])
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
-                                       settings.PUPPETDB_SETTINGS['key'],
-                                       settings.PUPPETDB_SETTINGS['cert'])
+                                       context=context)
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:
@@ -522,10 +525,12 @@ class PuppetSoftware(View):
                                             '["in", "certname",["extract", "certname",' +
                                             '["select_facts",["and",["=", "name","' + query_fact + '"],' +
                                             '["=","value","' + searchvalue + '"]]]]]]'})
+        context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
+        context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
+                                keyfile=settings.PUPPETDB_SETTINGS['key'])
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
-                                       settings.PUPPETDB_SETTINGS['key'],
-                                       settings.PUPPETDB_SETTINGS['cert'])
+                                       context=context)
         req = settings.PUPPETDB_SETTINGS['req'] + params
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
