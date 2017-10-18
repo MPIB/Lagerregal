@@ -116,6 +116,6 @@ def as_nested_list(factvalue):
             res += "<li>{}</li>".format(item)
         res += "</ul>"
     else:
-        res += str(factvalue)
+        res += unicode(factvalue)
 
     return mark_safe(res)
