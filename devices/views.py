@@ -632,7 +632,7 @@ class DeviceReturn(FormView):
                 reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
         else:
             owner = lending.owner
-        lending.returndate = datetime.datetime.now()
+        lending.returndate = datetime.date.today()
         lending.save()
         messages.success(self.request, _('Device is marked as returned'))
         if device != None:
