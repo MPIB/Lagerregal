@@ -86,10 +86,10 @@ def get_emailrecipientlist(special=None):
         ))
 
     objects.append((_("Groups"),
-                    [("g" + str(group.id), group.name) for group in Group.objects.all()],
+                    [("g" + str(group.id), group.name) for group in Group.objects.all().order_by("name")],
     ))
     objects.append((_("People"),
-                    [("u" + str(user.id), user) for user in Lageruser.objects.all()],
+                    [("u" + str(user.id), user) for user in Lageruser.objects.all().order_by("last_name")],
     ))
     return objects
 
