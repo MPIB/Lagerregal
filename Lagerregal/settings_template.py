@@ -275,7 +275,7 @@ LOGGING = {
     }
 }
 
-TEST_RUNNER = 'django.test.runner.DiscoverRunner'
+TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
 
 PUBLIC_DEVICES_FILTER = {}
 

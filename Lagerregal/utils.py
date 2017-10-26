@@ -1,6 +1,8 @@
 import csv, codecs, cStringIO
 import uuid
 from datetime import date, timedelta
+from django.conf import settings
+from django.test.runner import DiscoverRunner
 
 class PaginationMixin():
     def get_paginate_by(self, queryset):
@@ -76,3 +78,9 @@ def convert_ad_accountexpires(timestamp):
         return None
     except StandardError:
         print('Cannot convert expiration_date "{0}", falling back to None'.format(self.expiration_date))
+
+
+class DetectableTestRunner(DiscoverRunner):
+    def __init__(self, *args, **kwargs):
+        settings.TEST_MODE = True
+        super(DetectableTestRunner, self).__init__(*args, **kwargs)

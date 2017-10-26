@@ -355,7 +355,8 @@ class DeviceCreate(CreateView):
             initial["emailsubject"] = initial["emailtemplate"].subject
             initial["emailbody"] = initial["emailtemplate"].body
         except Exception as e:
-            print(e)
+            if not settings.TEST_MODE:
+                print(e)
         return initial
 
     def get_context_data(self, **kwargs):

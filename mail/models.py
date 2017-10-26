@@ -32,6 +32,7 @@ class MailTemplate(models.Model):
         return self.name
 
     class Meta:
+        ordering = ['name']
         verbose_name = _('Mailtemplate')
         verbose_name_plural = _('Mailtemplates')
         permissions = (
