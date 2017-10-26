@@ -27,15 +27,16 @@
                 <input type="submit" value="{% trans "Edit" %}" class="btn btn-primary pull-right"/>
             </div>
         </div>
+        <input type="hidden" name="devicetype" value="{{ object.id }}">
     </form>
 {% endblock %}
 
 {% block modalFooter %}
     <div class="alert-danger alert" style="text-align:left;">{% blocktrans %}Do you want to delete  the
         attribute?{% endblocktrans %}</div>
-    <form action="{% url "typeattribute-delete" 0 %}" method="post" class="form-horizontal"
-          id="attribute_deleteform">{% csrf_token %}<input type="submit" value="{% trans "Yes" %}"
-                                                           class="btn btn-danger"/><input type="hidden" name="next"
-                                                                                          value="{% url "type-detail" object.id %}">
+    <form action="{% url "typeattribute-delete" 0 %}" method="post"
+          class="form-horizontal" id="attribute_deleteform">{% csrf_token %}
+          <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger"/>
+          <input type="hidden" name="next" value="{% url "type-detail" object.id %}">
     </form>
 {% endblock %}

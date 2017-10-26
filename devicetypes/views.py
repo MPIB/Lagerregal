@@ -165,19 +165,28 @@ class TypeMerge(View):
 class TypeAttributeCreate(CreateView):
     model = TypeAttribute
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
 
 class TypeAttributeUpdate(UpdateView):
     model = TypeAttribute
     template_name = 'devices/base_form.html'
+    fields = '__all__'
 
+    def post(self, request, *args, **kwargs):
+        self.success_url = reverse('type-detail',
+                                   kwargs={'pk': request.POST['devicetype']})
+        return super(TypeAttributeUpdate, self).post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return self.success_url
 
 class TypeAttributeDelete(DeleteView):
     model = TypeAttribute
     success_url = reverse_lazy('type-list')
     template_name = 'devices/base_delete.html'
 
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.next = request.POST["next"]
         return super(TypeAttributeDelete, self).post(request, **kwargs)
 
