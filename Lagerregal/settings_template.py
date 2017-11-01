@@ -276,6 +276,7 @@ LOGGING = {
 }
 
 TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
+TEST_MODE = False
 
 PUBLIC_DEVICES_FILTER = {}
 
