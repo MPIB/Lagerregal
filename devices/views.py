@@ -717,7 +717,10 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         if device.trashed == None:
             device.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
-            device.currentlending = None
+            if device.currentlending:
+                device.currentlending.returndate = datetime.date.today()
+                device.currentlending.save()
+                device.currentlending = None
             for ip in device.ipaddress_set.all():
                 ip.device = None
                 ip.save()

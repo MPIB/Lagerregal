@@ -117,6 +117,15 @@ class DeviceTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertIsNone(resp.context["device"].trashed)
 
+    def test_device_trash_returns_lending(self):
+        lending = mommy.make(Lending, _fill_optional=['device', 'owner'])
+        lending.device.currentlending = lending
+        lending.device.save()
+        trashurl = reverse("device-trash", kwargs={"pk": lending.device.pk})
+        resp = self.client.post(trashurl)
+        lending.refresh_from_db()
+        self.assertIsNotNone(lending.returndate)
+
     def test_device_inventoried(self):
         device = mommy.make(Device)
         devices = Device.objects.all()
