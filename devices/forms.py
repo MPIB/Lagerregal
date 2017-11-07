@@ -6,6 +6,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.db.utils import OperationalError
+from django.db.models import Q
 
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
@@ -239,6 +240,7 @@ class DeviceGroupFilterForm(FilterForm):
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
 
+    uses = forms.ModelChoiceField(queryset = Device.objects.none(), required = False)
     emailrecipients = forms.MultipleChoiceField(required=False)
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
                                            widget=forms.Select(attrs={"style": "width:100%;"}))
@@ -249,6 +251,7 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style': "height:80px"}), max_length=1000,
                                   required=False)
     webinterface = forms.URLField(max_length=60, required=False)
+
     creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
     devicetype = forms.ModelChoiceField(Type.objects.all(), required=False,
@@ -281,7 +284,16 @@ class DeviceForm(forms.ModelForm):
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
+
+
         super(DeviceForm, self).__init__(*args, **kwargs)
+
+        if kwargs["instance"]:
+            self.fields['uses'].queryset = Device.objects.filter(used_in = None).exclude(pk = kwargs["instance"].id)
+        else:
+            self.fields['uses'].queryset = Device.objects.filter(used_in = None)
+
+
 
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
         if self.data != {}:
