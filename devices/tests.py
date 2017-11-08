@@ -12,13 +12,6 @@ from users.models import Lageruser
 from network.models import IpAddress
 from devices.forms import IpAddressForm
 
-
-
-
-
-
-
-
 class DeviceTests(TestCase):
     def setUp(self):
         self.client = Client()
