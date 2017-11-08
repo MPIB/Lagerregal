@@ -26,7 +26,9 @@ class DeviceTests(TestCase):
         self.assertEqual(device.__unicode__(), device.name)
         self.assertEqual(device.get_absolute_url(), reverse('device-detail', kwargs={'pk': device.pk}))
         self.assertEqual(device.get_edit_url(), reverse('device-edit', kwargs={'pk': device.pk}))
-        self.assertEqual(device.get_as_dict(), {"name": device.name, "description": device.description, "manufacturer": device.manufacturer, "devicetype" : device.devicetype, "room" : device.room})
+        self.assertEqual(device.get_as_dict(), {"name": device.name, "description": device.description,
+                                                "manufacturer": device.manufacturer, "devicetype" : device.devicetype,
+                                                "room" : device.room})
         self.assertFalse(device.is_overdue())
         self.assertTrue(mommy.make(Device, currentlending = lending_past).is_overdue())
         self.assertFalse(mommy.make(Device, currentlending = lending_future).is_overdue())
@@ -389,7 +391,9 @@ class TemplateTests(TestCase):
         self.assertTrue(isinstance(template, Template))
         self.assertEqual(template.__unicode__(), template.templatename)
         self.assertEqual(template.get_absolute_url(), reverse('device-list'))
-        self.assertEqual(template.get_as_dict(), {'name': template.name, 'description': template.description, 'manufacturer' : template.manufacturer, 'devicetype' : template.devicetype })
+        self.assertEqual(template.get_as_dict(), {'name': template.name, 'description': template.description,
+                                                  'manufacturer' : template.manufacturer,
+                                                  'devicetype' : template.devicetype })
 
     def test_template_list(self):
         templates = mommy.make(Template, _quantity=40)
@@ -454,7 +458,8 @@ class DeviceInformationTests(TestCase):
 
     def test_device_information_creation(self):
         device_information = mommy.make(DeviceInformation)
-        self.assertEqual(device_information.__unicode__(), device_information.infotype.__unicode__() + ": " + device_information.information)
+        self.assertEqual(device_information.__unicode__(),
+                         device_information.infotype.__unicode__() + ": " + device_information.information)
 
 class PictureTests(TestCase):
     def setUp(self):
