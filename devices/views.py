@@ -1457,7 +1457,7 @@ class PublicDeviceListView(ListView):
         context["groupfilterform"] = DeviceGroupFilterForm(initial={"groupfilter": self.groupfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
-        context["nochrome"] = self.request.GET.get("nochrome", False)
+        #context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
 
 
@@ -1483,5 +1483,5 @@ class PublicDeviceDetailView(DetailView):
         context["breadcrumbs"] = [
             (reverse("public-device-list"), _("Public Devices")),
             (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
-        context["nochrome"] = self.request.GET.get("nochrome", False)
+        #context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
