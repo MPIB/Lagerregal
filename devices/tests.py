@@ -215,10 +215,6 @@ class DeviceTests(TestCase):
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
 
-
-
-
-
 class BuildingTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -275,7 +271,6 @@ class BuildingTests(TestCase):
         url = reverse("building-delete", kwargs={"pk": building.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-
 
 class RoomTests(TestCase):
     def setUp(self):
@@ -335,10 +330,6 @@ class RoomTests(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
-
-
-
-
 class ManufacturerTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -394,7 +385,6 @@ class ManufacturerTests(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
-
 class TemplateTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -440,7 +430,6 @@ class TemplateTests(TestCase):
         url = reverse("template-delete", kwargs={"pk": template.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-
 
 class NoteTests(TestCase):
     def setUp(self):
