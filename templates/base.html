@@ -151,7 +151,7 @@
     </div>
     <!-- /.navbar-collapse -->
 </nav>
-
+{% endif %}
 <div class="container">
     <div class="page-header row">
         <h1 style="font-size:1.9em">
@@ -163,22 +163,27 @@
                         <li><a href="{{ crumb.0 }}">{{ crumb.1 }}</a></li>
                     {% endif %}
                 {% endfor %}
+                {% if not nochrome %}
                 <small class="pull-right">{% block  pullright %}{% endblock %}</small>
+                {% endif %}
             </ol>
         </h1>
     </div>
-{% endif %}
+
     <div class="row">
         <div class="col-md-12">{% block content %}{% endblock %}</div>
     </div>
-{% if not nochrome %}
+
     <div id="footer">
         <div class="pull-right">
             powered by <a href="https://github.com/viirus/Lagerregal">Lagerregal</a>
         </div>
     </div>
 </div>
-{% endif %}
+
+
+
+
 <script src="{% static "js/jquery.min.js" %}"></script>
 <script src="{% static "js/bootstrap.min.js" %}"></script>
 <script src="{% static "js/select2.min.js" %}"></script>

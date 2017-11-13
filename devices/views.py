@@ -190,7 +190,9 @@ class DeviceDetail(DetailView):
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
             department__in=self.request.user.departments.all())
-        versions = Version.objects.get_for_object(context["device"])
+
+        versions = reversion.get_for_object(context["device"])
+
         if len(versions) != 0:
             context["lastedit"] = versions[0]
 
@@ -1457,7 +1459,7 @@ class PublicDeviceListView(ListView):
         context["groupfilterform"] = DeviceGroupFilterForm(initial={"groupfilter": self.groupfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
-        #context["nochrome"] = self.request.GET.get("nochrome", False)
+        context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
 
 
@@ -1483,5 +1485,5 @@ class PublicDeviceDetailView(DetailView):
         context["breadcrumbs"] = [
             (reverse("public-device-list"), _("Public Devices")),
             (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
-        #context["nochrome"] = self.request.GET.get("nochrome", False)
+        context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
