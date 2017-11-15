@@ -190,7 +190,9 @@ class DeviceDetail(DetailView):
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
             department__in=self.request.user.departments.all())
+
         versions = Version.objects.get_for_object(context["device"])
+
         if len(versions) != 0:
             context["lastedit"] = versions[0]
 
