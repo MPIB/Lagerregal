@@ -163,9 +163,9 @@ class DeviceDetail(DetailView):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
 
-        testset = Device.objects.filter(used_in = self.object)
+        usedset = Device.objects.filter(used_in = self.object)
 
-        context['testset'] = testset
+        context['usedset'] = usedset
 
 
         # Add in a QuerySet of all the books
@@ -747,6 +747,15 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                 device.currentlending.returndate = datetime.date.today()
                 device.currentlending.save()
                 device.currentlending = None
+            #if device.uses
+            if Device.objects.filter(used_in = device.pk):
+                other_list = Device.objects.filter(used_in = device.pk)
+                for element in other_list:
+                    other = element
+                    other.used_in = None
+                    other.save()
+            if device.used_in:
+                device.used_in = None
             for ip in device.ipaddress_set.all():
                 ip.device = None
                 ip.save()
@@ -765,6 +774,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                         recipients.append(recipient.email)
                 template.send(self.request, recipients, {"device": device, "user": self.request.user})
                 messages.success(self.request, _('Mail successfully sent'))
+
         else:
             device.trashed = None
         device.save()

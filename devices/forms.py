@@ -260,6 +260,7 @@ class DeviceForm(forms.ModelForm):
                                           widget=forms.Select(attrs={"style": "width:100%;"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
+    # used_in = forms.ModelChoiceField(Device.objects.filter(trashed = None), required = False )
 
     class Meta:
         model = Device
@@ -288,10 +289,14 @@ class DeviceForm(forms.ModelForm):
 
         super(DeviceForm, self).__init__(*args, **kwargs)
 
+        #if edit
         if kwargs["instance"]:
-            self.fields['uses'].queryset = Device.objects.filter(used_in = None).exclude(pk = kwargs["instance"].id)
+            self.fields['uses'].queryset = Device.objects.filter(used_in = None, trashed = None).exclude(pk = kwargs["instance"].id)
+            self.fields['used_in'].queryset = Device.objects.filter(trashed = None).exclude(pk = kwargs["instance"].id)
+        #if create
         else:
-            self.fields['uses'].queryset = Device.objects.filter(used_in = None)
+            self.fields['uses'].queryset = Device.objects.filter(used_in = None, trashed = None)
+            self.fields['used_in'].queryset = Device.objects.filter(trashed = None)
 
 
 
