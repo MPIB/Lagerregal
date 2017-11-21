@@ -240,7 +240,8 @@ class DeviceGroupFilterForm(FilterForm):
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
 
-    uses = forms.ModelChoiceField(queryset = Device.objects.none(), required = False)
+    # uses = forms.ModelChoiceField(queryset = Device.objects.none(), required = False)
+    uses = forms.MultipleChoiceField(choices = Device.objects.none(), required = False)
     emailrecipients = forms.MultipleChoiceField(required=False)
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
                                            widget=forms.Select(attrs={"style": "width:100%;"}))
@@ -260,7 +261,8 @@ class DeviceForm(forms.ModelForm):
                                           widget=forms.Select(attrs={"style": "width:100%;"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
-    # used_in = forms.ModelChoiceField(Device.objects.filter(trashed = None), required = False )
+
+
 
     class Meta:
         model = Device
@@ -291,11 +293,15 @@ class DeviceForm(forms.ModelForm):
 
         #if edit
         if kwargs["instance"]:
-            self.fields['uses'].queryset = Device.objects.filter(used_in = None, trashed = None).exclude(pk = kwargs["instance"].id)
+            CHOICES = [(x.name, x.name) for x in Device.objects.filter( trashed = None).exclude(pk = kwargs["instance"].id)]
+            self.fields['uses'].choices = CHOICES
+            self.initial['uses'] = [x.name for x in Device.objects.filter(used_in = kwargs["instance"].id)]
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None).exclude(pk = kwargs["instance"].id)
         #if create
         else:
-            self.fields['uses'].queryset = Device.objects.filter(used_in = None, trashed = None)
+            CHOICES = [(x.name, x.name) for x in Device.objects.filter(used_in = None, trashed = None)]
+            print CHOICES
+            self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None)
 
 

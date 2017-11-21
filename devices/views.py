@@ -417,9 +417,10 @@ class DeviceCreate(CreateView):
             messages.success(self.request, _('Mail successfully sent'))
 
         if "uses" in form.changed_data:
-            used_device = Device.objects.filter(pk = form.cleaned_data["uses"].pk)[0]
-            used_device.used_in = self.object
-            used_device.save()
+            for element in form.cleaned_data["uses"]:
+                used_device = Device.objects.filter(name = str(element))[0]
+                used_device.used_in = self.object
+                used_device.save()
 
         messages.success(self.request, _('Device was successfully created.'))
         return r
@@ -501,10 +502,20 @@ class DeviceUpdate(UpdateView):
                           data={"device": device, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
 
+
         if "uses" in form.changed_data:
-            used_device = Device.objects.filter(pk = form.cleaned_data["uses"].pk)[0]
-            used_device.used_in = self.object
-            used_device.save()
+            for element in form.initial["uses"]:
+                # if element was removed
+                if element not in form.cleaned_data["uses"]:
+                    used_device = Device.objects.filter(name = str(element))[0]
+                    used_device.used_in = None
+                    used_device.save()
+            for element in form.cleaned_data["uses"]:
+                # if element was added
+                if element not in form.initial["uses"]:
+                    used_device = Device.objects.filter(name = str(element))[0]
+                    used_device.used_in = self.object
+                    used_device.save()
 
         messages.success(self.request, _('Device was successfully updated.'))
 
