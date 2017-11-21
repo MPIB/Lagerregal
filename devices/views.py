@@ -615,7 +615,6 @@ class DeviceReturn(FormView):
         if lending.device and lending.device != "":
             device = lending.device
             device.currentlending = None
-            device.save()
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
@@ -633,6 +632,7 @@ class DeviceReturn(FormView):
                     template.send(self.request, recipients, {"device": device, "user": self.request.user})
                     messages.success(self.request, _('Mail successfully sent'))
                 reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
+            device.save()
         else:
             owner = lending.owner
         lending.returndate = datetime.date.today()
