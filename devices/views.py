@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 import datetime
 
-# from django import forms
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
@@ -22,7 +21,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic
 from django.conf import settings
 from django.db.models.query import QuerySet
-# from django.db.models import Q
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 
@@ -162,11 +160,7 @@ class DeviceDetail(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
-
-        usedset = Device.objects.filter(used_in = self.object)
-
-        context['usedset'] = usedset
-
+        context['usedset'] = Device.objects.filter(used_in = self.object)
 
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
@@ -447,7 +441,6 @@ class DeviceUpdate(UpdateView):
         return context
 
     def form_valid(self, form):
-
         if form.cleaned_data["department"]:
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
@@ -502,7 +495,6 @@ class DeviceUpdate(UpdateView):
                           data={"device": device, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
 
-
         if "uses" in form.changed_data:
             for element in form.initial["uses"]:
                 # if element was removed
@@ -518,10 +510,7 @@ class DeviceUpdate(UpdateView):
                     used_device.save()
 
         messages.success(self.request, _('Device was successfully updated.'))
-
         return super(DeviceUpdate, self).form_valid(form)
-
-
 
 
 @permission_required('devices.delete_device', raise_exception=True)
@@ -785,7 +774,6 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                         recipients.append(recipient.email)
                 template.send(self.request, recipients, {"device": device, "user": self.request.user})
                 messages.success(self.request, _('Mail successfully sent'))
-
         else:
             device.trashed = None
         device.save()

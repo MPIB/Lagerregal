@@ -131,7 +131,6 @@
                     <td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}
                         </a>{% else %}-{% endif %}</td>
                 </tr>
-
                 <tr>
                     <td>{% trans "Used in" %}</td>
                     <td>{% if device.used_in %}<a href="{% url "device-detail" device.used_in.pk%}">{{device.used_in}}</a>{% else %}-{% endif %}</td>
@@ -140,7 +139,6 @@
                     <td>{% trans "Uses" %}</td>
                     <td>{% if usedset %}{% for element in usedset%}<a href="{% url "device-detail" element.pk%}">
                         {{element}}</a> <br/>{%endfor%}{% else %}-{% endif %}</td>
-
                 </tr>
                 {% for attributevalue in attributevalue_list %}
                     <tr>

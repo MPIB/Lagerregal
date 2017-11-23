@@ -9,7 +9,7 @@
     <div class="row">
         <div class="small-12 large-6 large-centered columns">
             <div class="alert alert-danger">Do you really want to {% if object.trashed != None %}un{% endif %}trash the
-                device: {{ object }}? {%if object.used_in%} This object is still used in {{object.used_in}}. {% endif %}
+                device: {{ object }}?
             </div>
             <form action="" method="post" class="form-horizontal">{% csrf_token %}
                 <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger"

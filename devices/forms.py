@@ -6,7 +6,6 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.db.utils import OperationalError
-from django.db.models import Q
 
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
@@ -239,8 +238,6 @@ class DeviceGroupFilterForm(FilterForm):
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
-
-    # uses = forms.ModelChoiceField(queryset = Device.objects.none(), required = False)
     uses = forms.MultipleChoiceField(choices = Device.objects.none(), required = False)
     emailrecipients = forms.MultipleChoiceField(required=False)
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
@@ -252,7 +249,6 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style': "height:80px"}), max_length=1000,
                                   required=False)
     webinterface = forms.URLField(max_length=60, required=False)
-
     creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
     devicetype = forms.ModelChoiceField(Type.objects.all(), required=False,
@@ -261,8 +257,6 @@ class DeviceForm(forms.ModelForm):
                                           widget=forms.Select(attrs={"style": "width:100%;"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
-
-
 
     class Meta:
         model = Device
@@ -287,8 +281,6 @@ class DeviceForm(forms.ModelForm):
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
-
-
         super(DeviceForm, self).__init__(*args, **kwargs)
 
         #if edit
@@ -300,11 +292,8 @@ class DeviceForm(forms.ModelForm):
         #if create
         else:
             CHOICES = [(x.name, x.name) for x in Device.objects.filter(used_in = None, trashed = None)]
-            print CHOICES
             self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None)
-
-
 
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
         if self.data != {}:
