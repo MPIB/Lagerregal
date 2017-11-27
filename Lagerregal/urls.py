@@ -216,6 +216,8 @@ urlpatterns = [
 
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
+    url(r'^', include('favicon.urls')),
+
     url(r'^ajax/add_widget', login_required(WidgetAdd.as_view()), name="widget_add"),
     url(r'^ajax/remove_widget', login_required(WidgetRemove.as_view()), name="widget_remove"),
     url(r'^ajax/toggle_widget', login_required(WidgetToggle.as_view()), name="widget_toggle"),
