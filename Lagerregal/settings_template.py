@@ -290,3 +290,5 @@ THEMES = [
     'united',
     'paper',
 ]
+
+FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
