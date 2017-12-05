@@ -622,6 +622,34 @@
         });
     });
 
+    $(document).on('click', '.rotate-picture-right', function (e) {
+        console.log(e.toElement)
+        var picture_id = e.target.id.replace("picture", "")
+        var url = "{% url "device-api-picture-rotate" device.pk 0 "right" %}".replace("pictures/0", "pictures/"+picture_id)
+        $.ajax({
+            url: url,
+            type: 'PATCH',
+            success: function() {
+                alert("Picture rotated");
+
+            },
+        });
+    });
+
+    $(document).on('click', '.rotate-picture-left', function (e) {
+        console.log(e.toElement)
+        var picture_id = e.target.id.replace("picture", "")
+        var url = "{% url "device-api-picture-rotate" device.pk 0 "left" %}".replace("pictures/0", "pictures/"+picture_id)
+        $.ajax({
+            url: url,
+            type: 'PATCH',
+            success: function() {
+                alert("Picture rotated");
+
+            },
+        });
+    });
+
     $("#puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
     $("#softwaredetails").load("{% url "puppet-software" %}", { "id" : "{{ device.pk }}"});
 });

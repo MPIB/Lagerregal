@@ -9,6 +9,7 @@ from rest_framework import status
 from reversion import revisions as reversion
 import datetime
 from django.utils.translation import ugettext_lazy as _
+from django.http import HttpResponseRedirect
 
 from api.serializers import *
 from devices.models import *
@@ -229,6 +230,36 @@ class DeviceApiPicture(generics.RetrieveDestroyAPIView):
     model = Picture
     queryset = Picture.objects.all()
     serializer_class = PictureSerializer
+
+class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
+    model = Picture
+    queryset = Picture.objects.all()
+    serializer_class = PictureSerializer
+
+    def patch(self, request, *args, **kwargs):
+        from PIL import Image
+        import StringIO
+        from django.core.files.uploadedfile import InMemoryUploadedFile
+
+
+        picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
+        img = Image.open(picture.image)
+
+        #determine if orientation is left or right
+        if self.kwargs["orientation"] == "right":
+            img  = img.transpose(Image.ROTATE_270)
+        if self.kwargs["orientation"] == "left":
+            img  = img.transpose(Image.ROTATE_90)
+        img_io = StringIO.StringIO()
+        img.save(img_io, format = 'JPEG')
+        img_file = InMemoryUploadedFile(img_io, None, 'foo.jpg', 'image/jpeg',
+                                  img_io.len, None)
+        #delete old image
+        picture.image.delete(save = True)
+        picture.image = img_file
+        picture.save()
+        return Response(status=status.HTTP_200_OK)
+
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Type
