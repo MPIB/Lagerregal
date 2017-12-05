@@ -601,13 +601,11 @@
     });
 
     $(document).ready(function() {
-
     $(document).on('click', '.dropdown-cancel', function (e) {
     e.stopPropagation();
     });
 
     $(document).on('click', '.delete-picture', function (e) {
-        console.log(e.toElement)
         var picture_id = e.target.id.replace("picture", "")
         var url = "{% url "device-api-picture" device.pk 0 %}".replace("pictures/0", "pictures/"+picture_id)
         $.ajax({
@@ -621,6 +619,35 @@
             },
         });
     });
+
+
+    $(document).on('click', '.rotate-picture-right', function (e) {
+      rotate_and_reload(e, "right");
+    });
+    $(document).on('click', '.rotate-picture-left', function (e) {
+      rotate_and_reload(e, "left");
+    });
+
+    function rotate_and_reload(e, direction){
+        var picture_id = e.target.id.replace("picture", "")
+        var url = "{% url "device-api-picture-rotate" device.pk 0 "placeholder" %}".replace("pictures/0", "pictures/"+picture_id).replace("placeholder", direction)
+        $.ajax({
+            url: url,
+            type: 'PATCH',
+            success: function() {
+              var d = new Date();
+              img = e.target.parentElement.parentElement.getElementsByTagName('img')[0];
+              if (img.src.includes("?")){
+                img.src = img.src.split("?")[0] + '?' + d.getTime();
+              } else {
+                img.src = img.src + '?' + d.getTime();
+              }
+
+            },
+        });
+    }
+
+
 
     $("#puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
     $("#softwaredetails").load("{% url "puppet-software" %}", { "id" : "{{ device.pk }}"});
