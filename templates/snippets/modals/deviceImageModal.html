@@ -16,6 +16,12 @@
         <div class="col-sm-10">
         <a href="{% url "device-picture-edit" device.pk picture.pk %}">{{ picture.caption }}</a>
         <button type="button" class="close delete-picture" aria-label="Close" id="picture{{ picture.pk }}">&times;</button>
+        <button type="button" class="btn rotate-picture-right" aria-label="Rotate" id="picture{{ picture.pk }}">
+          <i class="fa fa-repeat" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn rotate-picture-left" aria-label="Rotate" id="picture{{ picture.pk }}">
+          <i class="fa fa-undo" aria-hidden="true"></i>
+        </button>
         </div>
     </div>
     {% endfor %}
