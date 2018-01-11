@@ -244,7 +244,7 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
 
         picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
         img = Image.open(picture.image)
-
+        # content_type = "image/" + img.format.lower()
         #determine if orientation is left or right
         if self.kwargs["orientation"] == "right":
             img  = img.transpose(Image.ROTATE_270)
@@ -253,6 +253,7 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
         img.save(picture.image.file.name)
         img.close()
         return Response(status=200)
+        # return Response(status=200, content_type=content_type)
 
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
