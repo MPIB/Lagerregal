@@ -9,6 +9,7 @@ from rest_framework import status
 from reversion import revisions as reversion
 import datetime
 from django.utils.translation import ugettext_lazy as _
+from django.http import HttpResponse
 
 
 from api.serializers import *
@@ -244,7 +245,6 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
 
         picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
         img = Image.open(picture.image)
-        # content_type = "image/" + img.format.lower()
         #determine if orientation is left or right
         if self.kwargs["orientation"] == "right":
             img  = img.transpose(Image.ROTATE_270)
@@ -252,8 +252,8 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
             img  = img.transpose(Image.ROTATE_90)
         img.save(picture.image.file.name)
         img.close()
-        return Response(status=200)
-        # return Response(status=200, content_type=content_type)
+        return HttpResponse(status=200, content_type='text/html')
+
 
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
