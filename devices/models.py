@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-#from reversion import revisions as reversion
-import reversion
+from reversion import revisions as reversion
+#import reversion
 
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue

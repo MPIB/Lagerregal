@@ -150,6 +150,14 @@
             {% else %}
                 <h5>{% trans "User doesn't own any devices." %}</h5>
             {% endif %}
+            <h4>{% trans "Device history" %}</h4>
+            {% if lendhistory %}
+                    {% for lenddevice in lendhistory %}
+                    <p>{{ lenddevice }}</p>
+                    {% endfor %}
+            {% else %}
+            <h5>{% trans "User has no lending history" %}</h5>
+            {% endif %}
         </div>
         </div>
         <div class="tab-pane" id="ipaddresses">

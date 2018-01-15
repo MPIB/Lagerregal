@@ -107,6 +107,7 @@ class UserprofileView(TemplateView):
         context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
                                                              "owner").filter(owner=context["profileuser"],
                                                                              returndate=None)
+        context['lendhistory'] = Lending.objects.filter(owner__username=context["profileuser"]).order_by('-lenddate')
         context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
