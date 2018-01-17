@@ -728,7 +728,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                 ip.save()
 
             try:
-                template = MailTemplate.objects.get(usage="trashed")
+                template = MailTemplate.objects.get(usage="trashed", department=device.department)
             except:
                 template = None
             if not template == None:
