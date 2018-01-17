@@ -152,9 +152,29 @@
             {% endif %}
             <h4>{% trans "Device history" %}</h4>
             {% if lendhistory %}
+            <p>{{ lendhistory }}</p>
+            <table id="devicetable" class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">{% trans 'Device' %}</th>
+                        <th scope="col">{% trans 'Lenddate' %}</th>
+                        <th scope="col">{% trans 'Returndate' %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
                     {% for lenddevice in lendhistory %}
-                    <p>{{ lenddevice }}</p>
+                        <tr>
+                            {% if lenddevice.device.pk %}
+                                <td><a href="{% url 'device-detail' lenddevice.device.pk %}">{{ lenddevice.device }}</a></td>
+                            {% else %}
+                                <td>{{ lenddevice.smalldevice }}</td>
+                            {% endif %}
+                            <td>{{ lenddevice.lenddate }}</td>
+                            <td>{{ lenddevice.returndate }}</td>
+                        </tr>
                     {% endfor %}
+                    </tbody>
+                </table>
             {% else %}
             <h5>{% trans "User has no lending history" %}</h5>
             {% endif %}
