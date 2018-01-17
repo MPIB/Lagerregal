@@ -81,8 +81,8 @@ class ProfileView(DetailView):
         ).filter(content_type_id=ContentType.objects.get(model='device').id,
                  revision__user=context["profileuser"]).order_by("-pk")
         context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
-                                                             "owner").filter(owner=context["profileuser"],
-                                                                             returndate=None)
+                                                             "owner").filter(owner=context["profileuser"],returndate=None)
+        context['lendhistory'] = Lending.objects.filter(owner=context["profileuser"]).order_by('-lenddate').exclude(returndate=None)
         context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department__in=self.object.departments.all(), device=None, user=None)
