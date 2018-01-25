@@ -634,9 +634,12 @@
         $.ajax({
             url: url,
             type: 'PATCH',
-            success: function() {
+            success: function(data) {
               var d = new Date();
               img = e.target.parentElement.parentElement.getElementsByTagName('img')[0];
+              if (data.new_source.length){
+                img.src = img.src.replace(data.old_source, data.new_source)
+              }
               if (img.src.includes("?")){
                 img.src = img.src.split("?")[0] + '?' + d.getTime();
               } else {

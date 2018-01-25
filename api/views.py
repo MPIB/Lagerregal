@@ -17,6 +17,7 @@ from devices.models import *
 from devicetypes.models import *
 from network.models import *
 from django.contrib.auth.models import Group
+from django.conf import settings
 from mail.models import MailTemplate
 
 @api_view(('GET',))
@@ -239,20 +240,45 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         from PIL import Image
-        import StringIO
-        from django.core.files.uploadedfile import InMemoryUploadedFile
+        import os.path
+        import json
 
 
         picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
         img = Image.open(picture.image)
+        #after rotating, img.format is None
+        format = img.format
         #determine if orientation is left or right
+
         if self.kwargs["orientation"] == "right":
-            img  = img.transpose(Image.ROTATE_270)
+            img  = img.rotate(-90, expand = True)
         if self.kwargs["orientation"] == "left":
-            img  = img.transpose(Image.ROTATE_90)
-        img.save(picture.image.file.name)
+            img  = img.rotate(90, expand = True)
+
+        if format != 'PNG':
+            #replace ending with png
+            old_source = os.path.basename(picture.image.name)
+            name = os.path.splitext(picture.image.name)[0] + ".png"
+            new_source = os.path.basename(name)
+            #specify save location
+            location = os.path.join(settings.MEDIA_ROOT, name)
+            #save image
+            img.save(location)
+            #delete old image
+            picture.image.delete(save=False)
+            #set picture.image to new image
+            picture.image = name
+            #update picture name MUST be done
+            picture.save()
+            img.close()
+            data = {'new_source' : new_source, 'old_source' : old_source}
+
+        else:
+            data = {'new_source' : ""}
+            img.save(picture.image.file.name)
         img.close()
-        return HttpResponse(status=200, content_type='text/html')
+            # return HttpResponse(status=200, content_type='text/html')
+        return HttpResponse( json.dumps(data), content_type="application/json")
 
 
 
