@@ -38,6 +38,11 @@
 
 {% block content %}
     {% include "snippets/devicepagination.html" %}
+    <form method="POST" action="{%  url "export-csv" %}" id="exportform">{% csrf_token %}
+        <input type="hidden" name="search" value = "{{devicelist}}"/>
+        <input type="hidden" name="format" value="csv" />
+        <button class="btn btn-default btn-sm pull-right" id="exportbutton"><i class="fa fa-download"></i>  Export as CSV</button>
+    </form>
     <table width="100%" id="devicetable" class="table table-bordered table-striped">
         <thead>
         <tr>

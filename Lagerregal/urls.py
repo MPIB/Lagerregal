@@ -67,6 +67,7 @@ urlpatterns = [
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/edit/$', PictureUpdate.as_view(), name="device-picture-edit"),
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/delete/$', PictureDelete.as_view(), name="device-picture-delete"),
     url(r'^devices/lend/$', DeviceLend.as_view(), name="device-lend"),
+    url(r'^devices/export/csv/$', ExportCsv.as_view(), name='export-csv'),
     url(r'^devices/return/(?P<lending>[0-9]*)$', DeviceReturn.as_view(), name="device-return"),
     url(r'^devices/public/$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/(?P<page>[0-9]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
@@ -82,6 +83,7 @@ urlpatterns = [
     url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_template")(TemplateUpdate.as_view()), name="template-edit"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_template")(TemplateDelete.as_view()), name="template-delete"),
+
 
     url(r'^types/$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
     url(r'^types/(?P<page>[0-9]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),

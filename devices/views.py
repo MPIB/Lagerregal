@@ -1,5 +1,7 @@
 # coding: utf-8
 import datetime
+import csv
+import json
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -10,7 +12,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpResponse
 from django.contrib import messages
 from django.utils.timezone import utc
 from django.utils import timezone
@@ -136,6 +138,16 @@ class DeviceList(PaginationMixin, ListView):
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
+
+
+@permission_required('devices.read_device', raise_exception=True)
+class ExportCsv(View):
+    def post(self, request):
+        # search = json.loads(request.POST["search"])
+        print "Success!!!!!!!!!!!!!!!!!!!!!!!!!!"
+        print "!!!!!!!!!!!!does devicelist exist? !!!!!!"
+        print request.POST["search"]
+        # print search
 
 
 @permission_required('devices.read_device', raise_exception=True)
