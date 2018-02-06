@@ -1,6 +1,8 @@
 # coding: utf-8
 import datetime
-import csv
+from csv import QUOTE_ALL
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext
 import json
 
 from django.utils.decorators import method_decorator
@@ -34,7 +36,7 @@ from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIE
     DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
 from devicetags.forms import DeviceTagForm
 from users.models import Lageruser, Department
-from Lagerregal.utils import PaginationMixin
+from Lagerregal.utils import PaginationMixin, UnicodeWriter
 from devicetags.models import Devicetag
 from permission.decorators import permission_required
 from django.db.models import Q
@@ -143,11 +145,57 @@ class DeviceList(PaginationMixin, ListView):
 @permission_required('devices.read_device', raise_exception=True)
 class ExportCsv(View):
     def post(self, request):
-        # search = json.loads(request.POST["search"])
-        print "Success!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        print "!!!!!!!!!!!!does devicelist exist? !!!!!!"
-        print request.POST["search"]
-        # print search
+
+        if "format" in request.POST:
+            if request.POST["format"] == "csv":
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
+                devices = []
+                departments = []
+
+                if request.POST["departmentfilter"] == "my":
+                    devices = request.user.departments.all() # does this work?
+                elif request.POST["departmentfilter"].isdigit():
+                    devices = Department.objects.filter(id = int(request.POST["departmentfilter"]))
+                if request.POST["departmentfilter"] == "all":
+                    devices = Department.objects.all()
+
+                if request.POST['viewfilter'] == "active":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "all":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "available":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "lent":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "archived":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "trashed":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "overdue":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "returnsoon":
+                    blubb = "blubb"
+                #short term
+                elif request.POST['viewfilter'] == "temporary":
+                    blubb = "blubb"
+                elif request.POST['viewfilter'] == "bookmark":
+                    blubb = "blubb"
+
+
+
+
+                writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
+                headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"),
+                           ugettext("Devicetype"), ugettext("Room"), ugettext("Devicegroup"), ugettext("Devicegroup")]
+                # if len(displayed_columns) > 0:
+                #     headers.extend([col[1] for col in displayed_columns])
+                writer.writerow(headers)
+                # for device in devices.values_list(*searchvalues):
+                #     writer.writerow(device)
+                print request.POST
+                return response
+
 
 
 @permission_required('devices.read_device', raise_exception=True)
