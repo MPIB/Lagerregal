@@ -1,9 +1,7 @@
 # coding: utf-8
 import datetime
 from csv import QUOTE_ALL
-from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
-import json
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -150,50 +148,47 @@ class ExportCsv(View):
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
-                devices = []
-                departments = []
-
-                if request.POST["departmentfilter"] == "my":
-                    devices = request.user.departments.all() # does this work?
-                elif request.POST["departmentfilter"].isdigit():
-                    devices = Department.objects.filter(id = int(request.POST["departmentfilter"]))
-                if request.POST["departmentfilter"] == "all":
-                    devices = Department.objects.all()
+                devices = None
+                departments = None
+                searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
 
                 if request.POST['viewfilter'] == "active":
-                    blubb = "blubb"
+                    devices = Device.active()
                 elif request.POST['viewfilter'] == "all":
-                    blubb = "blubb"
+                    devices = Device.objects.all()
                 elif request.POST['viewfilter'] == "available":
-                    blubb = "blubb"
+                    devices = Device.active().filter(currentlending=None)
                 elif request.POST['viewfilter'] == "lent":
-                    blubb = "blubb"
+                    devices = Lending.objects.filter(returndate=None)
                 elif request.POST['viewfilter'] == "archived":
-                    blubb = "blubb"
+                    devices = Device.objects.exclude(archived=None)
                 elif request.POST['viewfilter'] == "trashed":
-                    blubb = "blubb"
+                    devices = Device.objects.exclude(trashed=None)
                 elif request.POST['viewfilter'] == "overdue":
-                    blubb = "blubb"
+                    devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
                 elif request.POST['viewfilter'] == "returnsoon":
-                    blubb = "blubb"
-                #short term
+                    soon = datetime.date.today() + datetime.timedelta(days=10)
+                    devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
+                                                          duedate__gt=datetime.date.today())
                 elif request.POST['viewfilter'] == "temporary":
-                    blubb = "blubb"
+                    devices = Device.active().filter(templending=True)
                 elif request.POST['viewfilter'] == "bookmark":
-                    blubb = "blubb"
+                    if self.request.user.is_authenticated:
+                        devices = self.request.user.bookmarks.all()
 
-
-
+                if request.POST["departmentfilter"] == "my":
+                    devices = devices.filter(department__in=request.user.departments.all()) # does this work?
+                elif request.POST["departmentfilter"].isdigit():
+                    devices = devices.filter(department__in=Department.objects.filter(id = int(request.POST["departmentfilter"])))
+                elif request.POST["departmentfilter"] == "all":
+                    pass
 
                 writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
                 headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"),
                            ugettext("Devicetype"), ugettext("Room"), ugettext("Devicegroup"), ugettext("Devicegroup")]
-                # if len(displayed_columns) > 0:
-                #     headers.extend([col[1] for col in displayed_columns])
                 writer.writerow(headers)
-                # for device in devices.values_list(*searchvalues):
-                #     writer.writerow(device)
-                print request.POST
+                for device in devices.values_list(*searchvalues):
+                    writer.writerow(device)
                 return response
 
 
