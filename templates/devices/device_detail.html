@@ -638,14 +638,12 @@
               var d = new Date();
               img = e.target.parentElement.parentElement.getElementsByTagName('img')[0];
               if (data.new_source.length){
+                // image was converted to png
                 img.src = img.src.replace(data.old_source, data.new_source)
-              }
-              if (img.src.includes("?")){
-                img.src = img.src.split("?")[0] + '?' + d.getTime();
               } else {
-                img.src = img.src + '?' + d.getTime();
+                // force cache invalidation and reload
+                img.src = img.src.split("?")[0] + '?' + d.getTime();
               }
-
             },
         });
     }
