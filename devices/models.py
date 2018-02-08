@@ -130,8 +130,7 @@ class Device(models.Model):
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null = True, blank = True, on_delete = models.SET_NULL,)
 
-    def return_id (self):
-        return self.id
+
     def __unicode__(self):
         return self.name
 

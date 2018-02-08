@@ -31,7 +31,6 @@ class DeviceTests(TestCase):
         lending_future = mommy.make(Lending, duedate = (datetime.today() + timedelta(days = 1)).date())
         self.assertTrue(isinstance(device, Device))
         self.assertEqual(device.__unicode__(), device.name)
-        self.assertEqual(device.id, device.return_id())
         self.assertEqual(device.get_absolute_url(), reverse('device-detail', kwargs={'pk': device.pk}))
         self.assertEqual(device.get_edit_url(), reverse('device-edit', kwargs={'pk': device.pk}))
         self.assertEqual(device.get_as_dict(), {"name": device.name, "description": device.description, "manufacturer": device.manufacturer, "devicetype" : device.devicetype, "room" : device.room})
@@ -67,7 +66,7 @@ class DeviceTests(TestCase):
         self.assertEqual(resp.status_code, 200)
         form = resp.context['form']
         data = form.initial
-        data['uses'] = device.name
+        data['uses'] = device.id
         data['name'] = "uses"
         resp = self.client.post(url, data)
         device = Device.objects.filter(name = 'used')[0]
