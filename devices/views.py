@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 import datetime
 
 from django.utils.decorators import method_decorator
@@ -36,6 +37,7 @@ from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
 from permission.decorators import permission_required
 from django.db.models import Q
+
 
 
 @permission_required('devices.read_device', raise_exception=True)

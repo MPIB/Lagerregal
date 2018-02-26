@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, View, UpdateView

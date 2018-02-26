@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import csv, codecs, cStringIO
 import uuid
 from datetime import date, timedelta
