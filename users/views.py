@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
 from reversion.models import Version
 from django.http import HttpResponseRedirect

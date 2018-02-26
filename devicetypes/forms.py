@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django import forms
 
 from devicetypes.models import Type
@@ -22,4 +23,3 @@ class TypeForm(forms.ModelForm):
             self.fields['extra_field_{index}'.format(index=index)] = \
                 forms.CharField(label="Extra Attribute",
                                 widget=forms.TextInput(attrs={"class": "extra_attribute form-control"}), required=False)
-
