@@ -1,7 +1,6 @@
 from .base import *
 
 DEBUG = True
-USE_PUPPET = False
 
 DATABASES = {
     'default': {
@@ -14,7 +13,30 @@ DATABASES = {
     }
 }
 
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT =  '{0}/media'.format(os.getcwd())
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = "CHANGE ME IN PRODUCTION AND DON'T COMMIT ME!"
+
 ALLOWED_HOSTS = ['*']
+
+#example configuration; for use cases, search for LABEL_TEMPLATES in views
+LABEL_TEMPLATES = {
+    "DEPARTMENT" : {
+        "device" : (
+            #"/opt/Lagerregal/staticserve/labels/device.label",
+            "labels/device.label",
+            ["name", "inventorynumber", "serialnumber", "id"]),
+        "room" : (
+            #"/opt/Lagerregal/staticserve/labels/room.label",
+            "labels/room.label",
+            ["name", "building", "id"]),
+    }
+}
+
+USE_PUPPET = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -26,22 +48,9 @@ ALLOWED_HOSTS = ['*']
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
-MEDIA_ROOT =  '{0}/media'.format(os.getcwd())
-
-LABEL_TEMPLATES = {
-    "device" :
-    [
-        "",
-        ""
-    ]
-}
-
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-
-import logging, logging.handlers
-logger = logging.getLogger('django_auth_ldap')
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
+TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
+TEST_MODE = True

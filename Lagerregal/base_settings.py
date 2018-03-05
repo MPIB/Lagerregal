@@ -1,9 +1,7 @@
 # Django settings for Lagerregal project.
 from __future__ import unicode_literals
 import os
-import json
 from django.contrib.messages import constants as messages
-from django.core.exceptions import ImproperlyConfigured
 
 
 # Local time zone for this installation. Choices can be found here:
@@ -186,8 +184,6 @@ LOGGING = {
     }
 }
 
-TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
-TEST_MODE = False
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in" : ["3", "17"]}
 
