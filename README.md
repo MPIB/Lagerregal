@@ -39,8 +39,15 @@ $ pip2 install -U -r dependencies.txt
 
 Generate settings.py
 
+For quickstart and development:
+
 ```
-$ cp Lagerregal/settings_template.py Lagerregal/settings.py
+$ cp Lagerregal/template_development.py Lagerregal/settings.py
+```
+
+For production (edit first):
+```
+$ cp Lagerregal/template_production.py Lagerregal/settings.py
 ```
 
 Run:
@@ -48,6 +55,12 @@ Run:
 ```
 $ python2 manage.py syncdb
 $ python2 manage.py runserver
+```
+
+Optional (not optional for production):
+
+```
+$ python generate_secret_key.py
 ```
 
 Label Printing
