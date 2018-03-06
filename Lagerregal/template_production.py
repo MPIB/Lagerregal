@@ -113,8 +113,6 @@ PUPPETDB_SETTINGS = {
         'software_fact' : 'software',
     }
 
-TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
-TEST_MODE = False
 
 #sample logger
 # import logging, logging.handlers

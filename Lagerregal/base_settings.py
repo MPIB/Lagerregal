@@ -199,3 +199,6 @@ THEMES = [
 ]
 
 FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
+
+TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
+TEST_MODE = False
