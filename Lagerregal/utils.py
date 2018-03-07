@@ -21,7 +21,11 @@ class UnicodeWriter:
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
         self.queue = cStringIO.StringIO()
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds)
+        if "delimiter" in kwds:
+            kwds["delimiter"]=str(kwds["delimiter"])
+        if "quotechar" in kwds:
+            kwds["quotechar"]=str(kwds["quotechar"])
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwds )
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
 
