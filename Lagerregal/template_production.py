@@ -18,7 +18,7 @@ DATABASES = {
 MEDIA_ROOT =  ''
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = ""
+SECRET_KEY = None
 
 #example configuration; for use cases, search for LABEL_TEMPLATES in views
 LABEL_TEMPLATES = {
@@ -99,7 +99,6 @@ AUTH_LDAP_USER_FLAGS_BY_GROUP = {}
 AUTH_LDAP_DEPARTMENT_FIELD = "distinguishedName"
 AUTH_LDAP_DEPARTMENT_REGEX = "OU=([^,]*?),DC"
 
-#or false, if you don't want to use it
 USE_PUPPET = True
 
 PUPPETDB_SETTINGS = {
