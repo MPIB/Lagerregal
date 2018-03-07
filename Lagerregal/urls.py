@@ -19,7 +19,7 @@ from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmall
     AjaxSearch, UserLendings, PuppetDetails, PuppetSoftware
 from devicetypes.ajax import GetTypeAttributes
 from rest_framework.urlpatterns import format_suffix_patterns
-from . import settings
+from . import settings 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _

@@ -3,30 +3,12 @@ from __future__ import unicode_literals
 import os
 from django.contrib.messages import constants as messages
 
-DEBUG = True
-
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
-
-MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'database.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
-}
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Berlin'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -45,20 +27,10 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT =  '{0}/media'.format(os.getcwd())
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = '/media/'
-
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -80,9 +52,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '@w_%5@z0kf8c@^=a++-awtkf^44)fk3r2qv2^m@9l+z5gm#vwo'
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -180,72 +149,11 @@ REST_FRAMEWORK = {
     )
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = '{0}/mails'.format(os.getcwd())
-DEFAULT_FROM_EMAIL = 'support@localhost'
-
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
-
-
 AUTHENTICATION_BACKENDS = (
+    # 'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
     'permission.backends.PermissionBackend',
 )
-
-USE_LDAP = False
-
-if USE_LDAP:
-    AUTH_LDAP_SERVER_URI = ""
-    AUTH_LDAP_BIND_DN = ""
-    AUTH_LDAP_BIND_PASSWORD = ""
-    AUTH_LDAP_USER_SEARCH = LDAPSearch("",
-        ldap.SCOPE_SUBTREE, "")
-    AUTH_LDAP_GROUP_SEARCH = LDAPSearch("",
-        ldap.SCOPE_SUBTREE, '')
-
-    LDAP_USER_SEARCH = ["", ldap.SCOPE_SUBTREE, ""]
-    LDAP_GROUP_SEARCH = ["", ldap.SCOPE_SUBTREE, '']
-
-    AUTH_LDAP_GROUP_TYPE = ActiveDirectoryGroupType()
-    AUTH_LDAP_MIRROR_GROUPS  = True
-
-    AUTH_LDAP_ATTR_NOSYNC = []
-    AUTH_LDAP_USER_ATTR_MAP = {
-        "first_name": "",
-        "last_name": "",
-        "email": ""
-    }
-
-    AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-        "is_staff":  "",
-    }
-
-    AUTH_LDAP_DEPARTMENT_FIELD = None
-    AUTH_LDAP_DEPARTMENT_REGEX = None
-
-USE_PUPPET = True
-
-if USE_PUPPET:
-    PUPPETDB_SETTINGS = {
-        'host'          : 'puppetdb',
-        'port'          : 8081,
-        'cacert'        : '/var/lib/puppet/ssl/certs/ca.pem',
-        'cert'          : '/var/lib/puppet/ssl/certs/<FQDN>.pem',
-        'key'           : '/var/lib/puppet/ssl/private_keys/<FQDN>.pem',
-        'req'           : '/pdb/query/v4/facts?',
-        'query_fact'    : 'fact_containing_pk',
-        'software_fact' : 'software',
-    }
-
-LABEL_TEMPLATES = {
-    "device" :
-    [
-        "",
-        ""
-    ]
-}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -276,10 +184,8 @@ LOGGING = {
     }
 }
 
-TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
-TEST_MODE = False
 
-PUBLIC_DEVICES_FILTER = {}
+PUBLIC_DEVICES_FILTER = {"tags__id__in" : ["3", "17"]}
 
 # get more themes from https://bootswatch.com/ and download them to:
 #   static/css/themes/<name>.min.css
@@ -293,3 +199,6 @@ THEMES = [
 ]
 
 FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
+
+TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
+TEST_MODE = False
