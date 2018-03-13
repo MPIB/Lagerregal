@@ -285,18 +285,18 @@ class DeviceForm(forms.ModelForm):
 
         #if edit
         if kwargs["instance"]:
-            CHOICES = [(x.id, u''.join((x.name, " [" , x.inventorynumber , "]")))for x in Device.objects.filter( trashed = None).exclude(pk = kwargs["instance"].id)]
+            CHOICES = [(x.id, u''.join((x.name, " [" , str(x.id), "]")))for x in Device.objects.filter( trashed = None).exclude(pk = kwargs["instance"].id)]
             self.fields['uses'].choices = CHOICES
             self.initial['uses'] = [x.id for x in Device.objects.filter(used_in = kwargs["instance"].id)]
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None).exclude(pk = kwargs["instance"].id)
 
         #if create
         else:
-            CHOICES = [(x.id, u''.join((x.name, " [" , x.inventorynumber , "]"))) for x in Device.objects.filter(used_in = None, trashed = None)]
+            CHOICES = [(x.id, u''.join((x.name, " [" , str(x.id) , "]"))) for x in Device.objects.filter(used_in = None, trashed = None)]
             self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None)
 
-        self.fields['used_in'].label_from_instance = lambda obj: "%s [%s]" % (obj.name, obj.inventorynumber)
+        self.fields['used_in'].label_from_instance = lambda obj: "%s [%s]" % (obj.name, obj.id)
 
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
         if self.data != {}:
