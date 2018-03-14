@@ -156,10 +156,12 @@ class DeviceDetail(DetailView):
         self.object = queryset.get()
         return self.object
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
+        context['usedset'] = Device.objects.filter(used_in = self.object)
+
+
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
@@ -408,6 +410,13 @@ class DeviceCreate(CreateView):
                           data={"device": self.object, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
 
+
+        if "uses" in form.changed_data:
+            for element in form.cleaned_data["uses"]:
+                used_device = Device.objects.filter(id = element)[0]
+                used_device.used_in = self.object
+                used_device.save()
+
         messages.success(self.request, _('Device was successfully created.'))
         return r
 
@@ -486,6 +495,21 @@ class DeviceUpdate(UpdateView):
             template.send(request=self.request, recipients=recipients,
                           data={"device": device, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
+
+
+        if "uses" in form.changed_data:
+            for element in form.initial["uses"]:
+                # if element was removed
+                if element not in form.cleaned_data["uses"]:
+                    used_device = Device.objects.filter(id = int(element))[0]
+                    used_device.used_in = None
+                    used_device.save()
+            for element in form.cleaned_data["uses"]:
+                # if element was added
+                if element not in form.initial["uses"]:
+                    used_device = Device.objects.filter(id = int(element))[0]
+                    used_device.used_in = self.object
+                    used_device.save()
 
         messages.success(self.request, _('Device was successfully updated.'))
         return super(DeviceUpdate, self).form_valid(form)
@@ -725,6 +749,15 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                 device.currentlending.returndate = datetime.date.today()
                 device.currentlending.save()
                 device.currentlending = None
+            #if device.uses
+            if Device.objects.filter(used_in = device.pk):
+                other_list = Device.objects.filter(used_in = device.pk)
+                for element in other_list:
+                    other = element
+                    other.used_in = None
+                    other.save()
+            if device.used_in:
+                device.used_in = None
             for ip in device.ipaddress_set.all():
                 ip.device = None
                 ip.save()

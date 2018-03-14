@@ -128,6 +128,8 @@ class Device(models.Model):
 
     department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
+    used_in = models.ForeignKey('self', null = True, blank = True, on_delete = models.SET_NULL,)
+
 
     def __unicode__(self):
         return self.name
