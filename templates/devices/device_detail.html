@@ -131,15 +131,19 @@
                     <td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}
                         </a>{% else %}-{% endif %}</td>
                 </tr>
+                {%if device.used_in%}
                 <tr>
                     <td>{% trans "Used in" %}</td>
-                    <td>{% if device.used_in %}<a href="{% url "device-detail" device.used_in.pk%}">{{device.used_in}}</a>{% else %}-{% endif %}</td>
+                    <td><a href="{% url "device-detail" device.used_in.pk%}">{{device.used_in}}</a></td>
                 </tr>
+                {% endif %}
+                {% if usedset %}
                 <tr>
                     <td>{% trans "Uses" %}</td>
-                    <td>{% if usedset %}{% for element in usedset%}<a href="{% url "device-detail" element.pk%}">
-                        {{element}}</a> <br/>{%endfor%}{% else %}-{% endif %}</td>
+                    <td>{% for element in usedset%}<a href="{% url "device-detail" element.pk%}">
+                        {{element}}</a> <br/>{%endfor%}</td>
                 </tr>
+                {% endif %}
                 {% for attributevalue in attributevalue_list %}
                     <tr>
                         <td>{{ attributevalue.typeattribute.name }}</td>

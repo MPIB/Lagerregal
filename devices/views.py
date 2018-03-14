@@ -156,11 +156,11 @@ class DeviceDetail(DetailView):
         self.object = queryset.get()
         return self.object
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
         context['usedset'] = Device.objects.filter(used_in = self.object)
+
 
         # Add in a QuerySet of all the books
         context['ipaddressform'] = IpAddressForm()
