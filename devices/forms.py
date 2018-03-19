@@ -239,6 +239,7 @@ class DeviceGroupFilterForm(FilterForm):
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
     uses = forms.MultipleChoiceField(choices = Device.objects.none(), required = False)
+    inventory_number_given = forms.BooleanField()
     emailrecipients = forms.MultipleChoiceField(required=False)
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
                                            widget=forms.Select(attrs={"style": "width:100%;"}))
@@ -257,6 +258,7 @@ class DeviceForm(forms.ModelForm):
                                           widget=forms.Select(attrs={"style": "width:100%;"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
+
 
     class Meta:
         model = Device

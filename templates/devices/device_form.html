@@ -108,6 +108,16 @@
     });
     });
 
+    $("#id_inventory_number_given").change(function() {
+    if(this.checked) {
+        $("#id_inventorynumber").attr("disabled", "disabled");
+        $('#id_inventorynumber').val("not assigned")
+        console.log("Mooooooooooin!")
+    }
+    else {
+            $("#id_inventorynumber").removeAttr("disabled");
+        }
+  });
 
     $(".modalbutton").click(function() {
     $("#addmodal_header").text($(this).data("name"))
