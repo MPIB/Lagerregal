@@ -108,11 +108,15 @@
     });
     });
 
-    $("#id_inventory_number_given").change(function() {
-    if(this.checked) {
+
+    if ($("#id_inventorynumber").val() == "not assigned") {
+        $("#id_inventory_number_given").attr('checked', true);
         $("#id_inventorynumber").attr("disabled", "disabled");
-        $('#id_inventorynumber').val("not assigned")
-        console.log("Mooooooooooin!")
+    }
+    $("#id_inventory_number_given").change(function() {
+        if(this.checked) {
+          $("#id_inventorynumber").attr("disabled", "disabled");
+          $('#id_inventorynumber').val("not assigned");
     }
     else {
             $("#id_inventorynumber").removeAttr("disabled");
