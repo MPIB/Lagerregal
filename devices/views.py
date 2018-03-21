@@ -378,7 +378,6 @@ class DeviceCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        print form.cleaned_data
         if form.cleaned_data["inventory_number_given"]:
             self.object = form.save()
             self.object.inventorynumber = "not assigned"
