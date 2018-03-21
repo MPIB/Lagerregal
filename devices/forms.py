@@ -260,6 +260,7 @@ class DeviceForm(forms.ModelForm):
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
 
 
+    field_order = ['name','inventory_number_given', 'inventory_number']
     class Meta:
         model = Device
         exclude = ("archived", "currentlending", "bookmarkers", "inventoried", "trashed")
