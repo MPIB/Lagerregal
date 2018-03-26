@@ -378,6 +378,9 @@ class DeviceCreate(CreateView):
         return context
 
     def form_valid(self, form):
+        if form.cleaned_data["inventory_number_given"]:
+            self.object = form.save()
+            self.object.inventorynumber = "not assigned"
         if form.cleaned_data["department"]:
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
@@ -442,6 +445,9 @@ class DeviceUpdate(UpdateView):
         return context
 
     def form_valid(self, form):
+        if form.cleaned_data["inventory_number_given"]:
+            self.object = form.save()
+            self.object.inventorynumber = "not assigned"
         if form.cleaned_data["department"]:
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
