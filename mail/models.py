@@ -16,7 +16,9 @@ usages = {
     "owner": _("person currently lending is changed"),
     "reminder": _("Reminder that device is still owned"),
     "overdue": _("Reminder that device is overdue"),
-    "trashed": _("Device is trashed")
+    "trashed": _("Device is trashed"),
+    "lent": _("Device was lent"),
+    "returned": _("Device was returned")
 }
 
 
