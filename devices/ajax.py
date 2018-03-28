@@ -3,6 +3,7 @@ import json
 import urllib
 import httplib
 from httplib import ssl
+import time
 
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
@@ -471,7 +472,7 @@ class AjaxSearch(View):
         if "format" in request.POST:
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
+                response['Content-Disposition'] = 'attachment; filename="' + str(time.time()) + 'searchresult.csv"'
 
                 writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
                 headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
