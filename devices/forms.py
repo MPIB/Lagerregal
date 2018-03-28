@@ -239,7 +239,6 @@ class DeviceGroupFilterForm(FilterForm):
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
     uses = forms.MultipleChoiceField(choices = Device.objects.none(), required = False)
-    inventory_number_given = forms.BooleanField(required = False, label = _("Inventory number not assigned"))
     emailrecipients = forms.MultipleChoiceField(required=False)
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
                                            widget=forms.Select(attrs={"style": "width:100%;"}))
@@ -260,7 +259,6 @@ class DeviceForm(forms.ModelForm):
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
 
 
-    field_order = ['name','inventory_number_given', 'inventory_number']
     class Meta:
         model = Device
         exclude = ("archived", "currentlending", "bookmarkers", "inventoried", "trashed")

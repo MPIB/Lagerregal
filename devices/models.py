@@ -102,6 +102,7 @@ class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     creator = models.ForeignKey(Lageruser, on_delete=models.SET_NULL, null=True)
     name = models.CharField(_('Name'), max_length=200)
+    no_inventory_number_required = models.BooleanField(default = False)
     inventorynumber = models.CharField(_('Inventorynumber'), max_length=50, blank=True)
     serialnumber = models.CharField(_('Serialnumber'), max_length=50, blank=True)
     manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True, on_delete=models.SET_NULL)
@@ -129,6 +130,7 @@ class Device(models.Model):
     department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null = True, blank = True, on_delete = models.SET_NULL,)
+
 
 
     def __unicode__(self):

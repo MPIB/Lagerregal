@@ -104,10 +104,12 @@
         <div class="col-xs-12 col-md-4">
             <table class="table table-bordered table-striped">
                 <tbody>
+                {% if not device.no_inventory_number_required%}
                 <tr>
                     <td>{% trans "Inventorynumber" %}</td>
                     <td>{{ device.inventorynumber }}</td>
                 </tr>
+                {%endif%}
                 <tr>
                     <td>{% trans "Serialnumber" %}</td>
                     <td>{{ device.serialnumber }}</td>

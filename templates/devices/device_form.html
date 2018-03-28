@@ -108,19 +108,16 @@
     });
     });
 
-
-    if ($("#id_inventorynumber").val() == "not assigned") {
-        $("#id_inventory_number_given").attr('checked', true);
-        $("#id_inventorynumber").attr("disabled", "disabled");
-    }
-    $("#id_inventory_number_given").change(function() {
-        if(this.checked) {
-          $("#id_inventorynumber").attr("disabled", "disabled");
-          $('#id_inventorynumber').val("not assigned");
+    if ($("#id_no_inventory_number_required").is(':checked')) {
+      $("#div_inventorynumber").hide()
+    };
+    $("#id_no_inventory_number_required").change(function() {
+    if (this.checked) {
+      $("#div_inventorynumber").hide()
     }
     else {
-            $("#id_inventorynumber").removeAttr("disabled");
-        }
+      $("#div_inventorynumber").show()
+    }
   });
 
     $(".modalbutton").click(function() {
