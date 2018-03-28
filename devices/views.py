@@ -1,5 +1,6 @@
 # coding: utf-8
 import datetime
+import time
 from csv import QUOTE_ALL
 from django.utils.translation import ugettext
 
@@ -147,7 +148,7 @@ class ExportCsv(View):
         if "format" in request.POST:
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
+                response['Content-Disposition'] = 'attachment; filename="' + str(time.time()) + '_searchresult.csv"'
                 devices = None
                 departments = None
                 searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
