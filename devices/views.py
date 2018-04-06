@@ -186,11 +186,11 @@ class DeviceDetail(DetailView):
             mailinitial["owner"] = currentowner
             mailinitial["emailrecipients"] = ("u" + str(currentowner.id), currentowner.username)
         try:
-            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder")
+            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder", department = self.request.user.main_department, )
             mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
             mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
-            pass
+            messages.warning(self.request, _('Please create reminder mail template'))
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
             department__in=self.request.user.departments.all())
@@ -535,8 +535,6 @@ class DeviceDelete(DeleteView):
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
-    error_css_class = "error"
-
 
 
     def get_context_data(self, **kwargs):
@@ -570,14 +568,15 @@ class DeviceLend(FormView):
             try:
                 templates.append(MailTemplate.objects.get(usage = "lent", department = self.request.user.main_department))
             except:
-                messages.error(self.request, _('Template for lent devices does not exist for your department'))
+                messages.error(self.request, _('MAIL NOT SENT - Template for lent devices does not exist for your main department'))
 
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
-                    templates.append(MailTemplate.objects.get(usage="room"))
+                    templates.append(MailTemplate.objects.get(usage="room", department = self.request.user.main_department))
+                    print templates
                 except:
-                    pass
+                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
                 for template in templates:
                     recipients = []
@@ -656,15 +655,15 @@ class DeviceReturn(FormView):
             device = lending.device
             device.currentlending = None
             try:
-                templates.append(MailTemplate.objects.get(usage="returned"))
+                templates.append(MailTemplate.objects.get(usage="returned", department = self.request.user.main_department))
             except:
-                pass
+                messages.error(self.request, _('MAIL NOT SENT - Template for returned device does not exist for your main department'))
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
-                    templates.append(MailTemplate.objects.get(usage="room"))
+                    templates.append(MailTemplate.objects.get(usage="room", department = self.request.user.main_department))
                 except:
-                    pass
+                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
                 for template in templates:
                     recipients = []
@@ -789,6 +788,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                 template = MailTemplate.objects.get(usage="trashed", department=device.department)
             except:
                 template = None
+                messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
             if not template == None:
                 recipients = []
                 for recipient in template.default_recipients.all():
@@ -839,9 +839,10 @@ class DeviceStorage(SingleObjectMixin, FormView):
             ipaddress.save()
         if form.cleaned_data["send_mail"]:
             try:
-                template = MailTemplate.objects.get(usage="room")
+                template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
             except:
                 template = None
+                messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if not template == None:
                 recipients = []
                 for recipient in template.default_recipients.all():

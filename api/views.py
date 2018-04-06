@@ -85,9 +85,10 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
     def put(self, request, pk, **kwargs):
         response = super(DeviceApiRoomChange, self).put(request, pk)
         try:
-            template = MailTemplate.objects.get(usage="room")
+            template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
         except:
             template = None
+            messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
         if not template == None:
             recipients = []
             for recipient in template.default_recipients.all():
@@ -151,9 +152,10 @@ class DeviceApiLend(generics.CreateAPIView):
                 reversion.set_user(request.user)
                 reversion.set_comment("Device marked as lend")
                 try:
-                    template = MailTemplate.objects.get(usage="room")
+                    template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
                 except:
                     template = None
+                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
                 if not template == None:
                     recipients = []
                     for recipient in template.default_recipients.all():
@@ -189,9 +191,10 @@ class DeviceApiReturn(APIView):
                 device.room = room
                 reversion.set_user(request.user)
                 try:
-                    template = MailTemplate.objects.get(usage="room")
+                    template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
                 except:
                     template = None
+                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
                 if not template == None:
                     recipients = []
                     for recipient in template.default_recipients.all():

@@ -135,9 +135,9 @@ AUTH_USER_MODEL = 'users.Lageruser'
 
 SITE_NAME = "Lagerregal"
 
-MESSAGE_TAGS = {
-    messages.ERROR: 'alert',
-}
+# MESSAGE_TAGS = {
+#     messages.ERROR: 'alert',
+# }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
