@@ -535,6 +535,9 @@ class DeviceDelete(DeleteView):
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
+    error_css_class = "error"
+
+
 
     def get_context_data(self, **kwargs):
         context = super(DeviceLend, self).get_context_data(**kwargs)
@@ -565,9 +568,9 @@ class DeviceLend(FormView):
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
             try:
-                templates.append(MailTemplate.objects.get(usage = "lent"))
+                templates.append(MailTemplate.objects.get(usage = "lent", department = self.request.user.main_department))
             except:
-                pass
+                messages.error(self.request, _('Template for lent devices does not exist for your department'))
 
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
