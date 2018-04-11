@@ -16,9 +16,7 @@ usages = {
     "owner": _("person currently lending is changed"),
     "reminder": _("Reminder that device is still owned"),
     "overdue": _("Reminder that device is overdue"),
-    "trashed": _("Device is trashed"),
-    "lent": _("Device was lent"),
-    "returned": _("Device was returned")
+    "trashed": _("Device is trashed")
 }
 
 
@@ -27,8 +25,8 @@ class MailTemplate(models.Model):
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
     department = models.ForeignKey(Department, null=True)
-
     usage = models.CharField(_('Usage'), choices=usages.items(), null=True, blank=True, max_length=200)
+
 
     def __unicode__(self):
         return self.name

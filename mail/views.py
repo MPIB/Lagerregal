@@ -50,6 +50,7 @@ class MailCreate(CreateView):
 
     def get_initial(self):
         initial = super(MailCreate, self).get_initial()
+        initial["mode"] = 'create'
         if self.request.user.main_department:
             initial["department"] = self.request.user.main_department
         return initial
@@ -85,6 +86,7 @@ class MailUpdate(UpdateView):
 
     def get_initial(self):
         initial = super(MailUpdate, self).get_initial()
+        initial['mode'] = 'update'
         initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
                                          self.object.default_recipients.all()]
         return initial
