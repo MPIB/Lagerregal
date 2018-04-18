@@ -58,10 +58,34 @@
     } else {
     $("#alternativebox").remove();
     }
-
-
     });
     }
+    });
+
+    $("#id_department").change(function(){
+      console.log($(this).val())
+      var department = $(this).val();
+      $.ajax({
+        type: "POST",
+        url : "{% url "load-choices" %}",
+        data : {"department" : department},
+        success: function(data){
+          $("#id_usage").empty();
+          console.log(data)
+          console.log(data.valid)
+          var select = document.getElementById('id_usage')
+          for(key in data){
+            console.log(data[key])
+            console.log(key)
+            var option = document.createElement("option");
+            option.text = data[key]
+            option.value = key;
+            select.add(option)
+          }
+
+
+        },
+      });
     });
 
     $(function() {
