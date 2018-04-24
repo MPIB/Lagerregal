@@ -6,9 +6,11 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 
 from mail.models import MailTemplate, MailTemplateRecipient
-from mail.forms import MailTemplateForm
+from mail.forms import MailTemplateUpdateForm, MailTemplateForm #letzteres weg
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
+
+import pdb
 
 
 class MailList(PaginationMixin, ListView):
@@ -47,12 +49,24 @@ class MailCreate(CreateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
-
+    usages = {
+        "new": _("New Device is created"),
+        "room": _("Room is changed"),
+        "owner": _("person currently lending is changed"),
+        "reminder": _("Reminder that device is still owned"),
+        "overdue": _("Reminder that device is overdue"),
+        "trashed": _("Device is trashed")
+    }
     def get_initial(self):
+        usages = {
+            "new": _("New Device is created"),
+            "room": _("Room is changed"),
+            "owner": _("person currently lending is changed"),
+            "reminder": _("Reminder that device is still owned"),
+            "overdue": _("Reminder that device is overdue"),
+            "trashed": _("Device is trashed")
+        }
         initial = super(MailCreate, self).get_initial()
-        initial["mode"] = 'create'
-        if self.request.user.main_department:
-            initial["department"] = self.request.user.main_department
         return initial
 
     def get_context_data(self, **kwargs):
@@ -80,7 +94,7 @@ class MailCreate(CreateView):
 
 
 class MailUpdate(UpdateView):
-    form_class = MailTemplateForm
+    form_class = MailTemplateUpdateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
 

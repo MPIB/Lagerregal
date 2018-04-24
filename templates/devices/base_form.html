@@ -72,21 +72,17 @@
         data : {"department" : department},
         success: function(data){
           $("#id_usage").empty();
-          console.log(data)
-          console.log(data.valid)
-          var select = document.getElementById('id_usage')
           for(key in data){
-            console.log(data[key])
-            console.log(key)
-            var option = document.createElement("option");
-            option.text = data[key]
-            option.value = key;
-            select.add(option)
+            $('#id_usage').append('<option value="' + key + '">' + data[key] +'</option>');
           }
-
-
+          $("#id_usage").each(function(){
+            console.log("bla")
+            $(this).selectedIndex=0;
+});
         },
       });
+      console.log("VALUE AFTER");
+      console.log($("#id_usage").val());
     });
 
     $(function() {
