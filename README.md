@@ -53,7 +53,7 @@ $ cp Lagerregal/template_production.py Lagerregal/settings.py
 Run:
 
 ```
-$ python2 manage.py syncdb
+$ python2 manage.py migrate
 $ python2 manage.py runserver
 ```
 
