@@ -63,8 +63,6 @@
     });
 
     $("#id_department").change(function(){
-      console.log('VALUES!!!!')
-      console.log($(this).val())
       var department = $(this).val();
       $.ajax({
         type: "POST",
@@ -75,14 +73,8 @@
           for(key in data){
             $('#id_usage').append('<option value="' + key + '">' + data[key] +'</option>');
           }
-          $("#id_usage").each(function(){
-            console.log("bla")
-            $(this).selectedIndex=0;
-});
-        },
+          $('#id_usage option:first').prop('selected', 'selected').change();
       });
-      console.log("VALUE AFTER");
-      console.log($("#id_usage").val());
     });
 
     $(function() {

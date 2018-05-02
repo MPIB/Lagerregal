@@ -6,7 +6,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 
 from mail.models import MailTemplate, MailTemplateRecipient
-from mail.forms import MailTemplateUpdateForm, MailTemplateForm #letzteres weg
+from mail.forms import MailTemplateUpdateForm, MailTemplateForm
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 
@@ -49,23 +49,7 @@ class MailCreate(CreateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
-    usages = {
-        "new": _("New Device is created"),
-        "room": _("Room is changed"),
-        "owner": _("person currently lending is changed"),
-        "reminder": _("Reminder that device is still owned"),
-        "overdue": _("Reminder that device is overdue"),
-        "trashed": _("Device is trashed")
-    }
     def get_initial(self):
-        usages = {
-            "new": _("New Device is created"),
-            "room": _("Room is changed"),
-            "owner": _("person currently lending is changed"),
-            "reminder": _("Reminder that device is still owned"),
-            "overdue": _("Reminder that device is overdue"),
-            "trashed": _("Device is trashed")
-        }
         initial = super(MailCreate, self).get_initial()
         return initial
 
@@ -100,7 +84,6 @@ class MailUpdate(UpdateView):
 
     def get_initial(self):
         initial = super(MailUpdate, self).get_initial()
-        initial['mode'] = 'update'
         initial["default_recipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
                                          self.object.default_recipients.all()]
         return initial

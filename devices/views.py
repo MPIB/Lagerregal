@@ -190,7 +190,7 @@ class DeviceDetail(DetailView):
             mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
             mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
-            messages.warning(self.request, _('Please create reminder mail template'))
+            messages.error(self.request, _('Please create reminder mail template'))
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
             department__in=self.request.user.departments.all())
@@ -574,7 +574,6 @@ class DeviceLend(FormView):
                 device.room = form.cleaned_data["room"]
                 try:
                     templates.append(MailTemplate.objects.get(usage="room", department = self.request.user.main_department))
-                    print templates
                 except:
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
