@@ -24,7 +24,7 @@ class MailTemplateUpdateForm(MailTemplateForm):
             used_db = MailTemplate.objects.values_list('usage', flat=True).filter(department = kwargs["instance"].department)
             used = []
             for x in used_db:
-                if x:
+                if x is not None:
                     if str(self.instance.usage) not in x:
                         used.append(x)
             valid = [x for x in self.fields['usage'].choices if not any(y in x for y in used)]
