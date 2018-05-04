@@ -6,9 +6,10 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 
 from mail.models import MailTemplate, MailTemplateRecipient
-from mail.forms import MailTemplateForm
+from mail.forms import MailTemplateUpdateForm, MailTemplateForm
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
+
 
 
 class MailList(PaginationMixin, ListView):
@@ -47,11 +48,8 @@ class MailCreate(CreateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
-
     def get_initial(self):
         initial = super(MailCreate, self).get_initial()
-        if self.request.user.main_department:
-            initial["department"] = self.request.user.main_department
         return initial
 
     def get_context_data(self, **kwargs):
@@ -79,7 +77,7 @@ class MailCreate(CreateView):
 
 
 class MailUpdate(UpdateView):
-    form_class = MailTemplateForm
+    form_class = MailTemplateUpdateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
 
