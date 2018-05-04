@@ -73,7 +73,7 @@
           for(key in data){
             $('#id_usage').append('<option value="' + key + '">' + data[key] +'</option>');
           }
-          $('#id_usage option:first').prop('selected', 'selected').change();
+          $('#id_usage').prop('selectIndex',0).change();
         },
     });
   });
