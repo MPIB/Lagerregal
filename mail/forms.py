@@ -21,7 +21,11 @@ class MailTemplateUpdateForm(MailTemplateForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
         if self.instance.department:
-            used = MailTemplate.objects.values_list('usage', flat=True).filter(department = kwargs["instance"].department)
-            used = [x for x in used if str(self.instance.usage) not in x]
+            used_db = MailTemplate.objects.values_list('usage', flat=True).filter(department = kwargs["instance"].department)
+            used = []
+            for x in used_db:
+                if x:
+                    if str(self.instance.usage) not in x:
+                        used.append(x)
             valid = [x for x in self.fields['usage'].choices if not any(y in x for y in used)]
             self.fields['usage'].choices = valid
