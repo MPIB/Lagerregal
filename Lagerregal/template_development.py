@@ -51,9 +51,3 @@ STATIC_ROOT = ''
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
-
-#comment out variables and start server with
-#python -m smtpd -n -c DebuggingServer localhost:1025
-#to print emails to console
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 1025

@@ -10,7 +10,6 @@ from mail.forms import MailTemplateUpdateForm, MailTemplateForm
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 
-import pdb
 
 
 class MailList(PaginationMixin, ListView):

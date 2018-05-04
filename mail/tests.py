@@ -29,7 +29,6 @@ class TestMailTemplate(TestCase):
 
 
 
-
 #first figuring out strange behaviour of content_object
 # class TestMailTemplateRecipient(TestCase):
 #     def setUp(self):

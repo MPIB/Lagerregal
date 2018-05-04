@@ -3,7 +3,6 @@ from django import forms
 
 from mail.models import MailTemplate
 from devices.forms import get_emailrecipientlist
-import pdb
 
 class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
