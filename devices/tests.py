@@ -43,11 +43,6 @@ class DeviceTests(TestCase):
         url = reverse("device-list")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-        self.assertEqual(len(resp.context["device_list"]), 30)
-        self.assertEqual(resp.context["paginator"].num_pages, 2)
-        url = reverse("device-list", kwargs={"page": 2})
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
 
     def test_device_detail(self):
         device = mommy.make(Device)
