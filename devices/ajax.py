@@ -544,7 +544,7 @@ class PuppetSoftware(View):
             res = json.loads(res.read())[0]
             software = res['value']
             context = {
-                'puppetsoftware': software.values()
+                'puppetsoftware': list(software.values())
             }
         except:
             return HttpResponse('Malformed puppet software fact.')

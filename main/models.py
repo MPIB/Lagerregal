@@ -31,7 +31,7 @@ def get_progresscolor(percent):
 class DashboardWidget(models.Model):
     column = models.CharField(max_length=1, choices=[("l", "left"), ("r", "right")])
     index = models.IntegerField()
-    widgetname = models.CharField(max_length=200, choices=widgets.items())
+    widgetname = models.CharField(max_length=200, choices=list(widgets.items()))
     user = models.ForeignKey(Lageruser)
     minimized = models.BooleanField(default=False)
 
