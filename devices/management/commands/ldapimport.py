@@ -142,7 +142,7 @@ class Command(BaseCommand):
                         except StandardError:
                             pass
 
-                    print(u"{0} does not have a value for the attribute {1}".format(dn, attr))
+                    print("{0} does not have a value for the attribute {1}".format(dn, attr))
             if saveuser:
                 if user.is_active == expired:
                     if expired:
@@ -150,7 +150,7 @@ class Command(BaseCommand):
                     else:
                         print("{0} has been reactivated".format(dn))
                 for field, (old_value, new_value) in changes.iteritems():
-                    print(u'{0} changed {1} from {2} to {3}'.format(dn, field, old_value, new_value))
+                    print('{0} changed {1} from {2} to {3}'.format(dn, field, old_value, new_value))
                 user.save()
                 if user.main_department:
                     if not user.main_department in user.departments.all():

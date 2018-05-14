@@ -34,7 +34,7 @@ class Lageruser(AbstractUser):
 
     def __unicode__(self):
         if self.first_name != "" and self.last_name != "":
-            return u"{0} {1}".format(self.first_name, self.last_name)
+            return "{0} {1}".format(self.first_name, self.last_name)
         else:
             return self.username
 

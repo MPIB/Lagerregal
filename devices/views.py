@@ -212,14 +212,14 @@ class DeviceDetail(DetailView):
                 context["label_js"] = ""
                 for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
                     if attribute == "id":
-                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
-                                                                                                  getattr(
-                                                                                                      context["device"],
-                                                                                                      attribute))
+                        context["label_js"] += "\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+                                                                                                 getattr(
+                                                                                                     context["device"],
+                                                                                                     attribute))
                     else:
-                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
-                                                                                              getattr(context["device"],
-                                                                                                      attribute))
+                        context["label_js"] += "\nlabel.setObjectText('{0}', '{1}');".format(attribute,
+                                                                                             getattr(context["device"],
+                                                                                                     attribute))
 
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),

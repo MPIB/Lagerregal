@@ -285,14 +285,14 @@ class DeviceForm(forms.ModelForm):
 
         #if edit
         if kwargs["instance"]:
-            CHOICES = [(x.id, u''.join((x.name, " [" , str(x.id), "]")))for x in Device.objects.filter( trashed = None).exclude(pk = kwargs["instance"].id)]
+            CHOICES = [(x.id, ''.join((x.name, " [" , str(x.id), "]")))for x in Device.objects.filter( trashed = None).exclude(pk = kwargs["instance"].id)]
             self.fields['uses'].choices = CHOICES
             self.initial['uses'] = [x.id for x in Device.objects.filter(used_in = kwargs["instance"].id)]
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None).exclude(pk = kwargs["instance"].id)
 
         #if create
         else:
-            CHOICES = [(x.id, u''.join((x.name, " [" , str(x.id) , "]"))) for x in Device.objects.filter(used_in = None, trashed = None)]
+            CHOICES = [(x.id, ''.join((x.name, " [" , str(x.id) , "]"))) for x in Device.objects.filter(used_in = None, trashed = None)]
             self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed = None)
 

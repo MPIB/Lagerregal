@@ -19,7 +19,7 @@ class LageruserTests(TestCase):
     def test_lageruser_creation(self):
         user1 = mommy.make(Lageruser, first_name = "a", last_name = "a")
         user2 = mommy.make(Lageruser, first_name = "", last_name = "a")
-        self.assertEqual(user1.__unicode__(), u"{0} {1}".format(user1.first_name, user1.last_name) )
+        self.assertEqual(user1.__unicode__(), "{0} {1}".format(user1.first_name, user1.last_name) )
         self.assertEqual(user2.__unicode__(), user2.username)
         self.assertEqual(user1.get_absolute_url(), reverse('userprofile', kwargs={'pk': user1.pk}) )
         user1.clean()
