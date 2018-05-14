@@ -21,7 +21,7 @@ class IpAddressForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(IpAddressForm, self).clean()
-        if cleaned_data["device"] != None and cleaned_data["user"] != None:
+        if cleaned_data["device"] is not None and cleaned_data["user"] is not None:
             raise forms.ValidationError(_("IP-Address can not be owned by a user and a device at the same time."))
         return cleaned_data
 

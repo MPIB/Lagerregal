@@ -5,7 +5,6 @@ from reversion import revisions as reversion
 
 from users.models import Department
 
-# Create your models here.
 
 class Devicegroup(models.Model):
     name = models.CharField(max_length=200)

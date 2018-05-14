@@ -26,7 +26,6 @@ class DevicetagList(PaginationMixin, ListView):
             devicetags = devicetags.order_by(self.viewsorting)
         return devicetags
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DevicetagList, self).get_context_data(**kwargs)
@@ -121,7 +120,6 @@ class DeviceTagRemove(DeleteView):
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Remove Tag"))]
         return render(request, self.template_name, context)
-
 
     def post(self, request, *args, **kwargs):
         device = get_object_or_404(Device, pk=kwargs["pk"])

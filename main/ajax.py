@@ -21,7 +21,7 @@ class WidgetAdd(View):
             widget = DashboardWidget()
             widget.column = "l"
             oldindex = userwidgets.filter(column="l").aggregate(Max('index'))["index__max"]
-            widget.index = oldindex + 1 if oldindex != None else 1
+            widget.index = oldindex + 1 if oldindex is not None else 1
             widget.widgetname = widgetname
             widget.user = request.user
             widget.save()

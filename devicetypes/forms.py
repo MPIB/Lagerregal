@@ -11,6 +11,7 @@ class TypeForm(forms.ModelForm):
     class Meta:
         model = Type
         fields = ("name", )
+
     def __init__(self, *args, **kwargs):
         if "data" in kwargs:
             extra_fields = kwargs["data"]['extra_fieldcount']

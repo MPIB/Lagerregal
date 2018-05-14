@@ -463,7 +463,7 @@ class AjaxSearch(View):
         else:
             devices = devices.filter(archived=None, trashed=None)
 
-        if textfilter != None:
+        if textfilter is not None:
             SEARCHSTRIP = getattr(settings, "SEARCHSTRIP", [])
             if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
@@ -521,6 +521,7 @@ class PuppetDetails(View):
             'puppetdetails': json.loads(res.read())
         }
         return render(request, 'devices/puppetdetails.html', context)
+
 
 class PuppetSoftware(View):
 

@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
-import csv, codecs
+import csv
+import codecs
 import uuid
 from datetime import date, timedelta
 
@@ -15,10 +16,11 @@ except ImportError:
 
 class PaginationMixin():
     def get_paginate_by(self, queryset):
-        if self.request.user.pagelength == None:
+        if self.request.user.pagelength is None:
             return self.request.user.pagelength
         else:
             return 30
+
 
 class UnicodeWriter:
     """
@@ -26,14 +28,14 @@ class UnicodeWriter:
     which is encoded in the given encoding.
     """
 
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
+    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwargs):
         # Redirect output to a queue
         self.queue = io.StringIO()
-        if "delimiter" in kwds:
-            kwds["delimiter"]=str(kwds["delimiter"])
-        if "quotechar" in kwds:
-            kwds["quotechar"]=str(kwds["quotechar"])
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds )
+        if "delimiter" in kwargs:
+            kwargs["delimiter"] = str(kwargs["delimiter"])
+        if "quotechar" in kwargs:
+            kwargs["quotechar"] = str(kwargs["quotechar"])
+        self.writer = csv.writer(self.queue, dialect=dialect, **kwargs)
         self.stream = f
         self.encoder = codecs.getincrementalencoder(encoding)()
 
@@ -81,7 +83,7 @@ def convert_ad_accountexpires(timestamp):
     """
     if timestamp is None or timestamp == 0:
         return None
-    epoch_start = date(year=1601, month=1,day=1)
+    epoch_start = date(year=1601, month=1, day=1)
     seconds_since_epoch = timestamp/10**7
     try:
         # ad timestamp can be > than date.max, return None (==never expires)

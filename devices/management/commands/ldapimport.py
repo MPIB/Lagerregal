@@ -1,62 +1,66 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import ldap
-from django.conf import settings  # import the settings file
-from django.core.management.base import BaseCommand
+
 import re
-from users.models import Lageruser, Department, DepartmentUser
+from datetime import date
+
 from ldap.controls import SimplePagedResultsControl
 from ldap.ldapobject import LDAPObject
-from datetime import date, timedelta
+from django.conf import settings  # import the settings file
+from django.core.management.base import BaseCommand
+
+from users.models import Lageruser, Department, DepartmentUser
 from Lagerregal import utils
 
+
 class PagedResultsSearchObject(LDAPObject):
-  page_size = 50
+    page_size = 50
 
-  def paged_search_ext_s(self,base,scope,filterstr='(objectClass=*)',attrlist=None,attrsonly=0,serverctrls=None,clientctrls=None,timeout=-1,sizelimit=0):
-    """
-    Behaves exactly like LDAPObject.search_ext_s() but internally uses the
-    simple paged results control to retrieve search results in chunks.
+    def paged_search_ext_s(self, base, scope, filterstr='(objectClass=*)', attrlist=None, attrsonly=0, serverctrls=None, clientctrls=None, timeout=-1, sizelimit=0):
+        """
+        Behaves exactly like LDAPObject.search_ext_s() but internally uses the
+        simple paged results control to retrieve search results in chunks.
 
-    This is non-sense for really large results sets which you would like
-    to process one-by-one
-    """
-    req_ctrl = SimplePagedResultsControl(True,size=self.page_size,cookie='')
+        This is non-sense for really large results sets which you would like
+        to process one-by-one
+        """
+        req_ctrl = SimplePagedResultsControl(True, size=self.page_size, cookie='')
 
-    # Send first search request
-    msgid = self.search_ext(
-      *settings.LDAP_USER_SEARCH,
-      serverctrls=(serverctrls or [])+[req_ctrl]
-    )
+        # Send first search request
+        msgid = self.search_ext(
+            *settings.LDAP_USER_SEARCH,
+            serverctrls=(serverctrls or [])+[req_ctrl]
+        )
 
-    result_pages = 0
-    all_results = []
+        result_pages = 0
+        all_results = []
 
-    while True:
-      rtype, rdata, rmsgid, rctrls = self.result3(msgid)
-      all_results.extend(rdata)
-      result_pages += 1
-      # Extract the simple paged results response control
-      pctrls = [
-        c
-        for c in rctrls
-        if c.controlType == SimplePagedResultsControl.controlType
-      ]
-      if pctrls:
-        if pctrls[0].cookie:
-            # Copy cookie from response control to request control
-            req_ctrl.cookie = pctrls[0].cookie
-            msgid = self.search_ext(*settings.LDAP_USER_SEARCH, serverctrls=(serverctrls or [])+[req_ctrl])
-        else:
-            break
-    return result_pages,all_results
+        while True:
+            rtype, rdata, rmsgid, rctrls = self.result3(msgid)
+            all_results.extend(rdata)
+            result_pages += 1
+            # Extract the simple paged results response control
+            pctrls = [
+                c
+                for c in rctrls
+                if c.controlType == SimplePagedResultsControl.controlType
+            ]
+            if pctrls:
+                if pctrls[0].cookie:
+                    # Copy cookie from response control to request control
+                    req_ctrl.cookie = pctrls[0].cookie
+                    msgid = self.search_ext(*settings.LDAP_USER_SEARCH, serverctrls=(serverctrls or [])+[req_ctrl])
+                else:
+                    break
+        return result_pages, all_results
+
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
         if not settings.USE_LDAP:
             print("You have to enable the USE_LDAP setting to use the ldap import.")
             return
-        #ldap.set_option(ldap.OPT_DEBUG_LEVEL, 4095)
+        # ldap.set_option(ldap.OPT_DEBUG_LEVEL, 4095)
         l = PagedResultsSearchObject(settings.AUTH_LDAP_SERVER_URI)
         l.simple_bind_s(settings.AUTH_LDAP_BIND_DN, settings.AUTH_LDAP_BIND_PASSWORD)
         created_users = 0
@@ -153,7 +157,7 @@ class Command(BaseCommand):
                     print('{0} changed {1} from {2} to {3}'.format(dn, field, old_value, new_value))
                 user.save()
                 if user.main_department:
-                    if not user.main_department in user.departments.all():
+                    if user.main_department not in user.departments.all():
                         department_user = DepartmentUser(user=user, department=user.main_department, role="m")
                         department_user.save()
                 if created:
@@ -162,6 +166,5 @@ class Command(BaseCommand):
                     updated_users += 1
 
         if created_users > 0 or updated_users > 0:
-            #print("skipped {0} users.".format(skipped_users))
             print("imported {0} new users.".format(created_users))
             print("updated {0} exisitng users.".format(updated_users))

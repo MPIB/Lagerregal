@@ -1,16 +1,17 @@
+import datetime
+
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-#from reversion import revisions as reversion
 import reversion
 
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from locations.models import Section
-import datetime
-from django.db.models import Q
 from Lagerregal import utils
+
 
 @reversion.register()
 class Building(models.Model):
@@ -39,8 +40,6 @@ class Building(models.Model):
         return reverse('building-edit', kwargs={'pk': self.pk})
 
 
-
-
 @reversion.register()
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
@@ -67,8 +66,6 @@ class Room(models.Model):
         return reverse('room-edit', kwargs={'pk': self.pk})
 
 
-
-
 @reversion.register()
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
@@ -88,9 +85,6 @@ class Manufacturer(models.Model):
 
     def get_edit_url(self):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
-
-
-
 
 
 class Bookmark(models.Model):
@@ -128,8 +122,7 @@ class Device(models.Model):
 
     department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
-    used_in = models.ForeignKey('self', null = True, blank = True, on_delete = models.SET_NULL,)
-
+    used_in = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,)
 
     def __unicode__(self):
         return self.name
@@ -178,8 +171,6 @@ class Device(models.Model):
             ~Q(department__in=departments), is_private=True)
 
 
-
-
 class DeviceInformationType(models.Model):
     keyname = models.CharField(_('Name'), max_length=200)
     humanname = models.CharField(_('Human readable name'), max_length=200)
@@ -206,10 +197,10 @@ class DeviceInformation(models.Model):
 
 
 reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
-["archived", "currentlending", "inventoried", "bookmarks", "trashed"], ignore_duplicates = True)
+["archived", "currentlending", "inventoried", "bookmarks", "trashed"], ignore_duplicates=True)
 reversion.register(TypeAttributeValue)
 
-@reversion.register(ignore_duplicates = True)
+@reversion.register(ignore_duplicates=True)
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"), on_delete=models.SET_NULL, null=True)
     lenddate = models.DateField(auto_now_add=True)
@@ -218,7 +209,6 @@ class Lending(models.Model):
     returndate = models.DateField(blank=True, null=True)
     device = models.ForeignKey(Device, null=True, blank=True)
     smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
-
 
 
 class Template(models.Model):

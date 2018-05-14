@@ -29,7 +29,6 @@ class TypeList(PaginationMixin, ListView):
             devicetype = devicetype.order_by(self.viewsorting)
         return devicetype
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(TypeList, self).get_context_data(**kwargs)
@@ -182,6 +181,7 @@ class TypeAttributeUpdate(UpdateView):
     def get_success_url(self):
         return self.success_url
 
+
 class TypeAttributeDelete(DeleteView):
     model = TypeAttribute
     success_url = reverse_lazy('type-list')
@@ -190,7 +190,6 @@ class TypeAttributeDelete(DeleteView):
     def post(self, request, *args, **kwargs):
         self.next = request.POST["next"]
         return super(TypeAttributeDelete, self).post(request, **kwargs)
-
 
     def get_success_url(self):
         return self.next

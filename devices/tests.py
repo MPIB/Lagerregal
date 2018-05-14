@@ -1,22 +1,17 @@
 import os.path
 
+from datetime import datetime, timedelta
 
 from django.test.client import Client
 from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
-from datetime import datetime, timedelta
+from model_mommy import mommy
 
 from devices.models import Device, Building, Room, Manufacturer, Template, Note, Lending, DeviceInformationType, DeviceInformation, Picture
 from users.models import Lageruser
 from network.models import IpAddress
 from devices.forms import IpAddressForm
-
-
 from devices.forms import DeviceForm
-
-
-
 
 
 class DeviceTests(TestCase):
@@ -72,13 +67,11 @@ class DeviceTests(TestCase):
         device = Device.objects.filter(name = 'used')[0]
         self.assertEqual(device.used_in.name, 'uses')
 
-
     def test_device_edit(self):
         device = mommy.make(Device)
         url = reverse("device-edit", kwargs={"pk": device.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-
 
     def test_device_delete(self):
         device = mommy.make(Device)
@@ -238,9 +231,6 @@ class DeviceTests(TestCase):
         self.assertEqual(resp.status_code, 302)
 
 
-
-
-
 class BuildingTests(TestCase):
     def setUp(self):
         self.client = Client()
@@ -356,9 +346,6 @@ class RoomTests(TestCase):
         url = reverse("room-delete", kwargs={"pk": room.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-
-
-
 
 
 class ManufacturerTests(TestCase):
@@ -495,6 +482,7 @@ class DeviceInformationTests(TestCase):
     def test_device_information_creation(self):
         device_information = mommy.make(DeviceInformation)
         self.assertEqual(device_information.__unicode__(), device_information.infotype.__unicode__() + ": " + device_information.information)
+
 
 class PictureTests(TestCase):
     def setUp(self):

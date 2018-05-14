@@ -3,7 +3,7 @@ from permission.logics import PermissionLogic
 from permission.conf import settings
 from django.contrib import auth
 from django.core.exceptions import PermissionDenied
-from django.core.exceptions import PermissionDenied
+
 
 class DepartmentPermissionLogic(PermissionLogic):
     def __init__(self,
@@ -81,7 +81,7 @@ class DepartmentPermissionLogic(PermissionLogic):
 
         return False
 
+
 PERMISSION_LOGICS = (
     ('users.Department', DepartmentPermissionLogic()),
 )
-
