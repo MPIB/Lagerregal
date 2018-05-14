@@ -88,7 +88,7 @@ class TypeCreate(CreateView):
 
     def form_valid(self, form):
         newobject = form.save()
-        for key, value in form.cleaned_data.iteritems():
+        for key, value in form.cleaned_data.items():
             if key.startswith("extra_field_") and value != "":
                 attribute = TypeAttribute()
                 attribute.name = value

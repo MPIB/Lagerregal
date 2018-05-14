@@ -59,7 +59,7 @@ class WidgetMove(View):
     def post(self, request):
         userwidgets = json.loads(request.POST["widgets"])
 
-        for widgetname, widgetattr in userwidgets.iteritems():
+        for widgetname, widgetattr in userwidgets.items():
             if widgetname in widgets:
                 w = DashboardWidget.objects.get(user=request.user, widgetname=widgetname)
                 if w.index != widgetattr["index"] or w.column != widgetattr["column"]:

@@ -83,7 +83,7 @@ def get_emailrecipientlist(special=None):
 
     if special:
         objects.append((_("Special"),
-                        [(value, key) for key, value in special.iteritems()]
+                        [(value, key) for key, value in special.items()]
         ))
 
     objects.append((_("Groups"),
@@ -268,7 +268,7 @@ class DeviceForm(forms.ModelForm):
         if cleaned_data["emailrecipients"] and not cleaned_data["emailtemplate"]:
             self._errors["emailtemplate"] = self.error_class(
                 [_("You specified recipients, but didn't select a template")])
-        for key, attribute in cleaned_data.iteritems():
+        for key, attribute in cleaned_data.items():
             if key.startswith("attribute_") and attribute != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)

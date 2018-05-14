@@ -384,7 +384,7 @@ class DeviceCreate(CreateView):
         form.cleaned_data["creator"] = self.request.user
         reversion.set_comment(_("Created"))
         r = super(DeviceCreate, self).form_valid(form)
-        for key, value in form.cleaned_data.iteritems():
+        for key, value in form.cleaned_data.items():
             if key.startswith("attribute_") and value != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
@@ -460,7 +460,7 @@ class DeviceUpdate(UpdateView):
         if device.devicetype is not None:
             if form.cleaned_data["devicetype"] is None or device.devicetype.pk != form.cleaned_data["devicetype"].pk:
                 TypeAttributeValue.objects.filter(device=device.pk).delete()
-        for key, value in form.cleaned_data.iteritems():
+        for key, value in form.cleaned_data.items():
             if key.startswith("attribute_") and value != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)

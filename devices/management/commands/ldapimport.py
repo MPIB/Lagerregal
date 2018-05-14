@@ -78,7 +78,7 @@ class Command(BaseCommand):
                 saveuser = True
                 created = True
                 user = Lageruser(username=userdata["sAMAccountName"][0])
-            for field, attr in settings.AUTH_LDAP_USER_ATTR_MAP.iteritems():
+            for field, attr in settings.AUTH_LDAP_USER_ATTR_MAP.items():
                 try:
                     old_value = getattr(user, field)
                     new_value = userdata[attr][0].decode('unicode_escape').encode('iso8859-1').decode('utf8')
