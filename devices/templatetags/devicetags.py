@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 import re
 import os
 
+import six
 from django.template import Library
 from django.utils.safestring import mark_safe
 from django.forms import CheckboxInput
@@ -54,7 +55,7 @@ class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
 
 @register.filter
 def add_class(value, css_class):
-    string = unicode(value)
+    string = six.text_type(value)
     match = class_re.search(string)
     if match:
         m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class,
@@ -117,6 +118,6 @@ def as_nested_list(factvalue):
             res += "<li>{}</li>".format(item)
         res += "</ul>"
     else:
-        res += unicode(factvalue)
+        res += six.text_type(factvalue)
 
     return mark_safe(res)

@@ -6,6 +6,7 @@ from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 import pystache
+import six
 
 from users.models import Lageruser, Department
 
@@ -105,7 +106,7 @@ class MailTemplateRecipient(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
-        return unicode(self.content_type.name + ": " + self.content_object.__unicode__())
+        return six.text_type(self.content_type.name + ": " + self.content_object.__unicode__())
 
 
 class MailHistory(models.Model):

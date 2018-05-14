@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 import csv, codecs
 import uuid
 from datetime import date, timedelta
+
+import six
 from django.conf import settings
 from django.test.runner import DiscoverRunner
 
@@ -36,7 +38,7 @@ class UnicodeWriter:
         self.encoder = codecs.getincrementalencoder(encoding)()
 
     def writerow(self, row):
-        self.writer.writerow([unicode(s).encode("utf-8") for s in row])
+        self.writer.writerow([six.text_type(s).encode("utf-8") for s in row])
         # Fetch UTF-8 output from the queue ...
         data = self.queue.getvalue()
         data = data.decode("utf-8")
