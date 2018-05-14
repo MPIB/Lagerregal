@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json
-import urllib
-import httplib
-from httplib import ssl
+
+try:
+    import urllib.parse as urllib
+    import http.client as httplib
+    from http.client import ssl
+except ImportError:
+    import urllib
+    import httplib
+    from httplib import ssl
 
 import six
 from django.shortcuts import get_object_or_404
