@@ -81,7 +81,7 @@ class DeviceList(PaginationMixin, ListView):
         else:
             devices = Device.active()
 
-        if self.request.user.departments.count() > 0:
+        if hasattr(self.request.user, 'departments'):
             self.departmentfilter = self.kwargs.get("department", "my")
         else:
             self.departmentfilter = self.kwargs.get("department", "all")
@@ -115,7 +115,8 @@ class DeviceList(PaginationMixin, ListView):
             elif self.departmentfilter != "all":
                 devices = devices.filter(department=self.departmentfilter)
                 self.departmentfilter = self.departmentfilter.id
-            devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
+            if self.departmentfilter == 'my':
+                devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
             self.viewsorting = self.kwargs.get("sorting", "name")
             if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
                 devices = devices.order_by(self.viewsorting)
