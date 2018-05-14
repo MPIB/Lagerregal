@@ -87,7 +87,7 @@ def convert_ad_accountexpires(timestamp):
         return new_date
     except OverflowError:
         return None
-    except StandardError:
+    except Exception:
         print('Cannot convert expiration_date "{0}", falling back to None'.format(self.expiration_date))
 
 

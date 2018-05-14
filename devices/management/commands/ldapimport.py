@@ -115,7 +115,7 @@ class Command(BaseCommand):
                         saveuser = True
                         setattr(user, field, new_value)
                         changes[field] = (old_value, new_value)
-                except StandardError as e:
+                except Exception as e:
                     if attr == "accountExpires":
                         continue
                     if attr == "givenName" or attr == "sn":
@@ -139,7 +139,7 @@ class Command(BaseCommand):
                                 saveuser = True
                                 setattr(user, field, new_value)
                             continue
-                        except StandardError:
+                        except Exception:
                             pass
 
                     print("{0} does not have a value for the attribute {1}".format(dn, attr))
