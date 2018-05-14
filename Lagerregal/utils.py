@@ -1,9 +1,15 @@
 from __future__ import unicode_literals
-import csv, codecs, cStringIO
+import csv, codecs
 import uuid
 from datetime import date, timedelta
 from django.conf import settings
 from django.test.runner import DiscoverRunner
+
+try:
+    import io
+except ImportError:
+    import cStringIO as io
+
 
 class PaginationMixin():
     def get_paginate_by(self, queryset):
@@ -20,7 +26,7 @@ class UnicodeWriter:
 
     def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
         # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
+        self.queue = io.StringIO()
         if "delimiter" in kwds:
             kwds["delimiter"]=str(kwds["delimiter"])
         if "quotechar" in kwds:
