@@ -23,7 +23,6 @@ from django.conf import settings
 from django.db.models.query import QuerySet
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
-from django.contrib.auth.decorators import login_required
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
 from devicetypes.models import TypeAttribute, TypeAttributeValue
@@ -40,9 +39,8 @@ from permission.decorators import permission_required
 from django.db.models import Q
 
 
-@login_required
 @permission_required('devices.read_device', raise_exception=True)
-class DeviceList(PaginationMixin, ListView):
+class DeviceList(PaginationMixin,  ListView):
     context_object_name = 'device_list'
     template_name = 'devices/device_list.html'
     viewfilter = None
@@ -142,7 +140,7 @@ class DeviceList(PaginationMixin, ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
-@login_required
+
 @permission_required('devices.read_device', raise_exception=True)
 class DeviceDetail(DetailView):
     queryset = Device.objects \
@@ -229,7 +227,7 @@ class DeviceDetail(DetailView):
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
         return context
 
-@login_required
+
 @permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressRemove(View):
     template_name = 'devices/unassign_ipaddress.html'
