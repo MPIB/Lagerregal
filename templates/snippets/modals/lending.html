@@ -2,7 +2,11 @@
 {% load i18n %}{% load devicetags %}
 
 {% block modalHeader %}
+  {%if device.currentlending == None%}
     <h4 class="modal-title">{% trans "Mark device as lent" %}</h4>
+  {%else%}
+    <h4 class="modal-title">{% trans "Edit lending information" %}</h4>
+  {%endif%}
 {% endblock %}
 
 {% block modalUrl %}{% url "device-lend" %}{% endblock %}

@@ -180,11 +180,20 @@ class LendForm(forms.Form):
                 raise forms.ValidationError("you have to either set device or smalldevice")
         return cleaned_data
 
+    def __init__(self, *args, **kwargs):
+        self.device = kwargs.pop('device', None)
+        super(LendForm, self).__init__(*args, **kwargs)
+        print kwargs
+        # device = kwargs.pop('device')
+        # print(device)
+
+
     def clean_device(self):
         device = self.cleaned_data["device"]
         if device:
             if device.currentlending:
-                raise forms.ValidationError("this device is already lend.")
+                pass
+                # raise forms.ValidationError("this device is already lend.")
         return device
 
 

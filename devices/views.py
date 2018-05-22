@@ -536,7 +536,6 @@ class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
 
-
     def get_context_data(self, **kwargs):
         context = super(DeviceLend, self).get_context_data(**kwargs)
         context['actionstring'] = "Mark device as lend"
@@ -556,15 +555,32 @@ class DeviceLend(FormView):
             ("", _("Lend"))]
         return context
 
+    def get_form_kwargs(self):
+        kwargs = super(DeviceLend, self).get_form_kwargs()
+        print(self.request.POST["device"])
+        print(type(kwargs))
+        kwargs['device'] = self.request.device
+        # kwargs.update({'device': self.request.device})
+        return kwargs
+
+
     def form_valid(self, form):
-        lending = Lending()
         device = None
         templates = []
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
+            print("HEY!!!!")
+            print(device.currentlending)
             if device.archived is not None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+            if device.currentlending is not None:
+                lending = device.currentlending
+                lending.returndate = datetime.date.today()
+                lending.save()
+                lending = Lending()
+            else:
+                lending = Lending()
             try:
                 templates.append(MailTemplate.objects.get(usage = "lent", department = self.request.user.main_department))
             except:
