@@ -76,9 +76,8 @@
 
         {% permission user has 'devices.lend_device' of device %}
             {% if device.currentlending != None %}
-                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
-                  style="margin-left:10px"><i class="fa fa-edit" style="margin-right:7px"></i>{% trans "Edit lending information" %}
-                </a>
+                <a href="{% url "device-lend" device.pk %}" class="btn btn-success pull-right btn-sm"
+                   style="margin-left:10px">{% trans "Edit lending information" %}</a>
                 <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
                    style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}
                 </a>

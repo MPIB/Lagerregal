@@ -533,7 +533,7 @@ class DeviceDelete(DeleteView):
 
 @permission_required('devices.lend_device', raise_exception=True)
 class DeviceLend(FormView):
-    template_name = 'devices/base_form.html'
+    template_name = 'devices/device_lend.html'
     form_class = LendForm
 
     def get_context_data(self, **kwargs):
@@ -546,21 +546,20 @@ class DeviceLend(FormView):
                 device = get_object_or_404(Device, pk=deviceid)
                 context["breadcrumbs"] = [
                     (reverse("device-list"), _("Devices")),
-                    (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
                     ("", _("Lend"))]
                 return context
-
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Lend"))]
+        if self.kwargs and 'pk' in self.kwargs:
+            device = get_object_or_404(Device, pk = self.kwargs['pk'])
+            context["breadcrumbs"] = context["breadcrumbs"][:-1] + [(reverse("device-detail", kwargs={"pk": device.pk}), device.name)] + context['breadcrumbs'][-1:]
         return context
+
 
     def get_form_kwargs(self):
         kwargs = super(DeviceLend, self).get_form_kwargs()
-        print(self.request.POST["device"])
-        print(type(kwargs))
-        kwargs['device'] = self.request.device
-        # kwargs.update({'device': self.request.device})
+        kwargs.update(self.kwargs)
         return kwargs
 
 
@@ -569,8 +568,6 @@ class DeviceLend(FormView):
         templates = []
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
-            print("HEY!!!!")
-            print(device.currentlending)
             if device.archived is not None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
