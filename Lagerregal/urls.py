@@ -33,8 +33,8 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}, name="login"),
-    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}, name="logout"),
+    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context": {"breadcrumbs": [("", _("Login"))]}}, name="login"),
+    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context": {"breadcrumbs": [("", _("Logout"))]}}, name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
@@ -68,6 +68,7 @@ urlpatterns = [
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/edit/$', PictureUpdate.as_view(), name="device-picture-edit"),
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/delete/$', PictureDelete.as_view(), name="device-picture-delete"),
     url(r'^devices/lend/$', DeviceLend.as_view(), name="device-lend"),
+    url(r'^devices/lend/(?P<pk>[0-9]*)$', DeviceLend.as_view(), name="device-lend"),
     url(r'^devices/return/(?P<lending>[0-9]*)$', DeviceReturn.as_view(), name="device-return"),
     url(r'^devices/public/$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/(?P<page>[0-9]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),

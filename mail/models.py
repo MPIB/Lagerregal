@@ -6,9 +6,9 @@ from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 import pystache
+import six
 
 from users.models import Lageruser, Department
-
 
 usages = {
     "new": _("New Device is created"),
@@ -25,7 +25,7 @@ class MailTemplate(models.Model):
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
     department = models.ForeignKey(Department, null=True)
-    usage = models.CharField(_('Usage'), choices=usages.items(), null=True, blank=True, max_length=200)
+    usage = models.CharField(_('Usage'), choices=list(usages.items()), null=True, blank=True, max_length=200)
 
     def __unicode__(self):
         return self.name
@@ -48,7 +48,7 @@ class MailTemplate(models.Model):
         datadict = {}
         datadict["device"] = {
             "description": data["device"].description,
-            "devicetype": (data["device"].devicetype.name if data["device"].devicetype != None else ""),
+            "devicetype": (data["device"].devicetype.name if data["device"].devicetype is not None else ""),
             "group": data["device"].group,
             "hostname": data["device"].hostname,
             "inventoried": data["device"].inventoried,
@@ -56,18 +56,18 @@ class MailTemplate(models.Model):
             "manufacturer": data["device"].manufacturer,
             "name": data["device"].__unicode__(),
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
-                                                                                                      "device"].room != None else ""),
+                                                                                                      "device"].room is not None else ""),
             "serialnumber": data["device"].serialnumber,
             "templending": data["device"].templending,
             "trashed": data["device"].trashed,
             "webinterface": data["device"].webinterface,
             "department": data["device"].department
         }
-        if data["device"].currentlending != None:
+        if data["device"].currentlending is not None:
             datadict["device"]["currentlending"] = {
-                "owner":data["device"].currentlending.owner.__unicode__(),
-                "duedate":data["device"].currentlending.duedate,
-                "lenddate":data["device"].currentlending.lenddate
+                "owner": data["device"].currentlending.owner.__unicode__(),
+                "duedate": data["device"].currentlending.duedate,
+                "lenddate": data["device"].currentlending.lenddate
             },
         else:
             datadict["device"]["currentlending"] = ""
@@ -105,7 +105,7 @@ class MailTemplateRecipient(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
-        return unicode(self.content_type.name + ": " + self.content_object.__unicode__())
+        return six.text_type(self.content_type.name + ": " + self.content_object.__unicode__())
 
 
 class MailHistory(models.Model):
@@ -115,7 +115,6 @@ class MailHistory(models.Model):
     sent_by = models.ForeignKey(Lageruser, null=True, on_delete=models.SET_NULL)
     sent_at = models.DateTimeField(auto_now_add=True)
     device = models.ForeignKey("devices.Device", null=True)
-
 
     def get_absolute_url(self):
         return reverse('mailhistory-detail', kwargs={'pk': self.pk})

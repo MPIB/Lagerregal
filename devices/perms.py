@@ -3,7 +3,7 @@ from permission.logics import PermissionLogic
 from permission.conf import settings
 from django.contrib import auth
 from django.core.exceptions import PermissionDenied
-from django.core.exceptions import PermissionDenied
+
 
 class DevicePermissionLogic(PermissionLogic):
     def __init__(self,
@@ -84,9 +84,6 @@ class DevicePermissionLogic(PermissionLogic):
         return False
 
 
-
-
 PERMISSION_LOGICS = (
     ('devices.Device', DevicePermissionLogic()),
 )
-
