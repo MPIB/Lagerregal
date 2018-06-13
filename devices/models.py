@@ -11,6 +11,7 @@ from locations.models import Section
 import datetime
 from django.db.models import Q
 from Lagerregal import utils
+from users.models import Department
 
 @reversion.register()
 class Building(models.Model):
@@ -126,7 +127,7 @@ class Device(models.Model):
     inventoried = models.DateTimeField(null=True, blank=True)
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
-    department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
+    department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null = True, blank = True, on_delete = models.SET_NULL,)
 
