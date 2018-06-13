@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -27,7 +28,6 @@ class SectionList(PaginationMixin, ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             sections = sections.order_by(self.viewsorting)
         return sections
-
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

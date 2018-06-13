@@ -1,4 +1,5 @@
 # coding: utf-8
+from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -152,7 +153,6 @@ class UserIpAddressRemove(DeleteView):
             (reverse("userprofile", kwargs={"pk": context["user"].pk}), context["user"].__unicode__()),
             ("", _("Unassign IP-Address"))]
         return render(request, self.template_name, context)
-
 
     def post(self, request, *args, **kwargs):
         user = get_object_or_404(Lageruser, pk=kwargs["pk"])

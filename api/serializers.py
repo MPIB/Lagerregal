@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 
 from devices.models import Room, Building, Manufacturer, Device, Template, Lending, Picture
-from django.contrib.auth.models import  Group
+from django.contrib.auth.models import Group
 from devicetypes.models import Type, TypeAttribute
 from users.models import Lageruser, Department
 from network.models import IpAddress
@@ -130,10 +130,10 @@ class LendingSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("can not set both device and smalldevice")
             elif not attrs["device"] and not attrs["smalldevice"]:
                 raise serializers.ValidationError("you have to either set device or smalldevice")
-        elif not "smalldevice" in attrs and not "device" in attrs:
+        elif "smalldevice" not in attrs and "device" not in attrs:
             raise serializers.ValidationError("you have to either set device or smalldevice")
         if "device" in attrs:
-            if attrs["device"] != "" and attrs["device"] != None:
+            if attrs["device"] != "" and attrs["device"] is not None:
                 if attrs["device"].currentlending:
                     raise serializers.ValidationError("this device is already lend.")
         return attrs

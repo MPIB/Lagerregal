@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, View, UpdateView
@@ -28,31 +29,33 @@ class Globalhistory(PaginationMixin, ListView):
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
+
 excluded_fields = ["currentlending", "created_at", "archived", "trashed", "inventoried", "bookmarks", "trashed",
                    "last_seen", "creator"]
 
+
 def cleanup_fielddict(version):
     del version.field_dict["id"]
-    if version.field_dict.get("devicetype") != None:
+    if version.field_dict.get("devicetype") is not None:
         try:
             version.field_dict["devicetype"] = Type.objects.get(
                 pk=version.field_dict["devicetype"])
         except Type.DoesNotExist:
             version.field_dict["devicetype"] = "[deleted]"
-    if version.field_dict.get("manufacturer") != None:
+    if version.field_dict.get("manufacturer") is not None:
         try:
             version.field_dict["manufacturer"] = Manufacturer.objects.get(
                 pk=version.field_dict["manufacturer"])
         except Manufacturer.DoesNotExist:
             version.field_dict["manufacturer"] = "[deleted]"
-    if version.field_dict.get("room") != None:
+    if version.field_dict.get("room") is not None:
         try:
             version.field_dict["room"] = Room.objects.get(
                 pk=version.field_dict["room"])
         except Room.DoesNotExist:
             version.field_dict["room"] = "[deleted]"
 
-    if version.field_dict.get("device") != None:
+    if version.field_dict.get("device") is not None:
         try:
             version.field_dict["device"] = Device.objects.get(
                 pk=version.field_dict["device"])
@@ -78,7 +81,6 @@ class HistoryDetail(UpdateView):
             apps.get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
                                                        id=context["this_version"].object_id)
 
-
         context["this_version"] = cleanup_fielddict(context["this_version"])
 
         previous_version = Version.objects.filter(object_id=context["current_version"].pk,
@@ -103,12 +105,11 @@ class HistoryDetail(UpdateView):
                 _(context["this_version"].content_type.name)),
             (context["current_version"].get_absolute_url(), context["current_version"].__unicode__()),
             (reverse("history-list", kwargs={"content_type_id": context["this_version"].content_type.id,
-                                             "object_id": context["this_version"].object_id} ), _("History")),
+                                             "object_id": context["this_version"].object_id}), _("History")),
             ("", _("Version {0}".format(context["this_version"].pk)))
         ]
 
         return context
-
 
     def post(self, request, **kwargs):
         self.object = self.get_object()
@@ -118,12 +119,12 @@ class HistoryDetail(UpdateView):
 
         for name, value in version.field_dict.items():
             if value == "[deleted]":
-                setattr(object,name, None)
+                setattr(object, name, None)
             else:
-                setattr(object,name, value)
+                setattr(object, name, value)
 
         object.save()
-        if version.field_dict.get("devicetype") != None:
+        if version.field_dict.get("devicetype") is not None:
             TypeAttributeValue.objects.filter(device=version.object_id).delete()
         reversion.set_comment("Reverted to version from {0}".format(version.revision.date_created))
         reversion.set_ignore_duplicates(True)
@@ -131,8 +132,8 @@ class HistoryDetail(UpdateView):
         messages.success(self.request,
                         _('Successfully reverted Device to revision {0}').format(version.revision.id))
 
-
         return HttpResponseRedirect(object.get_absolute_url())
+
 
 class HistoryList(ListView):
     context_object_name = 'version_list'
@@ -153,6 +154,6 @@ class HistoryList(ListView):
                 _(self.content_type.name)),
             (self.object.get_absolute_url(), self.object.__unicode__()),
             (reverse("history-list", kwargs={"content_type_id": self.content_type.id,
-                                             "object_id": self.object.id} ), _("History"))
+                                             "object_id": self.object.id}), _("History"))
         ]
         return context

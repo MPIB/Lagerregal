@@ -58,11 +58,25 @@
     } else {
     $("#alternativebox").remove();
     }
-
-
     });
     }
     });
+
+    $("#id_department").change(function(){
+      var department = $(this).val();
+      $.ajax({
+        type: "POST",
+        url : "{% url "load-choices" %}",
+        data : {"department" : department},
+        success: function(data){
+          $("#id_usage").empty();
+          for(key in data){
+            $('#id_usage').append('<option value="' + key + '">' + data[key] +'</option>');
+          }
+          $('#id_usage').prop('selectIndex',0).change();
+        },
+    });
+  });
 
     $(function() {
     $( "#id_duedate" ).datepicker();

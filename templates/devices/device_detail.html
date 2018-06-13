@@ -131,6 +131,19 @@
                     <td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}
                         </a>{% else %}-{% endif %}</td>
                 </tr>
+                {%if device.used_in%}
+                <tr>
+                    <td>{% trans "Used in" %}</td>
+                    <td><a href="{% url "device-detail" device.used_in.pk%}">{{device.used_in}}</a></td>
+                </tr>
+                {% endif %}
+                {% if usedset %}
+                <tr>
+                    <td>{% trans "Uses" %}</td>
+                    <td>{% for element in usedset%}<a href="{% url "device-detail" element.pk%}">
+                        {{element}}</a> <br/>{%endfor%}</td>
+                </tr>
+                {% endif %}
                 {% for attributevalue in attributevalue_list %}
                     <tr>
                         <td>{{ attributevalue.typeattribute.name }}</td>
@@ -535,7 +548,7 @@
         $("#deletebutton").popover({
         html: 'true',
         placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
         content :"<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'style='margin-left:10px;'/>"+
@@ -546,7 +559,7 @@
         $("#archivebutton").popover({
         html: 'true',
         placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
         content :"<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
@@ -568,7 +581,7 @@
         $("#trashbutton").popover({
         html: 'true',
         placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        title : '<span class="text-info" style="margin-right:10px"><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href="{% url 'device-detail' object.used_in.pk %}">{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href="{% url 'device-detail' element.pk %}"> {{element}} </a>{% endfor %} .{% endif %} </strong></span>',
         content :"<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
             "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
             "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+

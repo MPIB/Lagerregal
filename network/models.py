@@ -31,4 +31,4 @@ class IpAddress(models.Model):
         return reverse('ipaddress-detail', kwargs={'pk': self.pk})
 
 
-reversion.register(IpAddress, exclude=["last_seen",])
+reversion.register(IpAddress, exclude=["last_seen"])

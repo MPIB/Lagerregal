@@ -1,31 +1,29 @@
 import os.path
 
+from datetime import datetime, timedelta
 
 from django.test.client import Client
 from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
-from datetime import datetime, timedelta
+from model_mommy import mommy
 
 from devices.models import Device, Building, Room, Manufacturer, Template, Note, Lending, DeviceInformationType, DeviceInformation, Picture
 from users.models import Lageruser
 from network.models import IpAddress
 from devices.forms import IpAddressForm
-
-
-
-
-
-
+from devices.forms import DeviceForm
 
 
 class DeviceTests(TestCase):
+
     def setUp(self):
+        '''method for setting up a client for testing'''
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_device_creation(self):
+        '''method for testing the functionality of creating a new device'''
         device = mommy.make(Device)
         lending_past = mommy.make(Lending, duedate = (datetime.today() - timedelta(days = 1)).date())
         lending_future = mommy.make(Lending, duedate = (datetime.today() + timedelta(days = 1)).date())
@@ -60,15 +58,20 @@ class DeviceTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_device_add(self):
-        device = mommy.make(Device)
+        device = mommy.make(Device, name = "used")
         url = reverse("device-add")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
+        form = resp.context['form']
+        data = form.initial
+        data['uses'] = device.id
+        data['name'] = "uses"
+        resp = self.client.post(url, data)
+        device = Device.objects.filter(name = 'used')[0]
+        self.assertEqual(device.used_in.name, 'uses')
 
     def test_device_edit(self):
         device = mommy.make(Device)
-        devices = Device.objects.all()
-        device = devices[0]
         url = reverse("device-edit", kwargs={"pk": device.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -116,6 +119,21 @@ class DeviceTests(TestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
         self.assertIsNone(resp.context["device"].trashed)
+
+    def test_device_trash_sets_child_used_in_to_none(self):
+        device = mommy.make(Device)
+        used_device = mommy.make(Device, used_in = device)
+        trashurl = reverse('device-trash', kwargs={'pk': device.pk})
+        resp = self.client.post(trashurl)
+        used_device = Device.objects.filter(pk = used_device.pk)[0]
+        self.assertIsNone(used_device.used_in)
+
+    def test_device_trash_sets_self_used_in_to_none(self):
+        device = mommy.make(Device, _fill_optional=['used_in'])
+        trashurl = reverse("device-trash", kwargs={'pk' : device.pk})
+        resp = self.client.post(trashurl)
+        device = Device.objects.filter(pk = device.pk)[0]
+        self.assertIsNone(device.used_in)
 
     def test_device_trash_returns_lending(self):
         lending = mommy.make(Lending, _fill_optional=['device', 'owner'])
@@ -214,9 +232,6 @@ class DeviceTests(TestCase):
         url = reverse("device-return", kwargs = {"lending": lending2.id})
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
-
-
-
 
 
 class BuildingTests(TestCase):
@@ -334,9 +349,6 @@ class RoomTests(TestCase):
         url = reverse("room-delete", kwargs={"pk": room.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
-
-
-
 
 
 class ManufacturerTests(TestCase):
@@ -473,6 +485,7 @@ class DeviceInformationTests(TestCase):
     def test_device_information_creation(self):
         device_information = mommy.make(DeviceInformation)
         self.assertEqual(device_information.__unicode__(), device_information.infotype.__unicode__() + ": " + device_information.information)
+
 
 class PictureTests(TestCase):
     def setUp(self):

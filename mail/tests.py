@@ -1,6 +1,5 @@
 import os.path
 
-
 from django.test.client import Client, RequestFactory
 from django.test import TestCase
 from model_mommy import mommy
@@ -12,24 +11,20 @@ from devices.models import Device, Room, Building, Lending
 from users.models import Lageruser
 
 
-
-
 class TestMailTemplate(TestCase):
     def setUp(self):
         self.client = Client()
         myadmin = Lageruser.objects.create_superuser("test", "test@test.com", "test")
-        self.client.login(username = "test", password = "test")
+        self.client.login(username="test", password="test")
 
     def test_template_creation(self):
         template = mommy.make(MailTemplate)
         self.assertEqual(template.__unicode__(), template.name)
-        self.assertEqual(template.get_absolute_url(), reverse('mail-detail', kwargs={'pk': template.pk}) )
-        self.assertEqual(template.get_edit_url(), reverse('mail-edit', kwargs={'pk': template.pk}) )
+        self.assertEqual(template.get_absolute_url(), reverse('mail-detail', kwargs={'pk': template.pk}))
+        self.assertEqual(template.get_edit_url(), reverse('mail-edit', kwargs={'pk': template.pk}))
 
 
-
-
-#first figuring out strange behaviour of content_object
+# first figuring out strange behaviour of content_object
 # class TestMailTemplateRecipient(TestCase):
 #     def setUp(self):
 #         self.client = Client()
@@ -41,7 +36,7 @@ class TestMailTemplate(TestCase):
 #         rec = mommy.make(MailTemplateRecipient, content_type = con)
 #         self.assertEqual(rec.__unicode__(), unicode(rec.content_type.name + ": " + rec.content_object.__unicode__()))
 
-#find out why url does not exist
+# find out why url does not exist
 # class TestMailHistory(TestCase):
 #     def setUp(self):
 #         self.client = Client()

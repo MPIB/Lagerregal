@@ -1,6 +1,8 @@
+from __future__ import unicode_literals
 import re
 import os
 
+import six
 from django.template import Library
 from django.utils.safestring import mark_safe
 from django.forms import CheckboxInput
@@ -53,14 +55,14 @@ class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
 
 @register.filter
 def add_class(value, css_class):
-    string = unicode(value)
+    string = six.text_type(value)
     match = class_re.search(string)
     if match:
         m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class,
                                                     css_class, css_class),
                       match.group(1))
 
-        if m != None:
+        if m is not None:
             return mark_safe(class_re.sub(match.group(1) + " " + css_class,
                                           string))
     else:
@@ -70,7 +72,7 @@ def add_class(value, css_class):
 
 @register.filter
 def get_range(value):
-    return range(value)
+    return list(range(value))
 
 
 @register.filter
@@ -96,6 +98,7 @@ def get_attribute_from_list(device, attribute):
 def filename(value):
     return os.path.basename(value.file.name)
 
+
 @register.simple_tag
 def as_nested_list(factvalue):
     res = ''
@@ -103,12 +106,12 @@ def as_nested_list(factvalue):
         res += "<ul>"
         for key, value in factvalue.items():
             if isinstance(value, dict):
-                res += u"<li>{}<ul>".format(key)
+                res += "<li>{}<ul>".format(key)
                 for key, value in value.items():
-                    res += u"<li>{} : {}</li>".format(key, value)
+                    res += "<li>{} : {}</li>".format(key, value)
                 res += "</ul></li>"
             else:
-                res += u"<li>{} : {}</li>".format(key, value)
+                res += "<li>{} : {}</li>".format(key, value)
         res += "</ul>"
     elif isinstance(factvalue, list):
         res += "<ul>"
@@ -116,6 +119,6 @@ def as_nested_list(factvalue):
             res += "<li>{}</li>".format(item)
         res += "</ul>"
     else:
-        res += unicode(factvalue)
+        res += six.text_type(factvalue)
 
     return mark_safe(res)

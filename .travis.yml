@@ -1,12 +1,12 @@
 language: python
 python:
-  - "2.7"
+  - "3.6"
 # command to install dependencies
 install:
   - "pip install -r dependencies.txt"
   - npm install -g casperjs
   # create the database
-  - "cp Lagerregal/settings_template.py Lagerregal/settings.py"
+  - "cp Lagerregal/template_development.py Lagerregal/settings.py"
   - "./manage.py migrate"
 # command to run tests
 script: "./manage.py test"

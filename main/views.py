@@ -2,7 +2,6 @@ import datetime
 
 from django.views.generic import TemplateView, ListView
 from reversion.models import Version, Revision
-from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from devices.models import *
@@ -77,6 +76,7 @@ def get_widget_data(user, widgetlist=[], departments=None):
         context["returnsoon"] = lendings.filter(duedate__lte=soon, duedate__gt=context["today"],
                                                 returndate=None).order_by(
                                                 "duedate")[:10]
+
     return context
 
 
@@ -85,6 +85,7 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
+
         if self.request.user.is_staff:
             context["widgets_left"] = DashboardWidget.objects.filter(user=self.request.user, column="l"
             ).order_by("index")
