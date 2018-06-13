@@ -20,14 +20,9 @@ class MailTemplateForm(forms.ModelForm):
 class MailTemplateUpdateForm(MailTemplateForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
-        print('HEEEEY')
-        print(self.instance.department)
-        print(kwargs["instance"].department)
         if self.instance.department:
-            print(self.instance)
             #a query set
             used_db = MailTemplate.objects.values_list('usage', flat=True).filter(department = kwargs["instance"].department)
-            print(used_db)
             used = []
             for x in used_db:
                 if x is not None:
