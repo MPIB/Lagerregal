@@ -35,6 +35,7 @@ class AvatarForm(forms.ModelForm):
             "avatar": forms.FileInput()
         }
 
+
 class DepartmentAddUserForm(forms.ModelForm):
     error_css_class = 'has-error'
 

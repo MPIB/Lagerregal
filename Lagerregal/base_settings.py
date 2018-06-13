@@ -181,7 +181,7 @@ LOGGING = {
 }
 
 
-PUBLIC_DEVICES_FILTER = {"tags__id__in" : ["3", "17"]}
+PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
 
 # get more themes from https://bootswatch.com/ and download them to:
 #   static/css/themes/<name>.min.css

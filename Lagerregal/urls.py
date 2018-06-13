@@ -33,8 +33,8 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}, name="login"),
-    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}, name="logout"),
+    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context": {"breadcrumbs": [("", _("Login"))]}}, name="login"),
+    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context": {"breadcrumbs": [("", _("Logout"))]}}, name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 

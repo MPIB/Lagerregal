@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
-from reversion.models import Version
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -18,8 +17,12 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from reversion.models import Version
+from permission.decorators import permission_required
 
 from users.models import Lageruser, Department, DepartmentUser
 from devices.models import Lending, Device
@@ -29,9 +32,6 @@ from Lagerregal.utils import PaginationMixin
 from network.models import IpAddress
 from network.forms import UserIpAddressForm
 from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterForm
-from permission.decorators import permission_required
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
 
 
 class UserList(PaginationMixin, ListView):
@@ -227,12 +227,11 @@ class UsersettingsView(TemplateView):
             form = AvatarForm(request.POST, request.FILES, instance=request.user)
 
             if form.is_valid():
-                if form.cleaned_data["avatar_clear"] and request.user.avatar != None:
+                if form.cleaned_data["avatar_clear"] and request.user.avatar is not None:
                     request.user.avatar.delete()
                     request.user.avatar = None
                     request.user.save()
-
-                if tempavatar != None:
+                if tempavatar is not None:
                     tempavatar.storage.delete(tempavatar)
                 form.save()
             context["avatarform"] = form
@@ -302,7 +301,6 @@ class DepartmentList(PaginationMixin, ListView):
             sections = sections.order_by(self.viewsorting)
         return sections
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DepartmentList, self).get_context_data(**kwargs)
@@ -363,6 +361,7 @@ class DepartmentDetail(DetailView):
             (reverse("department-detail", kwargs={"pk": context["object"].pk}), context["object"].name)]
         return context
 
+
 @permission_required('users.change_department', raise_exception=True)
 class DepartmentUpdate(UpdateView):
     model = Department
@@ -377,6 +376,7 @@ class DepartmentUpdate(UpdateView):
             (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
             ("", _("Edit"))]
         return context
+
 
 @permission_required('users.delete_department', raise_exception=True)
 class DepartmentDelete(DeleteView):
@@ -393,13 +393,13 @@ class DepartmentDelete(DeleteView):
             ("", _("Delete"))]
         return context
 
+
 class DepartmentAddUser(FormView):
     form_class = DepartmentAddUserForm
     template_name = 'devices/base_form.html'
 
     def get_success_url(self):
         return reverse("department-detail", kwargs={"pk": self.department.pk})
-
 
     def get_context_data(self, **kwargs):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
@@ -417,11 +417,11 @@ class DepartmentAddUser(FormView):
 
     def form_valid(self, form):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
-        if not self.department in form.cleaned_data["user"].departments.all():
+        if self.department not in form.cleaned_data["user"].departments.all():
             department_user = DepartmentUser(user=form.cleaned_data["user"], department=form.cleaned_data["department"],
                                             role=form.cleaned_data["role"])
             department_user.save()
-            if form.cleaned_data["user"].main_department == None:
+            if form.cleaned_data["user"].main_department is None:
                 form.cleaned_data["user"].main_department = form.cleaned_data["department"]
 
         return HttpResponseRedirect(reverse("department-detail", kwargs={"pk": self.department.pk}))

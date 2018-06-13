@@ -4,6 +4,7 @@ from django import forms
 from mail.models import MailTemplate
 from devices.forms import get_emailrecipientlist
 
+
 class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
@@ -15,13 +16,14 @@ class MailTemplateForm(forms.ModelForm):
 
     class Meta:
         model = MailTemplate
-        fields= "__all__"
+        fields = "__all__"
+
 
 class MailTemplateUpdateForm(MailTemplateForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
         if self.instance.department:
-            used = MailTemplate.objects.values_list('usage', flat=True).filter(department = kwargs["instance"].department)
+            used = MailTemplate.objects.values_list('usage', flat=True).filter(department=kwargs["instance"].department)
             used = [x for x in used if str(self.instance.usage) not in x]
             valid = [x for x in self.fields['usage'].choices if not any(y in x for y in used)]
             self.fields['usage'].choices = valid

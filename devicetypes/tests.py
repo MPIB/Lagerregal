@@ -7,6 +7,7 @@ from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from devicetypes.models import Type
 from users.models import Lageruser
 
+
 class TypeTests(TestCase):
 
     def setUp(self):
@@ -87,6 +88,7 @@ class TypeTests(TestCase):
         # querying all devices and choose first one
         devicetypes = Type.objects.all()
         devicetype = devicetypes[0]
+
 
         # testing successful loading of devicetype-page after deletion (statuscode 2xx)
         url = reverse("type-edit", kwargs={"pk": devicetype.pk})

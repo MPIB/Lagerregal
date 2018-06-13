@@ -35,7 +35,6 @@ class TypeList(PaginationMixin, ListView):
 
         return devicetype
 
-
     def get_context_data(self, **kwargs):
         '''method for getting context data for filtering, viewsorting and breadcrumbs'''
         # Call the base implementation first to get a context
@@ -109,7 +108,7 @@ class TypeCreate(CreateView):
         newobject = form.save()
 
         # creating new attributes to devicetype
-        for key, value in form.cleaned_data.iteritems():
+        for key, value in form.cleaned_data.items():
             if key.startswith("extra_field_") and value != "":
                 attribute = TypeAttribute()
                 attribute.name = value
@@ -221,6 +220,7 @@ class TypeAttributeUpdate(UpdateView):
     def get_success_url(self):
         return self.success_url
 
+
 class TypeAttributeDelete(DeleteView):
     model = TypeAttribute
     success_url = reverse_lazy('type-list')
@@ -229,7 +229,6 @@ class TypeAttributeDelete(DeleteView):
     def post(self, request, *args, **kwargs):
         self.next = request.POST["next"]
         return super(TypeAttributeDelete, self).post(request, **kwargs)
-
 
     def get_success_url(self):
         return self.next

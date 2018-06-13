@@ -21,7 +21,7 @@ class WidgetAdd(View):
             widget = DashboardWidget()
             widget.column = "l"
             oldindex = userwidgets.filter(column="l").aggregate(Max('index'))["index__max"]
-            widget.index = oldindex + 1 if oldindex != None else 1
+            widget.index = oldindex + 1 if oldindex is not None else 1
             widget.widgetname = widgetname
             widget.user = request.user
             widget.save()
@@ -59,7 +59,7 @@ class WidgetMove(View):
     def post(self, request):
         userwidgets = json.loads(request.POST["widgets"])
 
-        for widgetname, widgetattr in userwidgets.iteritems():
+        for widgetname, widgetattr in userwidgets.items():
             if widgetname in widgets:
                 w = DashboardWidget.objects.get(user=request.user, widgetname=widgetname)
                 if w.index != widgetattr["index"] or w.column != widgetattr["column"]:

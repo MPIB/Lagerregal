@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -10,6 +11,7 @@ from devices.models import Device
 from devices.forms import DepartmentViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
 from users.models import Department
+
 
 class DevicegroupList(PaginationMixin, ListView):
     model = Devicegroup
@@ -31,7 +33,6 @@ class DevicegroupList(PaginationMixin, ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devicegroups = devicegroups.order_by(self.viewsorting)
 
-
         if self.request.user.departments.count() > 0:
             self.departmentfilter = self.kwargs.get("department", "my")
         else:
@@ -52,7 +53,6 @@ class DevicegroupList(PaginationMixin, ListView):
             devicegroups = devicegroups.filter(Q(department__in=departmentfilter) | Q(department=None))
 
         return devicegroups
-
 
     def get_context_data(self, **kwargs):
         '''method for getting context data and use it'''

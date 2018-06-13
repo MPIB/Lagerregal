@@ -29,7 +29,6 @@ class SectionList(PaginationMixin, ListView):
             sections = sections.order_by(self.viewsorting)
         return sections
 
-
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(SectionList, self).get_context_data(**kwargs)

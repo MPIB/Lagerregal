@@ -1,14 +1,6 @@
-import os.path
-
-
-from django.test.client import Client
 from django.test import TestCase
-from model_mommy import mommy
-from django.core.urlresolvers import reverse
 
 from main.models import get_progresscolor
-from users.models import Lageruser
-
 
 
 class TestMethods(TestCase):

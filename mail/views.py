@@ -11,7 +11,6 @@ from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 
 
-
 class MailList(PaginationMixin, ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
@@ -48,6 +47,7 @@ class MailCreate(CreateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
+
     def get_initial(self):
         initial = super(MailCreate, self).get_initial()
         return initial
@@ -102,7 +102,7 @@ class MailUpdate(UpdateView):
         r = super(MailUpdate, self).form_valid(form)
         for recipient in self.object.default_recipients.all():
             identifier = recipient.content_type.name[0].lower() + str(recipient.id)
-            if not identifier in form.cleaned_data["default_recipients"]:
+            if identifier not in form.cleaned_data["default_recipients"]:
                 recipient.delete()
             else:
                 form.cleaned_data["default_recipients"].remove(identifier)
