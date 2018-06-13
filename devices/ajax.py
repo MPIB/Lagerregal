@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json
-import urllib
-import httplib
-from httplib import ssl
 
+try:
+    import urllib.parse as urllib
+    import http.client as httplib
+    from http.client import ssl
+except ImportError:
+    import urllib
+    import httplib
+    from httplib import ssl
+
+import six
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms.models import modelform_factory
@@ -19,6 +26,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.dateparse import parse_date
+from django.contrib import messages
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
 from users.models import Lageruser, Department
@@ -89,7 +97,7 @@ class AutocompleteName(View):
 
 class AddDeviceField(View):
     def post(self, request):
-        dform = QueryDict(query_string=unicode(request.POST["form"]).encode('utf-8'))
+        dform = QueryDict(query_string=six.text_type(request.POST["form"]).encode('utf-8'))
         classname = dform["classname"]
         if classname == "manufacturer":
             form = modelform_factory(Manufacturer, exclude=(), form=AddForm)(dform)
@@ -127,7 +135,7 @@ class AddDeviceField(View):
                 data["name"] = newitem.name
                 data["classname"] = classname
         else:
-            print form.errors
+            print(form.errors)
             data["error"] = "Error: {0}".format(form.non_field_errors())
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -204,7 +212,7 @@ class LoadMailtemplate(View):
             return HttpResponse("")
         template = get_object_or_404(MailTemplate, pk=template)
         data = {"subject": template.subject, "body": template.body}
-        if isinstance(recipients, unicode):
+        if isinstance(recipients, six.text_type):
             recipients = [recipients]
         newrecipients = [obj for obj in recipients]
         newrecipients += [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
@@ -432,6 +440,11 @@ class AjaxSearch(View):
                                                                                      "devicetype__name", "room__name",
                                                                                      "room__building__name")}
                     return render(request, 'devices/searchresult.html', context)
+                except ValueError:
+                    context = {
+                        "wrong_id_format" : True
+                    }
+                    return render(request, 'devices/searchempty.html', context)
                 except Device.DoesNotExist:
                     return render(request, 'devices/searchempty.html')
             elif key == "shortterm":
@@ -456,7 +469,7 @@ class AjaxSearch(View):
         else:
             devices = devices.filter(archived=None, trashed=None)
 
-        if textfilter != None:
+        if textfilter is not None:
             SEARCHSTRIP = getattr(settings, "SEARCHSTRIP", [])
             if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
@@ -515,6 +528,7 @@ class PuppetDetails(View):
         }
         return render(request, 'devices/puppetdetails.html', context)
 
+
 class PuppetSoftware(View):
 
     def post(self, request):
@@ -543,7 +557,7 @@ class PuppetSoftware(View):
             res = json.loads(res.read())[0]
             software = res['value']
             context = {
-                'puppetsoftware': software.values()
+                'puppetsoftware': list(software.values())
             }
         except:
             return HttpResponse('Malformed puppet software fact.')

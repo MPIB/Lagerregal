@@ -4,6 +4,7 @@ from permission.conf import settings
 from django.contrib import auth
 from django.core.exceptions import PermissionDenied
 
+
 class IPAddressPermissionLogic(PermissionLogic):
     def __init__(self,
                  field_name=None,
@@ -39,7 +40,7 @@ class IPAddressPermissionLogic(PermissionLogic):
                 return obj.department in user_obj.departments.all()
         return False
 
+
 PERMISSION_LOGICS = (
     ('network.IpAddress', IPAddressPermissionLogic()),
 )
-

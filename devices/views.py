@@ -39,7 +39,6 @@ from permission.decorators import permission_required
 from django.db.models import Q
 
 
-
 @permission_required('devices.read_device', raise_exception=True)
 class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
@@ -48,15 +47,21 @@ class DeviceList(PaginationMixin, ListView):
     viewsorting = None
 
     def post(self, request):
+        '''post-requesting the detail-view of device by id'''
         if 'deviceid' in request.POST:
             return HttpResponseRedirect(reverse('device-detail', kwargs={'pk':request.POST['deviceid']}))
         else:
             return HttpResponseRedirect(reverse('device-list'))
 
     def get_queryset(self):
+        '''method for query results and display it depending on existing filters (viewfilter, department)'''
         self.viewfilter = self.kwargs.get("filter", "active")
         devices = None
         lendings = None
+
+        # filtering devices by status
+        # possible status: all, active, lent, archived, trash, overdue,
+        # return soon, short term, bookmarked
         if self.viewfilter == "all":
             devices = Device.objects.all()
         elif self.viewfilter == "available":
@@ -81,6 +86,7 @@ class DeviceList(PaginationMixin, ListView):
         else:
             devices = Device.active()
 
+        # filtering by department
         if self.request.user.departments.count() > 0:
             self.departmentfilter = self.kwargs.get("department", "my")
         else:
@@ -92,9 +98,11 @@ class DeviceList(PaginationMixin, ListView):
                 self.departmentfilter = Department.objects.get(id=departmentid)
             except:
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
+
         if self.departmentfilter == "my":
             self.departmentfilter = self.request.user.departments.all()
 
+        # filtering lent or overdue devices
         if self.viewfilter == "lent" or self.viewfilter == "overdue" or self.viewfilter == "returnsoon":
             if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
                 lendings = lendings.filter(owner__departments__in=self.departmentfilter)
@@ -125,16 +133,22 @@ class DeviceList(PaginationMixin, ListView):
                                   "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
+        '''method for getting context data (filter, time, templates, breadcrumbs)'''
         context = super(DeviceList, self).get_context_data(**kwargs)
+
+        # getting filters
         context["viewform"] = DeviceViewForm(initial={
             'viewfilter': self.viewfilter,
             "viewsorting": self.viewsorting,
             "departmentfilter": self.departmentfilter
         })
+
         context["today"] = datetime.datetime.today()
         context["template_list"] = Template.objects.all()
         context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
+
+        # add page number to breadcrumbs
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -142,8 +156,10 @@ class DeviceList(PaginationMixin, ListView):
 
 @permission_required('devices.read_device', raise_exception=True)
 class DeviceDetail(DetailView):
+    # get related data to chosen device
     queryset = Device.objects \
-        .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department", "room", "room__building") \
+        .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department",
+                        "room", "room__building") \
         .prefetch_related("pictures", )
     context_object_name = 'device'
     object = None
@@ -151,9 +167,11 @@ class DeviceDetail(DetailView):
     def get_object(self, queryset=None):
         if self.object is not None:
             return self.object
+
         pk = self.kwargs.get(self.pk_url_kwarg)
         queryset = self.queryset.filter(pk=pk)
         self.object = queryset.get()
+
         return self.object
 
     def get_context_data(self, **kwargs):
@@ -163,11 +181,17 @@ class DeviceDetail(DetailView):
 
 
         # Add in a QuerySet of all the books
+
+        # ip context data
         context['ipaddressform'] = IpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
             department=self.object.department, device=None, user=None)
+
+        # tag context data
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
+
+        # lending history, eidt history, mail history
         context["lending_list"] = Lending.objects.filter(device=context["device"])\
                                       .select_related("owner").order_by("-pk")[:10]
         context["version_list"] = Version.objects.filter(object_id=context["device"].id,
@@ -176,11 +200,15 @@ class DeviceDetail(DetailView):
                                       .select_related("revision", "revision__user").order_by("-pk")[:10]
         context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
                                    .select_related("sent_by").order_by("-pk")[:10]
+
+
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
         mailinitial = {}
+
+        # get user infos if device is lend
         if context["device"].currentlending is not None:
             currentowner = context["device"].currentlending.owner
             mailinitial["owner"] = currentowner
@@ -191,10 +219,10 @@ class DeviceDetail(DetailView):
             mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
             messages.error(self.request, _('Please create reminder mail template'))
+        # mail context data
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
             department__in=self.request.user.departments.all())
-
         versions = Version.objects.get_for_object(context["device"])
 
         if len(versions) != 0:
@@ -212,21 +240,23 @@ class DeviceDetail(DetailView):
                 context["label_js"] = ""
                 for attribute in settings.LABEL_TEMPLATES[dep]["device"][1]:
                     if attribute == "id":
-                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
-                                                                                                  getattr(
-                                                                                                      context["device"],
-                                                                                                      attribute))
+                        context["label_js"] += "\nlabel.setObjectText('{0}', '{1:07d}');".format(attribute,
+                                                                                                 getattr(
+                                                                                                     context["device"],
+                                                                                                     attribute))
                     else:
-                        context["label_js"] += u"\nlabel.setObjectText('{0}', '{1}');".format(attribute,
-                                                                                              getattr(context["device"],
-                                                                                                      attribute))
+                        context["label_js"] += "\nlabel.setObjectText('{0}', '{1}');".format(attribute,
+                                                                                             getattr(context["device"],
+                                                                                                     attribute))
 
+        # add data to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
+
         return context
 
-
+#### to do
 @permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressRemove(View):
     template_name = 'devices/unassign_ipaddress.html'
@@ -238,6 +268,7 @@ class DeviceIpAddressRemove(View):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Unassign IP-Addresses"))]
+
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -264,14 +295,17 @@ class DeviceIpAddress(FormView):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
             ("", _("Assign IP-Addresses"))]
+
         return context
 
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         device = form.cleaned_data["device"]
+
         if device.archived is not None:
             messages.error(self.request, _("Archived Devices can't get new IP-Addresses"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
         reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
         for ipaddress in ipaddresses:
             ipaddress.device = device
@@ -384,7 +418,7 @@ class DeviceCreate(CreateView):
         form.cleaned_data["creator"] = self.request.user
         reversion.set_comment(_("Created"))
         r = super(DeviceCreate, self).form_valid(form)
-        for key, value in form.cleaned_data.iteritems():
+        for key, value in form.cleaned_data.items():
             if key.startswith("attribute_") and value != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
@@ -409,7 +443,6 @@ class DeviceCreate(CreateView):
             template.send(request=self.request, recipients=recipients,
                           data={"device": self.object, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
-
 
         if "uses" in form.changed_data:
             for element in form.cleaned_data["uses"]:
@@ -456,11 +489,10 @@ class DeviceUpdate(UpdateView):
         else:
             reversion.set_comment(form.cleaned_data["comment"])
 
-
         if device.devicetype is not None:
             if form.cleaned_data["devicetype"] is None or device.devicetype.pk != form.cleaned_data["devicetype"].pk:
                 TypeAttributeValue.objects.filter(device=device.pk).delete()
-        for key, value in form.cleaned_data.iteritems():
+        for key, value in form.cleaned_data.items():
             if key.startswith("attribute_") and value != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
@@ -496,18 +528,17 @@ class DeviceUpdate(UpdateView):
                           data={"device": device, "user": self.request.user})
             messages.success(self.request, _('Mail successfully sent'))
 
-
         if "uses" in form.changed_data:
             for element in form.initial["uses"]:
                 # if element was removed
                 if element not in form.cleaned_data["uses"]:
-                    used_device = Device.objects.filter(id = int(element))[0]
+                    used_device = Device.objects.filter(id=int(element))[0]
                     used_device.used_in = None
                     used_device.save()
             for element in form.cleaned_data["uses"]:
                 # if element was added
                 if element not in form.initial["uses"]:
-                    used_device = Device.objects.filter(id = int(element))[0]
+                    used_device = Device.objects.filter(id=int(element))[0]
                     used_device.used_in = self.object
                     used_device.save()
 
@@ -535,7 +566,6 @@ class DeviceDelete(DeleteView):
 class DeviceLend(FormView):
     template_name = 'devices/base_form.html'
     form_class = LendForm
-
 
     def get_context_data(self, **kwargs):
         context = super(DeviceLend, self).get_context_data(**kwargs)
@@ -566,14 +596,14 @@ class DeviceLend(FormView):
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
             try:
-                templates.append(MailTemplate.objects.get(usage = "lent", department = self.request.user.main_department))
+                templates.append(MailTemplate.objects.get(usage="lent", department=self.request.user.main_department))
             except:
                 messages.error(self.request, _('MAIL NOT SENT - Template for lent devices does not exist for your main department'))
 
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
-                    templates.append(MailTemplate.objects.get(usage="room", department = self.request.user.main_department))
+                    templates.append(MailTemplate.objects.get(usage="room", department=self.request.user.main_department))
                 except:
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
@@ -631,7 +661,7 @@ class DeviceReturn(FormView):
         context = super(DeviceReturn, self).get_context_data(**kwargs)
         context['actionstring'] = "Mark device as returned"
 
-        #get lending object with given pk
+        # get lending object with given pk
         lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
 
         if lending.device:
@@ -654,13 +684,13 @@ class DeviceReturn(FormView):
             device = lending.device
             device.currentlending = None
             try:
-                templates.append(MailTemplate.objects.get(usage="returned", department = self.request.user.main_department))
+                templates.append(MailTemplate.objects.get(usage="returned", department=self.request.user.main_department))
             except:
                 messages.error(self.request, _('MAIL NOT SENT - Template for returned device does not exist for your main department'))
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
-                    templates.append(MailTemplate.objects.get(usage="room", department = self.request.user.main_department))
+                    templates.append(MailTemplate.objects.get(usage="room", department=self.request.user.main_department))
                 except:
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
@@ -685,7 +715,7 @@ class DeviceReturn(FormView):
         lending.returndate = datetime.date.today()
         lending.save()
         messages.success(self.request, _('Device is marked as returned'))
-        if device != None:
+        if device is not None:
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
         else:
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": owner.pk}))
@@ -741,7 +771,7 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
 
     def post(self, request, **kwargs):
         device = self.get_object()
-        if device.archived == None:
+        if device.archived is None:
             device.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
             device.currentlending = None
@@ -763,16 +793,16 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
 
     def post(self, request, **kwargs):
         device = self.get_object()
-        if device.trashed == None:
+        if device.trashed is None:
             device.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
             device.room = None
             if device.currentlending:
                 device.currentlending.returndate = datetime.date.today()
                 device.currentlending.save()
                 device.currentlending = None
-            #if device.uses
-            if Device.objects.filter(used_in = device.pk):
-                other_list = Device.objects.filter(used_in = device.pk)
+            # if device.uses
+            if Device.objects.filter(used_in=device.pk):
+                other_list = Device.objects.filter(used_in=device.pk)
                 for element in other_list:
                     other = element
                     other.used_in = None
@@ -788,7 +818,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
             except:
                 template = None
                 messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
-            if not template == None:
+            if template is not None:
                 recipients = []
                 for recipient in template.default_recipients.all():
                     recipient = recipient.content_object
@@ -838,11 +868,11 @@ class DeviceStorage(SingleObjectMixin, FormView):
             ipaddress.save()
         if form.cleaned_data["send_mail"]:
             try:
-                template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
+                template = MailTemplate.objects.get(usage="room", department=self.request.user.main_department)
             except:
                 template = None
                 messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
-            if not template == None:
+            if template is not None:
                 recipients = []
                 for recipient in template.default_recipients.all():
                     recipient = recipient.content_object
