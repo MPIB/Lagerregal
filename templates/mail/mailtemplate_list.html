@@ -21,6 +21,7 @@
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Subject" %}</th>
                     <th>{% trans "Usage" %}</th>
+                    <th>{% trans "Department" %}</th>
                 </tr>
                 </thead>
                 {% for mail in mail_list %}
@@ -29,6 +30,7 @@
                         <td><a href="{% url 'mail-detail' mail.id %}">{{ mail.name }}</a></td>
                         <td>{{ mail.subject }}</td>
                         <td>{{ mail.get_usage_display }}</td>
+                        <td>{{mail.department}}</td>
                     </tr>
                 {% endfor %}
             </table>
