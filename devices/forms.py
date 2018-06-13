@@ -180,11 +180,24 @@ class LendForm(forms.Form):
                 raise forms.ValidationError("you have to either set device or smalldevice")
         return cleaned_data
 
+    def __init__(self, pk=None, *args, **kwargs):
+        super(LendForm, self).__init__(*args, **kwargs)
+        device = None
+        try:
+            device = Device.objects.filter(pk = pk)[0]
+        except Exception as e:
+            pass
+        if device:
+            self.fields['owner'].initial = device.currentlending.owner
+            self.fields['duedate'].initial = device.currentlending.duedate
+            self.fields['room'].initial = device.room
+            self.fields['device'].initial = device
+            print(self.fields['device'].initial)
+
+
+
     def clean_device(self):
         device = self.cleaned_data["device"]
-        if device:
-            if device.currentlending:
-                raise forms.ValidationError("this device is already lend.")
         return device
 
 
