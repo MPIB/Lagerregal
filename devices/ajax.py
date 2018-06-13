@@ -26,6 +26,7 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.dateparse import parse_date
+from django.contrib import messages
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
 from users.models import Lageruser, Department
@@ -439,6 +440,11 @@ class AjaxSearch(View):
                                                                                      "devicetype__name", "room__name",
                                                                                      "room__building__name")}
                     return render(request, 'devices/searchresult.html', context)
+                except ValueError:
+                    context = {
+                        "wrong_id_format" : True
+                    }
+                    return render(request, 'devices/searchempty.html', context)
                 except Device.DoesNotExist:
                     return render(request, 'devices/searchempty.html')
             elif key == "shortterm":
