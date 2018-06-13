@@ -7,8 +7,6 @@ from devices.models import Device, Template, Note
 from users.models import Lageruser
 from network.models import IpAddress
 
-class NetworkTests(TestCase):
-
 class IpAddressTests(TestCase):
     def setUp(self):
         '''method for setting up a client for testing'''
