@@ -47,15 +47,21 @@ class DeviceList(PaginationMixin, ListView):
     viewsorting = None
 
     def post(self, request):
+        '''post-requesting the detail-view of device by id'''
         if 'deviceid' in request.POST:
             return HttpResponseRedirect(reverse('device-detail', kwargs={'pk':request.POST['deviceid']}))
         else:
             return HttpResponseRedirect(reverse('device-list'))
 
     def get_queryset(self):
+        '''method for query results and display it depending on existing filters (viewfilter, department)'''
         self.viewfilter = self.kwargs.get("filter", "active")
         devices = None
         lendings = None
+
+        # filtering devices by status
+        # possible status: all, active, lent, archived, trash, overdue,
+        # return soon, short term, bookmarked
         if self.viewfilter == "all":
             devices = Device.objects.all()
         elif self.viewfilter == "available":
@@ -80,6 +86,7 @@ class DeviceList(PaginationMixin, ListView):
         else:
             devices = Device.active()
 
+        # filtering by department
         if self.request.user.departments.count() > 0:
             self.departmentfilter = self.kwargs.get("department", "my")
         else:
@@ -91,9 +98,11 @@ class DeviceList(PaginationMixin, ListView):
                 self.departmentfilter = Department.objects.get(id=departmentid)
             except:
                 self.departmentfilter = Department.objects.get(name=self.departmentfilter)
+
         if self.departmentfilter == "my":
             self.departmentfilter = self.request.user.departments.all()
 
+        # filtering lent or overdue devices
         if self.viewfilter == "lent" or self.viewfilter == "overdue" or self.viewfilter == "returnsoon":
             if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
                 lendings = lendings.filter(owner__departments__in=self.departmentfilter)
@@ -124,16 +133,22 @@ class DeviceList(PaginationMixin, ListView):
                                   "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
+        '''method for getting context data (filter, time, templates, breadcrumbs)'''
         context = super(DeviceList, self).get_context_data(**kwargs)
+
+        # getting filters
         context["viewform"] = DeviceViewForm(initial={
             'viewfilter': self.viewfilter,
             "viewsorting": self.viewsorting,
             "departmentfilter": self.departmentfilter
         })
+
         context["today"] = datetime.datetime.today()
         context["template_list"] = Template.objects.all()
         context["viewfilter"] = self.viewfilter
         context["breadcrumbs"] = [[reverse("device-list"), _("Devices")]]
+
+        # add page number to breadcrumbs
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
@@ -141,8 +156,10 @@ class DeviceList(PaginationMixin, ListView):
 
 @permission_required('devices.read_device', raise_exception=True)
 class DeviceDetail(DetailView):
+    # get related data to chosen device
     queryset = Device.objects \
-        .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department", "room", "room__building") \
+        .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department",
+                        "room", "room__building") \
         .prefetch_related("pictures", )
     context_object_name = 'device'
     object = None
@@ -150,9 +167,11 @@ class DeviceDetail(DetailView):
     def get_object(self, queryset=None):
         if self.object is not None:
             return self.object
+
         pk = self.kwargs.get(self.pk_url_kwarg)
         queryset = self.queryset.filter(pk=pk)
         self.object = queryset.get()
+
         return self.object
 
     def get_context_data(self, **kwargs):
@@ -162,11 +181,17 @@ class DeviceDetail(DetailView):
 
 
         # Add in a QuerySet of all the books
+
+        # ip context data
         context['ipaddressform'] = IpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
             department=self.object.department, device=None, user=None)
+
+        # tag context data
         context['tagform'] = DeviceTagForm()
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
+
+        # lending history, eidt history, mail history
         context["lending_list"] = Lending.objects.filter(device=context["device"])\
                                       .select_related("owner").order_by("-pk")[:10]
         context["version_list"] = Version.objects.filter(object_id=context["device"].id,
@@ -175,11 +200,15 @@ class DeviceDetail(DetailView):
                                       .select_related("revision", "revision__user").order_by("-pk")[:10]
         context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
                                    .select_related("sent_by").order_by("-pk")[:10]
+
+
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
         mailinitial = {}
+
+        # get user infos if device is lend
         if context["device"].currentlending is not None:
             currentowner = context["device"].currentlending.owner
             mailinitial["owner"] = currentowner
@@ -190,10 +219,10 @@ class DeviceDetail(DetailView):
             mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
             messages.error(self.request, _('Please create reminder mail template'))
+        # mail context data
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
             department__in=self.request.user.departments.all())
-
         versions = Version.objects.get_for_object(context["device"])
 
         if len(versions) != 0:
@@ -220,12 +249,14 @@ class DeviceDetail(DetailView):
                                                                                              getattr(context["device"],
                                                                                                      attribute))
 
+        # add data to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
+
         return context
 
-
+#### to do
 @permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressRemove(View):
     template_name = 'devices/unassign_ipaddress.html'
@@ -237,6 +268,7 @@ class DeviceIpAddressRemove(View):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Unassign IP-Addresses"))]
+
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -263,14 +295,17 @@ class DeviceIpAddress(FormView):
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
             ("", _("Assign IP-Addresses"))]
+
         return context
 
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         device = form.cleaned_data["device"]
+
         if device.archived is not None:
             messages.error(self.request, _("Archived Devices can't get new IP-Addresses"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
         reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
         for ipaddress in ipaddresses:
             ipaddress.device = device

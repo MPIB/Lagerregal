@@ -15,6 +15,9 @@ from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django_auth_ldap.backend import populate_user
 
+from django.conf import settings
+import re
+from datetime import date
 from Lagerregal import utils
 
 
@@ -101,7 +104,6 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
 
     user.save()
 
-
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
 
@@ -114,9 +116,7 @@ class Department(models.Model):
         permissions = (
             ("read_department", _("Can read Departments")),
             ("add_department_user", _("Can add a User to a Department")),
-            ("delete_department_user", _("Can remove a User from a Department")),
-        )
-
+            ("delete_department_user", _("Can remove a User from a Department")),)
 
 class DepartmentUser(models.Model):
     user = models.ForeignKey(Lageruser)

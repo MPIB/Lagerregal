@@ -11,6 +11,7 @@ from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from locations.models import Section
 from Lagerregal import utils
+from users.models import Department
 
 
 @reversion.register()
@@ -120,7 +121,7 @@ class Device(models.Model):
     inventoried = models.DateTimeField(null=True, blank=True)
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
-    department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
+    department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,)
 

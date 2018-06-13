@@ -15,12 +15,15 @@ from devices.forms import DeviceForm
 
 
 class DeviceTests(TestCase):
+
     def setUp(self):
+        '''method for setting up a client for testing'''
         self.client = Client()
         my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_device_creation(self):
+        '''method for testing the functionality of creating a new device'''
         device = mommy.make(Device)
         lending_past = mommy.make(Lending, duedate = (datetime.today() - timedelta(days = 1)).date())
         lending_future = mommy.make(Lending, duedate = (datetime.today() + timedelta(days = 1)).date())
