@@ -43,7 +43,7 @@ from django.db.models import Q
 
 
 @permission_required('devices.read_device', raise_exception=True)
-class DeviceList(PaginationMixin, ListView):
+class DeviceList(PaginationMixin,  ListView):
     context_object_name = 'device_list'
     template_name = 'devices/device_list.html'
     viewfilter = None
@@ -89,11 +89,11 @@ class DeviceList(PaginationMixin, ListView):
         else:
             devices = Device.active()
 
-        # filtering by department
-        if self.request.user.departments.count() > 0:
-            self.departmentfilter = self.kwargs.get("department", "my")
-        else:
-            self.departmentfilter = self.kwargs.get("department", "all")
+        self.departmentfilter = self.kwargs.get("department", "all")
+        #if user has departments: set departments as filter
+        if hasattr(self.request.user, 'departments'):
+            if self.request.user.departments.count() > 0:
+                self.departmentfilter = self.kwargs.get("department", "my")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
             try:
@@ -126,7 +126,8 @@ class DeviceList(PaginationMixin, ListView):
             elif self.departmentfilter != "all":
                 devices = devices.filter(department=self.departmentfilter)
                 self.departmentfilter = self.departmentfilter.id
-            devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
+            if hasattr(self.request.user, 'departments'):
+                devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
             self.viewsorting = self.kwargs.get("sorting", "name")
             if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
                 devices = devices.order_by(self.viewsorting)
@@ -620,7 +621,7 @@ class DeviceDelete(DeleteView):
 
 @permission_required('devices.lend_device', raise_exception=True)
 class DeviceLend(FormView):
-    template_name = 'devices/base_form.html'
+    template_name = 'devices/device_lend.html'
     form_class = LendForm
 
     def get_context_data(self, **kwargs):
@@ -633,17 +634,24 @@ class DeviceLend(FormView):
                 device = get_object_or_404(Device, pk=deviceid)
                 context["breadcrumbs"] = [
                     (reverse("device-list"), _("Devices")),
-                    (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
                     ("", _("Lend"))]
                 return context
-
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Lend"))]
+        if self.kwargs and 'pk' in self.kwargs:
+            device = get_object_or_404(Device, pk = self.kwargs['pk'])
+            context["breadcrumbs"] = context["breadcrumbs"][:-1] + [(reverse("device-detail", kwargs={"pk": device.pk}), device.name)] + context['breadcrumbs'][-1:]
         return context
 
+
+    def get_form_kwargs(self):
+        kwargs = super(DeviceLend, self).get_form_kwargs()
+        kwargs.update(self.kwargs)
+        return kwargs
+
+
     def form_valid(self, form):
-        lending = Lending()
         device = None
         templates = []
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
@@ -651,6 +659,13 @@ class DeviceLend(FormView):
             if device.archived is not None:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+            if device.currentlending is not None:
+                lending = device.currentlending
+                lending.returndate = datetime.date.today()
+                lending.save()
+                lending = Lending()
+            else:
+                lending = Lending()
             try:
                 templates.append(MailTemplate.objects.get(usage="lent", department=self.request.user.main_department))
             except:
