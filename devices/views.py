@@ -40,7 +40,7 @@ from django.db.models import Q
 
 
 @permission_required('devices.read_device', raise_exception=True)
-class DeviceList(PaginationMixin, ListView):
+class DeviceList(PaginationMixin,  ListView):
     context_object_name = 'device_list'
     template_name = 'devices/device_list.html'
     viewfilter = None
@@ -86,11 +86,11 @@ class DeviceList(PaginationMixin, ListView):
         else:
             devices = Device.active()
 
-        # filtering by department
-        if self.request.user.departments.count() > 0:
-            self.departmentfilter = self.kwargs.get("department", "my")
-        else:
-            self.departmentfilter = self.kwargs.get("department", "all")
+        self.departmentfilter = self.kwargs.get("department", "all")
+        #if user has departments: set departments as filter
+        if hasattr(self.request.user, 'departments'):
+            if self.request.user.departments.count() > 0:
+                self.departmentfilter = self.kwargs.get("department", "my")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
             try:
@@ -123,7 +123,8 @@ class DeviceList(PaginationMixin, ListView):
             elif self.departmentfilter != "all":
                 devices = devices.filter(department=self.departmentfilter)
                 self.departmentfilter = self.departmentfilter.id
-            devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
+            if hasattr(self.request.user, 'departments'):
+                devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
             self.viewsorting = self.kwargs.get("sorting", "name")
             if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
                 devices = devices.order_by(self.viewsorting)
