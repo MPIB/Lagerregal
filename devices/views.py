@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 import datetime
 import time
-from csv import QUOTE_ALL
-from django.utils.translation import ugettext
+import csv
+from django.utils.translation import ugettext_lazy as _
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -36,7 +36,7 @@ from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIE
     DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
 from devicetags.forms import DeviceTagForm
 from users.models import Lageruser, Department
-from Lagerregal.utils import PaginationMixin, UnicodeWriter
+from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
 from permission.decorators import permission_required
 from django.db.models import Q
@@ -201,9 +201,9 @@ class ExportCsv(View):
                 elif request.POST["departmentfilter"] == "all":
                     pass
 
-                writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
-                headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"),
-                           ugettext("Devicetype"), ugettext("Room"), ugettext("Devicegroup"), ugettext("Devicegroup")]
+                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
+                headers = [_("ID"), _("Device"), _("Inventorynumber"),
+                                    _("Devicetype"), _("Room"), _("Devicegroup")]
                 writer.writerow(headers)
                 for device in devices.values_list(*searchvalues):
                     writer.writerow(device)
