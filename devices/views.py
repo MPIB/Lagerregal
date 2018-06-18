@@ -1,6 +1,9 @@
 # coding: utf-8
 from __future__ import unicode_literals
 import datetime
+import time
+import csv
+from django.utils.translation import ugettext_lazy as _
 
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -11,7 +14,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import render
 from reversion.models import Version
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpResponse
 from django.contrib import messages
 from django.utils.timezone import utc
 from django.utils import timezone
@@ -153,6 +156,59 @@ class DeviceList(PaginationMixin,  ListView):
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
+
+
+@permission_required('devices.read_device', raise_exception=True)
+class ExportCsv(View):
+    def post(self, request):
+
+        if "format" in request.POST:
+            if request.POST["format"] == "csv":
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
+                devices = None
+                departments = None
+                searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
+
+                if request.POST['viewfilter'] == "active":
+                    devices = Device.active()
+                elif request.POST['viewfilter'] == "all":
+                    devices = Device.objects.all()
+                elif request.POST['viewfilter'] == "available":
+                    devices = Device.active().filter(currentlending=None)
+                elif request.POST['viewfilter'] == "lent":
+                    devices = Lending.objects.filter(returndate=None)
+                elif request.POST['viewfilter'] == "archived":
+                    devices = Device.objects.exclude(archived=None)
+                elif request.POST['viewfilter'] == "trashed":
+                    devices = Device.objects.exclude(trashed=None)
+                elif request.POST['viewfilter'] == "overdue":
+                    devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
+                elif request.POST['viewfilter'] == "returnsoon":
+                    soon = datetime.date.today() + datetime.timedelta(days=10)
+                    devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
+                                                          duedate__gt=datetime.date.today())
+                elif request.POST['viewfilter'] == "temporary":
+                    devices = Device.active().filter(templending=True)
+                elif request.POST['viewfilter'] == "bookmark":
+                    if self.request.user.is_authenticated:
+                        devices = self.request.user.bookmarks.all()
+
+                if request.POST["departmentfilter"] == "my":
+                    devices = devices.filter(department__in=request.user.departments.all()) # does this work?
+                elif request.POST["departmentfilter"].isdigit():
+                    devices = devices.filter(department__in=Department.objects.filter(id = int(request.POST["departmentfilter"])))
+                elif request.POST["departmentfilter"] == "all":
+                    pass
+
+                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
+                headers = [_("ID"), _("Device"), _("Inventorynumber"),
+                                    _("Devicetype"), _("Room"), _("Devicegroup")]
+                writer.writerow(headers)
+                for device in devices.values_list(*searchvalues):
+                    writer.writerow(device)
+                return response
+
 
 
 @permission_required('devices.read_device', raise_exception=True)

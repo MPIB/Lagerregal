@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json
+import time
+import csv
 
 try:
     import urllib.parse as urllib
@@ -35,7 +37,6 @@ from devicetypes.models import Type
 from devices.forms import AddForm
 from devicegroups.models import Devicegroup
 from devicetags.models import Devicetag
-from Lagerregal.utils import UnicodeWriter
 from csv import QUOTE_ALL
 
 
@@ -485,9 +486,9 @@ class AjaxSearch(View):
         if "format" in request.POST:
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
+                response['Content-Disposition'] = 'attachment; filename="' + str(time.time()) + 'searchresult.csv"'
 
-                writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
+                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
                 headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
                            ugettext("Devicetype"), ugettext("Room"), ugettext("Building")]
                 if len(displayed_columns) > 0:
