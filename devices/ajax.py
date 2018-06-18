@@ -292,7 +292,7 @@ class AjaxSearch(View):
         searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name",
                         "room__building__name", "currentlending__owner__username", "currentlending__owner__id"]
         for searchitem in search:
-            key, value = searchitem.items()[0]
+            key, value = list(searchitem.items())[0]
 
             if value[:4] == "not ":
                 value = value[4:]
@@ -486,7 +486,7 @@ class AjaxSearch(View):
         if "format" in request.POST:
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="' + str(time.time()) + 'searchresult.csv"'
+                response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
 
                 writer = csv.writer(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
                 headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
