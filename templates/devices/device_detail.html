@@ -170,7 +170,7 @@
                     <td>{% trans "Manual" %}</td>
                     <td><a href="{{ device.manual.url }}">
                       {%with filename=device.manual|filename|splitstr:'.'|last %}
-                      {{device.name|addstr:'.'|addstr:filename}}
+                      {{device.name|add:'.'|add:filename}}
                       {%endwith%}
                       </a></td></tr>
                 {% endif %}

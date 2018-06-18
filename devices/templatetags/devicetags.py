@@ -125,12 +125,3 @@ def as_nested_list(factvalue):
 def splitstr(arg1, arg2):
     #implement the split function for template tags
     return arg1.split(arg2)
-
-@register.filter
-def addstr(arg1, arg2):
-    #implement concatenation
-    if not isinstance(arg1, unicode):
-        arg1 = unicode(arg1, "utf-8")
-    elif not isinstance(arg2, unicode):
-        arg2 = unicode(arg2, "utf-8")
-    return(u''.join((arg1, arg2)).encode('utf-8').strip())
