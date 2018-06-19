@@ -38,7 +38,7 @@ msgstr "Gerät ausgeliehen und in Raum {0} verschoben"
 msgid "Device returned and moved to room {0}"
 msgstr "Gerät zurückgegeben und verschoben in Raum {0}"
 
-#: devicegroups/models.py:18 templates/devices/device_detail.html:154
+#: devicegroups/models.py:18 templates/devices/device_detail.html:156
 #: templates/devices/device_list.html:48
 #: templates/devices/public_devices_list.html:24
 msgid "Devicegroup"
@@ -95,7 +95,7 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: devices/ajax.py:303 devices/models.py:74 devices/models.py:80
-#: templates/devices/device_detail.html:125
+#: templates/devices/device_detail.html:127
 #: templates/devices/manufacturer_detail.html:7
 #: templates/history/device_history.html:84
 #: templates/history/device_history.html:138
@@ -115,8 +115,8 @@ msgstr "IP-Adresse"
 msgid "{0} on"
 msgstr "{0} an"
 
-#: devices/ajax.py:411 devices/models.py:108
-#: templates/devices/device_detail.html:116
+#: devices/ajax.py:411 devices/models.py:109
+#: templates/devices/device_detail.html:118
 #: templates/history/device_history.html:66
 #: templates/history/device_history.html:123
 msgid "Hostname"
@@ -126,7 +126,7 @@ msgstr "Hostname"
 msgid "ID"
 msgstr "ID"
 
-#: devices/ajax.py:478 devices/forms.py:165 devices/models.py:138
+#: devices/ajax.py:478 devices/forms.py:165 devices/models.py:140
 #: templates/devices/device_detail.html:10
 #: templates/devices/globalhistory.html:15
 #: templates/devices/room_detail.html:48
@@ -139,10 +139,10 @@ msgstr "ID"
 msgid "Device"
 msgstr "Gerät"
 
-#: devices/ajax.py:478 devices/models.py:105
+#: devices/ajax.py:478 devices/models.py:106
 #: templates/devicegroups/devicegroup_detail.html:35
 #: templates/devices/building_detail.html:71
-#: templates/devices/device_detail.html:108
+#: templates/devices/device_detail.html:109
 #: templates/devices/device_list.html:45
 #: templates/devices/manufacturer_detail.html:44
 #: templates/devices/public_devices_list.html:21
@@ -155,8 +155,8 @@ msgstr "Gerät"
 msgid "Inventorynumber"
 msgstr "Inventorynummer"
 
-#: devices/ajax.py:478 devices/models.py:106
-#: templates/devices/device_detail.html:112
+#: devices/ajax.py:478 devices/models.py:107
+#: templates/devices/device_detail.html:114
 #: templates/devices/searchresult.html:13
 #: templates/history/device_history.html:60
 #: templates/history/device_history.html:118
@@ -165,7 +165,7 @@ msgstr "Seriennummer"
 
 #: devices/ajax.py:479 templates/devicegroups/devicegroup_detail.html:36
 #: templates/devices/building_detail.html:72
-#: templates/devices/device_detail.html:120
+#: templates/devices/device_detail.html:122
 #: templates/devices/device_list.html:46
 #: templates/devices/manufacturer_detail.html:45
 #: templates/devices/public_devices_list.html:22
@@ -182,7 +182,7 @@ msgstr "Gerätetyp"
 #: devices/ajax.py:479 devices/models.py:57
 #: templates/devicegroups/devicegroup_detail.html:37
 #: templates/devices/building_detail.html:73
-#: templates/devices/device_detail.html:130
+#: templates/devices/device_detail.html:132
 #: templates/devices/device_list.html:47
 #: templates/devices/manufacturer_detail.html:46
 #: templates/devices/public_devices_list.html:23
@@ -351,8 +351,8 @@ msgstr "Gruppen"
 msgid "People"
 msgstr "Menschen"
 
-#: devices/forms.py:163 devices/models.py:214
-#: templates/devices/device_detail.html:243
+#: devices/forms.py:163 devices/models.py:216
+#: templates/devices/device_detail.html:245
 #: templates/snippets/modals/lending.html:12
 #: templates/snippets/widgets/overdue.html:24
 #: templates/snippets/widgets/recentlendings.html:17
@@ -486,27 +486,27 @@ msgstr "Hersteller"
 msgid "Can read Manufacturer"
 msgstr "Kann Hersteller lesen"
 
-#: devices/models.py:109 devices/models.py:228
-#: templates/devices/device_detail.html:203
+#: devices/models.py:110 devices/models.py:230
+#: templates/devices/device_detail.html:205
 #: templates/history/device_history.html:96
 #: templates/history/device_history.html:148
 msgid "Description"
 msgstr "Beschreibung"
 
-#: devices/models.py:113 templates/history/device_history.html:72
+#: devices/models.py:114 templates/history/device_history.html:72
 #: templates/history/device_history.html:128
 msgid "Webinterface"
 msgstr "Webinterface"
 
-#: devices/models.py:115
+#: devices/models.py:116
 msgid "For short term lending"
 msgstr "Für kurzzeitigen Verleih"
 
-#: devices/models.py:121
+#: devices/models.py:122
 msgid "Person to contact about using this device"
-msgstr ""
+msgstr "Kontaktperson für dieses Gerät"
 
-#: devices/models.py:139 devices/views.py:137 devices/views.py:225
+#: devices/models.py:141 devices/views.py:137 devices/views.py:225
 #: devices/views.py:238 devices/views.py:264 devices/views.py:296
 #: devices/views.py:326 devices/views.py:376 devices/views.py:436
 #: devices/views.py:528 devices/views.py:548 devices/views.py:554
@@ -527,47 +527,47 @@ msgstr ""
 msgid "Devices"
 msgstr "Geräte"
 
-#: devices/models.py:141
+#: devices/models.py:143
 msgid "Emails for bosses"
 msgstr "E-Mails für Vorgesetzte"
 
-#: devices/models.py:142
+#: devices/models.py:144
 msgid "Emails for managment"
 msgstr "E-Mails für Verwaltung"
 
-#: devices/models.py:143
+#: devices/models.py:145
 msgid "Emails for support"
 msgstr "E-Mails für Support"
 
-#: devices/models.py:144
+#: devices/models.py:146
 msgid "Can read Device"
 msgstr "Kann Geräte lesen"
 
-#: devices/models.py:145
+#: devices/models.py:147
 msgid "Can lend Device"
 msgstr "Kann Gerät verleihen"
 
-#: devices/models.py:146
+#: devices/models.py:148
 msgid "Read Puppet Details"
 msgstr "Kann Puppet Fakten abrufen"
 
-#: devices/models.py:185
+#: devices/models.py:187
 msgid "Human readable name"
 msgstr "Menschenlesbarer Name"
 
-#: devices/models.py:191 devices/models.py:192
+#: devices/models.py:193 devices/models.py:194
 msgid "Information Type"
 msgstr "Informationstyp"
 
-#: devices/models.py:196 devices/models.py:204 devices/models.py:205
+#: devices/models.py:198 devices/models.py:206 devices/models.py:207
 msgid "Information"
 msgstr "Information"
 
-#: devices/models.py:220
+#: devices/models.py:222
 msgid "Small Device"
 msgstr "Kleines Gerät"
 
-#: devices/models.py:225
+#: devices/models.py:227
 msgid "Templatename"
 msgstr "Templatename"
 
@@ -577,26 +577,26 @@ msgstr "Templatename"
 msgid "Templates"
 msgstr "Templates"
 
-#: devices/models.py:239
+#: devices/models.py:241
 msgid "Can read Template"
 msgstr "Kann Template lesen"
 
-#: devices/models.py:261
+#: devices/models.py:263
 msgid "Note"
-msgstr "Notitz"
+msgstr "Notiz"
 
 #: devices/models.py:262 devices/views.py:1346 devices/views.py:1404
 #: templates/devices/device_detail.html:334
 msgid "Notes"
-msgstr "Notitzen"
+msgstr "Notizen"
 
-#: devices/models.py:274
+#: devices/models.py:276
 msgid "Picture"
-msgstr ""
+msgstr "Bild"
 
-#: devices/models.py:275
+#: devices/models.py:277
 msgid "Pictures"
-msgstr ""
+msgstr "Bilder"
 
 #: devices/views.py:240
 msgid "Unassign IP-Addresses"
@@ -822,7 +822,7 @@ msgstr "Gerätetags"
 msgid "Create new devicetag"
 msgstr "Neuen Gerätetag erstellen"
 
-#: devicetags/views.py:101 templates/devices/device_detail.html:321
+#: devicetags/views.py:101 templates/devices/device_detail.html:323
 msgid "Assign Tags"
 msgstr "Tag zuweisen"
 
@@ -983,7 +983,7 @@ msgstr "Kann E-Mailtemplate lesen"
 msgid "Create new mailtemplate"
 msgstr "Neues E-Mailtemplate erstellen"
 
-#: main/models.py:9 templates/devices/device_detail.html:338
+#: main/models.py:9 templates/devices/device_detail.html:340
 #: templates/snippets/widgets/edithistory.html:5
 msgid "Edit history"
 msgstr "Bearbeitungshistorie"
@@ -1045,7 +1045,7 @@ msgstr ""
 #: network/models.py:25 network/views.py:62 network/views.py:84
 #: network/views.py:101 network/views.py:122 templates/500.html:49
 #: templates/base.html:73 templates/base.html:86
-#: templates/devices/device_detail.html:274
+#: templates/devices/device_detail.html:276
 #: templates/snippets/widgets/statistics.html:36
 msgid "IP-Addresses"
 msgstr "IP-Adressen"
@@ -1201,9 +1201,9 @@ msgstr "Sind Sie sicher?"
 #: templates/devices/base_delete.html:16
 #: templates/devices/building_detail.html:105
 #: templates/devices/device_archive.html:16
-#: templates/devices/device_detail.html:553
-#: templates/devices/device_detail.html:564
-#: templates/devices/device_detail.html:586
+#: templates/devices/device_detail.html:555
+#: templates/devices/device_detail.html:566
+#: templates/devices/device_detail.html:588
 #: templates/devices/device_trash.html:16
 #: templates/devices/manufacturer_detail.html:78
 #: templates/devices/room_detail.html:87
@@ -1223,10 +1223,10 @@ msgstr "Nein"
 #: templates/devices/base_delete.html:14
 #: templates/devices/building_detail.html:106
 #: templates/devices/device_archive.html:16
-#: templates/devices/device_detail.html:554
-#: templates/devices/device_detail.html:565
-#: templates/devices/device_detail.html:577
-#: templates/devices/device_detail.html:587
+#: templates/devices/device_detail.html:556
+#: templates/devices/device_detail.html:567
+#: templates/devices/device_detail.html:579
+#: templates/devices/device_detail.html:589
 #: templates/devices/device_trash.html:16
 #: templates/devices/manufacturer_detail.html:79
 #: templates/devices/room_detail.html:88
@@ -1345,115 +1345,115 @@ msgstr "Dearchivieren"
 msgid "Remove from Trash"
 msgstr "Aus dem Schrott entfernen"
 
-#: templates/devices/device_detail.html:136
+#: templates/devices/device_detail.html:138
 #, fuzzy
 #| msgid "Used by"
 msgid "Used in"
 msgstr "Benutzt von"
 
-#: templates/devices/device_detail.html:142
+#: templates/devices/device_detail.html:144
 msgid "Uses"
-msgstr ""
+msgstr "Benutzt"
 
-#: templates/devices/device_detail.html:159
+#: templates/devices/device_detail.html:161
 #: templates/network/ipaddress_detail.html:35 users/models.py:109
 msgid "Department"
 msgstr "Abteilung"
 
-#: templates/devices/device_detail.html:163
+#: templates/devices/device_detail.html:165
 msgid "Short term device"
 msgstr "Kurzausleih-Gerät"
 
-#: templates/devices/device_detail.html:170
+#: templates/devices/device_detail.html:172
 msgid "Manual"
-msgstr ""
+msgstr "Handbuch"
 
-#: templates/devices/device_detail.html:175
+#: templates/devices/device_detail.html:177
 #, fuzzy
 #| msgid "Contains"
 msgid "Contact"
 msgstr "Enthält"
 
-#: templates/devices/device_detail.html:179
+#: templates/devices/device_detail.html:181
 msgid "Created by"
 msgstr "Erstellt von"
 
-#: templates/devices/device_detail.html:183
+#: templates/devices/device_detail.html:185
 msgid "Last edited"
 msgstr "Zuletzt bearbeitet"
 
-#: templates/devices/device_detail.html:186
+#: templates/devices/device_detail.html:188
 msgid "Not edited yet"
 msgstr "Noch nicht editiert"
 
-#: templates/devices/device_detail.html:190
+#: templates/devices/device_detail.html:192
 msgid "Trashed on"
 msgstr "Verschrottet am"
 
-#: templates/devices/device_detail.html:194
+#: templates/devices/device_detail.html:196
 msgid "Last inventoried on"
 msgstr "Zuletzt inventarisiert am"
 
-#: templates/devices/device_detail.html:200
+#: templates/devices/device_detail.html:202
 msgid "Go to webinterface"
 msgstr "Webinterface aufrufen"
 
-#: templates/devices/device_detail.html:238
+#: templates/devices/device_detail.html:240
 msgid "Current Lending information"
 msgstr "Aktuelle Verleihinformationen"
 
-#: templates/devices/device_detail.html:249
-#: templates/devices/device_detail.html:409
+#: templates/devices/device_detail.html:251
+#: templates/devices/device_detail.html:411
 #: templates/devices/device_lending_list.html:16
 msgid "Since"
 msgstr "Seit"
 
-#: templates/devices/device_detail.html:253
+#: templates/devices/device_detail.html:255
 msgid "Due to"
 msgstr "Fällig an"
 
-#: templates/devices/device_detail.html:263
+#: templates/devices/device_detail.html:265
 msgid "Overdue notification"
 msgstr "Fälligkeits erinnerung"
 
-#: templates/devices/device_detail.html:269
+#: templates/devices/device_detail.html:271
 msgid "Currently not lent"
 msgstr "Zurzeit nicht verliehen"
 
-#: templates/devices/device_detail.html:296 templates/users/profile.html:214
+#: templates/devices/device_detail.html:298 templates/users/profile.html:214
 msgid "Assign Addresses"
 msgstr "Adressen zuweisen"
 
-#: templates/devices/device_detail.html:307
+#: templates/devices/device_detail.html:309
 msgid "Tags"
 msgstr "Tags"
 
-#: templates/devices/device_detail.html:336
+#: templates/devices/device_detail.html:338
 msgid "Lending history"
 msgstr "Verleihhistorie"
 
-#: templates/devices/device_detail.html:340
+#: templates/devices/device_detail.html:342
 msgid "Mail history"
 msgstr "E-Mail Verlauf"
 
-#: templates/devices/device_detail.html:343
+#: templates/devices/device_detail.html:345
 msgid "Puppet Stats"
 msgstr "Puppet Fakten"
 
-#: templates/devices/device_detail.html:344
+#: templates/devices/device_detail.html:346
 msgid "Software"
 msgstr ""
 
-#: templates/devices/device_detail.html:397
+#: templates/devices/device_detail.html:399
 msgid "Add note"
 msgstr "Notitz hinzufügen"
 
-#: templates/devices/device_detail.html:404
+#: templates/devices/device_detail.html:406
 msgid "10 last lendings"
 msgstr "10 letzte Verleihe"
 
-#: templates/devices/device_detail.html:408
-#: templates/devices/device_detail.html:437
+#: templates/devices/device_detail.html:410
+#: templates/devices/device_detail.html:439
 #: templates/devices/device_lending_list.html:15
 #: templates/devices/globalhistory.html:17
 #: templates/devices/searchresult.html:16
@@ -1467,7 +1467,7 @@ msgstr "10 letzte Verleihe"
 msgid "User"
 msgstr "Benutzer*in"
 
-#: templates/devices/device_detail.html:410
+#: templates/devices/device_detail.html:412
 #: templates/devices/device_lending_list.html:17
 #: templates/devices/device_list.html:51
 #: templates/devices/public_devices_list.html:27
@@ -1480,20 +1480,20 @@ msgstr "Benutzer*in"
 msgid "Duedate"
 msgstr "Fälligkeitsdatum"
 
-#: templates/devices/device_detail.html:411
+#: templates/devices/device_detail.html:413
 #: templates/devices/device_lending_list.html:18
 msgid "Returned"
 msgstr "Zurückgegeben"
 
-#: templates/devices/device_detail.html:426
+#: templates/devices/device_detail.html:428
 msgid "View lending history"
 msgstr "Verlehverlauf ansehen"
 
-#: templates/devices/device_detail.html:432
+#: templates/devices/device_detail.html:434
 msgid "10 last edits"
 msgstr "10 letzte Bearbeitungen"
 
-#: templates/devices/device_detail.html:436
+#: templates/devices/device_detail.html:438
 #: templates/devices/globalhistory.html:16
 #: templates/history/globalhistory.html:15
 #: templates/history/history_list.html:13
@@ -1502,7 +1502,7 @@ msgstr "10 letzte Bearbeitungen"
 msgid "Date/time"
 msgstr "Datum/Uhrzeit"
 
-#: templates/devices/device_detail.html:438
+#: templates/devices/device_detail.html:440
 #: templates/devices/globalhistory.html:18
 #: templates/history/device_history.html:42
 #: templates/history/globalhistory.html:17
@@ -1512,47 +1512,47 @@ msgstr "Datum/Uhrzeit"
 msgid "Comment"
 msgstr "Kommentar"
 
-#: templates/devices/device_detail.html:456
+#: templates/devices/device_detail.html:458
 msgid "View edit history"
 msgstr "Bearbeitungsverlauf ansehen"
 
-#: templates/devices/device_detail.html:462
+#: templates/devices/device_detail.html:464
 msgid "10 last sent mails"
 msgstr "10 letzte E-Mails"
 
-#: templates/devices/device_detail.html:468
+#: templates/devices/device_detail.html:470
 msgid "Sent by"
 msgstr "Versandt durch"
 
-#: templates/devices/device_detail.html:469
+#: templates/devices/device_detail.html:471
 msgid "Sent at"
 msgstr "Versandt an"
 
-#: templates/devices/device_detail.html:490
+#: templates/devices/device_detail.html:492
 msgid "Puppet facts from puppetdb"
 msgstr "Puppet Fakten aus puppetdb"
 
-#: templates/devices/device_detail.html:492
+#: templates/devices/device_detail.html:494
 msgid "Loading Puppet Facts..."
 msgstr ""
 
-#: templates/devices/device_detail.html:496
+#: templates/devices/device_detail.html:498
 #, fuzzy
 #| msgid "Puppet facts from puppetdb"
 msgid "Installed software from puppetdb"
 msgstr "Puppet Fakten aus puppetdb"
 
-#: templates/devices/device_detail.html:498
+#: templates/devices/device_detail.html:500
 msgid "Loading Software List..."
-msgstr ""
+msgstr "Lade Softwareliste..."
 
-#: templates/devices/device_detail.html:551
-#: templates/devices/device_detail.html:562
-#: templates/devices/device_detail.html:572
+#: templates/devices/device_detail.html:553
+#: templates/devices/device_detail.html:564
+#: templates/devices/device_detail.html:574
 msgid "Are you sure?"
 msgstr "Sicher?"
 
-#: templates/devices/device_detail.html:576
+#: templates/devices/device_detail.html:578
 #: templates/devices/device_storage.html:22
 #: templates/snippets/modals/addmodal.html:15
 #: templates/snippets/modals/mailsendconfirm.html:13
@@ -2239,6 +2239,11 @@ msgstr "Neue Abteilung erstellen"
 #: users/views.py:388
 msgid "Remove User"
 msgstr "Benutzer*in entfernen"
+
+#, fuzzy
+#~| msgid "Inventorynumber ascending"
+#~ msgid "Inventory number not assigned"
+#~ msgstr "Inventarnummer nicht zugewiesen"
 
 #~ msgid "Search Name"
 #~ msgstr "Name suchen"
