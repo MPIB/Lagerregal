@@ -1,7 +1,9 @@
 from django.test.client import Client
 from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
+
+import six
+from model_mommy import mommy
 
 from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from devicetypes.models import Type
@@ -23,7 +25,7 @@ class TypeTests(TestCase):
         self.assertTrue(isinstance(devicetype, Type))
 
         # testing naming
-        self.assertEqual(devicetype.__unicode__(), devicetype.name)
+        self.assertEqual(six.text_type(devicetype), devicetype.name)
 
         # testing creation of absolute and relative url
         self.assertEqual(devicetype.get_absolute_url(), reverse('type-detail', kwargs={'pk': devicetype.pk}))

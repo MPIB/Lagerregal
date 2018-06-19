@@ -1,7 +1,9 @@
 from django.test.client import Client
 from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
+
+import six
+from model_mommy import mommy
 
 from devicegroups.models import Devicegroup
 from users.models import Lageruser
@@ -15,6 +17,6 @@ class DevicegroupTests(TestCase):
 
     def test_devicegroup_creation(self):
         devicegroup = mommy.make(Devicegroup)
-        self.assertEqual(devicegroup.__unicode__(), devicegroup.name)
+        self.assertEqual(six.text_type(devicegroup), devicegroup.name)
         self.assertEqual(devicegroup.get_absolute_url(), reverse('devicegroup-detail', kwargs={'pk': devicegroup.pk}))
         self.assertEqual(devicegroup.get_edit_url(), reverse('devicegroup-edit', kwargs={'pk': devicegroup.pk}))

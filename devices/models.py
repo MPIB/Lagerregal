@@ -53,7 +53,7 @@ class Room(models.Model):
 
     def __str__(self):
         if self.building:
-            return self.name + " (" + self.building.__unicode__() + ")"
+            return self.name + " (" + six.text_type(self.building) + ")"
         else:
             return self.name
 
@@ -198,7 +198,7 @@ class DeviceInformation(models.Model):
     infotype = models.ForeignKey(DeviceInformationType)
 
     def __str__(self):
-        return self.infotype.__unicode__() + ": " + self.information
+        return six.text_type(self.infotype) + ": " + self.information
 
     class Meta:
         verbose_name = _('Information')

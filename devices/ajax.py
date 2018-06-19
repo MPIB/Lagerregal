@@ -251,10 +251,10 @@ class LoadSearchoptions(View):
             return HttpResponse("")
         if invert:
             data = [
-                {"value": "not " + str(object.pk) + "-" + object.__unicode__(), "label": "not " + object.__unicode__()}
+                {"value": "not " + str(object.pk) + "-" + six.text_type(object), "label": "not " + six.text_type(object)}
                 for object in items]
         else:
-            data = [{"value": str(object.pk) + "-" + object.__unicode__(), "label": object.__unicode__()}
+            data = [{"value": str(object.pk) + "-" + six.text_type(object), "label": six.text_type(object)}
                     for object in items]
         return HttpResponse(json.dumps(data), content_type='application/json')
 

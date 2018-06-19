@@ -56,7 +56,7 @@ class MailTemplate(models.Model):
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
-            "name": data["device"].__unicode__(),
+            "name": six.text_type(data["device"]),
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
                                                                                                       "device"].room is not None else ""),
             "serialnumber": data["device"].serialnumber,
@@ -67,7 +67,7 @@ class MailTemplate(models.Model):
         }
         if data["device"].currentlending is not None:
             datadict["device"]["currentlending"] = {
-                "owner": data["device"].currentlending.owner.__unicode__(),
+                "owner": six.text_type(data["device"].currentlending.owner),
                 "duedate": data["device"].currentlending.duedate,
                 "lenddate": data["device"].currentlending.lenddate
             },
@@ -108,7 +108,7 @@ class MailTemplateRecipient(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
-        return six.text_type(self.content_type.name + ": " + self.content_object.__unicode__())
+        return six.text_type(self.content_type.name + ": " + six.text_type(self.content_object))
 
 
 class MailHistory(models.Model):

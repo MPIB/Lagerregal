@@ -7,9 +7,11 @@ from django.utils.translation import ugettext_lazy as _, ugettext
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
+from django.apps import apps
+
+import six
 from reversion.models import Version, Revision
 from reversion import revisions as reversion
-from django.apps import apps
 
 from Lagerregal.utils import PaginationMixin
 from devices.models import Device, Room, Manufacturer
@@ -103,7 +105,7 @@ class HistoryDetail(UpdateView):
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(context["this_version"].content_type.model)),
                 _(context["this_version"].content_type.name)),
-            (context["current_version"].get_absolute_url(), context["current_version"].__unicode__()),
+            (context["current_version"].get_absolute_url(), six.text_type(context["current_version"])),
             (reverse("history-list", kwargs={"content_type_id": context["this_version"].content_type.id,
                                              "object_id": context["this_version"].object_id}), _("History")),
             ("", _("Version {0}".format(context["this_version"].pk)))
@@ -152,7 +154,7 @@ class HistoryList(ListView):
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(self.content_type.model)),
                 _(self.content_type.name)),
-            (self.object.get_absolute_url(), self.object.__unicode__()),
+            (self.object.get_absolute_url(), six.text_type(self.object)),
             (reverse("history-list", kwargs={"content_type_id": self.content_type.id,
                                              "object_id": self.object.id}), _("History"))
         ]
