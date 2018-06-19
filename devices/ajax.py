@@ -546,7 +546,6 @@ class PuppetSoftware(View):
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
                                        context=context)
-        req = settings.PUPPETDB_SETTINGS['req'] + params
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:

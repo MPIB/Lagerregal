@@ -15,7 +15,7 @@ from users.models import Lageruser
 class TestMailTemplate(TestCase):
     def setUp(self):
         self.client = Client()
-        myadmin = Lageruser.objects.create_superuser("test", "test@test.com", "test")
+        Lageruser.objects.create_superuser("test", "test@test.com", "test")
         self.client.login(username="test", password="test")
 
     def test_template_creation(self):

@@ -64,9 +64,6 @@ class DevicePermissionLogic(PermissionLogic):
         if not user_obj.is_authenticated():
             return False
 
-        change_permission = self.get_full_permission_string('change')
-        delete_permission = self.get_full_permission_string('delete')
-
         if obj is None:
             backend = auth.get_backends()[0]
             try:

@@ -19,7 +19,7 @@ class DeviceTests(TestCase):
     def setUp(self):
         '''method for setting up a client for testing'''
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_device_creation(self):
@@ -37,7 +37,7 @@ class DeviceTests(TestCase):
         self.assertFalse(mommy.make(Device, currentlending = lending_future).is_overdue())
 
     def test_device_list(self):
-        devices = mommy.make(Device, _quantity=40)
+        mommy.make(Device, _quantity=40)
         url = reverse("device-list")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -124,14 +124,14 @@ class DeviceTests(TestCase):
         device = mommy.make(Device)
         used_device = mommy.make(Device, used_in = device)
         trashurl = reverse('device-trash', kwargs={'pk': device.pk})
-        resp = self.client.post(trashurl)
+        self.client.post(trashurl)
         used_device = Device.objects.filter(pk = used_device.pk)[0]
         self.assertIsNone(used_device.used_in)
 
     def test_device_trash_sets_self_used_in_to_none(self):
         device = mommy.make(Device, _fill_optional=['used_in'])
         trashurl = reverse("device-trash", kwargs={'pk' : device.pk})
-        resp = self.client.post(trashurl)
+        self.client.post(trashurl)
         device = Device.objects.filter(pk = device.pk)[0]
         self.assertIsNone(device.used_in)
 
@@ -140,7 +140,7 @@ class DeviceTests(TestCase):
         lending.device.currentlending = lending
         lending.device.save()
         trashurl = reverse("device-trash", kwargs={"pk": lending.device.pk})
-        resp = self.client.post(trashurl)
+        self.client.post(trashurl)
         lending.refresh_from_db()
         self.assertIsNotNone(lending.returndate)
 
@@ -237,7 +237,7 @@ class DeviceTests(TestCase):
 class BuildingTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_building_creation(self):
@@ -249,7 +249,7 @@ class BuildingTests(TestCase):
         self.assertEqual(building.get_edit_url(), reverse('building-edit', kwargs={'pk': building.pk}))
 
     def test_building_list(self):
-        buildings = mommy.make(Building, _quantity=40)
+        mommy.make(Building, _quantity=40)
         url = reverse("building-list")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -268,9 +268,6 @@ class BuildingTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_building_add(self):
-        building = mommy.make(Building)
-        buildings = Building.objects.all()
-        building = buildings[0]
         url = reverse("building-add")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -295,7 +292,7 @@ class BuildingTests(TestCase):
 class RoomTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_room_creation(self):
@@ -310,7 +307,7 @@ class RoomTests(TestCase):
         self.assertEqual(room.get_edit_url(), reverse('room-edit', kwargs={'pk': room.pk}))
 
     def test_room_list(self):
-        rooms = mommy.make(Room, _quantity=40)
+        mommy.make(Room, _quantity=40)
         url = reverse("room-list")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -329,7 +326,6 @@ class RoomTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_room_add(self):
-        room = mommy.make(Room)
         url = reverse("room-add")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -354,7 +350,7 @@ class RoomTests(TestCase):
 class ManufacturerTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_manufacturer_creation(self):
@@ -366,7 +362,7 @@ class ManufacturerTests(TestCase):
         self.assertEqual(manufacturer.get_edit_url(), reverse('manufacturer-edit', kwargs={'pk': manufacturer.pk}))
 
     def test_manufacturer_list(self):
-        manufacturers = mommy.make(Manufacturer, _quantity=40)
+        mommy.make(Manufacturer, _quantity=40)
         url = reverse("manufacturer-list")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -385,7 +381,6 @@ class ManufacturerTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_manufacturer_add(self):
-        manufacturer = mommy.make(Manufacturer)
         url = reverse("manufacturer-add")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -410,7 +405,7 @@ class ManufacturerTests(TestCase):
 class TemplateTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_template_creation(self):
@@ -421,7 +416,7 @@ class TemplateTests(TestCase):
         self.assertEqual(template.get_as_dict(), {'name': template.name, 'description': template.description, 'manufacturer' : template.manufacturer, 'devicetype' : template.devicetype })
 
     def test_template_list(self):
-        templates = mommy.make(Template, _quantity=40)
+        mommy.make(Template, _quantity=40)
         url = reverse("template-list")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -432,7 +427,6 @@ class TemplateTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_template_add(self):
-        template = mommy.make(Template)
         url = reverse("template-add")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -457,7 +451,7 @@ class TemplateTests(TestCase):
 class NoteTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_note_creation(self):
@@ -468,7 +462,7 @@ class NoteTests(TestCase):
 class DeviceInformationTypeTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
+        Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
         self.client.login(username = 'test', password = 'test')
 
     def test_device_information_type_creation(self):
@@ -479,7 +473,7 @@ class DeviceInformationTypeTests(TestCase):
 class DeviceInformationTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
+        Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
         self.client.login(username = 'test', password = 'test')
 
     def test_device_information_creation(self):
@@ -490,7 +484,7 @@ class DeviceInformationTests(TestCase):
 class PictureTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_picture_creation(self):

@@ -14,7 +14,7 @@ from users.models import Lageruser
 class DevicegroupTests(TestCase):
     def setUp(self):
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser("test", "test@test.com", "test")
+        Lageruser.objects.create_superuser("test", "test@test.com", "test")
         self.client.login(username='test', password='test')
 
     def test_devicegroup_creation(self):

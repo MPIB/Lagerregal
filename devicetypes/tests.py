@@ -16,7 +16,7 @@ class TypeTests(TestCase):
     def setUp(self):
         '''method for setting up a client for testing'''
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_type_creation(self):
@@ -34,7 +34,7 @@ class TypeTests(TestCase):
 
     def test_type_list(self):
         '''method for testing the presentation and reachability of the list of devicestypes over several pages'''
-        devicetypes = mommy.make(Type, _quantity=40)
+        mommy.make(Type, _quantity=40)
 
         # testing if loading of devicetype-list-page was successful (statuscode 2xx)
         url = reverse("type-list")
@@ -64,8 +64,6 @@ class TypeTests(TestCase):
 
     def test_type_add(self):
         '''method for testing adding a devicetype'''
-        devicetype = mommy.make(Type)
-
         # testing successful loading of devicetype-page of added device (statuscode 2xx)
         url = reverse("type-add")
         resp = self.client.get(url)

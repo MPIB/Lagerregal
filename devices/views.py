@@ -164,7 +164,6 @@ class ExportCsv(View):
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
                 devices = None
-                departments = None
                 searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
 
                 if request.POST['viewfilter'] == "active":
@@ -532,7 +531,6 @@ class DeviceUpdate(UpdateView):
         if form.cleaned_data["department"]:
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
-        deviceid = self.kwargs["pk"]
         device = self.object
         if device.archived is not None:
             messages.error(self.request, _("Archived Devices can't be edited"))

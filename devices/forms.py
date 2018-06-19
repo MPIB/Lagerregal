@@ -185,7 +185,7 @@ class LendForm(forms.Form):
         device = None
         try:
             device = Device.objects.filter(pk = pk)[0]
-        except Exception as e:
+        except:
             pass
         if device:
             self.fields['owner'].initial = device.currentlending.owner

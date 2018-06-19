@@ -13,7 +13,7 @@ from users.models import Lageruser, Department
 class LageruserTests(TestCase):
     def setUp(self):
         self.client = Client()
-        myadmin = Lageruser.objects.create_superuser('test', "test@test.com", "test")
+        Lageruser.objects.create_superuser('test', "test@test.com", "test")
         self.client.login(username="test", password="test")
 
     def test_lageruser_creation(self):
@@ -29,7 +29,7 @@ class LageruserTests(TestCase):
 class DepartmentTests(TestCase):
     def setUp(self):
         self.client = Client()
-        myadmin = Lageruser.objects.create_superuser('test', "test@test.com", "test")
+        Lageruser.objects.create_superuser('test', "test@test.com", "test")
         self.client.login(username="test", password="test")
 
     def test_department_creation(self):

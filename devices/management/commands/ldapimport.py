@@ -78,7 +78,7 @@ class Command(BaseCommand):
                 user = Lageruser.objects.get(username=userdata["sAMAccountName"][0])
             except TypeError:
                 continue
-            except Exception as e:
+            except:
                 saveuser = True
                 created = True
                 user = Lageruser(username=userdata["sAMAccountName"][0])
@@ -90,7 +90,7 @@ class Command(BaseCommand):
                         try:
                             department_name = re.findall(settings.AUTH_LDAP_DEPARTMENT_REGEX, new_value)[-1]
                             new_value = Department.objects.get(name=department_name)
-                        except Department.DoesNotExist as e:
+                        except Department.DoesNotExist:
                             new_value = Department(name=department_name)
                             new_value.save()
                         except IndexError:
@@ -119,7 +119,7 @@ class Command(BaseCommand):
                         saveuser = True
                         setattr(user, field, new_value)
                         changes[field] = (old_value, new_value)
-                except Exception as e:
+                except:
                     if attr == "accountExpires":
                         continue
                     if attr == "givenName" or attr == "sn":
