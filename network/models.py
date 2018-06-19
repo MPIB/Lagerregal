@@ -5,10 +5,11 @@ from django.core.urlresolvers import reverse
 from devices.models import Device
 from users.models import Lageruser, Department
 
-# Create your models here.
+import six
 from reversion import revisions as reversion
 
 
+@six.python_2_unicode_compatible
 class IpAddress(models.Model):
     address = models.GenericIPAddressField(unique=True)
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
@@ -17,7 +18,7 @@ class IpAddress(models.Model):
     purpose = models.CharField(max_length=200, null=True, blank=True)
     department = models.ForeignKey(Department, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.address
 
     class Meta:

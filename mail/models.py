@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+
 import pystache
 import six
 
@@ -20,6 +21,7 @@ usages = {
 }
 
 
+@six.python_2_unicode_compatible
 class MailTemplate(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
@@ -27,7 +29,7 @@ class MailTemplate(models.Model):
     department = models.ForeignKey(Department, null=True)
     usage = models.CharField(_('Usage'), choices=list(usages.items()), null=True, blank=True, max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -98,13 +100,14 @@ class MailTemplate(models.Model):
         mailhistory.save()
 
 
+@six.python_2_unicode_compatible
 class MailTemplateRecipient(models.Model):
     mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients')
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
+    def __str__(self):
         return six.text_type(self.content_type.name + ": " + self.content_object.__unicode__())
 
 
