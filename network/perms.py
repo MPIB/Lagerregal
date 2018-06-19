@@ -3,8 +3,6 @@ from __future__ import unicode_literals
 __author__ = 'viirus'
 from permission.logics import PermissionLogic
 from permission.conf import settings
-from django.contrib import auth
-from django.core.exceptions import PermissionDenied
 
 
 class IPAddressPermissionLogic(PermissionLogic):

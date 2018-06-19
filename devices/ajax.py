@@ -28,7 +28,6 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.dateparse import parse_date
-from django.contrib import messages
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
 from users.models import Lageruser, Department

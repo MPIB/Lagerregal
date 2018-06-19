@@ -1,8 +1,6 @@
 from __future__ import unicode_literals
 
-import os.path
-
-from django.test.client import Client, RequestFactory
+from django.test.client import Client
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.contrib.contenttypes.models import ContentType
@@ -11,7 +9,6 @@ import six
 from model_mommy import mommy
 
 from mail.models import MailTemplate, MailTemplateRecipient, MailHistory
-from devices.models import Device, Room, Building, Lending
 from users.models import Lageruser
 
 

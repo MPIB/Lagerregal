@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 import six
 from model_mommy import mommy
 
-from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
 from devicetypes.models import Type
 from users.models import Lageruser
 

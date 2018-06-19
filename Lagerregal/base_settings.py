@@ -1,7 +1,6 @@
 # Django settings for Lagerregal project.
 from __future__ import unicode_literals
 import os
-from django.contrib.messages import constants as messages
 
 
 # Local time zone for this installation. Choices can be found here:

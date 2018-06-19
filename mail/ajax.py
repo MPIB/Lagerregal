@@ -4,7 +4,6 @@ import json
 import six
 from django.views.generic.base import View
 from django.http import HttpResponse
-from django.utils.translation import ugettext_lazy as _
 
 from mail.models import usages
 from mail.models import MailTemplate

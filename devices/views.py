@@ -3,10 +3,7 @@ from __future__ import unicode_literals
 import datetime
 import time
 import csv
-from django.utils.translation import ugettext_lazy as _
 
-from django.utils.decorators import method_decorator
-from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.core.urlresolvers import reverse_lazy, reverse

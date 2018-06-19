@@ -1,17 +1,9 @@
 from __future__ import unicode_literals
-import csv
-import codecs
 import uuid
 from datetime import date, timedelta
 
-import six
 from django.conf import settings
 from django.test.runner import DiscoverRunner
-
-try:
-    import io
-except ImportError:
-    import cStringIO as io
 
 
 class PaginationMixin():

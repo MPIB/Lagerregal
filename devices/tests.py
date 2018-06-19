@@ -1,7 +1,5 @@
 from __future__ import unicode_literals
 
-import os.path
-
 from datetime import datetime, timedelta
 
 from django.test.client import Client
@@ -14,8 +12,6 @@ from model_mommy import mommy
 from devices.models import Device, Building, Room, Manufacturer, Template, Note, Lending, DeviceInformationType, DeviceInformation, Picture
 from users.models import Lageruser
 from network.models import IpAddress
-from devices.forms import IpAddressForm
-from devices.forms import DeviceForm
 
 
 class DeviceTests(TestCase):

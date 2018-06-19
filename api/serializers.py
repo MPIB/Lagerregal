@@ -4,7 +4,6 @@ from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 
 from devices.models import Room, Building, Manufacturer, Device, Template, Lending, Picture
-from django.contrib.auth.models import Group
 from devicetypes.models import Type, TypeAttribute
 from users.models import Lageruser, Department
 from network.models import IpAddress

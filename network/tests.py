@@ -5,9 +5,9 @@ from django.test import TestCase
 from model_mommy import mommy
 from django.core.urlresolvers import reverse
 
-from devices.models import Device, Template, Note
 from users.models import Lageruser
 from network.models import IpAddress
+
 
 class IpAddressTests(TestCase):
     def setUp(self):

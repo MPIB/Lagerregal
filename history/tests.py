@@ -5,10 +5,8 @@ from django.test import TestCase
 from model_mommy import mommy
 from django.core.urlresolvers import reverse
 
-from devices.models import Device, Building, Room, Manufacturer, Template, Note
+from devices.models import Device
 from users.models import Lageruser
-from network.models import IpAddress
-from reversion.models import Version
 
 
 class HistoryTests(TestCase):

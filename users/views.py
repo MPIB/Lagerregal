@@ -25,7 +25,7 @@ from reversion.models import Version
 from permission.decorators import permission_required
 
 from users.models import Lageruser, Department, DepartmentUser
-from devices.models import Lending, Device
+from devices.models import Lending
 from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin

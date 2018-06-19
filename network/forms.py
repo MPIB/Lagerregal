@@ -4,7 +4,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from network.models import IpAddress
-from users.models import Lageruser, Department
+from users.models import Lageruser
 from devices.forms import get_department_options
 
 VIEWFILTER = (

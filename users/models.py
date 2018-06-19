@@ -15,10 +15,7 @@ from django.core.urlresolvers import reverse
 from django.dispatch import receiver
 from django_auth_ldap.backend import populate_user
 
-from django.conf import settings
-import re
 import six
-from datetime import date
 from Lagerregal import utils
 
 
