@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 __author__ = 'viirus'
 from permission.logics import PermissionLogic
 from permission.conf import settings

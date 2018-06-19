@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout
