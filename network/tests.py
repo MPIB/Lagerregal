@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 from django.test.client import Client
-from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
+from django.test import TestCase
+
+from model_mommy import mommy
 
 from users.models import Lageruser
 from network.models import IpAddress

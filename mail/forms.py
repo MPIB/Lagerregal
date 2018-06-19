@@ -25,14 +25,14 @@ class MailTemplateUpdateForm(MailTemplateForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
         if self.instance.department:
-            #a query set
+            # a query set
             used_db = MailTemplate.objects.values_list('usage', flat=True).filter(department=kwargs["instance"].department)
             used = []
             for x in used_db:
                 if x is not None:
-                    #the current templates' usage can't be excluded although it is in the used_db queryset
+                    # the current templates' usage can't be excluded although it is in the used_db queryset
                     if not self.instance.usage == x:
                         used.append(x)
-            #all usages that are not in used
+            # all usages that are not in used
             valid = [x for x in self.fields['usage'].choices if not any(y in x for y in used)]
             self.fields['usage'].choices = valid

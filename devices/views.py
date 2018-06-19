@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
 import datetime
 import time
 import csv
@@ -40,7 +41,7 @@ from django.db.models import Q
 
 
 @permission_required('devices.read_device', raise_exception=True)
-class DeviceList(PaginationMixin,  ListView):
+class DeviceList(PaginationMixin, ListView):
     context_object_name = 'device_list'
     template_name = 'devices/device_list.html'
     viewfilter = None
@@ -49,7 +50,7 @@ class DeviceList(PaginationMixin,  ListView):
     def post(self, request):
         '''post-requesting the detail-view of device by id'''
         if 'deviceid' in request.POST:
-            return HttpResponseRedirect(reverse('device-detail', kwargs={'pk':request.POST['deviceid']}))
+            return HttpResponseRedirect(reverse('device-detail', kwargs={'pk': request.POST['deviceid']}))
         else:
             return HttpResponseRedirect(reverse('device-list'))
 
@@ -87,7 +88,7 @@ class DeviceList(PaginationMixin,  ListView):
             devices = Device.active()
 
         self.departmentfilter = self.kwargs.get("department", "all")
-        #if user has departments: set departments as filter
+        # if user has departments: set departments as filter
         if hasattr(self.request.user, 'departments'):
             if self.request.user.departments.count() > 0:
                 self.departmentfilter = self.kwargs.get("department", "my")
@@ -191,9 +192,9 @@ class ExportCsv(View):
                         devices = self.request.user.bookmarks.all()
 
                 if request.POST["departmentfilter"] == "my":
-                    devices = devices.filter(department__in=request.user.departments.all()) # does this work?
+                    devices = devices.filter(department__in=request.user.departments.all())  # does this work?
                 elif request.POST["departmentfilter"].isdigit():
-                    devices = devices.filter(department__in=Department.objects.filter(id = int(request.POST["departmentfilter"])))
+                    devices = devices.filter(department__in=Department.objects.filter(id=int(request.POST["departmentfilter"])))
                 elif request.POST["departmentfilter"] == "all":
                     pass
 
@@ -204,7 +205,6 @@ class ExportCsv(View):
                 for device in devices.values_list(*searchvalues):
                     writer.writerow(device)
                 return response
-
 
 
 @permission_required('devices.read_device', raise_exception=True)
@@ -230,8 +230,7 @@ class DeviceDetail(DetailView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(DeviceDetail, self).get_context_data(**kwargs)
-        context['usedset'] = Device.objects.filter(used_in = self.object)
-
+        context['usedset'] = Device.objects.filter(used_in=self.object)
 
         # Add in a QuerySet of all the books
 
@@ -254,7 +253,6 @@ class DeviceDetail(DetailView):
         context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
                                    .select_related("sent_by").order_by("-pk")[:10]
 
-
         context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
@@ -267,7 +265,7 @@ class DeviceDetail(DetailView):
             mailinitial["owner"] = currentowner
             mailinitial["emailrecipients"] = ("u" + str(currentowner.id), currentowner.username)
         try:
-            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder", department = self.request.user.main_department, )
+            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder", department=self.request.user.main_department, )
             mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
             mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
@@ -309,7 +307,8 @@ class DeviceDetail(DetailView):
 
         return context
 
-#### to do
+
+# to do
 @permission_required('devices.change_device', raise_exception=True)
 class DeviceIpAddressRemove(View):
     template_name = 'devices/unassign_ipaddress.html'
@@ -499,7 +498,7 @@ class DeviceCreate(CreateView):
 
         if "uses" in form.changed_data:
             for element in form.cleaned_data["uses"]:
-                used_device = Device.objects.filter(id = element)[0]
+                used_device = Device.objects.filter(id=element)[0]
                 used_device.used_in = self.object
                 used_device.save()
 
@@ -635,16 +634,14 @@ class DeviceLend(FormView):
             (reverse("device-list"), _("Devices")),
             ("", _("Lend"))]
         if self.kwargs and 'pk' in self.kwargs:
-            device = get_object_or_404(Device, pk = self.kwargs['pk'])
+            device = get_object_or_404(Device, pk=self.kwargs['pk'])
             context["breadcrumbs"] = context["breadcrumbs"][:-1] + [(reverse("device-detail", kwargs={"pk": device.pk}), device.name)] + context['breadcrumbs'][-1:]
         return context
-
 
     def get_form_kwargs(self):
         kwargs = super(DeviceLend, self).get_form_kwargs()
         kwargs.update(self.kwargs)
         return kwargs
-
 
     def form_valid(self, form):
         device = None

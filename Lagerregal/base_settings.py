@@ -126,8 +126,8 @@ INSTALLED_APPS = (
 )
 
 LANGUAGES = (
-  ('de', 'German'),
-  ('en', 'English'),
+    ('de', 'German'),
+    ('en', 'English'),
 )
 
 AUTH_USER_MODEL = 'users.Lageruser'

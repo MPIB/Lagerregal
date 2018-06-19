@@ -5,7 +5,6 @@ import re
 from datetime import date
 import logging
 
-import pytz
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -13,9 +12,11 @@ from django.core.validators import MaxValueValidator
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
+
+import pytz
+import six
 from django_auth_ldap.backend import populate_user
 
-import six
 from Lagerregal import utils
 
 
@@ -103,6 +104,7 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
 
     user.save()
 
+
 @six.python_2_unicode_compatible
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
@@ -117,6 +119,7 @@ class Department(models.Model):
             ("read_department", _("Can read Departments")),
             ("add_department_user", _("Can add a User to a Department")),
             ("delete_department_user", _("Can remove a User from a Department")),)
+
 
 class DepartmentUser(models.Model):
     user = models.ForeignKey(Lageruser)

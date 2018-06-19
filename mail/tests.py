@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import unittest
+
 from django.test.client import Client
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -25,25 +27,26 @@ class TestMailTemplate(TestCase):
         self.assertEqual(template.get_edit_url(), reverse('mail-edit', kwargs={'pk': template.pk}))
 
 
-# first figuring out strange behaviour of content_object
-# class TestMailTemplateRecipient(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         myadmin = Lageruser.objects.create_superuser("test", "test@test.com", "test")
-#         self.client.login(username = "test", password = "test")
-#
-#     def test_template_creation(self):
-#         con = mommy.make(ContentType)
-#         rec = mommy.make(MailTemplateRecipient, content_type = con)
-#         self.assertEqual(six.text_type(rec), unicode(rec.content_type.name + ": " + six.text_type(rec.content_object)))
+class TestMailTemplateRecipient(TestCase):
+    def setUp(self):
+        self.client = Client()
+        Lageruser.objects.create_superuser("test", "test@test.com", "test")
+        self.client.login(username="test", password="test")
 
-# find out why url does not exist
-# class TestMailHistory(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         myadmin = Lageruser.objects.create_superuser("test", "test@test.com", "test")
-#         self.client.login(username = "test", password = "test")
-#
-#     def test_mail_history_creation(self):
-#         hist = mommy.make(MailHistory)
-#         self.assertEqual(hist.get_absolute_url(), reverse('mailhistory-detail', kwargs={'pk': hist.pk}) )
+    @unittest.skip("first figuring out strange behaviour of content_object")
+    def test_template_creation(self):
+        con = mommy.make(ContentType)
+        rec = mommy.make(MailTemplateRecipient, content_type=con)
+        self.assertEqual(six.text_type(rec), six.text_type(rec.content_type.name + ": " + six.text_type(rec.content_object)))
+
+
+class TestMailHistory(TestCase):
+    def setUp(self):
+        self.client = Client()
+        Lageruser.objects.create_superuser("test", "test@test.com", "test")
+        self.client.login(username="test", password="test")
+
+    @unittest.skip("find out why url does not exist")
+    def test_mail_history_creation(self):
+        hist = mommy.make(MailHistory)
+        self.assertEqual(hist.get_absolute_url(), reverse('mailhistory-detail', kwargs={'pk': hist.pk}))

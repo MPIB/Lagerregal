@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import json
 import time
 import csv
@@ -442,7 +443,7 @@ class AjaxSearch(View):
                     return render(request, 'devices/searchresult.html', context)
                 except ValueError:
                     context = {
-                        "wrong_id_format" : True
+                        "wrong_id_format": True
                     }
                     return render(request, 'devices/searchempty.html', context)
                 except Device.DoesNotExist:

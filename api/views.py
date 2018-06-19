@@ -242,6 +242,7 @@ class DeviceApiPicture(generics.RetrieveDestroyAPIView):
     queryset = Picture.objects.all()
     serializer_class = PictureSerializer
 
+
 class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
     model = Picture
     queryset = Picture.objects.all()

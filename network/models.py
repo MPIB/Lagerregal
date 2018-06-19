@@ -4,11 +4,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
-from devices.models import Device
-from users.models import Lageruser, Department
-
 import six
 from reversion import revisions as reversion
+
+from devices.models import Device
+from users.models import Department, Lageruser
 
 
 @six.python_2_unicode_compatible

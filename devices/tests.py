@@ -25,16 +25,22 @@ class DeviceTests(TestCase):
     def test_device_creation(self):
         '''method for testing the functionality of creating a new device'''
         device = mommy.make(Device)
-        lending_past = mommy.make(Lending, duedate = (datetime.today() - timedelta(days = 1)).date())
-        lending_future = mommy.make(Lending, duedate = (datetime.today() + timedelta(days = 1)).date())
+        lending_past = mommy.make(Lending, duedate=(datetime.today() - timedelta(days=1)).date())
+        lending_future = mommy.make(Lending, duedate=(datetime.today() + timedelta(days=1)).date())
         self.assertTrue(isinstance(device, Device))
         self.assertEqual(six.text_type(device), device.name)
         self.assertEqual(device.get_absolute_url(), reverse('device-detail', kwargs={'pk': device.pk}))
         self.assertEqual(device.get_edit_url(), reverse('device-edit', kwargs={'pk': device.pk}))
-        self.assertEqual(device.get_as_dict(), {"name": device.name, "description": device.description, "manufacturer": device.manufacturer, "devicetype" : device.devicetype, "room" : device.room})
+        self.assertEqual(device.get_as_dict(), {
+            "name": device.name,
+            "description": device.description,
+            "manufacturer": device.manufacturer,
+            "devicetype": device.devicetype,
+            "room": device.room,
+        })
         self.assertFalse(device.is_overdue())
-        self.assertTrue(mommy.make(Device, currentlending = lending_past).is_overdue())
-        self.assertFalse(mommy.make(Device, currentlending = lending_future).is_overdue())
+        self.assertTrue(mommy.make(Device, currentlending=lending_past).is_overdue())
+        self.assertFalse(mommy.make(Device, currentlending=lending_future).is_overdue())
 
     def test_device_list(self):
         mommy.make(Device, _quantity=40)
@@ -58,7 +64,7 @@ class DeviceTests(TestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_device_add(self):
-        device = mommy.make(Device, name = "used")
+        device = mommy.make(Device, name="used")
         url = reverse("device-add")
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
@@ -67,7 +73,7 @@ class DeviceTests(TestCase):
         data['uses'] = device.id
         data['name'] = "uses"
         resp = self.client.post(url, data)
-        device = Device.objects.filter(name = 'used')[0]
+        device = Device.objects.filter(name='used')[0]
         self.assertEqual(device.used_in.name, 'uses')
 
     def test_device_edit(self):
@@ -122,17 +128,17 @@ class DeviceTests(TestCase):
 
     def test_device_trash_sets_child_used_in_to_none(self):
         device = mommy.make(Device)
-        used_device = mommy.make(Device, used_in = device)
+        used_device = mommy.make(Device, used_in=device)
         trashurl = reverse('device-trash', kwargs={'pk': device.pk})
         self.client.post(trashurl)
-        used_device = Device.objects.filter(pk = used_device.pk)[0]
+        used_device = Device.objects.filter(pk=used_device.pk)[0]
         self.assertIsNone(used_device.used_in)
 
     def test_device_trash_sets_self_used_in_to_none(self):
         device = mommy.make(Device, _fill_optional=['used_in'])
-        trashurl = reverse("device-trash", kwargs={'pk' : device.pk})
+        trashurl = reverse("device-trash", kwargs={'pk': device.pk})
         self.client.post(trashurl)
-        device = Device.objects.filter(pk = device.pk)[0]
+        device = Device.objects.filter(pk=device.pk)[0]
         self.assertIsNone(device.used_in)
 
     def test_device_trash_returns_lending(self):
@@ -197,13 +203,13 @@ class DeviceTests(TestCase):
 
     def test_device_lending_list(self):
         lending = mommy.make(Lending)
-        device = mommy.make(Device, currentlending = lending)
-        url = reverse("device-lending-list", kwargs = {"pk": device.pk})
+        device = mommy.make(Device, currentlending=lending)
+        url = reverse("device-lending-list", kwargs={"pk": device.pk})
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, 200)
 
     def test_device_lend(self):
-        device = mommy.make(Device, archived = None)
+        device = mommy.make(Device, archived=None)
         room = mommy.make(Room)
         room.save()
         lending = mommy.make(Lending)
@@ -223,13 +229,13 @@ class DeviceTests(TestCase):
         device = devices[0]
         user = mommy.make(Lageruser)
 
-        lending = mommy.make(Lending, owner = user)
-        url = reverse("device-return", kwargs = {"lending": lending.id})
+        lending = mommy.make(Lending, owner=user)
+        url = reverse("device-return", kwargs={"lending": lending.id})
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
 
-        lending2 = mommy.make(Lending, device = device)
-        url = reverse("device-return", kwargs = {"lending": lending2.id})
+        lending2 = mommy.make(Lending, device=device)
+        url = reverse("device-return", kwargs={"lending": lending2.id})
         resp = self.client.post(url)
         self.assertEqual(resp.status_code, 302)
 
@@ -298,7 +304,7 @@ class RoomTests(TestCase):
     def test_room_creation(self):
         room = mommy.make(Room)
         building = mommy.make(Building)
-        room_in_building = mommy.make(Room, building = building)
+        room_in_building = mommy.make(Room, building=building)
         self.assertTrue(isinstance(room, Room))
         self.assertEqual(six.text_type(room), room.name)
         self.assertTrue(isinstance(room_in_building, Room))
@@ -413,7 +419,12 @@ class TemplateTests(TestCase):
         self.assertTrue(isinstance(template, Template))
         self.assertEqual(six.text_type(template), template.templatename)
         self.assertEqual(template.get_absolute_url(), reverse('device-list'))
-        self.assertEqual(template.get_as_dict(), {'name': template.name, 'description': template.description, 'manufacturer' : template.manufacturer, 'devicetype' : template.devicetype })
+        self.assertEqual(template.get_as_dict(), {
+            'name': template.name,
+            'description': template.description,
+            'manufacturer': template.manufacturer,
+            'devicetype': template.devicetype,
+        })
 
     def test_template_list(self):
         mommy.make(Template, _quantity=40)
@@ -459,22 +470,24 @@ class NoteTests(TestCase):
         self.assertTrue(isinstance(note, Note))
         self.assertEqual(note.get_absolute_url(), reverse('device-detail', kwargs={'pk': note.device.pk}))
 
+
 class DeviceInformationTypeTests(TestCase):
     def setUp(self):
         self.client = Client()
         Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
-        self.client.login(username = 'test', password = 'test')
+        self.client.login(username='test', password='test')
 
     def test_device_information_type_creation(self):
         information = mommy.make(DeviceInformationType)
         self.assertTrue(isinstance(information, DeviceInformationType))
         self.assertEqual(six.text_type(information), information.humanname)
 
+
 class DeviceInformationTests(TestCase):
     def setUp(self):
         self.client = Client()
         Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
-        self.client.login(username = 'test', password = 'test')
+        self.client.login(username='test', password='test')
 
     def test_device_information_creation(self):
         device_information = mommy.make(DeviceInformation)
@@ -489,6 +502,6 @@ class PictureTests(TestCase):
 
     def test_picture_creation(self):
         device = mommy.make(Device)
-        picture = mommy.make(Picture, device = device)
+        picture = mommy.make(Picture, device=device)
         self.assertTrue(isinstance(picture, Picture))
-        self.assertEqual(picture.get_absolute_url(), reverse('device-detail', kwargs={'pk': picture.device.pk}) )
+        self.assertEqual(picture.get_absolute_url(), reverse('device-detail', kwargs={'pk': picture.device.pk}))

@@ -164,7 +164,7 @@ class Device(models.Model):
         return dict
 
     def is_overdue(self):
-        if self.currentlending == None:
+        if self.currentlending is None:
             return False
         if self.currentlending.duedate < datetime.date.today():
             return True
@@ -207,9 +207,11 @@ class DeviceInformation(models.Model):
         verbose_name_plural = _('Information')
 
 
-reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
-["archived", "currentlending", "inventoried", "bookmarks", "trashed"], ignore_duplicates=True)
+reversion.register(Device, follow=["typeattributevalue_set", ], exclude=[
+    "archived", "currentlending", "inventoried", "bookmarks", "trashed",
+], ignore_duplicates=True)
 reversion.register(TypeAttributeValue)
+
 
 @reversion.register(ignore_duplicates=True)
 class Lending(models.Model):

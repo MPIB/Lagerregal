@@ -90,7 +90,6 @@ class TypeTests(TestCase):
         devicetypes = Type.objects.all()
         devicetype = devicetypes[0]
 
-
         # testing successful loading of devicetype-page after deletion (statuscode 2xx)
         url = reverse("type-edit", kwargs={"pk": devicetype.pk})
         resp = self.client.get(url)

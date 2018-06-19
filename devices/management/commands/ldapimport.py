@@ -29,7 +29,7 @@ class PagedResultsSearchObject(LDAPObject):
         # Send first search request
         msgid = self.search_ext(
             *settings.LDAP_USER_SEARCH,
-            serverctrls=(serverctrls or [])+[req_ctrl]
+            serverctrls=(serverctrls or []) + [req_ctrl]
         )
 
         result_pages = 0
@@ -49,7 +49,7 @@ class PagedResultsSearchObject(LDAPObject):
                 if pctrls[0].cookie:
                     # Copy cookie from response control to request control
                     req_ctrl.cookie = pctrls[0].cookie
-                    msgid = self.search_ext(*settings.LDAP_USER_SEARCH, serverctrls=(serverctrls or [])+[req_ctrl])
+                    msgid = self.search_ext(*settings.LDAP_USER_SEARCH, serverctrls=(serverctrls or []) + [req_ctrl])
                 else:
                     break
         return result_pages, all_results
