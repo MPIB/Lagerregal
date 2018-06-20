@@ -13,14 +13,14 @@ import six
 
 from users.models import Lageruser, Department
 
-usages = {
-    "new": _("New Device is created"),
-    "room": _("Room is changed"),
-    "owner": _("person currently lending is changed"),
-    "reminder": _("Reminder that device is still owned"),
-    "overdue": _("Reminder that device is overdue"),
-    "trashed": _("Device is trashed")
-}
+USAGES = [
+    ("new", _("New Device is created")),
+    ("room", _("Room is changed")),
+    ("owner", _("person currently lending is changed")),
+    ("reminder", _("Reminder that device is still owned")),
+    ("overdue", _("Reminder that device is overdue")),
+    ("trashed", _("Device is trashed")),
+]
 
 
 @six.python_2_unicode_compatible
@@ -29,7 +29,7 @@ class MailTemplate(models.Model):
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
     department = models.ForeignKey(Department, null=True)
-    usage = models.CharField(_('Usage'), choices=list(usages.items()), null=True, blank=True, max_length=200)
+    usage = models.CharField(_('Usage'), choices=USAGES, null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.name
