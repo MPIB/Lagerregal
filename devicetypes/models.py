@@ -7,7 +7,7 @@ from reversion import revisions as reversion
 class Type(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -36,7 +36,7 @@ class TypeAttribute(models.Model):
     def get_absolute_url(self):
         return reverse('type-detail', kwargs={'pk': self.devicetype.pk})
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -49,7 +49,7 @@ class TypeAttributeValue(models.Model):
         verbose_name = _("Type-attribute value")
         verbose_name_plural = _("Type-attribute values")
 
-    def __unicode__(self):
+    def __str__(self):
         return self.value
 
 

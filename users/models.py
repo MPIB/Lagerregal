@@ -38,7 +38,7 @@ class Lageruser(AbstractUser):
     departments = models.ManyToManyField("users.Department", blank=True, through='users.DepartmentUser',
                                          related_name="members")
 
-    def __unicode__(self):
+    def __str__(self):
         if self.first_name != "" and self.last_name != "":
             return "{0} {1}".format(self.first_name, self.last_name)
         else:
@@ -107,7 +107,7 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:

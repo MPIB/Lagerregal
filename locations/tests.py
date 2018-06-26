@@ -15,6 +15,6 @@ class SectionTests(TestCase):
 
     def test_section_creation(self):
         section = mommy.make(Section)
-        self.assertEqual(section.__unicode__(), section.name)
+        self.assertEqual(section.__str__(), section.name)
         self.assertEqual(section.get_absolute_url(), reverse('section-detail', kwargs={'pk': section.pk}))
         self.assertEqual(section.get_edit_url(), reverse('section-edit', kwargs={'pk': section.pk}))

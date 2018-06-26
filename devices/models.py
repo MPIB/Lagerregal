@@ -24,7 +24,7 @@ class Building(models.Model):
     state = models.CharField(_('State'), max_length=100, blank=True)
     country = models.CharField(_('Country'), max_length=100, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -47,9 +47,9 @@ class Room(models.Model):
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
     section = models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms", blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.building:
-            return self.name + " (" + self.building.__unicode__() + ")"
+            return self.name + " (" + self.building.__str__() + ")"
         else:
             return self.name
 
@@ -71,7 +71,7 @@ class Room(models.Model):
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -125,7 +125,7 @@ class Device(models.Model):
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -176,7 +176,7 @@ class DeviceInformationType(models.Model):
     keyname = models.CharField(_('Name'), max_length=200)
     humanname = models.CharField(_('Human readable name'), max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.humanname
 
     class Meta:
@@ -189,8 +189,8 @@ class DeviceInformation(models.Model):
     device = models.ForeignKey(Device, related_name="information")
     infotype = models.ForeignKey(DeviceInformationType)
 
-    def __unicode__(self):
-        return self.infotype.__unicode__() + ": " + self.information
+    def __str__(self):
+        return self.infotype.__str__() + ": " + self.information
 
     class Meta:
         verbose_name = _('Information')
@@ -219,7 +219,7 @@ class Template(models.Model):
     description = models.CharField(_('Description'), max_length=1000, blank=True)
     devicetype = models.ForeignKey(Type, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.templatename
 
     class Meta:

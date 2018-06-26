@@ -17,7 +17,7 @@ class IpAddress(models.Model):
     purpose = models.CharField(max_length=200, null=True, blank=True)
     department = models.ForeignKey(Department, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.address
 
     class Meta:
