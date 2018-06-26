@@ -103,7 +103,7 @@ class HistoryDetail(UpdateView):
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(context["this_version"].content_type.model)),
                 _(context["this_version"].content_type.name)),
-            (context["current_version"].get_absolute_url(), context["current_version"].__unicode__()),
+            (context["current_version"].get_absolute_url(), context["current_version"].__str__()),
             (reverse("history-list", kwargs={"content_type_id": context["this_version"].content_type.id,
                                              "object_id": context["this_version"].object_id}), _("History")),
             ("", _("Version {0}".format(context["this_version"].pk)))
@@ -152,7 +152,7 @@ class HistoryList(ListView):
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(self.content_type.model)),
                 _(self.content_type.name)),
-            (self.object.get_absolute_url(), self.object.__unicode__()),
+            (self.object.get_absolute_url(), self.object.__str__()),
             (reverse("history-list", kwargs={"content_type_id": self.content_type.id,
                                              "object_id": self.object.id}), _("History"))
         ]

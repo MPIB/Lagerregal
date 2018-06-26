@@ -15,6 +15,6 @@ class DevicegroupTests(TestCase):
 
     def test_devicegroup_creation(self):
         devicegroup = mommy.make(Devicegroup)
-        self.assertEqual(devicegroup.__unicode__(), devicegroup.name)
+        self.assertEqual(devicegroup.__str__(), devicegroup.name)
         self.assertEqual(devicegroup.get_absolute_url(), reverse('devicegroup-detail', kwargs={'pk': devicegroup.pk}))
         self.assertEqual(devicegroup.get_edit_url(), reverse('devicegroup-edit', kwargs={'pk': devicegroup.pk}))

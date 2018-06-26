@@ -23,7 +23,7 @@ class TypeTests(TestCase):
         self.assertTrue(isinstance(devicetype, Type))
 
         # testing naming
-        self.assertEqual(devicetype.__unicode__(), devicetype.name)
+        self.assertEqual(devicetype.__str__(), devicetype.name)
 
         # testing creation of absolute and relative url
         self.assertEqual(devicetype.get_absolute_url(), reverse('type-detail', kwargs={'pk': devicetype.pk}))

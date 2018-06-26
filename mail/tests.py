@@ -19,7 +19,7 @@ class TestMailTemplate(TestCase):
 
     def test_template_creation(self):
         template = mommy.make(MailTemplate)
-        self.assertEqual(template.__unicode__(), template.name)
+        self.assertEqual(template.__str__(), template.name)
         self.assertEqual(template.get_absolute_url(), reverse('mail-detail', kwargs={'pk': template.pk}))
         self.assertEqual(template.get_edit_url(), reverse('mail-edit', kwargs={'pk': template.pk}))
 
@@ -34,7 +34,7 @@ class TestMailTemplate(TestCase):
 #     def test_template_creation(self):
 #         con = mommy.make(ContentType)
 #         rec = mommy.make(MailTemplateRecipient, content_type = con)
-#         self.assertEqual(rec.__unicode__(), unicode(rec.content_type.name + ": " + rec.content_object.__unicode__()))
+#         self.assertEqual(rec.__str__(), unicode(rec.content_type.name + ": " + rec.content_object.__str__()))
 
 # find out why url does not exist
 # class TestMailHistory(TestCase):

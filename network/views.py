@@ -150,7 +150,7 @@ class UserIpAddressRemove(DeleteView):
         context["ipaddress"] = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),
-            (reverse("userprofile", kwargs={"pk": context["user"].pk}), context["user"].__unicode__()),
+            (reverse("userprofile", kwargs={"pk": context["user"].pk}), context["user"].__str__()),
             ("", _("Unassign IP-Address"))]
         return render(request, self.template_name, context)
 
@@ -158,7 +158,7 @@ class UserIpAddressRemove(DeleteView):
         user = get_object_or_404(Lageruser, pk=kwargs["pk"])
         ipaddress = get_object_or_404(IpAddress, pk=kwargs["ipaddress"])
         ipaddress.user = None
-        reversion.set_comment(_("Removed from User {0}".format(user.__unicode__())))
+        reversion.set_comment(_("Removed from User {0}".format(user.__str__())))
         ipaddress.save()
 
         return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": user.pk}))
@@ -174,14 +174,14 @@ class UserIpAddress(FormView):
         user = context["form"].cleaned_data["user"]
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),
-            (reverse("userprofile", kwargs={"pk": user.pk}), user.__unicode__()),
+            (reverse("userprofile", kwargs={"pk": user.pk}), user.__str__()),
             ("", _("Assign IP-Addresses"))]
         return context
 
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
         user = form.cleaned_data["user"]
-        reversion.set_comment(_("Assigned to User {0}").format(user.__unicode__()))
+        reversion.set_comment(_("Assigned to User {0}").format(user.__str__()))
         for ipaddress in ipaddresses:
             ipaddress.user = user
             ipaddress.save()

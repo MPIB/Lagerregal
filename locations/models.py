@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 class Section(models.Model):
     name = models.CharField(max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:

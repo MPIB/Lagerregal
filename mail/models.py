@@ -27,7 +27,7 @@ class MailTemplate(models.Model):
     department = models.ForeignKey(Department, null=True)
     usage = models.CharField(_('Usage'), choices=list(usages.items()), null=True, blank=True, max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -54,7 +54,7 @@ class MailTemplate(models.Model):
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
-            "name": data["device"].__unicode__(),
+            "name": data["device"].__str__(),
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
                                                                                                       "device"].room is not None else ""),
             "serialnumber": data["device"].serialnumber,
@@ -65,7 +65,7 @@ class MailTemplate(models.Model):
         }
         if data["device"].currentlending is not None:
             datadict["device"]["currentlending"] = {
-                "owner": data["device"].currentlending.owner.__unicode__(),
+                "owner": data["device"].currentlending.owner.__str__(),
                 "duedate": data["device"].currentlending.duedate,
                 "lenddate": data["device"].currentlending.lenddate
             },
@@ -104,8 +104,8 @@ class MailTemplateRecipient(models.Model):
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
-        return six.text_type(self.content_type.name + ": " + self.content_object.__unicode__())
+    def __str__(self):
+        return six.text_type(self.content_type.name + ": " + self.content_object.__str__())
 
 
 class MailHistory(models.Model):

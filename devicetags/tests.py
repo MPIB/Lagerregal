@@ -15,7 +15,7 @@ class DevitagsTests(TestCase):
 
     def test_devicetag_creation(self):
         tag = mommy.make(Devicetag)
-        self.assertEqual(tag.__unicode__(), tag.name)
+        self.assertEqual(tag.__str__(), tag.name)
         # there is no devicetag detail view
         self.assertEqual(tag.get_absolute_url(), reverse('devicetag-edit', kwargs={'pk': tag.pk}))
         self.assertEqual(tag.get_edit_url(), reverse('devicetag-edit', kwargs={'pk': tag.pk}))
