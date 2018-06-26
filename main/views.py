@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import datetime
 
 from django.views.generic import TemplateView, ListView
@@ -8,7 +10,7 @@ from devices.models import *
 from network.models import *
 from devicegroups.models import Devicegroup
 from locations.models import Section
-from main.models import DashboardWidget, widgets, get_progresscolor
+from main.models import DashboardWidget, WIDGETS, get_progresscolor
 from Lagerregal.utils import PaginationMixin
 from devices.forms import LendForm
 
@@ -91,7 +93,7 @@ class Home(TemplateView):
             ).order_by("index")
             context["widgets_right"] = DashboardWidget.objects.filter(user=self.request.user, column="r"
             ).order_by("index")
-            userwidget_list = dict(widgets)
+            userwidget_list = dict(WIDGETS)
             widgetlist = [x[0] for x in DashboardWidget.objects.filter(user=self.request.user
             ).values_list("widgetname")]
             context.update(get_widget_data(self.request.user, widgetlist, self.request.user.departments.all()))

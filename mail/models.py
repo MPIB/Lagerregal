@@ -1,33 +1,37 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+
 import pystache
 import six
 
 from users.models import Lageruser, Department
 
-usages = {
-    "new": _("New Device is created"),
-    "room": _("Room is changed"),
-    "owner": _("person currently lending is changed"),
-    "reminder": _("Reminder that device is still owned"),
-    "overdue": _("Reminder that device is overdue"),
-    "trashed": _("Device is trashed")
-}
+USAGES = [
+    ("new", _("New Device is created")),
+    ("room", _("Room is changed")),
+    ("owner", _("person currently lending is changed")),
+    ("reminder", _("Reminder that device is still owned")),
+    ("overdue", _("Reminder that device is overdue")),
+    ("trashed", _("Device is trashed")),
+]
 
 
+@six.python_2_unicode_compatible
 class MailTemplate(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
     department = models.ForeignKey(Department, null=True)
-    usage = models.CharField(_('Usage'), choices=list(usages.items()), null=True, blank=True, max_length=200)
+    usage = models.CharField(_('Usage'), choices=USAGES, null=True, blank=True, max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -54,7 +58,7 @@ class MailTemplate(models.Model):
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
-            "name": data["device"].__unicode__(),
+            "name": six.text_type(data["device"]),
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
                                                                                                       "device"].room is not None else ""),
             "serialnumber": data["device"].serialnumber,
@@ -65,7 +69,7 @@ class MailTemplate(models.Model):
         }
         if data["device"].currentlending is not None:
             datadict["device"]["currentlending"] = {
-                "owner": data["device"].currentlending.owner.__unicode__(),
+                "owner": six.text_type(data["device"].currentlending.owner),
                 "duedate": data["device"].currentlending.duedate,
                 "lenddate": data["device"].currentlending.lenddate
             },
@@ -98,14 +102,15 @@ class MailTemplate(models.Model):
         mailhistory.save()
 
 
+@six.python_2_unicode_compatible
 class MailTemplateRecipient(models.Model):
     mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients')
     content_type = models.ForeignKey(ContentType)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
-        return six.text_type(self.content_type.name + ": " + self.content_object.__unicode__())
+    def __str__(self):
+        return six.text_type(self.content_type.name + ": " + six.text_type(self.content_object))
 
 
 class MailHistory(models.Model):

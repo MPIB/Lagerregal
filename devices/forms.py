@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 import re
 
 from django import forms
@@ -66,14 +67,14 @@ DEPARTMENT_OPTIONS = [
 
 def get_department_options():
     try:
-        return DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name"))
+        return DEPARTMENT_OPTIONS + list(Department.objects.all().values_list("id", "name"))
     except OperationalError:
         return []
 
 
 def get_devicegroup_options():
     try:
-        return [('all', _('All Groups')), ]+list(Devicegroup.objects.all().values_list("id", "name"))
+        return [('all', _('All Groups'))] + list(Devicegroup.objects.all().values_list("id", "name"))
     except OperationalError:
         return []
 
@@ -184,8 +185,8 @@ class LendForm(forms.Form):
         super(LendForm, self).__init__(*args, **kwargs)
         device = None
         try:
-            device = Device.objects.filter(pk = pk)[0]
-        except Exception as e:
+            device = Device.objects.filter(pk=pk)[0]
+        except:
             pass
         if device:
             self.fields['owner'].initial = device.currentlending.owner
@@ -193,8 +194,6 @@ class LendForm(forms.Form):
             self.fields['room'].initial = device.room
             self.fields['device'].initial = device
             print(self.fields['device'].initial)
-
-
 
     def clean_device(self):
         device = self.cleaned_data["device"]

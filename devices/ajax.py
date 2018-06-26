@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 import json
 import time
 import csv
@@ -28,7 +29,6 @@ from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
 from django.utils.dateparse import parse_date
-from django.contrib import messages
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
 from users.models import Lageruser, Department
@@ -251,10 +251,10 @@ class LoadSearchoptions(View):
             return HttpResponse("")
         if invert:
             data = [
-                {"value": "not " + str(object.pk) + "-" + object.__unicode__(), "label": "not " + object.__unicode__()}
+                {"value": "not " + str(object.pk) + "-" + six.text_type(object), "label": "not " + six.text_type(object)}
                 for object in items]
         else:
-            data = [{"value": str(object.pk) + "-" + object.__unicode__(), "label": object.__unicode__()}
+            data = [{"value": str(object.pk) + "-" + six.text_type(object), "label": six.text_type(object)}
                     for object in items]
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -443,7 +443,7 @@ class AjaxSearch(View):
                     return render(request, 'devices/searchresult.html', context)
                 except ValueError:
                     context = {
-                        "wrong_id_format" : True
+                        "wrong_id_format": True
                     }
                     return render(request, 'devices/searchempty.html', context)
                 except Device.DoesNotExist:
@@ -547,7 +547,6 @@ class PuppetSoftware(View):
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
                                        context=context)
-        req = settings.PUPPETDB_SETTINGS['req'] + params
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:

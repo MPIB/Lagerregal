@@ -21,11 +21,11 @@ from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from reversion.models import Version
 from permission.decorators import permission_required
+from reversion.models import Version
 
 from users.models import Lageruser, Department, DepartmentUser
-from devices.models import Lending, Device
+from devices.models import Lending
 from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin

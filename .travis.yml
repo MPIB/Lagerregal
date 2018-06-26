@@ -4,9 +4,12 @@ python:
 # command to install dependencies
 install:
   - "pip install -r dependencies.txt"
+  - "pip install flake8"
   - npm install -g casperjs
   # create the database
   - "cp Lagerregal/template_development.py Lagerregal/settings.py"
   - "./manage.py migrate"
 # command to run tests
-script: "./manage.py test"
+script:
+  - flake8 --config=setup.cfg
+  - "./manage.py test"

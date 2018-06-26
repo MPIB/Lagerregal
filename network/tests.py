@@ -1,17 +1,20 @@
-from django.test.client import Client
-from django.test import TestCase
-from model_mommy import mommy
-from django.core.urlresolvers import reverse
+from __future__ import unicode_literals
 
-from devices.models import Device, Template, Note
+from django.test.client import Client
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+
+from model_mommy import mommy
+
 from users.models import Lageruser
 from network.models import IpAddress
+
 
 class IpAddressTests(TestCase):
     def setUp(self):
         '''method for setting up a client for testing'''
         self.client = Client()
-        myadmin = Lageruser.objects.create_superuser("test", "test@test.com", 'test')
+        Lageruser.objects.create_superuser("test", "test@test.com", 'test')
         self.client.login(username="test", password="test")
 
     def test_IpAddress_creation(self):
@@ -25,7 +28,7 @@ class IpAddressTests(TestCase):
 
     def test_IpAddress_list(self):
         '''method for testing the presentation and reachability of the list of IpAdresses over several pages'''
-        address = mommy.make(IpAddress, _quantity=40)
+        mommy.make(IpAddress, _quantity=40)
 
         # testing if loading of device-list-page was successful (statuscode 2xx)
         url = reverse("ipaddress-list")
@@ -55,8 +58,6 @@ class IpAddressTests(TestCase):
 
     def test_IpAddress_add(self):
         '''method for testing adding a Ipaddress'''
-        address = mommy.make(IpAddress)
-
         # testing successful loading of Ipaddress-page of added device (statuscode 2xx)
         url = reverse("ipaddress-add")
         resp = self.client.get(url)

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout
@@ -24,11 +26,12 @@ from . import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-admin.autodiscover()
-import permission; permission.autodiscover()
+import permission
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
 
+admin.autodiscover()
+permission.autodiscover()
 
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),

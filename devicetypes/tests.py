@@ -1,9 +1,12 @@
+from __future__ import unicode_literals
+
 from django.test.client import Client
 from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
 
-from devicetypes.models import Type, TypeAttribute, TypeAttributeValue
+import six
+from model_mommy import mommy
+
 from devicetypes.models import Type
 from users.models import Lageruser
 
@@ -13,7 +16,7 @@ class TypeTests(TestCase):
     def setUp(self):
         '''method for setting up a client for testing'''
         self.client = Client()
-        my_admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
+        Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_type_creation(self):
@@ -23,7 +26,7 @@ class TypeTests(TestCase):
         self.assertTrue(isinstance(devicetype, Type))
 
         # testing naming
-        self.assertEqual(devicetype.__unicode__(), devicetype.name)
+        self.assertEqual(six.text_type(devicetype), devicetype.name)
 
         # testing creation of absolute and relative url
         self.assertEqual(devicetype.get_absolute_url(), reverse('type-detail', kwargs={'pk': devicetype.pk}))
@@ -31,7 +34,7 @@ class TypeTests(TestCase):
 
     def test_type_list(self):
         '''method for testing the presentation and reachability of the list of devicestypes over several pages'''
-        devicetypes = mommy.make(Type, _quantity=40)
+        mommy.make(Type, _quantity=40)
 
         # testing if loading of devicetype-list-page was successful (statuscode 2xx)
         url = reverse("type-list")
@@ -61,8 +64,6 @@ class TypeTests(TestCase):
 
     def test_type_add(self):
         '''method for testing adding a devicetype'''
-        devicetype = mommy.make(Type)
-
         # testing successful loading of devicetype-page of added device (statuscode 2xx)
         url = reverse("type-add")
         resp = self.client.get(url)
@@ -88,7 +89,6 @@ class TypeTests(TestCase):
         # querying all devices and choose first one
         devicetypes = Type.objects.all()
         devicetype = devicetypes[0]
-
 
         # testing successful loading of devicetype-page after deletion (statuscode 2xx)
         url = reverse("type-edit", kwargs={"pk": devicetype.pk})

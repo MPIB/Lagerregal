@@ -1,8 +1,12 @@
-__author__ = 'viirus'
-from permission.logics import PermissionLogic
-from permission.conf import settings
+from __future__ import unicode_literals
+
 from django.contrib import auth
 from django.core.exceptions import PermissionDenied
+
+from permission.conf import settings
+from permission.logics import PermissionLogic
+
+__author__ = 'viirus'
 
 
 class DevicePermissionLogic(PermissionLogic):
@@ -61,9 +65,6 @@ class DevicePermissionLogic(PermissionLogic):
     def has_perm(self, user_obj, perm, obj=None):
         if not user_obj.is_authenticated():
             return False
-
-        change_permission = self.get_full_permission_string('change')
-        delete_permission = self.get_full_permission_string('delete')
 
         if obj is None:
             backend = auth.get_backends()[0]

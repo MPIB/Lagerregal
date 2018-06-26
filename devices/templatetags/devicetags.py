@@ -1,11 +1,13 @@
 from __future__ import unicode_literals
-import re
-import os
 
-import six
+import os
+import re
+
 from django.template import Library
 from django.utils.safestring import mark_safe
 from django.forms import CheckboxInput
+
+import six
 
 from devices.models import Bookmark
 

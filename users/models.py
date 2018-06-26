@@ -5,7 +5,6 @@ import re
 from datetime import date
 import logging
 
-import pytz
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
@@ -13,14 +12,15 @@ from django.core.validators import MaxValueValidator
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
+
+import pytz
+import six
 from django_auth_ldap.backend import populate_user
 
-from django.conf import settings
-import re
-from datetime import date
 from Lagerregal import utils
 
 
+@six.python_2_unicode_compatible
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
@@ -38,7 +38,7 @@ class Lageruser(AbstractUser):
     departments = models.ManyToManyField("users.Department", blank=True, through='users.DepartmentUser',
                                          related_name="members")
 
-    def __unicode__(self):
+    def __str__(self):
         if self.first_name != "" and self.last_name != "":
             return "{0} {1}".format(self.first_name, self.last_name)
         else:
@@ -104,10 +104,12 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
 
     user.save()
 
+
+@six.python_2_unicode_compatible
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -117,6 +119,7 @@ class Department(models.Model):
             ("read_department", _("Can read Departments")),
             ("add_department_user", _("Can add a User to a Department")),
             ("delete_department_user", _("Can remove a User from a Department")),)
+
 
 class DepartmentUser(models.Model):
     user = models.ForeignKey(Lageruser)
