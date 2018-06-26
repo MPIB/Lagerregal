@@ -170,7 +170,11 @@
                 {% if device.manual %}
                     <tr>
                     <td>{% trans "Manual" %}</td>
-                    <td><a href="{{ device.manual.url }}">{{ device.manual|filename }}</a></td></tr>
+                    <td><a href="{{ device.manual.url }}">
+                      {%with filename=device.manual|filename|splitstr:'.'|last %}
+                      {{device.name|add:'.'|add:filename}}
+                      {%endwith%}
+                      </a></td></tr>
                 {% endif %}
                 {% if device.contact %}
                     <tr>

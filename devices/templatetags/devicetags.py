@@ -122,3 +122,8 @@ def as_nested_list(factvalue):
         res += six.text_type(factvalue)
 
     return mark_safe(res)
+
+@register.filter
+def splitstr(arg1, arg2):
+    #implement the split function for template tags
+    return arg1.split(arg2)
