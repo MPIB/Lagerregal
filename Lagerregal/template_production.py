@@ -71,6 +71,8 @@ SEARCHSTRIP = {
 }
 STORAGE_ROOM = ""
 
+USE_LDAP = True
+
 from django_auth_ldap.config import LDAPSearch, NestedActiveDirectoryGroupType
 import ldap
 ldap.set_option(ldap.OPT_REFERRALS, 0)
@@ -92,7 +94,6 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
     "email": "mail",
-    "main_department": "distinguishedName",
     "expiration_date": "accountExpires"  # FIXME
     }
 
