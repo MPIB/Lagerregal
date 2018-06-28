@@ -92,7 +92,6 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
     "email": "mail",
-    "main_department": "distinguishedName",
     "expiration_date": "accountExpires"  # FIXME
     }
 
