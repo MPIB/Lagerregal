@@ -71,6 +71,8 @@ SEARCHSTRIP = {
 }
 STORAGE_ROOM = ""
 
+USE_LDAP = True
+
 from django_auth_ldap.config import LDAPSearch, NestedActiveDirectoryGroupType
 import ldap
 ldap.set_option(ldap.OPT_REFERRALS, 0)
