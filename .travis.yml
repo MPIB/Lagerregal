@@ -12,28 +12,24 @@ jobs:
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t mpib/lagerregal:"$TRAVIS_COMMIT" .
-        - docker push mpib/lagerregal:"$TRAVIS_BRANCH"
+        - docker push mpib/lagerregal:"$TRAVIS_COMMIT"
     - stage: flake8
       script:
-        - docker run --rm -it mpib/lagerregal:"$TRAVIS_BRANCH" flake8 --config=setup.cfg
+        - docker run --rm -it mpib/lagerregal:"$TRAVIS_COMMIT" flake8 --config=setup.cfg
     - stage: test
       script:
-        - docker run --rm -it mpib/lagerregal:"$TRAVIS_BRANCH" ./manage.py test
+        - docker run --rm -it mpib/lagerregal:"$TRAVIS_COMMIT" ./manage.py test
     # release a docker image every time develop or master gets changed
     # there is no reason to keep an image for every branch just yet
     - stage: release_master
-      on:
-        branch:
-          - master
+      if: branch = master AND type != pull_request
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker pull mpib/lagerregal:"$TRAVIS_COMMIT"
-        - docker tag mpib/lagerregal:"$TRAVIS_COMMIT" mpib/lagerregal:master
+        - docker tag mpib/lagerregal:"$TRAVIS_COMMIT" mpib/lagerregal:latest
         - docker push mpib/lagerregal:latest
     - stage: release_develop
-      on:
-        branch:
-          - develop
+      if: branch = develop AND type != pull_request
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker pull mpib/lagerregal:"$TRAVIS_COMMIT"
@@ -41,23 +37,17 @@ jobs:
         - docker push mpib/lagerregal:develop
     # the demo tag will only be tested and published with master changes (aka a release)
     - stage: build_demo
-      on:
-        branch:
-          - master
+      if: branch = master
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker build -t mpib/lagerregal:demo_"$TRAVIS_COMMIT" -f demo/Dockerfile .
-        - docker push mpib/lagerregal:demo_"$TRAVIS_BRANCH"
+        - docker push mpib/lagerregal:demo_"$TRAVIS_COMMIT"
     - stage: test_demo
-      on:
-        branch:
-          - master
+      if: branch = master
       script:
-        - docker run --rm -it mpib/lagerregal:demo_"$TRAVIS_BRANCH" ./manage.py test
+        - docker run --rm mpib/lagerregal:demo_"$TRAVIS_COMMIT" ./manage.py test
     - stage: release_demo
-      on:
-        branch:
-          - master
+      if: branch = master AND type != pull_request
       script:
         - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker pull mpib/lagerregal:demo_"$TRAVIS_COMMIT"
