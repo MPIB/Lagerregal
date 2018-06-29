@@ -27,9 +27,22 @@ Features
 + Permission system for users and public device lists
 + Themable with bootswatch
 
+Demo and Docker
+===============
 
-Quickstart
-==========
+To quickly spin up a Lagerregal with minimal sample data, run:
+
+```
+docker run --rm -it -p 8000:8000  mpibhub/lagerregal:demo
+```
+
+point your browser to [http://localhost:8000](http://localhost:8000) and login with "admin:admin".
+
+Note that both Dockerfiles included in the repo are intended for demo and
+development purposes and are not suited for production.
+
+Manual Quickstart
+=================
 
 Install necessary requirements (either globally or with virtualenv)
 
