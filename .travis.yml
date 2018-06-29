@@ -1,15 +1,78 @@
 language: python
 python:
   - "3.6"
-# command to install dependencies
-install:
-  - "pip install -r dependencies.txt"
-  - "pip install flake8"
-  - npm install -g casperjs
-  # create the database
-  - "cp Lagerregal/template_development.py Lagerregal/settings.py"
-  - "./manage.py migrate"
-# command to run tests
-script:
-  - flake8 --config=setup.cfg
-  - "./manage.py test"
+
+sudo: required
+services:
+  - docker
+
+jobs:
+  include:
+    - stage: build
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t mpib/lagerregal:"$TRAVIS_COMMIT" .
+        - docker push mpib/lagerregal:"$TRAVIS_BRANCH"
+    - stage: flake8
+      script:
+        - docker run --rm -it mpib/lagerregal:"$TRAVIS_BRANCH" flake8 --config=setup.cfg
+    - stage: test
+      script:
+        - docker run --rm -it mpib/lagerregal:"$TRAVIS_BRANCH" ./manage.py test
+    # release a docker image every time develop or master gets changed
+    # there is no reason to keep an image for every branch just yet
+    - stage: release_master
+      on:
+        branch:
+          - master
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker pull mpib/lagerregal:"$TRAVIS_COMMIT"
+        - docker tag mpib/lagerregal:"$TRAVIS_COMMIT" mpib/lagerregal:master
+        - docker push mpib/lagerregal:latest
+    - stage: release_develop
+      on:
+        branch:
+          - develop
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker pull mpib/lagerregal:"$TRAVIS_COMMIT"
+        - docker tag mpib/lagerregal:"$TRAVIS_COMMIT" mpib/lagerregal:develop
+        - docker push mpib/lagerregal:develop
+    # the demo tag will only be tested and published with master changes (aka a release)
+    - stage: build_demo
+      on:
+        branch:
+          - master
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t mpib/lagerregal:demo_"$TRAVIS_COMMIT" -f demo/Dockerfile .
+        - docker push mpib/lagerregal:demo_"$TRAVIS_BRANCH"
+    - stage: test_demo
+      on:
+        branch:
+          - master
+      script:
+        - docker run --rm -it mpib/lagerregal:demo_"$TRAVIS_BRANCH" ./manage.py test
+    - stage: release_demo
+      on:
+        branch:
+          - master
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker pull mpib/lagerregal:demo_"$TRAVIS_COMMIT"
+        - docker tag mpib/lagerregal:demo_"$TRAVIS_COMMIT" mpib/lagerregal:demo
+        - docker push mpib/lagerregal:demo
+
+## command to install dependencies
+#install:
+#  - "pip install -r dependencies.txt"
+#  - "pip install flake8"
+#  - npm install -g casperjs
+#  # create the database
+#  - "cp Lagerregal/template_development.py Lagerregal/settings.py"
+#  - "./manage.py migrate"
+## command to run tests
+#script:
+#  - flake8 --config=setup.cfg
+#  - "./manage.py test"
