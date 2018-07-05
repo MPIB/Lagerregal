@@ -33,7 +33,7 @@ Demo and Docker
 To quickly spin up a Lagerregal with minimal sample data, run:
 
 ```
-docker run --rm -it -p 8000:8000  mpibhub/lagerregal:demo
+docker run --rm -it -p 8000:8000  mpib/lagerregal:demo
 ```
 
 point your browser to [http://localhost:8000](http://localhost:8000) and login with "admin:admin".
