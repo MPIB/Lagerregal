@@ -21,12 +21,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='template',
             name='devicetype',
-            field=models.ForeignKey(blank=True, to='devicetypes.Type', null=True),
+            field=models.ForeignKey(blank=True, to='devicetypes.Type', null=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='template',
             name='manufacturer',
-            field=models.ForeignKey(blank=True, to='devices.Manufacturer', null=True),
+            field=models.ForeignKey(blank=True, to='devices.Manufacturer', null=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='room',
@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='picture',
             name='device',
-            field=models.ForeignKey(related_name='pictures', to='devices.Device'),
+            field=models.ForeignKey(related_name='pictures', to='devices.Device', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='note',
@@ -51,12 +51,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='note',
             name='device',
-            field=models.ForeignKey(related_name='notes', to='devices.Device'),
+            field=models.ForeignKey(related_name='notes', to='devices.Device', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='lending',
             name='device',
-            field=models.ForeignKey(blank=True, to='devices.Device', null=True),
+            field=models.ForeignKey(blank=True, to='devices.Device', null=True, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='lending',
@@ -66,12 +66,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='deviceinformation',
             name='device',
-            field=models.ForeignKey(related_name='information', to='devices.Device'),
+            field=models.ForeignKey(related_name='information', to='devices.Device', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='deviceinformation',
             name='infotype',
-            field=models.ForeignKey(to='devices.DeviceInformationType'),
+            field=models.ForeignKey(to='devices.DeviceInformationType', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='device',
@@ -116,11 +116,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bookmark',
             name='device',
-            field=models.ForeignKey(to='devices.Device'),
+            field=models.ForeignKey(to='devices.Device', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='bookmark',
             name='user',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
         ),
     ]

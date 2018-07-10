@@ -126,7 +126,7 @@ class Department(models.Model):
 
 
 class DepartmentUser(models.Model):
-    user = models.ForeignKey(Lageruser)
-    department = models.ForeignKey(Department)
+    user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     role = models.CharField(choices=(("a", _("Admin")), ("m", _("Member"))), default="a", max_length=1)
     member_since = models.DateTimeField(auto_now_add=True)

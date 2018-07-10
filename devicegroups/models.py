@@ -13,7 +13,7 @@ from users.models import Department
 @six.python_2_unicode_compatible
 class Devicegroup(models.Model):
     name = models.CharField(max_length=200)
-    department = models.ForeignKey(Department, null=True)
+    department = models.ForeignKey(Department, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

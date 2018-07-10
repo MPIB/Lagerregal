@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('address', models.GenericIPAddressField(unique=True)),
                 ('last_seen', models.DateTimeField(null=True, blank=True)),
                 ('purpose', models.CharField(max_length=200, null=True, blank=True)),
-                ('department', models.ForeignKey(blank=True, to='users.Department', null=True)),
+                ('department', models.ForeignKey(blank=True, to='users.Department', null=True, on_delete=models.CASCADE)),
                 ('device', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='devices.Device', null=True)),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
