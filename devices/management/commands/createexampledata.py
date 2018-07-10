@@ -17,7 +17,7 @@ class Command(BaseCommand):
         try:
             if not settings.DEMO_MODE:
                 raise err
-        except AttributeError as e:
+        except AttributeError:
             raise err
         Lageruser.objects.create_superuser('admin', 'admin@localhost', 'admin')
         Section.objects.create(name='Headquarters')

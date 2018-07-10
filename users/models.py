@@ -91,7 +91,7 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                     department = Department(name=department_name)
                     department.save()
                 # departments.all() needs an id
-                # so we save a newly created user object first 
+                # so we save a newly created user object first
                 if user._state.adding:
                     user.save()
                 if department not in user.departments.all():
