@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.dispatch import receiver
 
 import pytz

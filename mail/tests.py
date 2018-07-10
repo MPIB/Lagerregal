@@ -4,7 +4,7 @@ import unittest
 
 from django.test.client import Client
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 
 import six

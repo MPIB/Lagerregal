@@ -16,7 +16,7 @@ except ImportError:
 
 import six
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms.models import modelform_factory
 from django.template.loader import render_to_string
 from django.views.generic.base import View
