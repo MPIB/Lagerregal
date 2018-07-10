@@ -218,7 +218,7 @@ urlpatterns = [
     url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)/(?P<page>[0-9]*)$', permission_required("devices.change_device")(HistoryList.as_view()), name="history-list"),
     url(r'^history/version/(?P<pk>[0-9]*)$', permission_required("devices.change_device")(HistoryDetail.as_view()), name="history-detail"),
 
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
