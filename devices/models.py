@@ -1,18 +1,25 @@
+from __future__ import unicode_literals
+
+import datetime
+
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-#from reversion import revisions as reversion
+
 import reversion
+import six
 
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
 from locations.models import Section
-import datetime
-from django.db.models import Q
 from Lagerregal import utils
+from users.models import Department
+
 
 @reversion.register()
+@six.python_2_unicode_compatible
 class Building(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     street = models.CharField(_('Street'), max_length=100, blank=True)
@@ -22,7 +29,7 @@ class Building(models.Model):
     state = models.CharField(_('State'), max_length=100, blank=True)
     country = models.CharField(_('Country'), max_length=100, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -39,17 +46,16 @@ class Building(models.Model):
         return reverse('building-edit', kwargs={'pk': self.pk})
 
 
-
-
 @reversion.register()
+@six.python_2_unicode_compatible
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
     section = models.ForeignKey(Section, null=True, on_delete=models.SET_NULL, related_name="rooms", blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.building:
-            return self.name + " (" + self.building.__unicode__() + ")"
+            return self.name + " (" + six.text_type(self.building) + ")"
         else:
             return self.name
 
@@ -67,13 +73,12 @@ class Room(models.Model):
         return reverse('room-edit', kwargs={'pk': self.pk})
 
 
-
-
 @reversion.register()
+@six.python_2_unicode_compatible
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -90,14 +95,12 @@ class Manufacturer(models.Model):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
 
 
-
-
-
 class Bookmark(models.Model):
     device = models.ForeignKey("Device")
     user = models.ForeignKey(Lageruser)
 
 
+@six.python_2_unicode_compatible
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     creator = models.ForeignKey(Lageruser, on_delete=models.SET_NULL, null=True)
@@ -126,12 +129,11 @@ class Device(models.Model):
     inventoried = models.DateTimeField(null=True, blank=True)
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
-    department = models.ForeignKey("users.Department", null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
+    department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
-    used_in = models.ForeignKey('self', null = True, blank = True, on_delete = models.SET_NULL,)
+    used_in = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,)
 
-
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -162,7 +164,7 @@ class Device(models.Model):
         return dict
 
     def is_overdue(self):
-        if self.currentlending == None:
+        if self.currentlending is None:
             return False
         if self.currentlending.duedate < datetime.date.today():
             return True
@@ -178,13 +180,12 @@ class Device(models.Model):
             ~Q(department__in=departments), is_private=True)
 
 
-
-
+@six.python_2_unicode_compatible
 class DeviceInformationType(models.Model):
     keyname = models.CharField(_('Name'), max_length=200)
     humanname = models.CharField(_('Human readable name'), max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.humanname
 
     class Meta:
@@ -192,24 +193,27 @@ class DeviceInformationType(models.Model):
         verbose_name_plural = _('Information Type')
 
 
+@six.python_2_unicode_compatible
 class DeviceInformation(models.Model):
     information = models.CharField(_('Information'), max_length=200)
     device = models.ForeignKey(Device, related_name="information")
     infotype = models.ForeignKey(DeviceInformationType)
 
-    def __unicode__(self):
-        return self.infotype.__unicode__() + ": " + self.information
+    def __str__(self):
+        return six.text_type(self.infotype) + ": " + self.information
 
     class Meta:
         verbose_name = _('Information')
         verbose_name_plural = _('Information')
 
 
-reversion.register(Device, follow=["typeattributevalue_set", ], exclude=
-["archived", "currentlending", "inventoried", "bookmarks", "trashed"], ignore_duplicates = True)
+reversion.register(Device, follow=["typeattributevalue_set", ], exclude=[
+    "archived", "currentlending", "inventoried", "bookmarks", "trashed",
+], ignore_duplicates=True)
 reversion.register(TypeAttributeValue)
 
-@reversion.register(ignore_duplicates = True)
+
+@reversion.register(ignore_duplicates=True)
 class Lending(models.Model):
     owner = models.ForeignKey(Lageruser, verbose_name=_("Lent to"), on_delete=models.SET_NULL, null=True)
     lenddate = models.DateField(auto_now_add=True)
@@ -220,7 +224,7 @@ class Lending(models.Model):
     smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
 
 
-
+@six.python_2_unicode_compatible
 class Template(models.Model):
     templatename = models.CharField(_('Templatename'), max_length=200)
     name = models.CharField(_('Name'), max_length=200)
@@ -228,7 +232,7 @@ class Template(models.Model):
     description = models.CharField(_('Description'), max_length=1000, blank=True)
     devicetype = models.ForeignKey(Type, blank=True, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.templatename
 
     class Meta:

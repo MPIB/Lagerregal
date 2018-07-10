@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout
@@ -24,17 +26,18 @@ from . import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from django.utils.translation import ugettext_lazy as _
-admin.autodiscover()
-import permission; permission.autodiscover()
+import permission
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
 
+admin.autodiscover()
+permission.autodiscover()
 
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context":{"breadcrumbs":[("", _("Login"))]}}, name="login"),
-    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context":{"breadcrumbs":[("", _("Logout"))]}}, name="logout"),
+    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context": {"breadcrumbs": [("", _("Login"))]}}, name="login"),
+    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context": {"breadcrumbs": [("", _("Logout"))]}}, name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
@@ -68,6 +71,8 @@ urlpatterns = [
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/edit/$', PictureUpdate.as_view(), name="device-picture-edit"),
     url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/delete/$', PictureDelete.as_view(), name="device-picture-delete"),
     url(r'^devices/lend/$', DeviceLend.as_view(), name="device-lend"),
+    url(r'^devices/lend/(?P<pk>[0-9]*)$', DeviceLend.as_view(), name="device-lend"),
+    url(r'^devices/export/csv/$', ExportCsv.as_view(), name='export-csv'),
     url(r'^devices/return/(?P<lending>[0-9]*)$', DeviceReturn.as_view(), name="device-return"),
     url(r'^devices/public/$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/(?P<page>[0-9]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
@@ -83,6 +88,7 @@ urlpatterns = [
     url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_template")(TemplateUpdate.as_view()), name="template-edit"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_template")(TemplateDelete.as_view()), name="template-delete"),
+
 
     url(r'^types/$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
     url(r'^types/(?P<page>[0-9]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),

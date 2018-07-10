@@ -1,20 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+import re
+from datetime import date
+import logging
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 from django.conf import settings
-import pytz
 from django.core.urlresolvers import reverse
 from django.dispatch import receiver
-from django_auth_ldap.backend import populate_user
-from django.conf import settings
-import re
-from datetime import date, timedelta
-from Lagerregal import utils
-import logging
 
+import pytz
+import six
+from django_auth_ldap.backend import populate_user
+
+from Lagerregal import utils
+
+
+@six.python_2_unicode_compatible
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
@@ -32,9 +38,9 @@ class Lageruser(AbstractUser):
     departments = models.ManyToManyField("users.Department", blank=True, through='users.DepartmentUser',
                                          related_name="members")
 
-    def __unicode__(self):
+    def __str__(self):
         if self.first_name != "" and self.last_name != "":
-            return u"{0} {1}".format(self.first_name, self.last_name)
+            return "{0} {1}".format(self.first_name, self.last_name)
         else:
             return self.username
 
@@ -72,7 +78,7 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
         logger.addHandler(logging.StreamHandler())
         logger.setLevel(logging.DEBUG)
     AUTH_LDAP_DEPARTMENT_REGEX = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
-    if AUTH_LDAP_DEPARTMENT_REGEX != None and user.main_department == None:
+    if AUTH_LDAP_DEPARTMENT_REGEX is not None and user.main_department is None:
         AUTH_LDAP_DEPARTMENT_FIELD = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
         if AUTH_LDAP_DEPARTMENT_FIELD:
             fullname = ldap_user.attrs["distinguishedname"][0]
@@ -84,7 +90,11 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                 except:
                     department = Department(name=department_name)
                     department.save()
-                if not department in user.departments.all():
+                # departments.all() needs an id
+                # so we save a newly created user object first 
+                if user._state.adding:
+                    user.save()
+                if department not in user.departments.all():
                     du = DepartmentUser(user=user, department=department, role="m")
                     du.save()
                 user.main_department = department
@@ -99,10 +109,11 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
     user.save()
 
 
+@six.python_2_unicode_compatible
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -111,8 +122,7 @@ class Department(models.Model):
         permissions = (
             ("read_department", _("Can read Departments")),
             ("add_department_user", _("Can add a User to a Department")),
-            ("delete_department_user", _("Can remove a User from a Department")),
-        )
+            ("delete_department_user", _("Can remove a User from a Department")),)
 
 
 class DepartmentUser(models.Model):

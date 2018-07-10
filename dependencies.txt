@@ -3,7 +3,7 @@ django-reversion >= 2.0.10
 djangorestframework >= 3.6.4
 django-debug-toolbar >= 1.8
 Pillow
-django-oauth-toolkit >= 1.0.0
+django-oauth-toolkit < 1.2.0
 pytz
 pystache
 model_mommy
@@ -11,3 +11,4 @@ django-casper
 django-permission
 django_auth_ldap
 django-favicon
+psycopg2-binary

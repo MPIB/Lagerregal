@@ -1,7 +1,6 @@
 # Django settings for Lagerregal project.
 from __future__ import unicode_literals
 import os
-from django.contrib.messages import constants as messages
 
 
 # Local time zone for this installation. Choices can be found here:
@@ -127,8 +126,8 @@ INSTALLED_APPS = (
 )
 
 LANGUAGES = (
-  ('de', 'German'),
-  ('en', 'English'),
+    ('de', 'German'),
+    ('en', 'English'),
 )
 
 AUTH_USER_MODEL = 'users.Lageruser'
@@ -181,7 +180,7 @@ LOGGING = {
 }
 
 
-PUBLIC_DEVICES_FILTER = {"tags__id__in" : ["3", "17"]}
+PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
 
 # get more themes from https://bootswatch.com/ and download them to:
 #   static/css/themes/<name>.min.css

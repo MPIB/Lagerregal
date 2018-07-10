@@ -1,15 +1,16 @@
+from __future__ import unicode_literals
+
 import datetime
 
 from django.views.generic import TemplateView, ListView
 from reversion.models import Version, Revision
-from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from devices.models import *
 from network.models import *
 from devicegroups.models import Devicegroup
 from locations.models import Section
-from main.models import DashboardWidget, widgets, get_progresscolor
+from main.models import DashboardWidget, WIDGETS, get_progresscolor
 from Lagerregal.utils import PaginationMixin
 from devices.forms import LendForm
 
@@ -77,6 +78,7 @@ def get_widget_data(user, widgetlist=[], departments=None):
         context["returnsoon"] = lendings.filter(duedate__lte=soon, duedate__gt=context["today"],
                                                 returndate=None).order_by(
                                                 "duedate")[:10]
+
     return context
 
 
@@ -85,12 +87,13 @@ class Home(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
+
         if self.request.user.is_staff:
             context["widgets_left"] = DashboardWidget.objects.filter(user=self.request.user, column="l"
             ).order_by("index")
             context["widgets_right"] = DashboardWidget.objects.filter(user=self.request.user, column="r"
             ).order_by("index")
-            userwidget_list = dict(widgets)
+            userwidget_list = dict(WIDGETS)
             widgetlist = [x[0] for x in DashboardWidget.objects.filter(user=self.request.user
             ).values_list("widgetname")]
             context.update(get_widget_data(self.request.user, widgetlist, self.request.user.departments.all()))

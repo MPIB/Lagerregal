@@ -1,49 +1,18 @@
 from __future__ import unicode_literals
-import csv, codecs, cStringIO
+
 import uuid
 from datetime import date, timedelta
+
 from django.conf import settings
 from django.test.runner import DiscoverRunner
 
+
 class PaginationMixin():
     def get_paginate_by(self, queryset):
-        if self.request.user.pagelength == None:
+        if self.request.user.pagelength is None:
             return self.request.user.pagelength
         else:
             return 30
-
-class UnicodeWriter:
-    """
-    A CSV writer which will write rows to CSV file "f",
-    which is encoded in the given encoding.
-    """
-
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        # Redirect output to a queue
-        self.queue = cStringIO.StringIO()
-        if "delimiter" in kwds:
-            kwds["delimiter"]=str(kwds["delimiter"])
-        if "quotechar" in kwds:
-            kwds["quotechar"]=str(kwds["quotechar"])
-        self.writer = csv.writer(self.queue, dialect=dialect, **kwds )
-        self.stream = f
-        self.encoder = codecs.getincrementalencoder(encoding)()
-
-    def writerow(self, row):
-        self.writer.writerow([unicode(s).encode("utf-8") for s in row])
-        # Fetch UTF-8 output from the queue ...
-        data = self.queue.getvalue()
-        data = data.decode("utf-8")
-        # ... and reencode it into the target encoding
-        data = self.encoder.encode(data)
-        # write to the target stream
-        self.stream.write(data)
-        # empty queue
-        self.queue.truncate(0)
-
-    def writerows(self, rows):
-        for row in rows:
-            self.writerow(row)
 
 
 class DotDict(dict):
@@ -73,16 +42,16 @@ def convert_ad_accountexpires(timestamp):
     """
     if timestamp is None or timestamp == 0:
         return None
-    epoch_start = date(year=1601, month=1,day=1)
-    seconds_since_epoch = timestamp/10**7
+    epoch_start = date(year=1601, month=1, day=1)
+    seconds_since_epoch = timestamp / 10 ** 7
     try:
         # ad timestamp can be > than date.max, return None (==never expires)
         new_date = epoch_start + timedelta(seconds=seconds_since_epoch)
         return new_date
     except OverflowError:
         return None
-    except StandardError:
-        print('Cannot convert expiration_date "{0}", falling back to None'.format(self.expiration_date))
+    except Exception:
+        print('Cannot convert expiration_date "{0}", falling back to None'.format(timestamp))
 
 
 class DetectableTestRunner(DiscoverRunner):

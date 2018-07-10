@@ -1,14 +1,17 @@
+from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
-from devices.models import Device
-from users.models import Lageruser, Department
-
-# Create your models here.
+import six
 from reversion import revisions as reversion
 
+from devices.models import Device
+from users.models import Department, Lageruser
 
+
+@six.python_2_unicode_compatible
 class IpAddress(models.Model):
     address = models.GenericIPAddressField(unique=True)
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
@@ -17,7 +20,7 @@ class IpAddress(models.Model):
     purpose = models.CharField(max_length=200, null=True, blank=True)
     department = models.ForeignKey(Department, null=True, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.address
 
     class Meta:
@@ -31,4 +34,4 @@ class IpAddress(models.Model):
         return reverse('ipaddress-detail', kwargs={'pk': self.pk})
 
 
-reversion.register(IpAddress, exclude=["last_seen",])
+reversion.register(IpAddress, exclude=["last_seen"])

@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
@@ -5,18 +7,18 @@ from django.db.models.signals import post_save
 from users.models import Lageruser
 
 
-widgets = {
-    "edithistory": _("Edit history"),
-    "newestdevices": _("Newest devices"),
-    "overdue": _("Overdue devices"),
-    "statistics": _("Statistics"),
-    "groups": _("Groups"),
-    "sections": _("Sections"),
-    "recentlendings": _("Recent lendings"),
-    "shorttermdevices": _("Devices for short term lending"),
-    "bookmarks": _("Bookmarked Devices"),
-    "returnsoon": _("Devices, that are due soon")
-}
+WIDGETS = [
+    ("edithistory", _("Edit history")),
+    ("newestdevices", _("Newest devices")),
+    ("overdue", _("Overdue devices")),
+    ("statistics", _("Statistics")),
+    ("groups", _("Groups")),
+    ("sections", _("Sections")),
+    ("recentlendings", _("Recent lendings")),
+    ("shorttermdevices", _("Devices for short term lending")),
+    ("bookmarks", _("Bookmarked Devices")),
+    ("returnsoon", _("Devices, that are due soon")),
+]
 
 
 def get_progresscolor(percent):
@@ -31,7 +33,7 @@ def get_progresscolor(percent):
 class DashboardWidget(models.Model):
     column = models.CharField(max_length=1, choices=[("l", "left"), ("r", "right")])
     index = models.IntegerField()
-    widgetname = models.CharField(max_length=200, choices=widgets.items())
+    widgetname = models.CharField(max_length=200, choices=WIDGETS)
     user = models.ForeignKey(Lageruser)
     minimized = models.BooleanField(default=False)
 

@@ -1,10 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-import json
-import urllib
-import httplib
-from httplib import ssl
 
+import json
+import time
+import csv
+
+try:
+    import urllib.parse as urllib
+    import http.client as httplib
+    from http.client import ssl
+except ImportError:
+    import urllib
+    import httplib
+    from httplib import ssl
+
+import six
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
 from django.forms.models import modelform_factory
@@ -27,7 +37,6 @@ from devicetypes.models import Type
 from devices.forms import AddForm
 from devicegroups.models import Devicegroup
 from devicetags.models import Devicetag
-from Lagerregal.utils import UnicodeWriter
 from csv import QUOTE_ALL
 
 
@@ -89,7 +98,7 @@ class AutocompleteName(View):
 
 class AddDeviceField(View):
     def post(self, request):
-        dform = QueryDict(query_string=unicode(request.POST["form"]).encode('utf-8'))
+        dform = QueryDict(query_string=six.text_type(request.POST["form"]).encode('utf-8'))
         classname = dform["classname"]
         if classname == "manufacturer":
             form = modelform_factory(Manufacturer, exclude=(), form=AddForm)(dform)
@@ -127,7 +136,7 @@ class AddDeviceField(View):
                 data["name"] = newitem.name
                 data["classname"] = classname
         else:
-            print form.errors
+            print(form.errors)
             data["error"] = "Error: {0}".format(form.non_field_errors())
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -204,7 +213,7 @@ class LoadMailtemplate(View):
             return HttpResponse("")
         template = get_object_or_404(MailTemplate, pk=template)
         data = {"subject": template.subject, "body": template.body}
-        if isinstance(recipients, unicode):
+        if isinstance(recipients, six.text_type):
             recipients = [recipients]
         newrecipients = [obj for obj in recipients]
         newrecipients += [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
@@ -242,10 +251,10 @@ class LoadSearchoptions(View):
             return HttpResponse("")
         if invert:
             data = [
-                {"value": "not " + str(object.pk) + "-" + object.__unicode__(), "label": "not " + object.__unicode__()}
+                {"value": "not " + str(object.pk) + "-" + six.text_type(object), "label": "not " + six.text_type(object)}
                 for object in items]
         else:
-            data = [{"value": str(object.pk) + "-" + object.__unicode__(), "label": object.__unicode__()}
+            data = [{"value": str(object.pk) + "-" + six.text_type(object), "label": six.text_type(object)}
                     for object in items]
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -283,7 +292,7 @@ class AjaxSearch(View):
         searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name",
                         "room__building__name", "currentlending__owner__username", "currentlending__owner__id"]
         for searchitem in search:
-            key, value = searchitem.items()[0]
+            key, value = list(searchitem.items())[0]
 
             if value[:4] == "not ":
                 value = value[4:]
@@ -432,6 +441,11 @@ class AjaxSearch(View):
                                                                                      "devicetype__name", "room__name",
                                                                                      "room__building__name")}
                     return render(request, 'devices/searchresult.html', context)
+                except ValueError:
+                    context = {
+                        "wrong_id_format": True
+                    }
+                    return render(request, 'devices/searchempty.html', context)
                 except Device.DoesNotExist:
                     return render(request, 'devices/searchempty.html')
             elif key == "shortterm":
@@ -456,7 +470,7 @@ class AjaxSearch(View):
         else:
             devices = devices.filter(archived=None, trashed=None)
 
-        if textfilter != None:
+        if textfilter is not None:
             SEARCHSTRIP = getattr(settings, "SEARCHSTRIP", [])
             if "text" in SEARCHSTRIP:
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
@@ -472,9 +486,9 @@ class AjaxSearch(View):
         if "format" in request.POST:
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="searchresult.csv"'
+                response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
 
-                writer = UnicodeWriter(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
+                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
                 headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
                            ugettext("Devicetype"), ugettext("Room"), ugettext("Building")]
                 if len(displayed_columns) > 0:
@@ -511,9 +525,10 @@ class PuppetDetails(View):
             return HttpResponse('Failed to fetch puppet details from ' +
                                 settings.PUPPETDB_SETTINGS['host'])
         context = {
-            'puppetdetails': json.loads(res.read())
+            'puppetdetails': json.loads(res.read().decode('utf-8'))
         }
         return render(request, 'devices/puppetdetails.html', context)
+
 
 class PuppetSoftware(View):
 
@@ -532,7 +547,6 @@ class PuppetSoftware(View):
         conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
                                        context=context)
-        req = settings.PUPPETDB_SETTINGS['req'] + params
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:
@@ -540,10 +554,10 @@ class PuppetSoftware(View):
                                 settings.PUPPETDB_SETTINGS['host'])
 
         try:
-            res = json.loads(res.read())[0]
+            res = json.loads(res.read().decode('utf-8'))[0]
             software = res['value']
             context = {
-                'puppetsoftware': software.values()
+                'puppetsoftware': list(software.values())
             }
         except:
             return HttpResponse('Malformed puppet software fact.')

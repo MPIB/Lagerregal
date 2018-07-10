@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from .base_settings import *
 
 DEBUG = True
@@ -15,7 +17,7 @@ DATABASES = {
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT =  '{0}/media'.format(os.getcwd())
+MEDIA_ROOT = '{0}/media'.format(os.getcwd())
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = "CHANGE ME IN PRODUCTION AND DON'T COMMIT ME!"
@@ -24,12 +26,12 @@ ALLOWED_HOSTS = ['*']
 
 #example configuration; for use cases, search for LABEL_TEMPLATES in views
 LABEL_TEMPLATES = {
-    "DEPARTMENT" : {
-        "device" : (
+    "DEPARTMENT": {
+        "device": (
             #"/opt/Lagerregal/staticserve/labels/device.label",
             "labels/device.label",
             ["name", "inventorynumber", "serialnumber", "id"]),
-        "room" : (
+        "room": (
             #"/opt/Lagerregal/staticserve/labels/room.label",
             "labels/room.label",
             ["name", "building", "id"]),
@@ -52,8 +54,8 @@ INTERNAL_IPS = [
     "127.0.0.1",
 ]
 
-#comment out variables and start server with
-#python -m smtpd -n -c DebuggingServer localhost:1025
-#to print emails to console
+# comment out variables and start server with
+# python -m smtpd -n -c DebuggingServer localhost:1025
+# to print emails to console
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 1025

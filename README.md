@@ -34,7 +34,7 @@ Quickstart
 Install necessary requirements (either globally or with virtualenv)
 
 ```
-$ pip2 install -U -r dependencies.txt
+$ pip install -U -r dependencies.txt
 ```
 
 Generate settings.py
@@ -53,8 +53,8 @@ $ cp Lagerregal/template_production.py Lagerregal/settings.py
 Run:
 
 ```
-$ python2 manage.py migrate
-$ python2 manage.py runserver
+$ python manage.py migrate
+$ python manage.py runserver
 ```
 
 Optional (not optional for production):
