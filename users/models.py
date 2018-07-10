@@ -77,6 +77,14 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
         logger = logging.getLogger('django_auth_ldap')
         logger.addHandler(logging.StreamHandler())
         logger.setLevel(logging.DEBUG)
+
+    if "accountExpires" in ldap_user.attrs:
+        expiration_date = utils.convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
+        user.expiration_date = expiration_date
+
+        if user.expiration_date and user.expiration_date < date.today():
+            user.is_active = False
+
     AUTH_LDAP_DEPARTMENT_REGEX = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
     if AUTH_LDAP_DEPARTMENT_REGEX is not None and user.main_department is None:
         AUTH_LDAP_DEPARTMENT_FIELD = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
@@ -98,13 +106,6 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                     du = DepartmentUser(user=user, department=department, role="m")
                     du.save()
                 user.main_department = department
-
-    if "accountExpires" in ldap_user.attrs:
-        expiration_date = utils.convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
-        user.expiration_date = expiration_date
-
-        if user.expiration_date and user.expiration_date < date.today():
-            user.is_active = False
 
     user.save()
 
