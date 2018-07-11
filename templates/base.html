@@ -23,7 +23,7 @@
 </head>
 <body>
 {% if not nochrome %}
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<header class="navbar navbar-default navbar-fixed-top">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -37,7 +37,7 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav">
+        <ul class="nav navbar-nav" role="navigation">
             <li class="dropdown">
                 <a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">
                     {% trans "Devices" %} <b class="caret"></b>
@@ -164,36 +164,38 @@
         </ul>
     </div>
     <!-- /.navbar-collapse -->
-</nav>
+</header>
 {% endif %}
 
 <div class="container">
-    <div class="page-header row">
-        <h1 style="font-size:1.9em">
-            <ol class="breadcrumb" style="margin-bottom:0px;">
-                {% for crumb in breadcrumbs %}
-                    {% if forloop.last %}
-                        <li class="active">{{ crumb.1 }}</li>
-                    {% else %}
-                        <li><a href="{{ crumb.0 }}">{{ crumb.1 }}</a></li>
+    <main>
+        <header class="page-header row">
+            <h1 style="font-size:1.9em">
+                <ol class="breadcrumb" style="margin-bottom:0px;">
+                    {% for crumb in breadcrumbs %}
+                        {% if forloop.last %}
+                            <li class="active">{{ crumb.1 }}</li>
+                        {% else %}
+                            <li><a href="{{ crumb.0 }}">{{ crumb.1 }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if not nochrome %}
+                        <small class="pull-right">{% block  pullright %}{% endblock %}</small>
                     {% endif %}
-                {% endfor %}
-                {% if not nochrome %}
-                    <small class="pull-right">{% block  pullright %}{% endblock %}</small>
-                {% endif %}
-            </ol>
-        </h1>
-    </div>
+                </ol>
+            </h1>
+        </header>
 
-    <div class="row">
-        <div class="col-md-12">{% block content %}{% endblock %}</div>
-    </div>
+        <div class="row">
+            <div class="col-md-12">{% block content %}{% endblock %}</div>
+        </div>
+    </main>
 
-    <div id="footer">
+    <footer id="footer">
         <div class="pull-right">
             powered by <a href="https://github.com/viirus/Lagerregal">Lagerregal</a>
         </div>
-    </div>
+    </footer>
 </div>
 
 <script src="{% static "js/jquery.min.js" %}"></script>
