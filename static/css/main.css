@@ -3,13 +3,13 @@ body {
 }
 
 .delete {
-	color:#444;
-	font-weight: bold;
-	font-size: 1.1em;
+    color:#444;
+    font-weight: bold;
+    font-size: 1.1em;
 }
 
 .delete:hover {
-	color:#c60f13;
+    color:#c60f13;
 }
 
 .warning-icon {
@@ -137,10 +137,10 @@ table tr th, table tr td {
 }
 
 .navbar-avatar {
-  max-height:26px;
-  margin-right:5px;
-  width:auto;
-  vertical-align:middle;
+    max-height:26px;
+    margin-right:5px;
+    width:auto;
+    vertical-align:middle;
 }
 
 .navbar-user {
@@ -154,7 +154,6 @@ table tr th, table tr td {
 }
 
 
-
 #searchform .row {
     margin-top:10px;
 }
@@ -164,7 +163,7 @@ table tr th, table tr td {
 }
 
 a:hover {
- cursor:pointer;
+    cursor:pointer;
 }
 
 #alternativebox {
@@ -188,15 +187,15 @@ a:hover {
 }
 
 .ui-autocomplete-input {
-  z-index: 1511;
+    z-index: 1511;
 }
 .ui-menu .ui-menu-item a:hover {
-  background:#2c3e50 !important;
-  border:0 !important;
-  color:#fff;
+    background:#2c3e50 !important;
+    border:0 !important;
+    color:#fff;
 }
 .ui-autocomplete {
-  z-index: 1510 !important;
+    z-index: 1510 !important;
 }
 
 .table-wrapped td {
