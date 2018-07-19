@@ -99,6 +99,17 @@
     });
     });
 
+    if ($("#id_no_inventory_number_required").is(':checked')) {
+      $("#div_inventorynumber").hide()
+    };
+    $("#id_no_inventory_number_required").change(function() {
+    if (this.checked) {
+      $("#div_inventorynumber").hide()
+    }
+    else {
+      $("#div_inventorynumber").show()
+    }
+  });
 
     $(".modalbutton").click(function() {
     $("#addmodal_header").text($(this).data("name"))

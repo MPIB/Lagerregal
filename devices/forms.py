@@ -273,6 +273,7 @@ class DeviceForm(forms.ModelForm):
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
                                   widget=forms.Select(attrs={"style": "width:100%;"}))
 
+
     class Meta:
         model = Device
         exclude = ("archived", "currentlending", "bookmarkers", "inventoried", "trashed")
