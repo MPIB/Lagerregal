@@ -1,14 +1,14 @@
-import os.path
+from __future__ import unicode_literals
 
 from django.test.client import Client
-from django.test import TestCase
-from model_mommy import mommy
 from django.core.urlresolvers import reverse
+from django.test import TestCase
 
-from devices.models import Device, Building, Room, Manufacturer, Template, Note
+from model_mommy import mommy
+
+from devices.models import Device
 from users.models import Lageruser
-from network.models import IpAddress
-from reversion.models import Version
+
 
 class HistoryTests(TestCase):
     def setUp(self):
@@ -21,7 +21,7 @@ class HistoryTests(TestCase):
         devices = Device.objects.all()
         device = devices[0]
         url = reverse("device-edit", kwargs={"pk": device.pk})
-        resp = self.client.post(url, data={"name": "test", "creator":self.admin.pk})
+        resp = self.client.post(url, data={"name": "test", "creator": self.admin.pk})
         self.assertEqual(resp.status_code, 302)
 
         url = reverse("history-detail", kwargs={"pk": 1})

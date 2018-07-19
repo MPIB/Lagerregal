@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
-from reversion.models import Version
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
@@ -18,20 +17,21 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.http import is_safe_url
 from django.shortcuts import resolve_url
 from django.template.response import TemplateResponse
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse_lazy
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
+from django.db.models import Q
+from permission.decorators import permission_required
+from reversion.models import Version
 
 from users.models import Lageruser, Department, DepartmentUser
-from devices.models import Lending, Device
+from devices.models import Lending
 from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.models import IpAddress
 from network.forms import UserIpAddressForm
 from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterForm
-from permission.decorators import permission_required
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
 
 
 class UserList(PaginationMixin, ListView):
@@ -43,6 +43,7 @@ class UserList(PaginationMixin, ListView):
         users = Lageruser.objects.all()
         self.filterstring = self.kwargs.pop("filter", "")
 
+        # filtering by department
         if self.request.user.departments.count() > 0:
             self.departmentfilter = self.kwargs.get("department", "my")
         else:
@@ -53,18 +54,25 @@ class UserList(PaginationMixin, ListView):
         elif self.departmentfilter == "my":
             users = users.filter(departments__in=self.request.user.departments.all())
 
+        # filter by given filter string
         if self.filterstring != "":
             users = users.filter(Q(username__icontains=self.filterstring) | Q(first_name__icontains=self.filterstring) | Q(last_name__icontains=self.filterstring))
+
         return users
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(UserList, self).get_context_data(**kwargs)
+
+        # adds "Users" to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")), ]
         context["filterform"] = DepartmentFilterForm(initial={"filterstring": self.filterstring, "departmentfilter": self.departmentfilter})
+
+        # add page number to breadcrumbs if there are multiple pages
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
+
         return context
 
 
@@ -78,19 +86,29 @@ class ProfileView(DetailView):
         # Call the base implementation first to get a context
         context = super(ProfileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
+        # shows list of edits made by user
         context['edits'] = Version.objects.select_related("revision", "revision__user"
         ).filter(content_type_id=ContentType.objects.get(model='device').id,
                  revision__user=context["profileuser"]).order_by("-pk")
+
+        # shows list of user lendings
         context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
-                                                             "owner").filter(owner=context["profileuser"],returndate=None)
+                                                             "owner").filter(owner=context["profileuser"],
+                                                                             returndate=None)
         context['lendhistory'] = Lending.objects.filter(owner=context["profileuser"]).order_by('-lenddate').exclude(returndate=None)
+        # shows list of user related ip-adresses
         context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department__in=self.object.departments.all(), device=None, user=None)
+
+        # shows list of users permission (group permission, user permission)
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
         context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
+
+        # adds username to breadcrumbs
         context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", context["profileuser"])]
+
         return context
 
 
@@ -102,20 +120,31 @@ class UserprofileView(TemplateView):
         context = super(UserprofileView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["profileuser"] = self.request.user
+
+        # shows list of edits made by user
         context['edits'] = Version.objects.select_related("revision", "revision__user"
         ).filter(content_type_id=ContentType.objects.get(model='device').id,
                  revision__user=context["profileuser"]).order_by("-pk")
+
+        # shows list users lendings
         context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
                                                              "owner").filter(owner=context["profileuser"],
                                                                              returndate=None)
+
+        # shows user related ip-adresses
         context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
         context['ipaddressform'] = UserIpAddressForm()
+
+        # shows list of users permissions (group permissions, user permissions)
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
         context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
+
+        # adds user name to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),
             (reverse("userprofile", kwargs={"pk": self.request.user.pk}), self.request.user), ]
+
         return context
 
 
@@ -129,12 +158,15 @@ class UsersettingsView(TemplateView):
         if self.request.method != "POST":
             context['settingsform'] = SettingsForm(instance=self.request.user)
             context['avatarform'] = AvatarForm(instance=self.request.user)
+
         if "settingsform" in context:
             context['settingsform'].fields["main_department"].queryset = self.request.user.departments.all()
 
+        # adds "Settings" to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("userprofile", kwargs={"pk": self.request.user.pk}), self.request.user),
             ("", _("Settings"))]
+
         return context
 
     def post(self, request):
@@ -143,57 +175,78 @@ class UsersettingsView(TemplateView):
         context["avatarform"] = AvatarForm(instance=request.user)
         context['settingsform'].fields["main_department"].queryset = self.request.user.departments.all()
 
+        # handle language settings and use saved settings of user as default
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
             translation.activate(request.POST["language"])
             request.session[translation.LANGUAGE_SESSION_KEY] = request.POST["language"]
             return HttpResponseRedirect(reverse("usersettings"))
+
+        # handle pagelength/ timezone/ theme settings and use saved settings of user as default
         elif "pagelength" in request.POST or "timezone" in request.POST or "theme" in request.POST:
             form = SettingsForm(request.POST)
             if form.is_valid():
                 changed_data = False
+
+                # change of pagelength settings
                 if request.user.pagelength != form.cleaned_data["pagelength"]:
                     request.user.pagelength = form.cleaned_data["pagelength"]
                     changed_data = True
+
+                # change of timezone settings
                 if request.user.timezone != form.cleaned_data["timezone"]:
                     request.user.timezone = form.cleaned_data["timezone"]
                     changed_data = True
+
+                # change of main department settings
                 if request.user.main_department != form.cleaned_data["main_department"]:
                     request.user.main_department = form.cleaned_data["main_department"]
                     changed_data = True
+
+                # change of theme settings
                 if request.user.theme != form.cleaned_data["theme"]:
                     request.user.theme = form.cleaned_data["theme"]
                     changed_data = True
+
+                # save changes
                 if changed_data:
                     request.user.save()
+
+                # save success message
                 messages.success(self.request, _('Settings were successfully updated'))
             context["settingsform"] = form
+
+        # handle given avatar
         elif "avatar" in request.FILES or "avatar" in request.POST:
             if request.user.avatar:
                 tempavatar = request.user.avatar
             else:
                 tempavatar = None
+
             form = AvatarForm(request.POST, request.FILES, instance=request.user)
+
             if form.is_valid():
-                if form.cleaned_data["avatar_clear"] and request.user.avatar != None:
+                if form.cleaned_data["avatar_clear"] and request.user.avatar is not None:
                     request.user.avatar.delete()
                     request.user.avatar = None
                     request.user.save()
-                if tempavatar != None:
+                if tempavatar is not None:
                     tempavatar.storage.delete(tempavatar)
                 form.save()
             context["avatarform"] = form
+
         return render(request, self.template_name, context)
 
 
+#######################################################################################################################
+#                                                       Login                                                         #
+#######################################################################################################################
 @sensitive_post_parameters()
 @csrf_protect
 @never_cache
-def login(request, template_name='registration/login.html',
-          redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=AuthenticationForm,
-          extra_context=None):
+def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME,
+          authentication_form=AuthenticationForm, extra_context=None):
     """
     Displays the login form and handles the login action.
     """
@@ -227,8 +280,10 @@ def login(request, template_name='registration/login.html',
         'site': current_site,
         'site_name': current_site.name,
     }
+
     if extra_context is not None:
         context.update(extra_context)
+
     return TemplateResponse(request, template_name, context)
 
 
@@ -245,7 +300,6 @@ class DepartmentList(PaginationMixin, ListView):
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             sections = sections.order_by(self.viewsorting)
         return sections
-
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -307,6 +361,7 @@ class DepartmentDetail(DetailView):
             (reverse("department-detail", kwargs={"pk": context["object"].pk}), context["object"].name)]
         return context
 
+
 @permission_required('users.change_department', raise_exception=True)
 class DepartmentUpdate(UpdateView):
     model = Department
@@ -321,6 +376,7 @@ class DepartmentUpdate(UpdateView):
             (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
             ("", _("Edit"))]
         return context
+
 
 @permission_required('users.delete_department', raise_exception=True)
 class DepartmentDelete(DeleteView):
@@ -337,13 +393,13 @@ class DepartmentDelete(DeleteView):
             ("", _("Delete"))]
         return context
 
+
 class DepartmentAddUser(FormView):
     form_class = DepartmentAddUserForm
     template_name = 'devices/base_form.html'
 
     def get_success_url(self):
         return reverse("department-detail", kwargs={"pk": self.department.pk})
-
 
     def get_context_data(self, **kwargs):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
@@ -361,11 +417,11 @@ class DepartmentAddUser(FormView):
 
     def form_valid(self, form):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
-        if not self.department in form.cleaned_data["user"].departments.all():
+        if self.department not in form.cleaned_data["user"].departments.all():
             department_user = DepartmentUser(user=form.cleaned_data["user"], department=form.cleaned_data["department"],
                                             role=form.cleaned_data["role"])
             department_user.save()
-            if form.cleaned_data["user"].main_department == None:
+            if form.cleaned_data["user"].main_department is None:
                 form.cleaned_data["user"].main_department = form.cleaned_data["department"]
 
         return HttpResponseRedirect(reverse("department-detail", kwargs={"pk": self.department.pk}))

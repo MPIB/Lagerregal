@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 import re
 
 from django import forms
@@ -66,14 +67,14 @@ DEPARTMENT_OPTIONS = [
 
 def get_department_options():
     try:
-        return DEPARTMENT_OPTIONS+list(Department.objects.all().values_list("id", "name"))
+        return DEPARTMENT_OPTIONS + list(Department.objects.all().values_list("id", "name"))
     except OperationalError:
         return []
 
 
 def get_devicegroup_options():
     try:
-        return [('all', _('All Groups')), ]+list(Devicegroup.objects.all().values_list("id", "name"))
+        return [('all', _('All Groups'))] + list(Devicegroup.objects.all().values_list("id", "name"))
     except OperationalError:
         return []
 
@@ -83,7 +84,7 @@ def get_emailrecipientlist(special=None):
 
     if special:
         objects.append((_("Special"),
-                        [(value, key) for key, value in special.iteritems()]
+                        [(value, key) for key, value in special.items()]
         ))
 
     objects.append((_("Groups"),
@@ -180,11 +181,22 @@ class LendForm(forms.Form):
                 raise forms.ValidationError("you have to either set device or smalldevice")
         return cleaned_data
 
+    def __init__(self, pk=None, *args, **kwargs):
+        super(LendForm, self).__init__(*args, **kwargs)
+        device = None
+        try:
+            device = Device.objects.filter(pk=pk)[0]
+        except:
+            pass
+        if device:
+            self.fields['owner'].initial = device.currentlending.owner
+            self.fields['duedate'].initial = device.currentlending.duedate
+            self.fields['room'].initial = device.room
+            self.fields['device'].initial = device
+            print(self.fields['device'].initial)
+
     def clean_device(self):
         device = self.cleaned_data["device"]
-        if device:
-            if device.currentlending:
-                raise forms.ValidationError("this device is already lend.")
         return device
 
 
@@ -219,6 +231,7 @@ class DepartmentViewForm(ViewForm):
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 
+
 class FilterForm(forms.Form):
     filterstring = forms.CharField(max_length=100,
                                    widget=forms.TextInput(attrs={"style": "width:150px;margin-left:10px;",
@@ -231,14 +244,16 @@ class DepartmentFilterForm(FilterForm):
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 
+
 class DeviceGroupFilterForm(FilterForm):
     groupfilter = forms.ChoiceField(choices=get_devicegroup_options(),
                                          widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                         "class": "pull-right form-control input-sm"}))
 
+
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
-    uses = forms.MultipleChoiceField(choices = Device.objects.none(), required = False)
+    uses = forms.MultipleChoiceField(choices=Device.objects.none(), required=False)
     emailrecipients = forms.MultipleChoiceField(required=False)
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
                                            widget=forms.Select(attrs={"style": "width:100%;"}))
@@ -269,11 +284,11 @@ class DeviceForm(forms.ModelForm):
         if cleaned_data["emailrecipients"] and not cleaned_data["emailtemplate"]:
             self._errors["emailtemplate"] = self.error_class(
                 [_("You specified recipients, but didn't select a template")])
-        for key, attribute in cleaned_data.iteritems():
+        for key, attribute in cleaned_data.items():
             if key.startswith("attribute_") and attribute != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
-                if re.match(typeattribute.regex, attribute) == None:
+                if re.match(typeattribute.regex, attribute) is None:
                     self._errors[key] = self.error_class(
                         [_("Doesn't match the given regex \"{0}\".".format(typeattribute.regex))])
                     unclean_data.append(key)
@@ -284,18 +299,18 @@ class DeviceForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeviceForm, self).__init__(*args, **kwargs)
 
-        #if edit
+        # if edit
         if kwargs["instance"]:
-            CHOICES = [(x.id, u''.join((x.name, " [" , str(x.id), "]")))for x in Device.objects.filter( trashed = None).exclude(pk = kwargs["instance"].id)]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]")))for x in Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)]
             self.fields['uses'].choices = CHOICES
-            self.initial['uses'] = [x.id for x in Device.objects.filter(used_in = kwargs["instance"].id)]
-            self.fields['used_in'].queryset = Device.objects.filter(trashed = None).exclude(pk = kwargs["instance"].id)
+            self.initial['uses'] = [x.id for x in Device.objects.filter(used_in=kwargs["instance"].id)]
+            self.fields['used_in'].queryset = Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)
 
-        #if create
+        # if create
         else:
-            CHOICES = [(x.id, u''.join((x.name, " [" , str(x.id) , "]"))) for x in Device.objects.filter(used_in = None, trashed = None)]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in Device.objects.filter(used_in=None, trashed=None)]
             self.fields['uses'].choices = CHOICES
-            self.fields['used_in'].queryset = Device.objects.filter(trashed = None)
+            self.fields['used_in'].queryset = Device.objects.filter(trashed=None)
 
         self.fields['used_in'].label_from_instance = lambda obj: "%s [%s]" % (obj.name, obj.id)
 
@@ -306,14 +321,14 @@ class DeviceForm(forms.ModelForm):
             except:
                 return
 
-        elif kwargs["instance"] != None:
+        elif kwargs["instance"] is not None:
             attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
-            if kwargs["instance"].devicetype != None:
+            if kwargs["instance"].devicetype is not None:
                 attributes = TypeAttribute.objects.filter(devicetype=kwargs["instance"].devicetype.pk)
             else:
                 return
 
-        elif kwargs["initial"] != None:
+        elif kwargs["initial"] is not None:
             if "devicetype" in kwargs["initial"]:
                 attributes = TypeAttribute.objects.filter(devicetype=kwargs["initial"]["devicetype"].pk)
             else:

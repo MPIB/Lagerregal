@@ -1,4 +1,7 @@
 from __future__ import unicode_literals
+
+import datetime
+
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
@@ -8,10 +11,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
 from reversion import revisions as reversion
-import datetime
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
-
 
 from api.serializers import *
 from devices.models import *
@@ -20,6 +21,7 @@ from network.models import *
 from django.contrib.auth.models import Group
 from django.conf import settings
 from mail.models import MailTemplate
+
 
 @api_view(('GET',))
 def api_root(request, format=None):
@@ -74,6 +76,7 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
         device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
         return device
 
+
 class DeviceApiRoomChange(generics.UpdateAPIView):
     model = Device
     queryset = Device.objects.all()
@@ -85,11 +88,11 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
     def put(self, request, pk, **kwargs):
         response = super(DeviceApiRoomChange, self).put(request, pk)
         try:
-            template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
+            template = MailTemplate.objects.get(usage="room", department=self.request.user.main_department)
         except:
             template = None
             messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
-        if not template == None:
+        if template is not None:
             recipients = []
             for recipient in template.default_recipients.all():
                 recipient = recipient.content_object
@@ -102,6 +105,7 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
         reversion.set_user(request.user)
         reversion.set_comment(_("Device moved to room {0}").format(self.get_object().room))
         return response
+
 
 class DeviceApiBookmark(APIView):
     def post(self, request, pk):
@@ -152,11 +156,11 @@ class DeviceApiLend(generics.CreateAPIView):
                 reversion.set_user(request.user)
                 reversion.set_comment("Device marked as lend")
                 try:
-                    template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
+                    template = MailTemplate.objects.get(usage="room", department=self.request.user.main_department)
                 except:
                     template = None
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
-                if not template == None:
+                if template is not None:
                     recipients = []
                     for recipient in template.default_recipients.all():
                         recipient = recipient.content_object
@@ -169,10 +173,11 @@ class DeviceApiLend(generics.CreateAPIView):
             device.save()
         return response
 
+
 class DeviceApiReturn(APIView):
 
     def post(self, request, *args, **kwargs):
-        if not "lending" in request.DATA:
+        if "lending" not in request.DATA:
             return Response({"error": "you need to provide a valid lending id"}, status=status.HTTP_400_BAD_REQUEST)
         if "room" in request.DATA:
             if request.DATA["room"] != "" and request.DATA["room"] != 0:
@@ -191,11 +196,11 @@ class DeviceApiReturn(APIView):
                 device.room = room
                 reversion.set_user(request.user)
                 try:
-                    template = MailTemplate.objects.get(usage="room", department = self.request.user.main_department)
+                    template = MailTemplate.objects.get(usage="room", department=self.request.user.main_department)
                 except:
                     template = None
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
-                if not template == None:
+                if template is not None:
                     recipients = []
                     for recipient in template.default_recipients.all():
                         recipient = recipient.content_object
@@ -237,6 +242,7 @@ class DeviceApiPicture(generics.RetrieveDestroyAPIView):
     queryset = Picture.objects.all()
     serializer_class = PictureSerializer
 
+
 class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
     model = Picture
     queryset = Picture.objects.all()
@@ -247,43 +253,41 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
         import os.path
         import json
 
-
         picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
         img = Image.open(picture.image)
-        #after rotating, img.format is None
+        # after rotating, img.format is None
         format = img.format
-        #determine if orientation is left or right
+        # determine if orientation is left or right
 
         if self.kwargs["orientation"] == "right":
-            img  = img.rotate(-90, expand = True)
+            img = img.rotate(-90, expand=True)
         if self.kwargs["orientation"] == "left":
-            img  = img.rotate(90, expand = True)
+            img = img.rotate(90, expand=True)
 
         if format != 'PNG':
-            #replace ending with png
+            # replace ending with png
             old_source = os.path.basename(picture.image.name)
             name = os.path.splitext(picture.image.name)[0] + ".png"
             new_source = os.path.basename(name)
-            #specify save location
+            # specify save location
             location = os.path.join(settings.MEDIA_ROOT, name)
-            #save image
+            # save image
             img.save(location)
-            #delete old image
+            # delete old image
             picture.image.delete(save=False)
-            #set picture.image to new image
+            # set picture.image to new image
             picture.image = name
-            #update picture name MUST be done
+            # update picture name MUST be done
             picture.save()
             img.close()
-            data = {'new_source' : new_source, 'old_source' : old_source}
+            data = {'new_source': new_source, 'old_source': old_source}
 
         else:
-            data = {'new_source' : ""}
+            data = {'new_source': ""}
             img.save(picture.image.file.name)
         img.close()
-            # return HttpResponse(status=200, content_type='text/html')
-        return HttpResponse( json.dumps(data), content_type="application/json")
-
+        # return HttpResponse(status=200, content_type='text/html')
+        return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 class TypeApiList(SearchQuerysetMixin, generics.ListAPIView):
@@ -370,11 +374,13 @@ class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Lageruser
     serializer_class = UserSerializer
 
+
 class UserApiProfile(generics.RetrieveAPIView):
     serializer_class = UserSerializer
 
     def get_object(self):
         return self.request.user
+
 
 class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
@@ -388,6 +394,7 @@ class UserApiAvatar(generics.RetrieveAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+
 class GroupApiList(SearchQuerysetMixin, generics.ListAPIView):
     model = Group
     serializer_class = GroupSerializer
@@ -396,6 +403,7 @@ class GroupApiList(SearchQuerysetMixin, generics.ListAPIView):
 class GroupApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Group
     serializer_class = GroupSerializer
+
 
 class IpAddressApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
     model = IpAddress

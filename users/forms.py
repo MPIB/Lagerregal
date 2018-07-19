@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
@@ -34,6 +35,7 @@ class AvatarForm(forms.ModelForm):
         widgets = {
             "avatar": forms.FileInput()
         }
+
 
 class DepartmentAddUserForm(forms.ModelForm):
     error_css_class = 'has-error'

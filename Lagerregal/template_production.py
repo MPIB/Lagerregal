@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from .base_settings import *
 
 DEBUG = False
@@ -20,34 +22,34 @@ MEDIA_ROOT =  ''
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = None
 
-#example configuration; for use cases, search for LABEL_TEMPLATES in views
+# example configuration; for use cases, search for LABEL_TEMPLATES in views
 LABEL_TEMPLATES = {
-    "DEPARTMENT" : {
-        "device" : (
+    "DEPARTMENT": {
+        "device": (
             #"/opt/Lagerregal/staticserve/labels/device.label",
             "labels/device.label",
             ["name", "inventorynumber", "serialnumber", "id"]),
-        "room" : (
+        "room": (
             #"/opt/Lagerregal/staticserve/labels/room.label",
             "labels/room.label",
             ["name", "building", "id"]),
     }
 }
 
-#A list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent
-#HTTP Host header attacks, which are possible even under many seemingly-safe web server configurations.
-#Values in this list can be fully qualified names (e.g. 'www.example.com'), in which case they will be matched against
-#the request’s Host header exactly (case-insensitive, not including port). A value beginning with a period can be used as a
-#subdomain wildcard: '.example.com' will match example.com, www.example.com, and any other subdomain of example.com.
-#A value of '*' will match anything; in this case you are responsible to provide your
-#own validation of the Host header (perhaps in a middleware; if so this middleware must be listed first in MIDDLEWARE).
+# A list of strings representing the host/domain names that this Django site can serve. This is a security measure to prevent
+# HTTP Host header attacks, which are possible even under many seemingly-safe web server configurations.
+# Values in this list can be fully qualified names (e.g. 'www.example.com'), in which case they will be matched against
+# the request’s Host header exactly (case-insensitive, not including port). A value beginning with a period can be used as a
+# subdomain wildcard: '.example.com' will match example.com, www.example.com, and any other subdomain of example.com.
+# A value of '*' will match anything; in this case you are responsible to provide your
+# own validation of the Host header (perhaps in a middleware; if so this middleware must be listed first in MIDDLEWARE).
 ALLOWED_HOSTS = ""
 
-#A list of all the people who get code error notifications. When DEBUG=False and AdminEmailHandler is configured in LOGGING (done by default),
+# A list of all the people who get code error notifications. When DEBUG=False and AdminEmailHandler is configured in LOGGING (done by default),
 # Django emails these people the details of exceptions raised in the request/response cycle.
 ADMINS = []
 
-#A list in the same format as ADMINS that specifies who should get broken link notifications when BrokenLinkEmailsMiddleware is enabled.
+# A list in the same format as ADMINS that specifies who should get broken link notifications when BrokenLinkEmailsMiddleware is enabled.
 MANAGERS = []
 
 
@@ -69,6 +71,8 @@ SEARCHSTRIP = {
 }
 STORAGE_ROOM = ""
 
+USE_LDAP = True
+
 from django_auth_ldap.config import LDAPSearch, NestedActiveDirectoryGroupType
 import ldap
 ldap.set_option(ldap.OPT_REFERRALS, 0)
@@ -83,15 +87,14 @@ AUTH_LDAP_GROUP_SEARCH = ""
 LDAP_USER_SEARCH = []
 
 AUTH_LDAP_GROUP_TYPE = NestedActiveDirectoryGroupType()
-AUTH_LDAP_MIRROR_GROUPS  = True
+AUTH_LDAP_MIRROR_GROUPS = True
 
 AUTH_LDAP_ATTR_NOSYNC = ["distinguishedName"]
 AUTH_LDAP_USER_ATTR_MAP = {
     "first_name": "givenName",
     "last_name": "sn",
     "email": "mail",
-    "main_department": "distinguishedName",
-    "expiration_date" : "accountExpires" # FIXME
+    "expiration_date": "accountExpires"  # FIXME
     }
 
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {}
@@ -113,7 +116,7 @@ PUPPETDB_SETTINGS = {
     }
 
 
-#sample logger
+# sample logger
 # import logging, logging.handlers
 # logger = logging.getLogger('django_auth_ldap')
 # logger.addHandler(logging.StreamHandler())

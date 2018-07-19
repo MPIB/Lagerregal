@@ -76,6 +76,8 @@
 
         {% permission user has 'devices.lend_device' of device %}
             {% if device.currentlending != None %}
+                <a href="{% url "device-lend" device.pk %}" class="btn btn-success pull-right btn-sm"
+                   style="margin-left:10px">{% trans "Edit lending information" %}</a>
                 <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
                    style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}
                 </a>
@@ -170,7 +172,11 @@
                 {% if device.manual %}
                     <tr>
                     <td>{% trans "Manual" %}</td>
-                    <td><a href="{{ device.manual.url }}">{{ device.manual|filename }}</a></td></tr>
+                    <td><a href="{{ device.manual.url }}">
+                      {%with filename=device.manual|filename|splitstr:'.'|last %}
+                      {{device.name|add:'.'|add:filename}}
+                      {%endwith%}
+                      </a></td></tr>
                 {% endif %}
                 {% if device.contact %}
                     <tr>

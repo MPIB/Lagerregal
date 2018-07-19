@@ -27,14 +27,27 @@ Features
 + Permission system for users and public device lists
 + Themable with bootswatch
 
+Demo and Docker
+===============
 
-Quickstart
-==========
+To quickly spin up a Lagerregal with minimal sample data, run:
+
+```
+docker run --rm -it -p 8000:8000  mpib/lagerregal:demo
+```
+
+point your browser to [http://localhost:8000](http://localhost:8000) and login with "admin:admin".
+
+Note that both Dockerfiles included in the repo are intended for demo and
+development purposes and are not suited for production.
+
+Manual Quickstart
+=================
 
 Install necessary requirements (either globally or with virtualenv)
 
 ```
-$ pip2 install -U -r dependencies.txt
+$ pip install -U -r dependencies.txt
 ```
 
 Generate settings.py
@@ -53,8 +66,8 @@ $ cp Lagerregal/template_production.py Lagerregal/settings.py
 Run:
 
 ```
-$ python2 manage.py migrate
-$ python2 manage.py runserver
+$ python manage.py migrate
+$ python manage.py runserver
 ```
 
 Optional (not optional for production):
