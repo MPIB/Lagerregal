@@ -88,6 +88,13 @@ urlpatterns = [
     url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_template")(TemplateUpdate.as_view()), name="template-edit"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_template")(TemplateDelete.as_view()), name="template-delete"),
+    url(r'^devices/vendors/$', VendorList.as_view(), name="vendor-list"),
+    url(r'^devices/vendors/(?P<page>[0-9]*)$', VendorList.as_view(), name="vendor-list"),
+    url(r'^devices/vendors/view/(?P<pk>[0-9]*)/$', VendorDetail.as_view(), name="vendor-detail"),
+    url(r'^devices/vendors/(?P<page>[0-9]*)$', VendorList.as_view(), name="vendor-list"),
+    url(r'^devices/vendors/add$', VendorCreate.as_view(), name="vendor-add"),
+    url(r'^devices/vendors/(?P<pk>[0-9]*)/edit/$', VendorUpdate.as_view(), name="vendor-edit"),
+    url(r'^devices/vendors/(?P<pk>[0-9]*)/delete/$', VendorDelete.as_view(), name="vendor-delete"),
 
 
     url(r'^types/$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),

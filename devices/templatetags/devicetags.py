@@ -127,13 +127,13 @@ def as_nested_list(factvalue):
     return mark_safe(res)
 
 
-@register.filter
-def splitstr(arg1, arg2):
-    return arg1.split(arg2)
-
-
 @register.inclusion_tag('snippets/deletebutton.html')
 def deletebutton(viewname, *args):
     return {
         'url': reverse(viewname, args=args)
     }
+
+
+@register.filter
+def replace(object, oldstr, newstr):
+    return(object.replace(oldstr, newstr))

@@ -27,7 +27,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture, Vendor
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
@@ -964,6 +964,80 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
             bookmark.save()
             messages.success(request, _("Device was bookmarked."))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
+
+class VendorList(PaginationMixin, ListView):
+    model = Vendor
+    context_object_name = 'vendor_list'
+
+    def get_context_data(self, **kwargs):
+        context = super(VendorList, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("vendor-list"), _("Vendors")), ]
+
+        if context["is_paginated"] and context["page_obj"].number > 1:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
+        return context
+
+
+class VendorDetail(DetailView):
+    model = Vendor
+    context_object_name = 'vendor'
+    # template_name = "devices/device_detail.html"
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(VendorDetail, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("vendor-list"), _("Vendors")),
+            (reverse("vendor-detail", kwargs={"pk": self.object.pk}), self.object)]
+        return context
+
+
+class VendorCreate(CreateView):
+    model = Vendor
+    template_name = 'devices/base_form.html'
+    fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        print(kwargs)
+        context = super(VendorCreate, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("vendor-list"), _("Vendors")),
+            ("", _("Create new vendor"))]
+        return(context)
+
+
+class VendorUpdate(UpdateView):
+    model = Vendor
+    template_name = 'devices/base_form.html'
+    fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        print(kwargs)
+        context = super(VendorUpdate, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("vendor-list"), _("Vendors")),
+            ("", _("Edit: {0}".format(self.object.name)))]
+        return context
+
+
+class VendorDelete(DeleteView):
+    model = Vendor
+    success_url = reverse_lazy('vendor-list')
+    template_name = 'devices/base_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VendorDelete, self).get_context_data(**kwargs)
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            (reverse("vendor-list"), _("Vendors")),
+            ("", _("Delete"))]
+        return context
 
 
 class TemplateList(PaginationMixin, ListView):

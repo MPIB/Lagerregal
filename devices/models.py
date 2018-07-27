@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from django.core.exceptions import ValidationError
 
 import reversion
 import six
@@ -98,6 +99,33 @@ class Manufacturer(models.Model):
 class Bookmark(models.Model):
     device = models.ForeignKey("Device", on_delete=models.CASCADE)
     user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
+
+
+class Vendor(models.Model):
+    name = models.CharField(_('Name'), max_length=100)
+    driver_url = models.CharField(_('Drivers'), max_length=1000, blank=True, null=True)
+    support_url = models.CharField(_('Support'), max_length=1000, blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('vendor-detail', kwargs={'pk': self.pk})
+
+    def get_edit_url(self):
+        return reverse('vendor-edit', kwargs={'pk': self.pk})
+
+    def clean_driver_url(self):
+        print("HEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+        driver_url = self.cleaned_data["driver_url"]
+        if driver_url:
+            if "SEARCHTAG" not in driver_url:
+                raise ValidationError(_('Please call the variable url part SEARCHTAG (.../manuals/SEARCHTAG/...)'))
+        return driver_url
+
+    def clean_support_url(self):
+        support_url = self.cleaned_data["support_url"]
+        if support_url:
+            if "SEARCHTAG" not in support_url:
+                self.add_error('Please call the variable url part SEARCHTAG (.../manuals/SEARCHTAG/...)')
+        return support_url
 
 
 @six.python_2_unicode_compatible

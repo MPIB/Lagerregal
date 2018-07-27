@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load devicetags %}
+{% load i18n %}
+{% block title %}{{ vendor.name }}{% endblock %}
+
+{% block header %}
+    {% trans "Vendor" %}: {{ vendor.name }}
+{% endblock %}
+
+{% block pullright %}
+        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
+           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+        <a href="{% url 'vendor-edit' vendor.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
+        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-xs-12 col-md-4">
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <td>{% trans "Name" %}</td>
+                <td>{{ vendor.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Drivers" %}</td>
+                <td>{{ vendor.driver_url }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Support" %}</td>
+                <td>{{ vendor.support_url }}</td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+  </div>
+{% endblock %}
+
+
+
+{% block scriptend %}
+        $("#deletebutton").popover({
+        html: 'true',
+        placement: "bottom",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
+        content :"<form action='{% url "vendor-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default'onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
+            "</form>"
+        })
+{% endblock %}
