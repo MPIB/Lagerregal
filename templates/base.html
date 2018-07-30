@@ -91,6 +91,8 @@
                             <li><a href="{% url 'department-list' %}">{% trans "Departments" %}</a></li>{% endif %}
                         {% if perms.devicetags.read_devicetag %}
                             <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>{% endif %}
+                        {% if perms.devices.read_vendor %}
+                                <li><a href="{% url 'vendor-list' %}">{% trans "Vendors" %}</a></li>{% endif %}
                     </ul>
                 </li>
             {% endif %}

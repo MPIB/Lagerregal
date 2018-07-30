@@ -8,15 +8,18 @@
 {% endblock %}
 
 {% block pullright %}
+{% if perms.devices.add_device %}
         <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
            style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
         <a href="{% url 'vendor-edit' vendor.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
         <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 
+{% endif %}
 {% endblock %}
 
 {% block content %}
+{% if perms.devices.add_device %}
 <div class="row">
     <div class="col-xs-12 col-md-4">
         <table class="table table-bordered table-striped">
@@ -37,6 +40,7 @@
         </table>
       </div>
   </div>
+{% endif %}
 {% endblock %}
 
 
