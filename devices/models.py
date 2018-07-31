@@ -150,6 +150,7 @@ class Device(models.Model):
     room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
     vendor = models.ForeignKey(Vendor, blank=True, null=True, related_name="vendor", on_delete=models.SET_NULL)
+    servicetag = models.CharField(max_length=100, blank=True, null=True)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
 
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
