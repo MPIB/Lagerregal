@@ -120,6 +120,11 @@ class Vendor(models.Model):
     def get_edit_url(self):
         return reverse('vendor-edit', kwargs={'pk': self.pk})
 
+    def get_associated_devices(self):
+        print("HEY!!!!")
+        print(Device.objects.filter(vendor=self))
+        return Device.objects.filter(vendor=self)
+
     # def clean_driver_url(self):
     #     print("HEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
     #     driver_url = self.cleaned_data["driver_url"]
