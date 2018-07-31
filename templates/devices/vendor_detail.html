@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block pullright %}
-{% if perms.devices.add_device %}
+{% if perms.devices.access_vendor %}
         <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
            style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
         <a href="{% url 'vendor-edit' vendor.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
@@ -19,9 +19,10 @@
 {% endblock %}
 
 {% block content %}
-{% if perms.devices.add_device %}
+{% if perms.devices.access_vendor %}
 <div class="row">
     <div class="col-xs-12 col-md-4">
+      <h4>{% trans "Vendor Details" %}</h4>
         <table class="table table-bordered table-striped">
             <tbody>
             <tr>
@@ -38,6 +39,25 @@
             </tr>
             </tbody>
         </table>
+      </div>
+      <div class="col-xs-12 col-md-7">
+              <h4>{% trans "Devices" %}</h4>
+              <table width="100%" id="devicetable" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                      <th>{% trans "Name" %}</th>
+                      <th>{% trans "Servicetag" %}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for device in vendor.get_associated_devices %}
+                      <tr>
+                          <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+                          <td>{{ device.servicetag }}</td>
+                      </tr>
+                  {% endfor %}
+                  </tbody>
+              </table>
       </div>
   </div>
 {% endif %}
