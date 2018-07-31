@@ -132,5 +132,12 @@ def splitstr(arg1, arg2):
 
 
 @register.filter
-def replace(object, oldstr, newstr):
+def addstr(arg1, arg2):
+    return str(arg1) + str(arg2)
+
+
+@register.filter
+def replace(object, old_new):
+    oldstr = old_new.split(',')[0]
+    newstr = old_new.split(',')[1]
     return(object.replace(oldstr, newstr))
