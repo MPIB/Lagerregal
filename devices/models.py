@@ -6,6 +6,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
+
 
 import reversion
 import six
@@ -100,6 +102,35 @@ class Bookmark(models.Model):
     user = models.ForeignKey(Lageruser)
 
 
+class Vendor(models.Model):
+    name = models.CharField(_('Name'), max_length=100)
+    driver_url = models.CharField(_('Drivers'), max_length=1000, blank=True, null=True)
+    support_url = models.CharField(_('Support'), max_length=1000, blank=True, null=True)
+
+    class Meta:
+        permissions = (
+            ("access_vendor", _("Can access Vendor")),
+        )
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse('vendor-detail', kwargs={'pk': self.pk})
+
+    def get_edit_url(self):
+        return reverse('vendor-edit', kwargs={'pk': self.pk})
+
+    def get_associated_devices(self):
+        return Device.objects.filter(vendor=self)
+
+    def clean(self):
+        if "SERVICETAG" not in self.driver_url:
+            raise ValidationError(_('Please call the variable driver url part SERVICETAG (.../drivers/SERVICETAG/...)'))
+        if "SERVICETAG" not in self.support_url:
+            raise ValidationError(_('Please call the variable support url part SERVICETAG (.../support/SERVICETAG/...)'))
+
+
 @six.python_2_unicode_compatible
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
@@ -113,6 +144,8 @@ class Device(models.Model):
     devicetype = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
+    vendor = models.ForeignKey(Vendor, blank=True, null=True, related_name="vendor", on_delete=models.SET_NULL)
+    servicetag = models.CharField(max_length=100, blank=True, null=True)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
 
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))

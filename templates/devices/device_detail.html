@@ -308,6 +308,43 @@
                 {% endpermission %}
             </div>
 
+            <div class="panel panel-primary">
+                <div class="panel-heading">{% trans "Vendor" %}</div>
+                <ul class="list-group">
+                        <li class="list-group-item vendor-list">
+                            {% if not device.vendor %}
+                            <a href="{% url 'device-edit' device.pk %}"
+                                class="close delete right" style="margin-right:5px"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                            {% endif %}
+                            <a href="{% url "vendor-detail" device.vendor.pk %}">{{ device.vendor.name }}</a>
+                            {% if device.vendor %}
+                            <a
+                                href="{% url 'vendor-edit' device.vendor.pk %}"
+                                class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
+                            {% endif %}
+                            <br/>
+                            {% if device.servicetag%}
+                              {% if device.vendor.driver_url %}
+                                <small style="margin-top:0;color:#999"> Drivers:
+                                  {% with key="SERVICETAG"|addstr:","|addstr:device.servicetag %}
+                                   {{ device.vendor.driver_url|replace:key|urlize|default:"" }}
+                                  {% endwith %}
+                                 </small>
+                                 <br/>
+                              {% endif %}
+                              {% if device.vendor.support_url %}
+                                <small style="margin-top:0;color:#999">Support:
+                                  {% with key="SERVICETAG"|addstr:","|addstr:device.servicetag %}
+                                   {{ device.vendor.support_url|replace:key|urlize|default:"" }}
+                                  {% endwith %}
+                               </small>
+                              {% endif %}
+                            {% else %}
+                             No servicetag assigned.
+                            {% endif %}
+                        </li>
+                </ul>
+            </div>
 
             <div class="panel panel-primary">
                 <div class="panel-heading">{% trans "Tags" %}</div>

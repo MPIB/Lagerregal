@@ -129,3 +129,15 @@ def as_nested_list(factvalue):
 @register.filter
 def splitstr(arg1, arg2):
     return arg1.split(arg2)
+
+
+@register.filter
+def addstr(arg1, arg2):
+    return str(arg1) + str(arg2)
+
+
+@register.filter
+def replace(object, old_new):
+    oldstr = old_new.split(',')[0]
+    newstr = old_new.split(',')[1]
+    return(object.replace(oldstr, newstr))
