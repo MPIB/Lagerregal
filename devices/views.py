@@ -1003,7 +1003,6 @@ class VendorCreate(CreateView):
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
         context = super(VendorCreate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -1018,7 +1017,6 @@ class VendorUpdate(UpdateView):
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
         context = super(VendorUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
