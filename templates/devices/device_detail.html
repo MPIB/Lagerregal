@@ -308,6 +308,30 @@
                 {% endpermission %}
             </div>
 
+            <div class="panel panel-primary">
+                <div class="panel-heading">{% trans "Vendor" %}</div>
+                <ul class="list-group">
+                        <li class="list-group-item ipaddress-list">
+                            {% if not device.vendor %}
+                            <a href="{% url 'device-edit' device.pk %}"
+                                class="close delete right" style="margin-right:5px"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                            {% endif %}
+                            <a href="{% url "vendor-detail" device.vendor.pk %}">{{ device.vendor.name }}</a>
+                            {% if device.vendor %}
+                            <a
+                                href="{% url 'vendor-edit' device.vendor.pk %}"
+                                class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
+                            {% endif %}
+                            <br/>
+                            {% if device.vendor.driver_url %}
+                            <small style="margin-top:0;color:#999"> Drivers: {{ device.vendor.driver_url|default:"" }}</small>
+                            {% endif %}
+                            {% if device.vendor.support_url %}
+                            <small style="margin-top:0;color:#999">Support: {{ device.vendor.support_url|default:"" }}</small>
+                            {% endif %}
+                        </li>
+                </ul>
+            </div>
 
             <div class="panel panel-primary">
                 <div class="panel-heading">{% trans "Tags" %}</div>
