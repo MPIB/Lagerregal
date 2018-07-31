@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load devicetags %}
+{% load i18n %}
+{% block title %}{{ url.name }}{% endblock %}
+
+{% block header %}
+    {% trans "Manufacturer url" %}: {{ url.name }}
+{% endblock %}
+
+{% block pullright %}
+{% if perms.devices.read_url %}
+        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
+           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+        <a href="{% url 'url-edit' url.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
+        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
+
+{% endif %}
+{% endblock %}
+
+{% block content %}
+{% if perms.devices.read_url %}
+<div class="row">
+    <div class="col-xs-12 col-md-4">
+      <h4>{% trans "Url Details" %}</h4>
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <td>{% trans "Name" %}</td>
+                <td>{{ url.name }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Url" %}</td>
+                <td>{{ url.url }}</td>
+            </tr>
+            <tr>
+                <td>{% trans "Manufacturer" %}</td>
+                <td>{{ url.manufacturer }}</td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+  </div>
+{% endif %}
+{% endblock %}
+
+
+
+{% block scriptend %}
+        $("#deletebutton").popover({
+        html: 'true',
+        placement: "bottom",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
+        content :"<form action='{% url "url-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default'onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
+            "</form>"
+        })
+{% endblock %}

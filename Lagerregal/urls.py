@@ -88,13 +88,6 @@ urlpatterns = [
     url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_template")(TemplateUpdate.as_view()), name="template-edit"),
     url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_template")(TemplateDelete.as_view()), name="template-delete"),
-    url(r'^devices/vendors/$', permission_required("devices.access_vendor")(VendorList.as_view()), name="vendor-list"),
-    url(r'^devices/vendors/(?P<page>[0-9]*)$', permission_required("devices.access_vendor")(VendorList.as_view()), name="vendor-list"),
-    url(r'^devices/vendors/view/(?P<pk>[0-9]*)/$', permission_required("devices.access_vendor")(VendorDetail.as_view()), name="vendor-detail"),
-    url(r'^devices/vendors/(?P<page>[0-9]*)$', permission_required("devices.access_vendor")(VendorList).as_view(), name="vendor-list"),
-    url(r'^devices/vendors/add$', permission_required("devices.access_vendor")(VendorCreate.as_view()), name="vendor-add"),
-    url(r'^devices/vendors/(?P<pk>[0-9]*)/edit/$', permission_required("devices.access_vendor")(VendorUpdate.as_view()), name="vendor-edit"),
-    url(r'^devices/vendors/(?P<pk>[0-9]*)/delete/$', permission_required("devices.access_vendor")(VendorDelete.as_view()), name="vendor-delete"),
 
 
     url(r'^types/$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
@@ -148,6 +141,10 @@ urlpatterns = [
     url(r'^manufacturers/delete/(?P<pk>[^/]*)$', permission_required("devices.delete_manufacturer")(ManufacturerDelete.as_view()), name="manufacturer-delete"),
     url(r'^manufacturers/view/(?P<pk>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerDetail.as_view()), name="manufacturer-detail"),
     url(r'^manufacturers/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("devices.change_manufacturer")(ManufacturerMerge.as_view()), name="manufacturer-merge"),
+    url(r'^manufacturers/urls/view/(?P<pk>[0-9]*)/$', permission_required("devices.read_url")(UrlDetail.as_view()), name="url-detail"),
+    url(r'^manufacturers/urls/add$', permission_required("devices.add_vendor")(UrlCreate.as_view()), name="url-add"),
+    url(r'^manufacturers/urls/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_url")(UrlUpdate.as_view()), name="url-edit"),
+    url(r'^manufacturers/urls/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_url")(UrlDelete.as_view()), name="url-delete"),
 
     url(r'^mails/$', permission_required("mail.read_mailtemplate")(MailList.as_view()), name="mail-list"),
     url(r'^mails/(?P<page>[0-9]*)$', permission_required("mail.read_mailtemplate")(MailList.as_view()), name="mail-list"),

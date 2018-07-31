@@ -7,9 +7,11 @@ from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 
 import reversion
 import six
+import re
 
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
@@ -95,39 +97,55 @@ class Manufacturer(models.Model):
     def get_edit_url(self):
         return reverse('manufacturer-edit', kwargs={'pk': self.pk})
 
-
-class Bookmark(models.Model):
-    device = models.ForeignKey("Device", on_delete=models.CASCADE)
-    user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
+    def get_associated_devices(self):
+        return Device.objects.filter(vendor=self)
 
 
-class Vendor(models.Model):
+class ManufacturerUrl(models.Model):
     name = models.CharField(_('Name'), max_length=100)
-    driver_url = models.CharField(_('Drivers'), max_length=1000, blank=True, null=True)
-    support_url = models.CharField(_('Support'), max_length=1000, blank=True, null=True)
+    url = models.CharField(_('Url'), max_length=200)
+    manufacturer = models.ForeignKey(Manufacturer, null=True, blank=True, on_delete=models.SET_NULL, related_name='urls')
 
     class Meta:
         permissions = (
-            ("access_vendor", _("Can access Vendor")),
+            ("read_url", _("Can read Url")),
         )
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('vendor-detail', kwargs={'pk': self.pk})
-
-    def get_edit_url(self):
-        return reverse('vendor-edit', kwargs={'pk': self.pk})
-
-    def get_associated_devices(self):
-        return Device.objects.filter(vendor=self)
+        return reverse('url-detail', kwargs={'pk': self.pk})
 
     def clean(self):
-        if "SERVICETAG" not in self.driver_url:
-            raise ValidationError(_('Please call the variable driver url part SERVICETAG (.../drivers/SERVICETAG/...)'))
-        if "SERVICETAG" not in self.support_url:
-            raise ValidationError(_('Please call the variable support url part SERVICETAG (.../support/SERVICETAG/...)'))
+        # get all fieldnames of device to determine valid choices
+        fieldnames = [f.name for f in Device._meta.get_fields()]
+        # look for wanted variable
+        attribute = re.search('{{(.*)}}', self.url)
+        if attribute:
+            attribute = attribute.group(1)
+            # check for level and correctness
+            attribute_split = attribute.split('.')
+            if len(attribute_split) > 2:
+                raise ValidationError(_('Too many attribute levels'))
+            if attribute_split[0] != 'device':
+                raise ValidationError(_('Please only use "device"'))
+            if attribute_split[1] not in fieldnames:
+                raise ValidationError(_('Please only use attributes of device'))
+
+        val = URLValidator()
+        url = self.url
+        if attribute:
+            url = url.replace("{{" + attribute + "}}", attribute)
+        try:
+            val(url)
+        except:
+            raise ValidationError(_('Not a valid url'))
+
+
+class Bookmark(models.Model):
+    device = models.ForeignKey("Device", on_delete=models.CASCADE)
+    user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
 
 
 @six.python_2_unicode_compatible
@@ -143,8 +161,6 @@ class Device(models.Model):
     devicetype = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
     group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
-    vendor = models.ForeignKey(Vendor, blank=True, null=True, related_name="vendor", on_delete=models.SET_NULL)
-    servicetag = models.CharField(max_length=100, blank=True, null=True)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
 
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))

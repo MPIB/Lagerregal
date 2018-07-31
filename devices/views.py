@@ -27,7 +27,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture, Vendor
+from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture, ManufacturerUrl
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
@@ -966,77 +966,64 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-class VendorList(PaginationMixin, ListView):
-    model = Vendor
-    context_object_name = 'vendor_list'
-
-    def get_context_data(self, **kwargs):
-        context = super(VendorList, self).get_context_data(**kwargs)
-        context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("vendor-list"), _("Vendors")), ]
-
-        if context["is_paginated"] and context["page_obj"].number > 1:
-            context["breadcrumbs"].append(["", context["page_obj"].number])
-        return context
-
-
-class VendorDetail(DetailView):
-    model = Vendor
-    context_object_name = 'vendor'
-    # template_name = "devices/device_detail.html"
+class UrlDetail(DetailView):
+    model = ManufacturerUrl
+    context_object_name = 'url'
+    template_name = "devices/url_detail.html"
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(VendorDetail, self).get_context_data(**kwargs)
+        context = super(UrlDetail, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("vendor-list"), _("Vendors")),
-            (reverse("vendor-detail", kwargs={"pk": self.object.pk}), self.object)]
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={'pk': self.object.manufacturer.pk}), self.object.manufacturer),
+            (reverse("url-detail", kwargs={"pk": self.object.pk}), self.object)]
         return context
 
 
-class VendorCreate(CreateView):
-    model = Vendor
+class UrlCreate(CreateView):
+    model = ManufacturerUrl
     template_name = 'devices/base_form.html'
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
-        context = super(VendorCreate, self).get_context_data(**kwargs)
+        context = super(UrlCreate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("vendor-list"), _("Vendors")),
-            ("", _("Create new vendor"))]
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            ("", _("Create new url"))]
         return(context)
 
+    def get_initial(self):
+        print("HAAAAAAAAI")
+        print(self)
+        print("WO????")
+        print(self.kwargs.get)
 
-class VendorUpdate(UpdateView):
-    model = Vendor
+class UrlUpdate(UpdateView):
+    model = ManufacturerUrl
     template_name = 'devices/base_form.html'
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
-        context = super(VendorUpdate, self).get_context_data(**kwargs)
+        context = super(UrlUpdate, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("vendor-list"), _("Vendors")),
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={'pk': self.object.manufacturer.pk}), self.object.manufacturer),
             ("", _("Edit: {0}".format(self.object.name)))]
         return context
 
 
-class VendorDelete(DeleteView):
-    model = Vendor
-    success_url = reverse_lazy('vendor-list')
+class UrlDelete(DeleteView):
+    model = ManufacturerUrl
+    success_url = reverse_lazy('manufacturer-list')
     template_name = 'devices/base_delete.html'
 
     def get_context_data(self, **kwargs):
-        context = super(VendorDelete, self).get_context_data(**kwargs)
+        context = super(UrlDelete, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [
-            (reverse("device-list"), _("Devices")),
-            (reverse("vendor-list"), _("Vendors")),
-            ("", _("Delete"))]
+            (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={'pk': self.object.manufacturer.pk}), self.object.manufacturer),
+            ("", _("Delete url"))]
         return context
 
 

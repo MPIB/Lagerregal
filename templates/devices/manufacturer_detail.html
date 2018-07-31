@@ -15,6 +15,8 @@
            data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
     {% endif %}
     {% if perms.devices.change_manufacturer %}
+        <a href="{% url 'url-add' %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
+        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add new url" %}</a>
         <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
         <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
@@ -33,6 +35,24 @@
 {% endblock %}
 
 {% block content %}
+
+<div class="row">
+{% if object.urls %}
+<div class="col-xs-12 col-md-4">
+  <h4>{% trans "Urls" %}</h4>
+    <table class="table table-bordered table-striped">
+        <tbody>
+        {% for url_object in object.urls.all %}
+          <tr>
+            <td><a href="{% url 'url-detail' url_object.id %}">{{ url_object.name }}</a></td>
+            <td>{{ url_object.url }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+{% endif %}
+<br /><br /><br /><br /><br /><br />
     {% if device_list %}
         {% if perms.devices.read_device %}
             <h4>Devices</h4>
@@ -57,12 +77,26 @@
                 </tbody>
             </table>
         {% endif %}
-
     {% endif %}
+  </div>
 {% endblock %}
 
 {% block htmlend %}
     {% if "manufacturer" in LABEL_TEMPLATES %}
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.type.0 %}
+    {% endif %}
+{% endblock %}
+
+{% block scriptend %}
+    {% if perms.devices.delete_manufacturer %}
+        $("#deletebutton").popover({
+        html: 'true',
+        placement: "bottom",
+        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
+        content :"<form action='{% url "manufacturer-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
+            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
+            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
+            "</form>"
+        })
     {% endif %}
 {% endblock %}
