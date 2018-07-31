@@ -121,24 +121,13 @@ class Vendor(models.Model):
         return reverse('vendor-edit', kwargs={'pk': self.pk})
 
     def get_associated_devices(self):
-        print("HEY!!!!")
-        print(Device.objects.filter(vendor=self))
         return Device.objects.filter(vendor=self)
 
-    # def clean_driver_url(self):
-    #     print("HEYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-    #     driver_url = self.cleaned_data["driver_url"]
-    #     if driver_url:
-    #         if "SEARCHTAG" not in driver_url:
-    #             raise ValidationError(_('Please call the variable url part SEARCHTAG (.../manuals/SEARCHTAG/...)'))
-    #     return driver_url
-    #
-    # def clean_support_url(self):
-    #     support_url = self.cleaned_data["support_url"]
-    #     if support_url:
-    #         if "SEARCHTAG" not in support_url:
-    #             self.add_error('Please call the variable url part SEARCHTAG (.../manuals/SEARCHTAG/...)')
-    #     return support_url
+    def clean(self):
+        if "SERVICETAG" not in self.driver_url:
+            raise ValidationError(_('Please call the variable driver url part SERVICETAG (.../drivers/SERVICETAG/...)'))
+        if "SERVICETAG" not in self.support_url:
+            raise ValidationError(_('Please call the variable support url part SERVICETAG (.../support/SERVICETAG/...)'))
 
 
 @six.python_2_unicode_compatible
