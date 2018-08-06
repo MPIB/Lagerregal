@@ -265,15 +265,14 @@ class DeviceDetail(DetailView):
             mailinitial["owner"] = currentowner
             mailinitial["emailrecipients"] = ("u" + str(currentowner.id), currentowner.username)
         try:
-            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder", department=self.request.user.main_department, )
+            mailinitial["mailtemplate"] = MailTemplate.objects.get(usage="reminder")
             mailinitial["emailsubject"] = mailinitial["mailtemplate"].subject
             mailinitial["emailbody"] = mailinitial["mailtemplate"].body
         except:
             messages.error(self.request, _('Please create reminder mail template'))
         # mail context data
         context["mailform"] = DeviceMailForm(initial=mailinitial)
-        context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.filter(
-            department__in=self.request.user.departments.all())
+        context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.all()
         versions = Version.objects.get_for_object(context["device"])
 
         if len(versions) != 0:
@@ -436,12 +435,9 @@ class DeviceCreate(CreateView):
 
         if self.request.user.main_department:
             initial["department"] = self.request.user.main_department
-            department = self.request.user.main_department
-        else:
-            department = None
 
         try:
-            initial["emailtemplate"] = MailTemplate.objects.get(usage="new", department=department)
+            initial["emailtemplate"] = MailTemplate.objects.get(usage="new")
             initial["emailrecipients"] = [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
                                           initial["emailtemplate"].default_recipients.all()]
             initial["emailsubject"] = initial["emailtemplate"].subject
@@ -455,8 +451,7 @@ class DeviceCreate(CreateView):
         # Call the base implementation first to get a context
         context = super(DeviceCreate, self).get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
-        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(
-            department__in=self.request.user.departments.all())
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.all()
         context['actionstring'] = "Create new Device"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -522,8 +517,7 @@ class DeviceUpdate(UpdateView):
             (reverse("device-detail", kwargs={"pk": context["device"].pk}), context["device"].name),
             ("", _("Edit"))]
         context["template_list"] = MailTemplate.objects.filter(department__in=self.request.user.departments.all())
-        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.filter(
-            department__in=self.request.user.departments.all())
+        context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.all()
         return context
 
     def form_valid(self, form):
@@ -931,10 +925,10 @@ class DeviceStorage(SingleObjectMixin, FormView):
             ipaddress.save()
         if form.cleaned_data["send_mail"]:
             try:
-                template = MailTemplate.objects.get(usage="room", department=self.request.user.main_department)
+                template = MailTemplate.objects.get(usage="room")
             except:
                 template = None
-                messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
+                messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
             if template is not None:
                 recipients = []
                 for recipient in template.default_recipients.all():
