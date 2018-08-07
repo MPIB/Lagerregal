@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
                 ('regex', models.CharField(max_length=500, null=True, blank=True)),
-                ('devicetype', models.ForeignKey(to='devicetypes.Type')),
+                ('devicetype', models.ForeignKey(to='devicetypes.Type', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Type-attribute',
@@ -41,8 +41,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.CharField(max_length=400)),
-                ('device', models.ForeignKey(to='devices.Device')),
-                ('typeattribute', models.ForeignKey(to='devicetypes.TypeAttribute')),
+                ('device', models.ForeignKey(to='devices.Device', on_delete=models.CASCADE)),
+                ('typeattribute', models.ForeignKey(to='devicetypes.TypeAttribute', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Type-attribute value',

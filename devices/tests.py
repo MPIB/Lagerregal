@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 
 from django.test.client import Client
 from django.test import TestCase
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 import six
 from model_mommy import mommy

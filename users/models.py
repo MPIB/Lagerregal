@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.dispatch import receiver
 
 import pytz
@@ -127,7 +127,7 @@ class Department(models.Model):
 
 
 class DepartmentUser(models.Model):
-    user = models.ForeignKey(Lageruser)
-    department = models.ForeignKey(Department)
+    user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     role = models.CharField(choices=(("a", _("Admin")), ("m", _("Member"))), default="a", max_length=1)
     member_since = models.DateTimeField(auto_now_add=True)

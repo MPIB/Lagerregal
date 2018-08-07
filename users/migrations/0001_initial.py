@@ -60,8 +60,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('role', models.CharField(default=b'a', max_length=1, choices=[(b'a', 'Admin'), (b'm', 'Member')])),
                 ('member_since', models.DateTimeField(auto_now_add=True)),
-                ('department', models.ForeignKey(to='users.Department')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('department', models.ForeignKey(to='users.Department', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

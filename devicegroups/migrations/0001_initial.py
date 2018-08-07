@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
-                ('department', models.ForeignKey(to='users.Department', null=True)),
+                ('department', models.ForeignKey(to='users.Department', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Devicegroup',

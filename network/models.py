@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 import six
 from reversion import revisions as reversion
@@ -18,7 +18,7 @@ class IpAddress(models.Model):
     user = models.ForeignKey(Lageruser, blank=True, null=True, on_delete=models.SET_NULL)
     last_seen = models.DateTimeField(null=True, blank=True)
     purpose = models.CharField(max_length=200, null=True, blank=True)
-    department = models.ForeignKey(Department, null=True, blank=True)
+    department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.address
