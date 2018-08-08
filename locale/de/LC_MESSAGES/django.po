@@ -1170,12 +1170,6 @@ msgstr "Einstellungen"
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/base.html:264
-msgid ""
-"Hi! I am Clippy, your Lagerregal assistant. Would you like some assistance "
-"totday?"
-msgstr ""
-
 #: templates/devicegroups/devicegroup_detail.html:17
 #: templates/devices/building_detail.html:25
 #: templates/devices/manufacturer_detail.html:24
