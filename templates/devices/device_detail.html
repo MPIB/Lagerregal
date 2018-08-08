@@ -453,6 +453,7 @@
                                 <tr>
                                     <th scope="row"><a href="{% url 'history-detail' action.pk %}"
                                                        title="{{ action.revision.date_created|date:'c' }}"
+                                                       data-timeago
                                                        class="edit-date">{{ action.revision.date_created }}</a></th>
                                     <td>
                                         <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
@@ -486,6 +487,7 @@
                                     <td>{{ mail.subject }}</td>
                                     <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{ mail.sent_by }}</a></td>
                                     <td><span title="{{ mail.sent_at|date:'c' }}"
+                                              data-timeago
                                               class="mail-date">{{ mail.sent_at }}</span></td>
                                 </tr>
                             {% endfor %}
@@ -603,8 +605,6 @@
     $( "#id_duedate" ).datepicker();
     });
     $(document).ready(function() {
-    $(".edit-date").timeago();
-    $(".mail-date").timeago();
 
     $("select").select2()
     $("#id_mailtemplate").change(function() {

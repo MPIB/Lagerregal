@@ -54,7 +54,8 @@
                 </td>
                 <td>
                     <span title="{{ revision.date_created|date:'c' }}"
-                              class="edit-date">{{ revision.date_created }}</span>
+                          data-timeago
+                          class="edit-date">{{ revision.date_created }}</span>
                 </td>
                 <td><a href="{% url 'userprofile' revision.user.pk %}">{{ revision.user }}</a></td>
                 <td class="commentcol">{{ revision.comment|linebreaksbr|default:"" }}</td>

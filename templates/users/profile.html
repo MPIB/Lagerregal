@@ -64,6 +64,7 @@
                             <tr>
                                 <td>{% trans "Last Login" %}</td>
                                 <td><span title="{{ profileuser.last_login|date:"c" }}"
+                                          data-timeago
                                           class="profile-date">{{ profileuser.last_login }}</span></td>
                             </tr>
                             <tr>
@@ -305,8 +306,6 @@
     });
 
     $(document).ready(function() {
-    $(".profile-date").timeago();
-
     var url = document.location.toString();
     if (url.match('#')) {
         $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
