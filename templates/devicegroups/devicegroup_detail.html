@@ -5,8 +5,7 @@
 
 {% block pullright %}
     {% if perms.devicegroups.delete_devicegroup %}
-        <a href="#" id="deletebutton" data-toggle="modal" class="btn btn-danger btn-sm pull-right"
-           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+        {% deletebutton "devicegroup-delete" object.id %}
     {% endif %}
     {% if perms.devicegroups.change_devicegroup %}
         <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
@@ -54,19 +53,5 @@
 {% block htmlend %}
     {% if "devicegroup" in LABEL_TEMPLATES %}
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.devicegroup.0 %}
-    {% endif %}
-{% endblock %}
-
-{% block scriptend %}
-    {% if perms.devicegroups.delete_devicegroup %}
-        $("#deletebutton").popover({
-        html: 'true',
-        placement: "bottom",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-        content :"<form action='{% url "devicegroup-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
-            "</form>"
-        })
     {% endif %}
 {% endblock %}
