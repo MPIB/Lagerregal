@@ -57,5 +57,6 @@
         });
 
         $('[data-timeago]').timeago();
+        $('[data-toggle="popover"]').popover();
     });
 })();
