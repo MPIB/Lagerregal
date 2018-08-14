@@ -2,6 +2,8 @@ from __future__ import unicode_literals
 
 from django import forms
 
+from django_select2.forms import Select2MultipleWidget
+
 from devicetags.models import Devicetag
 from devices.models import Device
 
@@ -16,5 +18,5 @@ class DeviceTagForm(forms.Form):
     error_css_class = 'has-error'
     tags = forms.ModelMultipleChoiceField(
         Devicetag.objects.all(),
-        widget=forms.SelectMultiple(attrs={"style": "width:100%;"}))
+        widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
     device = forms.ModelChoiceField(Device.objects.all())
