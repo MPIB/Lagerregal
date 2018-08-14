@@ -613,11 +613,11 @@
     $.ajax({
     type: "POST",
     url: "{% url "load-mailtemplate" %}",
-    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")}
+    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
     }).done(function(data) {
     $("#id_emailsubject").val(data.subject)
     $("#id_emailbody").val(data.body)
-    $('#id_emailrecipients').select2('val', data.recipients)
+    $('#id_emailrecipients').val(data.recipients)
     })
     }
     });

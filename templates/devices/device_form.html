@@ -125,7 +125,7 @@
     $("#addform").append("already exists");
     } else {
     $("#id_" +data.classname).append('<option value="' + data.id + '">' + data.name + '</option>')
-    $("#id_" + data.classname).select2('val', data.id);
+    $("#id_" + data.classname).val(data.id);
     $('#addModal').modal('hide');
     }
     });
@@ -167,8 +167,8 @@
     }
     } else {
     changelist.splice(changelist.indexOf($("label[for='"+$(this).attr('name')+"']").html()), 1)
-    if ($("#id_emailtemplate").select2("val") === templatelist[$(this).attr("name")]) {
-    $("#id_emailtemplate").select2("val", "")
+    if ($("#id_emailtemplate").val() === templatelist[$(this).attr("name")]) {
+    $("#id_emailtemplate").val("")
     }
     }
     if($("#id_comment").val() == commentstring) {
@@ -219,11 +219,11 @@
     $.ajax({
     type: "POST",
     url: "{% url "load-mailtemplate" %}",
-    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")}
+    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
     }).done(function(data) {
     $("#id_emailsubject").val(data.subject)
     $("#id_emailbody").val(data.body)
-    $('#id_emailrecipients').select2('val', data.recipients)
+    $('#id_emailrecipients').val(data.recipients)
     })
     $("#id_emailedit").parents(".form-group:first").slideDown();
     if ($("#id_emailedit").prop('checked')) {
