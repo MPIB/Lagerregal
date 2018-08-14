@@ -533,8 +533,7 @@
 {% endblock %}
 
 {% block scriptend %}
-    $("#id_ipaddresses").select2({
-    tokenSeparators: [",", " "]}).
+    $("#id_ipaddresses").
     on("change", function(e) {
     if (e.val.length != 0) {
     $("#submitipaddress").removeClass("disabled")
@@ -543,8 +542,7 @@
     }
     });
 
-    $("#id_tags").select2({
-    tokenSeparators: [",", " "]}).
+    $("#id_tags").
     on("change", function(e) {
     if (e.val.length != 0) {
     $("#submittags").removeClass("disabled")
@@ -606,7 +604,6 @@
     $(".edit-date").timeago();
     $(".mail-date").timeago();
 
-    $("select").select2()
     $("#id_mailtemplate").change(function() {
     if ($(this).val() === "") {
     } else {

@@ -266,8 +266,7 @@
 
 {% block scriptend %}
 
-    $("#id_ipaddresses").select2({
-    tokenSeparators: [",", " "]}).
+    $("#id_ipaddresses").
     on("change", function(e) {
     if (e.val.length != 0) {
     $("#submitipaddress").removeClass("disabled")
