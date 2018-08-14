@@ -122,6 +122,7 @@ INSTALLED_APPS = (
     'permission',
     'debug_toolbar',
     'oauth2_provider',
+    'django_select2',
 )
 
 LANGUAGES = (
@@ -193,6 +194,9 @@ THEMES = [
 ]
 
 FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
+
+SELECT2_JS = ''
+SELECT2_CSS = ''
 
 TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
 TEST_MODE = False
