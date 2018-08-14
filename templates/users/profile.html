@@ -268,7 +268,7 @@
 
     $("#id_ipaddresses").
     on("change", function(e) {
-    if (e.val.length != 0) {
+    if ($(this).val()) {
     $("#submitipaddress").removeClass("disabled")
     } else {
     $("#submitipaddress").addClass("disabled")

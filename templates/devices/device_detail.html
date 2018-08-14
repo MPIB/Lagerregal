@@ -535,7 +535,7 @@
 {% block scriptend %}
     $("#id_ipaddresses").
     on("change", function(e) {
-    if (e.val.length != 0) {
+    if ($(this).val()) {
     $("#submitipaddress").removeClass("disabled")
     } else {
     $("#submitipaddress").addClass("disabled")
@@ -544,7 +544,7 @@
 
     $("#id_tags").
     on("change", function(e) {
-    if (e.val.length != 0) {
+    if ($(this).val()) {
     $("#submittags").removeClass("disabled")
     } else {
     $("#submittags").addClass("disabled")
