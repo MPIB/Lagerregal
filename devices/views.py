@@ -977,27 +977,31 @@ class UrlDetail(DetailView):
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={'pk': self.object.manufacturer.pk}), self.object.manufacturer),
-            (reverse("url-detail", kwargs={"pk": self.object.pk}), self.object)]
+            (reverse("url-detail", kwargs={"manufacturer": self.object.manufacturer.pk, "pk": self.object.pk}), self.object)]
         return context
 
 
 class UrlCreate(CreateView):
     model = ManufacturerUrl
     template_name = 'devices/base_form.html'
+    # fields = ('name', 'url')
     fields = '__all__'
+
+    def get_initial(self):
+        initial = super(UrlCreate, self).get_initial()
+        initial["manufacturer"] = get_object_or_404(Device, pk=self.kwargs["manufacturer"])
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super(UrlCreate, self).get_context_data(**kwargs)
+        manufacturer = Manufacturer.objects.filter(pk=self.kwargs["manufacturer"])[0]
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
+            (reverse("manufacturer-detail", kwargs={'pk': manufacturer.pk}), manufacturer),
             ("", _("Create new url"))]
+        context["formhelp"] = "devices/help.html"
         return(context)
 
-    def get_initial(self):
-        print("HAAAAAAAAI")
-        print(self)
-        print("WO????")
-        print(self.kwargs.get)
 
 class UrlUpdate(UpdateView):
     model = ManufacturerUrl
@@ -1010,12 +1014,12 @@ class UrlUpdate(UpdateView):
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={'pk': self.object.manufacturer.pk}), self.object.manufacturer),
             ("", _("Edit: {0}".format(self.object.name)))]
+        context["formhelp"] = "devices/help.html"
         return context
 
 
 class UrlDelete(DeleteView):
     model = ManufacturerUrl
-    success_url = reverse_lazy('manufacturer-list')
     template_name = 'devices/base_delete.html'
 
     def get_context_data(self, **kwargs):
@@ -1025,6 +1029,9 @@ class UrlDelete(DeleteView):
             (reverse("manufacturer-detail", kwargs={'pk': self.object.manufacturer.pk}), self.object.manufacturer),
             ("", _("Delete url"))]
         return context
+
+    def get_success_url(self):
+        return reverse_lazy("manufacturer-detail", kwargs={"pk": self.object.manufacturer.pk})
 
 
 class TemplateList(PaginationMixin, ListView):

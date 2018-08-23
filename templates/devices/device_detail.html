@@ -348,15 +348,12 @@
                             {% endif %}
                             {% if device.manufacturer %}
                           <a href="{% url "manufacturer-detail" device.manufacturer.pk %}">{{ device.manufacturer.name }}</a>
-                            <a
-                                href="{% url 'manufacturer-edit' device.manufacturer.pk %}"
-                                class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
                             {% endif %}
                             <br/>
                               {% if device.manufacturer.urls %}
                                 {% for url in device.manufacturer.urls.all %}
                                   <small style="margin-top:0;color:#999"> {{url.name}}:
-                                    {% autoescape off %}{{ url.url }}{% endautoescape %}
+                                    {{ url.url|urlize }}
                                   </small>
                                   <br/>
                                 {% endfor %}

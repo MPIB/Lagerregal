@@ -115,11 +115,11 @@ class ManufacturerUrl(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('url-detail', kwargs={'pk': self.pk})
+        return reverse('url-detail', kwargs={'manufacturer': self.manufacturer.pk, 'pk': self.pk})
 
     def clean(self):
         # get all fieldnames of device to determine valid choices
-        fieldnames = [f.name for f in Device._meta.get_fields()]
+        fieldnames = ['inventorynumber', 'name', 'serialnumber']
         # look for wanted variable
         attribute = re.search('{{(.*)}}', self.url)
         if attribute:
