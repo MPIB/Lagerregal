@@ -144,3 +144,20 @@ def replace(object, old_new):
     oldstr = old_new.split(',')[0]
     newstr = old_new.split(',')[1]
     return(object.replace(oldstr, newstr))
+
+
+@register.tag
+def render_string(arg1):
+    return Template(arg1).render(Context({"device.name": "Blubb"}))
+#     if len(bits) != 2:
+#         raise TemplateSyntaxError("...")
+#     return RenderStringNode(bits[1])
+#
+#
+# class RenderStringNode(Node):
+#     def __init__(self, varname):
+#         self.varname = varname
+#
+#     def render(self, context):
+#         var = context.get(self.varname, "")
+#         return Template(var).render(context)

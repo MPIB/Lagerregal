@@ -119,24 +119,24 @@ class ManufacturerUrl(models.Model):
 
     def clean(self):
         # get all fieldnames of device to determine valid choices
-        fieldnames = ['inventorynumber', 'name', 'serialnumber']
+        fieldnames = ['serialnumber']
         # look for wanted variable
-        attribute = re.search('{{(.*)}}', self.url)
+        attribute = re.search('{(.*)}', self.url)
         if attribute:
             attribute = attribute.group(1)
             # check for level and correctness
-            attribute_split = attribute.split('.')
-            if len(attribute_split) > 2:
-                raise ValidationError(_('Too many attribute levels'))
-            if attribute_split[0] != 'device':
-                raise ValidationError(_('Please only use "device"'))
-            if attribute_split[1] not in fieldnames:
-                raise ValidationError(_('Please only use attributes of device'))
+            # attribute_split = attribute.split('.')
+            # if len(attribute_split) > 2:
+            #     raise ValidationError(_('Too many attribute levels'))
+            # if attribute_split[0] != 'device':
+            #     raise ValidationError(_('Please only use "device"'))
+            if attribute not in fieldnames:
+                raise ValidationError(_('Please only use attributes of device listed in help'))
 
         val = URLValidator()
         url = self.url
         if attribute:
-            url = url.replace("{{" + attribute + "}}", attribute)
+            url = url.replace("{" + attribute + "}", attribute)
         try:
             val(url)
         except:
@@ -217,6 +217,12 @@ class Device(models.Model):
         if self.currentlending.duedate < datetime.date.today():
             return True
         return False
+
+    def get_urls(self):
+        if self.manufacturer:
+            return {url.name: url.url.format(serialnumber=self.serialnumber) for url in self.manufacturer.urls.all()}
+        else:
+            return {}
 
     @staticmethod
     def active():

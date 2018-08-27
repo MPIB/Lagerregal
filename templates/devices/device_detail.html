@@ -351,9 +351,9 @@
                             {% endif %}
                             <br/>
                               {% if device.manufacturer.urls %}
-                                {% for url in device.manufacturer.urls.all %}
-                                  <small style="margin-top:0;color:#999"> {{url.name}}:
-                                    {{ url.url|urlize }}
+                                {% for name, url in device.get_urls.items %}
+                                  <small style="margin-top:0;color:#999"> {{name}}:
+                                    {{ url|urlize }}
                                   </small>
                                   <br/>
                                 {% endfor %}
