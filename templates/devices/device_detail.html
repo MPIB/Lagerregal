@@ -227,9 +227,11 @@
                 {% for picture in device.pictures.all %}
                     <div class="item {% if forloop.first %}active{% endif %}">
                       <img src="{{ picture.image.url }}" alt="{{ picture.caption }}">
+                      {% if picture.caption %}
                       <div class="carousel-caption">
                         {{ picture.caption }}
                       </div>
+                      {% endif %}
                     </div>
 
                 {% endfor %}
