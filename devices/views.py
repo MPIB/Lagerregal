@@ -223,10 +223,7 @@ class DeviceDetail(DetailView):
 
         pk = self.kwargs.get(self.pk_url_kwarg)
         queryset = self.queryset.filter(pk=pk)
-        try:
-            self.object = queryset.get()
-        except Device.DoesNotExist:
-            raise Http404
+        self.object = get_object_or_404(queryset)
         return self.object
 
     def get_context_data(self, **kwargs):
