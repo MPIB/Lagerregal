@@ -13,8 +13,7 @@ from mail.models import MailTemplate
 
 class LoadChoices(View):
     def post(self, request, *args, **kwargs):
-        department = request.POST["department"]
-        used = MailTemplate.objects.values_list('usage', flat=True).filter(department=department)
+        used = MailTemplate.objects.values_list('usage', flat=True)
         valid = {str(x): six.text_type(y) for x, y in USAGES if not any(z in x for z in used)}
         valid.update({'': '--------'})
         return(HttpResponse(json.dumps(valid), content_type="application/json"))
