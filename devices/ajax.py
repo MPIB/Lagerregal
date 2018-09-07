@@ -410,10 +410,7 @@ class AjaxSearch(View):
                     value = int(value)
                 except:
                     break
-                if "department__in" in dictionary:
-                    dictionary["department__in"].append(value)
-                else:
-                    dictionary["department__in"] = [value]
+                dictionary["department__in"] = [value]
 
             elif key == "hostname":
                 if len(displayed_columns) < 8:
