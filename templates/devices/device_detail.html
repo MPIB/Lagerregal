@@ -62,7 +62,14 @@
                 {% endpermission %}
                 {% permission user has 'devices.change_device' of device %}
                     <li>
-                        {% deletebutton "device-delete" object.id %}
+                        <a href="#"
+                           id="deletebutton"
+                           data-toggle="popover"
+                           data-html="true"
+                           data-placement="left"
+                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "are you sure?" %}</strong></span>"
+                           data-content="<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/></form>"
+                           class="dropdown-cancel"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a>
                     </li>
                 {% endpermission %}
             </ul>
