@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 from django import forms
+import six
 
+from mail.models import USAGES
 from mail.models import MailTemplate
 from devices.forms import get_emailrecipientlist
 
@@ -11,6 +13,15 @@ class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
         self.fields["default_recipients"].choices = get_emailrecipientlist()
+        # templates that are already used
+        used = MailTemplate.objects.values_list('usage', flat=True)
+        # templates that are not used
+        valid = [(str(x), six.text_type(y)) for x, y in USAGES if not any(z in x for z in used)]
+        # if edit: append usage of edited template to valid choices
+        if kwargs["instance"]:
+            valid.append((kwargs["instance"].usage, [x[1] for x in USAGES if x[0] == kwargs["instance"].usage][0]))
+        valid.insert(0, ('', '--------'))
+        self.fields["usage"].choices = valid
 
     error_css_class = 'has-error'
     body = forms.CharField(widget=forms.Textarea())
@@ -19,20 +30,3 @@ class MailTemplateForm(forms.ModelForm):
     class Meta:
         model = MailTemplate
         fields = "__all__"
-
-
-class MailTemplateUpdateForm(MailTemplateForm):
-    def __init__(self, *args, **kwargs):
-        super(MailTemplateForm, self).__init__(*args, **kwargs)
-        if self.instance.department:
-            # a query set
-            used_db = MailTemplate.objects.values_list('usage', flat=True).filter(department=kwargs["instance"].department)
-            used = []
-            for x in used_db:
-                if x is not None:
-                    # the current templates' usage can't be excluded although it is in the used_db queryset
-                    if not self.instance.usage == x:
-                        used.append(x)
-            # all usages that are not in used
-            valid = [x for x in self.fields['usage'].choices if not any(y in x for y in used)]
-            self.fields['usage'].choices = valid

@@ -21,7 +21,6 @@ from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmall
     LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, \
     AjaxSearch, UserLendings, PuppetDetails, PuppetSoftware
 from devicetypes.ajax import GetTypeAttributes
-from mail.ajax import LoadChoices
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
@@ -244,7 +243,6 @@ urlpatterns = [
     url(r'^ajax/search', login_required(AjaxSearch.as_view()), name="ajax-search"),
     url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
     url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
-    url(r'^ajax/load_choices', login_required(LoadChoices.as_view()), name='load-choices'),
 ]
 
 urlpatterns += format_suffix_patterns([

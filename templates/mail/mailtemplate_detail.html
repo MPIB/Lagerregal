@@ -34,10 +34,6 @@
                     <td>{{ mailtemplate.body|linebreaks }}</td>
                 </tr>
                 <tr>
-                    <td>{% trans "Department" %}</td>
-                    <td>{{ mailtemplate.department }}</td>
-                </tr>
-                <tr>
                     <td>{% trans "Default recipients" %}</td>
                     <td>
                         {% for recipient in mailtemplate.default_recipients.all %}

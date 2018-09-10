@@ -11,7 +11,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 import pystache
 import six
 
-from users.models import Lageruser, Department
+from users.models import Lageruser
 
 USAGES = [
     ("new", _("New Device is created")),
@@ -28,7 +28,6 @@ class MailTemplate(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
-    department = models.ForeignKey(Department, null=True, on_delete=models.CASCADE)
     usage = models.CharField(_('Usage'), choices=USAGES, null=True, blank=True, max_length=200)
 
     def __str__(self):

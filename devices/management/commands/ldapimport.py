@@ -69,8 +69,6 @@ class Command(BaseCommand):
         page_count, users = l.paged_search_ext_s(*settings.LDAP_USER_SEARCH)
 
         for dn, userdata in users:
-            if dn is not None:
-                dn = dn.decode('utf-8')
             saveuser = False
             created = False
             changes = {}
@@ -153,7 +151,7 @@ class Command(BaseCommand):
                         print("{0} has expired".format(dn))
                     else:
                         print("{0} has been reactivated".format(dn))
-                for field, (old_value, new_value) in changes.iteritems():
+                for field, (old_value, new_value) in changes.items():
                     print('{0} changed {1} from {2} to {3}'.format(dn, field, old_value, new_value))
                 user.save()
                 if user.main_department:

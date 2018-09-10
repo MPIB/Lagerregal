@@ -6,7 +6,7 @@ from django import forms
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.db.utils import OperationalError
+from django.db.utils import OperationalError, ProgrammingError
 
 from network.models import IpAddress
 from devices.models import Device, Type, Room, Manufacturer
@@ -68,14 +68,14 @@ DEPARTMENT_OPTIONS = [
 def get_department_options():
     try:
         return DEPARTMENT_OPTIONS + list(Department.objects.all().values_list("id", "name"))
-    except OperationalError:
+    except (OperationalError, ProgrammingError):
         return []
 
 
 def get_devicegroup_options():
     try:
         return [('all', _('All Groups'))] + list(Devicegroup.objects.all().values_list("id", "name"))
-    except OperationalError:
+    except (OperationalError, ProgrammingError):
         return []
 
 

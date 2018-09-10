@@ -18,6 +18,8 @@ from devices.forms import LendForm
 def get_widget_data(user, widgetlist=[], departments=None):
     context = {}
     context["today"] = datetime.date.today()
+    if departments is None:
+        departments = []
     if "statistics" in widgetlist:
         if departments:
             devices = Device.active().filter(department__in=departments)
