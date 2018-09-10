@@ -194,6 +194,10 @@ THEMES = [
 
 FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
 
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL': ''
+}
+
 TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
 TEST_MODE = False
 DEMO_MODE = False
