@@ -132,7 +132,7 @@ def splitstr(arg1, arg2):
     return arg1.split(arg2)
 
 
-@register.inclusion_tag('deletebutton.html')
+@register.inclusion_tag('snippets/deletebutton.html')
 def deletebutton(viewname, *args):
     return {
         'url': reverse(viewname, args=args)
