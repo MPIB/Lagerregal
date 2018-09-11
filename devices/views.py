@@ -478,7 +478,7 @@ class DeviceCreate(CreateView):
             for recipient in form.cleaned_data["emailrecipients"]:
                 if recipient[0] == "g":
                     group = get_object_or_404(Group, pk=recipient[1:])
-                    recipients += group.lageruser_set.all().values_list("email")[0]
+                    recipients += group.user_set.all().values_list("email")[0]
                 else:
                     recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
             recipients = list(set(recipients))
@@ -560,7 +560,7 @@ class DeviceUpdate(UpdateView):
             for recipient in form.cleaned_data["emailrecipients"]:
                 if recipient[0] == "g":
                     group = get_object_or_404(Group, pk=recipient[1:])
-                    recipients += group.lageruser_set.all().values_list("email")[0]
+                    recipients += group.user_set.all().values_list("email")[0]
                 else:
                     recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
             recipients = list(set(recipients))
@@ -668,7 +668,7 @@ class DeviceLend(FormView):
                     for recipient in template.default_recipients.all():
                         recipient = recipient.content_object
                         if isinstance(recipient, Group):
-                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                            recipients += recipient.user_set.all().values_list("email")[0]
                         else:
                             recipients.append(recipient.email)
                     template.send(self.request, recipients, {"device": device, "user": self.request.user})
@@ -755,7 +755,7 @@ class DeviceReturn(FormView):
                     for recipient in template.default_recipients.all():
                         recipient = recipient.content_object
                         if isinstance(recipient, Group):
-                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                            recipients += recipient.user_set.all().values_list("email")[0]
                         else:
                             recipients.append(recipient.email)
                     template.send(self.request, recipients, {"device": device, "user": self.request.user})
@@ -806,7 +806,7 @@ class DeviceMail(FormView):
         for recipient in form.cleaned_data["emailrecipients"]:
             if recipient[0] == "g":
                 group = get_object_or_404(Group, pk=recipient[1:])
-                recipients += group.lageruser_set.all().values_list("email")[0]
+                recipients += group.user_set.all().values_list("email")[0]
             else:
                 recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
         recipients = list(set(recipients))
@@ -879,7 +879,7 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
                 for recipient in template.default_recipients.all():
                     recipient = recipient.content_object
                     if isinstance(recipient, Group):
-                        recipients += recipient.lageruser_set.all().values_list("email")[0]
+                        recipients += recipient.user_set.all().values_list("email")[0]
                     else:
                         recipients.append(recipient.email)
                 template.send(self.request, recipients, {"device": device, "user": self.request.user})
@@ -933,7 +933,7 @@ class DeviceStorage(SingleObjectMixin, FormView):
                 for recipient in template.default_recipients.all():
                     recipient = recipient.content_object
                     if isinstance(recipient, Group):
-                        recipients += recipient.lageruser_set.all().values_list("email")[0]
+                        recipients += recipient.user_set.all().values_list("email")[0]
                     else:
                         recipients.append(recipient.email)
                 template.send(self.request, recipients, {"device": device, "user": self.request.user})
