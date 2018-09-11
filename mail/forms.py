@@ -13,15 +13,19 @@ class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MailTemplateForm, self).__init__(*args, **kwargs)
         self.fields["default_recipients"].choices = get_emailrecipientlist()
-        # templates that are already used
-        used = MailTemplate.objects.values_list('usage', flat=True)
-        # templates that are not used
-        valid = [(str(x), six.text_type(y)) for x, y in USAGES if not any(z in x for z in used)]
+        # get all valid options for template usages
+        available = dict(USAGES)
+        used_keys = MailTemplate.objects.values_list('usage', flat=True)
+        valid_keys = set(available.keys()) - set(used_keys)
+        valid_choices = []
+        for key in valid_keys:
+            valid_choices.append((key, available[key]))
         # if edit: append usage of edited template to valid choices
-        if kwargs["instance"]:
-            valid.append((kwargs["instance"].usage, [x[1] for x in USAGES if x[0] == kwargs["instance"].usage][0]))
-        valid.insert(0, ('', '--------'))
-        self.fields["usage"].choices = valid
+        edit_usage = kwargs['instance']
+        if edit_usage is not None:
+            valid_choices.append((edit_usage.usage, available[edit_usage.usage]))
+        valid_choices.insert(0, ('', '--------'))
+        self.fields["usage"].choices = valid_choices
 
     error_css_class = 'has-error'
     body = forms.CharField(widget=forms.Textarea())
