@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django import forms
-import six
 
 from mail.models import USAGES
 from mail.models import MailTemplate
