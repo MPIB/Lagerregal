@@ -22,7 +22,7 @@ class MailTemplateForm(forms.ModelForm):
             valid_choices.append((key, available[key]))
         # if edit: append usage of edited template to valid choices
         edit_usage = kwargs['instance']
-        if edit_usage is not None:
+        if edit_usage is not None and edit_usage.usage is not None:
             valid_choices.append((edit_usage.usage, available[edit_usage.usage]))
         valid_choices.insert(0, ('', '--------'))
         self.fields["usage"].choices = valid_choices
