@@ -19,7 +19,8 @@ def get_widget_data(user, widgetlist=[], departments=None):
     context = {}
     context["today"] = datetime.date.today()
     if departments is None:
-        departments = []
+        # so we can run Queryset.difference() later
+        departments = Department.objects.none()
     if "statistics" in widgetlist:
         if departments:
             devices = Device.active().filter(department__in=departments)
@@ -39,9 +40,12 @@ def get_widget_data(user, widgetlist=[], departments=None):
             ) / context["ipaddress_all"]) * 100)
             context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
     if "edithistory" in widgetlist:
-        context['revisions'] = Revision.objects.select_related("user").prefetch_related("version_set",
-                                                                                        "version_set__content_type"
-                                                                            ).filter(user__departments__in=departments).order_by("-date_created")[:20]
+        # using exclude(...=other_deps) is much faster than filter(...=departments).distinct()
+        other_deps = Departments.objects.all().difference(departments)
+        context['revisions'] = Revision.objects.select_related('user') \
+                                       .prefetch_related('version_set', 'version_set__content_type') \
+                                       .exclude(user__departments__in=other_deps) \
+                                       .order_by("-date_created")[:20]
     if "newestdevices" in widgetlist:
         if departments:
             devices = Device.objects.filter(department__in=departments)
