@@ -1,4 +1,4 @@
-FROM python:3-slim
+FROM python:3.6-slim
 
 LABEL description="Demo container with ephemeral database for Lagerregal"
 EXPOSE 8000/tcp
