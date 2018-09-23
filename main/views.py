@@ -42,7 +42,7 @@ def get_widget_data(user, widgetlist=[], departments=None):
             context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
     if "edithistory" in widgetlist:
         # using exclude(...=other_deps) is much faster than filter(...=departments).distinct()
-        other_deps = Departments.objects.all().difference(departments)
+        other_deps = Department.objects.all().difference(departments)
         context['revisions'] = Revision.objects.select_related('user') \
                                        .prefetch_related('version_set', 'version_set__content_type') \
                                        .exclude(user__departments__in=other_deps) \
