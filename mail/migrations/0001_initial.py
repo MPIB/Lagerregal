@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('subject', models.CharField(max_length=500, verbose_name='Subject')),
                 ('body', models.CharField(max_length=10000, verbose_name='Body')),
                 ('sent_at', models.DateTimeField(auto_now_add=True)),
-                ('device', models.ForeignKey(to='devices.Device', null=True)),
+                ('device', models.ForeignKey(to='devices.Device', null=True, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -34,7 +34,7 @@ class Migration(migrations.Migration):
                 ('subject', models.CharField(max_length=500, verbose_name='Subject')),
                 ('body', models.CharField(max_length=10000, verbose_name='Body')),
                 ('usage', models.CharField(blank=True, max_length=200, null=True, verbose_name='Usage', choices=[(b'room', 'Room is changed'), (b'owner', 'person currently lending is changed'), (b'new', 'New Device is created'), (b'reminder', 'Reminder that device is still owned'), (b'trashed', 'Device is trashed'), (b'overdue', 'Reminder that device is overdue')])),
-                ('department', models.ForeignKey(to='users.Department', null=True)),
+                ('department', models.ForeignKey(to='users.Department', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Mailtemplate',
@@ -47,14 +47,14 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('object_id', models.PositiveIntegerField()),
-                ('content_type', models.ForeignKey(to='contenttypes.ContentType')),
-                ('mailtemplate', models.ForeignKey(related_name='default_recipients', to='mail.MailTemplate')),
+                ('content_type', models.ForeignKey(to='contenttypes.ContentType', on_delete=models.CASCADE)),
+                ('mailtemplate', models.ForeignKey(related_name='default_recipients', to='mail.MailTemplate', on_delete=models.CASCADE)),
             ],
         ),
         migrations.AddField(
             model_name='mailhistory',
             name='mailtemplate',
-            field=models.ForeignKey(to='mail.MailTemplate'),
+            field=models.ForeignKey(to='mail.MailTemplate', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='mailhistory',

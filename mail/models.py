@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -11,7 +11,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 import pystache
 import six
 
-from users.models import Lageruser, Department
+from users.models import Lageruser
 
 USAGES = [
     ("new", _("New Device is created")),
@@ -28,7 +28,6 @@ class MailTemplate(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
-    department = models.ForeignKey(Department, null=True)
     usage = models.CharField(_('Usage'), choices=USAGES, null=True, blank=True, max_length=200)
 
     def __str__(self):
@@ -104,8 +103,8 @@ class MailTemplate(models.Model):
 
 @six.python_2_unicode_compatible
 class MailTemplateRecipient(models.Model):
-    mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients')
-    content_type = models.ForeignKey(ContentType)
+    mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients', on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -114,12 +113,12 @@ class MailTemplateRecipient(models.Model):
 
 
 class MailHistory(models.Model):
-    mailtemplate = models.ForeignKey(MailTemplate)
+    mailtemplate = models.ForeignKey(MailTemplate, on_delete=models.CASCADE)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
     sent_by = models.ForeignKey(Lageruser, null=True, on_delete=models.SET_NULL)
     sent_at = models.DateTimeField(auto_now_add=True)
-    device = models.ForeignKey("devices.Device", null=True)
+    device = models.ForeignKey("devices.Device", null=True, on_delete=models.CASCADE)
 
     def get_absolute_url(self):
         return reverse('mailhistory-detail', kwargs={'pk': self.pk})

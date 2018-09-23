@@ -4,11 +4,6 @@
 {% load staticfiles %}
 {% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
 
-{% block extracss %}
-    <link rel="stylesheet" type="text/css" href="{% static "css/tagit.ui-zendesk.css" %}">
-    <link href="{% static "css/jquery.tagit.css" %}" rel="stylesheet" type="text/css">
-{% endblock %}
-
 {% block header %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
 {% block content %}
     <div class="row">
@@ -74,10 +69,6 @@
 
     {% include "snippets/modals/mailsendconfirm.html" with modalname="mailSendConfirm" %}
 
-{% endblock %}
-
-{% block htmlend %}
-    <script src="{% static "js/tag-it.min.js" %}" type="text/javascript" charset="utf-8"></script>
 {% endblock %}
 
 {% block scriptend %}

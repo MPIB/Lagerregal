@@ -106,6 +106,10 @@
         <div class="col-xs-12 col-md-4">
             <table class="table table-bordered table-striped">
                 <tbody>
+                  <tr>
+                      <td>{% trans "Lagerregal ID" %}</td>
+                      <td>{{ device.pk }}</td>
+                  </tr>
                 <tr>
                     <td>{% trans "Inventorynumber" %}</td>
                     <td>{{ device.inventorynumber }}</td>
@@ -223,9 +227,11 @@
                 {% for picture in device.pictures.all %}
                     <div class="item {% if forloop.first %}active{% endif %}">
                       <img src="{{ picture.image.url }}" alt="{{ picture.caption }}">
+                      {% if picture.caption %}
                       <div class="carousel-caption">
                         {{ picture.caption }}
                       </div>
+                      {% endif %}
                     </div>
 
                 {% endfor %}

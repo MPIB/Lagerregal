@@ -2,13 +2,13 @@
 from __future__ import unicode_literals
 
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 
 from mail.models import MailTemplate, MailTemplateRecipient
-from mail.forms import MailTemplateUpdateForm, MailTemplateForm
+from mail.forms import MailTemplateForm
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 
@@ -18,7 +18,7 @@ class MailList(PaginationMixin, ListView):
     context_object_name = 'mail_list'
 
     def get_queryset(self):
-        return MailTemplate.objects.filter(department__in=self.request.user.departments.all())
+        return MailTemplate.objects.all()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -57,7 +57,6 @@ class MailCreate(CreateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(MailCreate, self).get_context_data(**kwargs)
-        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['type'] = "mail"
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
@@ -79,7 +78,7 @@ class MailCreate(CreateView):
 
 
 class MailUpdate(UpdateView):
-    form_class = MailTemplateUpdateForm
+    form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
 
@@ -92,7 +91,6 @@ class MailUpdate(UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(MailUpdate, self).get_context_data(**kwargs)
-        context["form"].fields["department"].queryset = self.request.user.departments.all()
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
             (reverse("mail-detail", kwargs={"pk": self.object.pk}), self.object),

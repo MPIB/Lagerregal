@@ -52,7 +52,7 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -91,7 +91,6 @@ TEMPLATES = [
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
-                'django.template.loaders.eggs.Loader',
             ],
             'builtins': ['permission.templatetags.permissionif']
         },
@@ -197,3 +196,4 @@ FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
 
 TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
 TEST_MODE = False
+DEMO_MODE = False

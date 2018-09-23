@@ -10,7 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MaxValueValidator
 from django.conf import settings
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.dispatch import receiver
 
 import pytz
@@ -77,6 +77,14 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
         logger = logging.getLogger('django_auth_ldap')
         logger.addHandler(logging.StreamHandler())
         logger.setLevel(logging.DEBUG)
+
+    if "accountExpires" in ldap_user.attrs:
+        expiration_date = utils.convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
+        user.expiration_date = expiration_date
+
+        if user.expiration_date and user.expiration_date < date.today():
+            user.is_active = False
+
     AUTH_LDAP_DEPARTMENT_REGEX = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
     if AUTH_LDAP_DEPARTMENT_REGEX is not None and user.main_department is None:
         AUTH_LDAP_DEPARTMENT_FIELD = getattr(settings, "AUTH_LDAP_DEPARTMENT_REGEX", None)
@@ -91,20 +99,13 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
                     department = Department(name=department_name)
                     department.save()
                 # departments.all() needs an id
-                # so we save a newly created user object first 
+                # so we save a newly created user object first
                 if user._state.adding:
                     user.save()
                 if department not in user.departments.all():
                     du = DepartmentUser(user=user, department=department, role="m")
                     du.save()
                 user.main_department = department
-
-    if "accountExpires" in ldap_user.attrs:
-        expiration_date = utils.convert_ad_accountexpires(int(ldap_user.attrs['accountExpires'][0]))
-        user.expiration_date = expiration_date
-
-        if user.expiration_date and user.expiration_date < date.today():
-            user.is_active = False
 
     user.save()
 
@@ -126,7 +127,7 @@ class Department(models.Model):
 
 
 class DepartmentUser(models.Model):
-    user = models.ForeignKey(Lageruser)
-    department = models.ForeignKey(Department)
+    user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
     role = models.CharField(choices=(("a", _("Admin")), ("m", _("Member"))), default="a", max_length=1)
     member_since = models.DateTimeField(auto_now_add=True)

@@ -20,7 +20,6 @@ from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmall
     LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, \
     AjaxSearch, UserLendings, PuppetDetails, PuppetSoftware
 from devicetypes.ajax import GetTypeAttributes
-from mail.ajax import LoadChoices
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
@@ -218,7 +217,7 @@ urlpatterns = [
     url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)/(?P<page>[0-9]*)$', permission_required("devices.change_device")(HistoryList.as_view()), name="history-list"),
     url(r'^history/version/(?P<pk>[0-9]*)$', permission_required("devices.change_device")(HistoryDetail.as_view()), name="history-detail"),
 
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
 
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
@@ -242,7 +241,6 @@ urlpatterns = [
     url(r'^ajax/search', login_required(AjaxSearch.as_view()), name="ajax-search"),
     url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
     url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
-    url(r'^ajax/load_choices', login_required(LoadChoices.as_view()), name='load-choices'),
 ]
 
 urlpatterns += format_suffix_patterns([

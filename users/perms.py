@@ -62,7 +62,7 @@ class DepartmentPermissionLogic(PermissionLogic):
                 settings.PERMISSION_DEFAULT_CPL_DELETE_PERMISSION
 
     def has_perm(self, user_obj, perm, obj=None):
-        if not user_obj.is_authenticated():
+        if not user_obj.is_authenticated:
             return False
 
         if obj is None:

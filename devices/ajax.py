@@ -16,7 +16,7 @@ except ImportError:
 
 import six
 from django.shortcuts import get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.forms.models import modelform_factory
 from django.template.loader import render_to_string
 from django.views.generic.base import View
@@ -410,10 +410,7 @@ class AjaxSearch(View):
                     value = int(value)
                 except:
                     break
-                if "department__in" in dictionary:
-                    dictionary["department__in"].append(value)
-                else:
-                    dictionary["department__in"] = [value]
+                dictionary["department__in"] = [value]
 
             elif key == "hostname":
                 if len(displayed_columns) < 8:

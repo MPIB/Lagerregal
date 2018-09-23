@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('index', models.IntegerField()),
                 ('widgetname', models.CharField(max_length=200, choices=[(b'shorttermdevices', 'Devices for short term lending'), (b'statistics', 'Statistics'), (b'groups', 'Groups'), (b'newestdevices', 'Newest devices'), (b'edithistory', 'Edit history'), (b'returnsoon', 'Devices, that are due soon'), (b'bookmarks', 'Bookmarked Devices'), (b'recentlendings', 'Recent lendings'), (b'sections', 'Sections'), (b'overdue', 'Overdue devices')])),
                 ('minimized', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
     ]
