@@ -13,6 +13,7 @@ from locations.models import Section
 from main.models import DashboardWidget, WIDGETS, get_progresscolor
 from Lagerregal.utils import PaginationMixin
 from devices.forms import LendForm
+from users.models import Department
 
 
 def get_widget_data(user, widgetlist=[], departments=None):
