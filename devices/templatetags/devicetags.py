@@ -4,7 +4,7 @@ import os
 import re
 
 from django.template import Library
-from django.utils.safestring import mark_safe
+from django.utils.html import mark_safe, format_html
 from django.forms import CheckboxInput
 
 import six
@@ -28,11 +28,11 @@ def get_verbose_name_lowercase(object):
 def history_compare(old, new):
     if old != new:
         if old == "" and new != "":
-            return "+ <span class='diff add'>{0}</span>".format(new)
+            return format_html("+ <span class='diff add'>{0}</span>", new)
         elif old != "" and new == "":
-            return "<span class='diff remove'>-</span>".format(new)
+            return format_html("- <span class='diff remove'>{0}</span>", new)
         else:
-            return "<span class='diff'>{0}</span>".format(new)
+            return format_html("<span class='diff'>{0}</span>", new)
     else:
         return new
 
