@@ -223,6 +223,10 @@ class Lending(models.Model):
     device = models.ForeignKey(Device, null=True, blank=True, on_delete=models.CASCADE)
     smalldevice = models.CharField(_("Small Device"), max_length=200, null=True, blank=True)
 
+    class Meta:
+        verbose_name = _('Lending')
+        verbose_name_plural = _('Lendings')
+
 
 @six.python_2_unicode_compatible
 class Template(models.Model):
