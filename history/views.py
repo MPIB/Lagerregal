@@ -113,7 +113,7 @@ class HistoryDetail(UpdateView):
 
         return context
 
-    def post(self, request, **kwargs):
+    def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data(**kwargs)
         version = context["this_version"]
@@ -129,7 +129,6 @@ class HistoryDetail(UpdateView):
         if version.field_dict.get("devicetype") is not None:
             TypeAttributeValue.objects.filter(device=version.object_id).delete()
         reversion.set_comment("Reverted to version from {0}".format(version.revision.date_created))
-        reversion.set_ignore_duplicates(True)
 
         messages.success(self.request,
                         _('Successfully reverted Device to revision {0}').format(version.revision.id))
