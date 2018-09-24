@@ -677,10 +677,10 @@ class DeviceLend(FormView):
                 else:
                     messages.success(self.request, _('Mails successfully sent'))
             if form.cleaned_data["room"]:
-                reversion.set_comment(_("Device lent to {0} and moved to room {1}")\
+                reversion.set_comment(_("Device lent to {0} and moved to room {1}")
                                       .format(form.cleaned_data['owner'], device.room))
             else:
-                reversion.set_comment(_("Device lent to {0}")\
+                reversion.set_comment(_("Device lent to {0}")
                                       .format(form.cleaned_data['owner']))
             lending.device = form.cleaned_data["device"]
         else:
