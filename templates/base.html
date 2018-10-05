@@ -138,7 +138,7 @@
                     <li class="visible-xs visible-sm visible-md"><a href="{% url 'search' %}">{% trans "Search" %}</a></li>
                 {% endif %}
                 <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle {% if user.avatar %}navbar-user"{% endif %}>
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle{% if user.avatar %} navbar-user{% endif %}">
                         {% if user.avatar %}
                             <img class="navbar-avatar img-rounded" src="{{ user.avatar.url }}">
                         {% endif %}
