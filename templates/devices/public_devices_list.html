@@ -37,7 +37,7 @@
                 <td>{{ device.inventorynumber}}</td>
                 <td>{{ device.devicetype__name|default:"--" }}</td>
                 <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>
-                <td>{{ device.group__name|default:"--" }}</td>
+                <td>{{ device.devicegroup__name|default:"--" }}</td>
                 <td>{% if device.currentlending__owner__username == None %}
                         <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
                      {% else %}<i class="fa fa-exclamation-circle text-danger"

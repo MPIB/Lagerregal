@@ -76,7 +76,7 @@
                     <td>{{ lending.device__inventorynumber }}</td>
                     <td>{{ lending.device__devicetype__name }}</td>
                     <td>{{ lending.device__room__name }} ({{ lending.device__room__building__name }})</td>
-                    <td>{{ lending.device__group__name }}</td>
+                    <td>{{ lending.device__devicegroup__name }}</td>
                     <td>
                     {% if lending.owner__id %}
                             <a href="{% url "userprofile" lending.owner__id %}#devices">{{ lending.owner__username }}</a>
@@ -93,7 +93,7 @@
                     <td>{{ device.inventorynumber }}</td>
                     <td>{{ device.devicetype__name }}</td>
                     <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
-                    <td>{{ device.group__name }}</td>
+                    <td>{{ device.devicegroup__name }}</td>
                     <td>{% if device.currentlending__owner__username == None %}
                             <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
                          {% else %}<i class="fa fa-exclamation-circle text-danger"

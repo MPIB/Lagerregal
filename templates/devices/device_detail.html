@@ -182,7 +182,7 @@
                 {% endfor %}
                 <tr>
                     <td>{% trans "Devicegroup" %}</td>
-                    <td>{% if device.group %}<a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}
+                    <td>{% if device.devicegroup %}<a href="{% url 'devicegroup-detail' device.devicegroup.pk %}">{{ device.devicegroup }}
                         </a>{% else %}-{% endif %}</td>
                 </tr>
                 <tr>

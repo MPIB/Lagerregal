@@ -51,8 +51,8 @@ VIEWSORTING_DEVICES = (
     ('-devicetype__name', _('Devicetype descending')),
     ('room__name', _('Room ascending')),
     ('-room__name', _('Room descending')),
-    ('group__name', _('Devicegroup ascending')),
-    ('-group__name', _('Devicegroup descending')),
+    ('devicegroup__name', _('Devicegroup ascending')),
+    ('-devicegroup__name', _('Devicegroup descending')),
     ('currentlending', _('Availability')),
 )
 

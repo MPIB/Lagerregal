@@ -112,7 +112,7 @@ class Device(models.Model):
     description = models.CharField(_('Description'), max_length=10000, blank=True)
     devicetype = models.ForeignKey(Type, blank=True, null=True, on_delete=models.SET_NULL)
     room = models.ForeignKey(Room, blank=True, null=True, on_delete=models.SET_NULL)
-    group = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
+    devicegroup = models.ForeignKey(Devicegroup, blank=True, null=True, related_name="devices", on_delete=models.SET_NULL)
     webinterface = models.CharField(_('Webinterface'), max_length=60, blank=True)
 
     templending = models.BooleanField(default=False, verbose_name=_("For short term lending"))
