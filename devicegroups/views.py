@@ -96,7 +96,7 @@ class DevicegroupDetail(DetailView):
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
             (reverse("devicegroup-detail", kwargs={"pk": self.object.pk}), self.object)]
-        context['device_list'] = Device.objects.filter(group=context["devicegroup"], archived=None)
+        context['device_list'] = Device.objects.filter(devicegroup=context["devicegroup"], archived=None)
 
         return context
 

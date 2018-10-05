@@ -98,7 +98,7 @@ class AddDeviceField(View):
             form = modelform_factory(Type, exclude=(), form=AddForm)(dform)
         elif classname == "room":
             form = modelform_factory(Room, exclude=(), form=AddForm)(dform)
-        elif classname == "group":
+        elif classname == "devicegroup":
             form = modelform_factory(Devicegroup, exclude=(), form=AddForm)(dform)
         else:
             return HttpResponse("")
@@ -120,7 +120,7 @@ class AddDeviceField(View):
                     newitem.building = form.cleaned_data["building"]
                     newitem.section = form.cleaned_data["section"]
                     newitem.save()
-                elif classname == "group":
+                elif classname == "devicegroup":
                     newitem = Devicegroup()
                     newitem.name = form.cleaned_data["name"]
                     newitem.save()
@@ -157,7 +157,7 @@ class PreviewMail(View):
             "currentlending": request.POST.get("device[currentlending]", ""),
             "description": request.POST.get("device[description]", ""),
             "devicetype": request.POST.get("device[devicetype]", ""),
-            "group": request.POST.get("device[group]", ""),
+            "devicegroup": request.POST.get("device[devicegroup]", ""),
             "hostname": request.POST.get("device[hostname]", ""),
             "inventorynumber": request.POST.get("device[inventorynumber]", ""),
             "manufacturer": request.POST.get("device[manufacturer]", ""),

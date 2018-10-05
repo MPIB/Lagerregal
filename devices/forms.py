@@ -312,7 +312,7 @@ class DeviceForm(forms.ModelForm):
 class AddForm(forms.ModelForm):
     error_css_class = 'has-error'
     classname = forms.ChoiceField(
-        choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room"), ("group", "group")],
+        choices=[("manufacturer", "manufacturer"), ("devicetype", "devicetype"), ("room", "room"), ("devicegroup", "devicegroup")],
         widget=forms.HiddenInput())
 
     def clean(self):
@@ -323,7 +323,7 @@ class AddForm(forms.ModelForm):
             count = Type.objects.filter(name=cleaned_data["name"]).count()
         elif cleaned_data["classname"] == "room":
             count = Room.objects.filter(name=cleaned_data["name"]).count()
-        elif cleaned_data["classname"] == "group":
+        elif cleaned_data["classname"] == "devicegroup":
             count = Devicegroup.objects.filter(name=cleaned_data["name"]).count()
         if count != 0:
             raise forms.ValidationError("Object with that Name already exists.")
