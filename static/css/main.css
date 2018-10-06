@@ -143,11 +143,6 @@ table tr th, table tr td {
     vertical-align:middle;
 }
 
-.navbar-user {
-    padding-top:8px !important;
-    padding-bottom:6px !important;
-}
-
 .affix {
     width:100%;
     top:50px;
