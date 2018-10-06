@@ -28,6 +28,8 @@
                             <a href="{%  url "history-detail" version.pk %}">
                             {% if version.content_type.model == "ipaddress" %}
                                 {{ version.field_dict.address }}
+                            {% elif version.content_type.model == "lending" %}
+                                {{ version.object.device }}
                             {% else %}
                                 {{ version.field_dict.name }}
                             {% endif %}
@@ -42,12 +44,14 @@
                                     <a href="{%  url "history-detail" version.pk %}">
                                     {% if version.content_type.model == "ipaddress" %}
                                         {{ version.field_dict.address }}
+                                    {% elif version.content_type.model == "lending" %}
+                                        {{ version.object.device }}
                                     {% else %}
                                         {{ version.field_dict.name }}
                                     {% endif %}
-                                </a>
+                                    </a>
+                                    </li>
                                 {% endfor %}
-                                </li>
                             </ul>
                         </div>
                     {% endif %}

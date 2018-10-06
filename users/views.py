@@ -50,9 +50,9 @@ class UserList(PaginationMixin, ListView):
             self.departmentfilter = self.kwargs.get("department", "all")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
-            users = users.filter(departments__id=self.departmentfilter)
+            users = users.filter(departments__id=self.departmentfilter).distinct()
         elif self.departmentfilter == "my":
-            users = users.filter(departments__in=self.request.user.departments.all())
+            users = users.filter(departments__in=self.request.user.departments.all()).distinct()
 
         # filter by given filter string
         if self.filterstring != "":
