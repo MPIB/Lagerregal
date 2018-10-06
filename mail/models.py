@@ -14,12 +14,13 @@ import six
 from users.models import Lageruser
 
 USAGES = [
+    ("lent", _("Device has been lent")),
     ("new", _("New Device is created")),
-    ("room", _("Room has been changed")),
-    ("owner", _("Lending owner has been changed")),
     ("reminder", _("Reminder that device is still owned")),
-    ("overdue", _("Reminder that device is overdue")),
     ("returned", _("Device has been returned by user")),
+    ("room", _("Room has been changed")),
+    ("overdue", _("Reminder that device is overdue")),
+    ("owner", _("Lending owner has been changed")),
     ("trashed", _("Device has been trashed")),
 ]
 
