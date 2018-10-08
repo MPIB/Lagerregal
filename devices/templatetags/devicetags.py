@@ -135,6 +135,11 @@ def deletebutton(viewname, *args):
 
 
 @register.filter
+def splitstr(arg1, arg2):
+    return arg1.split(arg2)
+
+
+@register.filter
 def addstr(arg1, arg2):
     return str(arg1) + str(arg2)
 
@@ -144,20 +149,3 @@ def replace(object, old_new):
     oldstr = old_new.split(',')[0]
     newstr = old_new.split(',')[1]
     return(object.replace(oldstr, newstr))
-
-
-@register.tag
-def render_string(arg1):
-    return Template(arg1).render(Context({"device.name": "Blubb"}))
-#     if len(bits) != 2:
-#         raise TemplateSyntaxError("...")
-#     return RenderStringNode(bits[1])
-#
-#
-# class RenderStringNode(Node):
-#     def __init__(self, varname):
-#         self.varname = varname
-#
-#     def render(self, context):
-#         var = context.get(self.varname, "")
-#         return Template(var).render(context)
