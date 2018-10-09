@@ -561,20 +561,18 @@
 {% endblock %}
 
 {% block scriptend %}
-    $("#id_ipaddresses").select2({
-    tokenSeparators: [",", " "]}).
+    $("#id_ipaddresses").
     on("change", function(e) {
-    if (e.val.length != 0) {
+    if ($(this).val()) {
     $("#submitipaddress").removeClass("disabled")
     } else {
     $("#submitipaddress").addClass("disabled")
     }
     });
 
-    $("#id_tags").select2({
-    tokenSeparators: [",", " "]}).
+    $("#id_tags").
     on("change", function(e) {
-    if (e.val.length != 0) {
+    if ($(this).val()) {
     $("#submittags").removeClass("disabled")
     } else {
     $("#submittags").addClass("disabled")
@@ -586,18 +584,17 @@
     });
     $(document).ready(function() {
 
-    $("select").select2()
     $("#id_mailtemplate").change(function() {
     if ($(this).val() === "") {
     } else {
     $.ajax({
     type: "POST",
     url: "{% url "load-mailtemplate" %}",
-    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").select2("val")}
+    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
     }).done(function(data) {
     $("#id_emailsubject").val(data.subject)
     $("#id_emailbody").val(data.body)
-    $('#id_emailrecipients').select2('val', data.recipients)
+    $('#id_emailrecipients').val(data.recipients)
     })
     }
     });

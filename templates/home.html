@@ -48,7 +48,6 @@
 {% block scriptend %}
     {% if user.is_staff %}
         $(function() {
-        $("select").select2()
         $( "#id_duedate" ).datepicker();
         $( ".dashboard" ).sortable({
         connectWith: ".dashboard",

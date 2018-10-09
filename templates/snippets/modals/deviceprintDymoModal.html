@@ -59,7 +59,7 @@
                     option.appendChild(document.createTextNode(printerName));
                     printersSelect.append(option);
                 }
-                printersSelect.select2('val', printersSelect.children('option:eq(0)').val());
+                printersSelect.val(printersSelect.children('option:eq(0)').val());
             }
         }
     </script>

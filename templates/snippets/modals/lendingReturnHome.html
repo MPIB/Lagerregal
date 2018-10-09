@@ -24,7 +24,7 @@
     <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
     <script>
         var lendingTable = 0;
-        $("#return_userlist").on("select2-selecting", function (e) {
+        $("#return_userlist").on("select2:selecting", function (e) {
             $("#listwrapper").html('<table id="lendinglist"class="table table-bordered table-striped"></table>');
             $.ajax({
                 type: "POST",
