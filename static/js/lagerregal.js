@@ -63,5 +63,39 @@
         try {
             $('[data-toggle="popover"]').popover();
         } catch {}
+
+        var setFilters = function() {
+            var ids = {
+                department: "#id_departmentfilter",
+                sorting: "#id_viewsorting",
+                group: "#id_groupfilter",
+                filter: "#id_filterstring",
+            };
+            var defaults = {
+                department: "all",
+            };
+
+            var path = '';
+            var index = Infinity;
+            ['department', 'sorting', 'group', 'filters'].forEach(function(key) {
+                var element = $(ids[key]);
+                var value = element.val() || defaults[key];
+                if (element) {
+                    path += "/" + key + "/" + value;
+                }
+
+                var i = window.location.pathname.indexOf(key)
+                if (i !== -1 && i < index) {
+                    index = i;
+                }
+            });
+
+            window.location.pathname = window.location.pathname.substr(0, index - 1) + path;
+        };
+
+        $('#id_departmentfilter').change(setFilters);
+        $('#id_viewsorting').change(setFilters);
+        $('#id_groupfilter').change(setFilters);
+        $('#id_filterstring').change(setFilters);
     });
 })();
