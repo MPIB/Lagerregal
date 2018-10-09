@@ -41,14 +41,14 @@
 
 {% block scriptend %}
     $('#id_viewsorting').change(function() {
-    if ($("#id_filterstring").val() != "") {
-    window.location = "/devicetags/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
-    } else {
-    window.location = "/devicetags/sorting/" + $(this).val()
-    }
+        if ($("#id_filterstring").val() != "") {
+            window.location = "/devicetags/sorting/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+        } else {
+            window.location = "/devicetags/sorting/" + $(this).val()
+        }
     });
     $('#id_filterstring').change(function() {
-    window.location = "/devicetags/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
+        window.location = "/devicetags/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
     });
     {% include "snippets/pagination_js.html" with pageurl="devicetag-list" %}
 {% endblock %}
