@@ -36,18 +36,42 @@
                 {% permission user has 'devices.change_device' of device or user has 'devices.delete_device' of device %}
                     <li class="divider"></li>{% endpermission %}
                 {% permission user has 'devices.change_device' of device %}
-                    <li><a href="#" id="storagebutton" data-toggle="popover" class="dropdown-cancel"><i
-                            class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
-                    <li><a href="#" id="archivebutton" data-toggle="popover" class="dropdown-cancel"><i
-                            class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
-                    <li><a href="#" id="trashbutton" data-toggle="popover" class="dropdown-cancel"><i
-                            class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
+                    <li><a href="#" id="storagebutton"
+                           data-toggle="popover"
+                           data-html="true"
+                           data-placement="left"
+                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
+                           data-content="<form action='{% url "device-storage" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<div class='form-group dropdown-cancel'><label for='id_send_mail' class='col-sm-10 control-label'>Send room-changed email</label><div class='col-sm-'><input id='id_send_mail' name='send_mail' type='checkbox' class='form-control dropdown-cancel'></div></div><button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);'>{% trans "Cancel" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'style='margin-left:10px;'/></form>"
+                           class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
+                    <li><a href="#"
+                           id="archivebutton"
+                           data-toggle="popover"
+                           data-html="true"
+                           data-placement="left"
+                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
+                           data-content="<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/></form>"
+                           class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
+                    <li><a href="#"
+                           id="trashbutton"
+                           data-toggle="popover"
+                           data-html="true"
+                           data-placement="left"
+                           data-title="<span class='text-info' style='margin-right:10px'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
+                           data-content="<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/></form>"
+                           class="dropdown-cancel"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
                 {% endpermission %}
                 {% permission user has 'devices.change_device' of device %}
                     <li>
-                    <a href="#" id="deletebutton" data-toggle="popover" class="dropdown-cancel"><i class="fa fa-times"
-                                                                                                   style="margin-right:7px"></i>{% trans "Delete" %}
-                    </a></li>{% endpermission %}
+                        <a href="#"
+                           id="deletebutton"
+                           data-toggle="popover"
+                           data-html="true"
+                           data-placement="left"
+                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "are you sure?" %}</strong></span>"
+                           data-content="<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/></form>"
+                           class="dropdown-cancel"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+                    </li>
+                {% endpermission %}
             </ul>
         </div>
 
@@ -455,6 +479,7 @@
                                 <tr>
                                     <th scope="row"><a href="{% url 'history-detail' action.pk %}"
                                                        title="{{ action.revision.date_created|date:'c' }}"
+                                                       data-timeago
                                                        class="edit-date">{{ action.revision.date_created }}</a></th>
                                     <td>
                                         <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
@@ -488,6 +513,7 @@
                                     <td>{{ mail.subject }}</td>
                                     <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{ mail.sent_by }}</a></td>
                                     <td><span title="{{ mail.sent_at|date:'c' }}"
+                                              data-timeago
                                               class="mail-date">{{ mail.sent_at }}</span></td>
                                 </tr>
                             {% endfor %}
@@ -555,58 +581,10 @@
     }
     });
 
-
-    {% permission user has 'devices.delete_device' of device %}
-        $("#deletebutton").popover({
-        html: 'true',
-        placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
-        content :"<form action='{% url "device-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'style='margin-left:10px;'/>"+
-            "</form>"
-        })
-    {% endpermission %}
-    {% permission user has 'devices.change_device' of device %}
-        $("#archivebutton").popover({
-        html: 'true',
-        placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
-        content :"<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-            "</form>"
-        })
-
-        $("#storagebutton").popover({
-        html: 'true',
-        placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
-        content :"<form action='{% url "device-storage" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<div class='form-group dropdown-cancel'><label for='id_send_mail' class='col-sm-10 control-label'>Send room-changed email</label><div class='col-sm-'>"+
-            "<input id='id_send_mail' name='send_mail' type='checkbox' class='form-control dropdown-cancel'></div></div>"+
-            "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);'>{% trans "Cancel" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'style='margin-left:10px;'/>"+
-            "</form>"
-        })
-
-        $("#trashbutton").popover({
-        html: 'true',
-        placement: "left",
-        title : '<span class="text-info" style="margin-right:10px"><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href="{% url 'device-detail' object.used_in.pk %}">{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href="{% url 'device-detail' element.pk %}"> {{element}} </a>{% endfor %} .{% endif %} </strong></span>',
-        content :"<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/>"+
-            "</form>"
-        })
-    {% endpermission %}
-
     $(function() {
     $( "#id_duedate" ).datepicker();
     });
     $(document).ready(function() {
-    $(".edit-date").timeago();
-    $(".mail-date").timeago();
 
     $("select").select2()
     $("#id_mailtemplate").change(function() {

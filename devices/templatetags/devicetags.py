@@ -4,6 +4,7 @@ import os
 import re
 
 from django.template import Library
+from django.urls import reverse
 from django.utils.html import mark_safe, format_html
 from django.forms import CheckboxInput
 
@@ -129,3 +130,10 @@ def as_nested_list(factvalue):
 @register.filter
 def splitstr(arg1, arg2):
     return arg1.split(arg2)
+
+
+@register.inclusion_tag('snippets/deletebutton.html')
+def deletebutton(viewname, *args):
+    return {
+        'url': reverse(viewname, args=args)
+    }

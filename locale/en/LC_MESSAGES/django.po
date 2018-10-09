@@ -1120,12 +1120,6 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-#: templates/base.html:238
-msgid ""
-"Hi! I am Clippy, your Lagerregal assistant. Would you like some assistance "
-"totday?"
-msgstr ""
-
 #: templates/devicegroups/devicegroup_detail.html:17
 #: templates/devices/building_detail.html:25
 #: templates/devices/manufacturer_detail.html:24

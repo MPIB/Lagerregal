@@ -44,9 +44,9 @@
                                 </td>
                                 <td>
                                 {% if action.content_type.model == "device" %}
-                                <a href="{% url 'device-history' action.object_id action.pk %}" title="{{revision.date_created|date:'c'}}" class="edit-date">{{revision.date_created}}</a>
+                                <a href="{% url 'device-history' action.object_id action.pk %}" title="{{revision.date_created|date:'c'}}" data-timeago class="edit-date">{{revision.date_created}}</a>
                                 {% else %}
-                                <span  title="{{revision.date_created|date:'c'}}" class="edit-date">{{action.revision.date_created}}</span>
+                                <span  title="{{revision.date_created|date:'c'}}" data-timeago class="edit-date">{{action.revision.date_created}}</span>
                                 {% endif %}
                                 </td>
                                 {% endcomment %}
@@ -83,6 +83,7 @@
                     {% endif %}
                 </td>
                 <td><span title="{{ revision.date_created|date:'c' }}"
+                          data-timeago
                           class="edit-date">{{ action.revision.date_created }}</span></td>
                 <td><a href="{% url 'userprofile' revision.user.pk %}">{{ revision.user }}</a></td>
                 <td>{{ revision.comment|linebreaksbr|default:"" }}</td>
@@ -95,10 +96,5 @@
 {% endblock %}
 
 {% block scriptend %}
-    $(document).ready(function() {
-    $(".edit-date").timeago();
-    });
-
-
     {% include "snippets/pagination_simple_js.html" with pageurl="globalhistory" %}
 {% endblock %}

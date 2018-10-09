@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load devicetags %}
 {% load i18n %}
 {% load permissionif %}
 
@@ -10,8 +11,7 @@
 
 {% block pullright %}
     {% permission user has 'network.delete_ipaddress' of ipaddress %}
-        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
-           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+        {% deletebutton "ipaddress-delete" object.id %}
     {% endpermission %}
     {% permission user has 'network.change_ipaddress' of ipaddress %}
         <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">
@@ -69,18 +69,4 @@
     {% if "ipaddress" in LABEL_TEMPLATES %}
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.ipaddress.0 %}
     {% endif %}
-{% endblock %}
-
-{% block scriptend %}
-    {% permission user has 'network.delete_ipaddress' of ipaddress %}
-        $("#deletebutton").popover({
-        html: 'true',
-        placement: "bottom",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-        content :"<form action='{% url "ipaddress-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default'onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
-            "</form>"
-        })
-    {% endpermission %}
 {% endblock %}

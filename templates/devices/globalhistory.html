@@ -46,9 +46,11 @@
                     {% if action.content_type.model == "device" %}
                         <a href="{% url 'device-history' action.object_id action.pk %}"
                            title="{{ action.revision.date_created|date:'c' }}"
+                           data-timeago
                            class="edit-date">{{ action.revision.date_created }}</a>
                     {% else %}
                         <span title="{{ action.revision.date_created|date:'c' }}"
+                              data-timeago
                               class="edit-date">{{ action.revision.date_created }}</span>
                     {% endif %}
                 </td>
@@ -63,10 +65,5 @@
 {% endblock %}
 
 {% block scriptend %}
-    $(document).ready(function() {
-    $(".edit-date").timeago();
-    });
-
-
     {% include "snippets/pagination_simple_js.html" with pageurl="globalhistory" %}
 {% endblock %}

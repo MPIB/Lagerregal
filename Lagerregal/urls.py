@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import logout
+from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
 from devices.views import *
 from network.views import *
@@ -219,6 +220,7 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
+    url(r'^jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 

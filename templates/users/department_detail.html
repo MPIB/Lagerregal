@@ -6,8 +6,7 @@
 
 {% block pullright %}
     {% if perms.users.delete_department %}
-        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
-           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+        {% deletebutton "department-delete" object.id %}
     {% endif %}
     {% if "section" in LABEL_TEMPLATES %}
         <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
@@ -46,19 +45,4 @@
         {% endfor %}
     </table>
     </div>
-{% endblock %}
-
-{% block scriptend %}
-    {% if perms.locations.delete_section %}
-        $("#deletebutton").popover({
-        html: 'true',
-        placement: "bottom",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-        content :"<form action='{% url "department-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default'"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
-            "</form>"
-        })
-    {% endif %}
 {% endblock %}
