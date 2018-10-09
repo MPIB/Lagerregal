@@ -7,6 +7,7 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.db.utils import OperationalError, ProgrammingError
+from django.db.models import Count
 
 from django_select2.forms import Select2Widget
 from django_select2.forms import Select2MultipleWidget
@@ -271,7 +272,7 @@ class DeviceForm(forms.ModelForm):
     webinterface = forms.URLField(max_length=60, required=False)
     creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
-    devicetype = forms.ModelChoiceField(Type.objects.all(), required=False,
+    devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')).order_by('-size'), required=False,
                                         widget=Select2Widget(attrs={"style": "width:100%;"}))
     manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False,
                                           widget=Select2Widget(attrs={"style": "width:100%;"}))
