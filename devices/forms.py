@@ -256,8 +256,10 @@ class DeviceGroupFilterForm(FilterForm):
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
-    uses = forms.MultipleChoiceField(choices=Device.objects.none(), required=False)
-    emailrecipients = forms.MultipleChoiceField(required=False)
+    uses = forms.MultipleChoiceField(choices=Device.objects.none(), required=False,
+                                     widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
+    emailrecipients = forms.MultipleChoiceField(required=False,
+                                                widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
                                            widget=Select2Widget(attrs={"style": "width:100%;"}))
     emailedit = forms.BooleanField(required=False, label=_("Edit template"))

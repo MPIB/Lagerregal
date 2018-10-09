@@ -3,6 +3,8 @@ from __future__ import unicode_literals
 
 from django import forms
 
+from django_select2.forms import Select2MultipleWidget
+
 from mail.models import USAGES
 from mail.models import MailTemplate
 from devices.forms import get_emailrecipientlist
@@ -28,7 +30,8 @@ class MailTemplateForm(forms.ModelForm):
 
     error_css_class = 'has-error'
     body = forms.CharField(widget=forms.Textarea())
-    default_recipients = forms.MultipleChoiceField(required=False)
+    default_recipients = forms.MultipleChoiceField(required=False,
+                                                   widget=Select2MultipleWidget(attrs={'style':'width:100%;'}))
 
     class Meta:
         model = MailTemplate
