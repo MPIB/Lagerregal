@@ -14,19 +14,21 @@
     {% endif %}
     <form action="" method="post" class="form-horizontal" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">{% csrf_token %}
         {% for field in form.visible_fields %}
-          {% if not field.label == 'Smalldevice' %}
-            <div class="form-group {{ field.css_classes }}">
-                <label for="{{ field.html_name }}" class="col-lg-3 control-label">
-                    {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+            {% if field.name == 'device' %}
+                {{ field.as_hidden }}
+            {% elif field.name != 'smalldevice' %}
+                <div class="form-group {{ field.css_classes }}">
+                    <label for="{{ field.html_name }}" class="col-lg-3 control-label">
+                        {{ field.label }}{% if field.field.required %}*{% endif %}</label>
 
-                <div class="col-lg-9">
-                    {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
-                        {{ field|add_class:'form-control' }}{% endif %}
-                    <p class="help-block">
-                        {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+                    <div class="col-lg-9">
+                        {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
+                            {{ field|add_class:'form-control' }}{% endif %}
+                        <p class="help-block">
+                            {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+                    </div>
                 </div>
-            </div>
-          {%endif%}
+            {% endif %}
         {% endfor %}
         {% for field in form.hidden_fields %}
              <div style="display:none;">{{ field }}</div>
@@ -41,13 +43,4 @@
         {% include formhelp %}
     </div>
 {% endif %}
-{% endblock %}
-
-
-{% block scriptend %}
-
-$(document).ready(function(){
-$('#id_device, label[for="device"]').hide()
-})
-
 {% endblock %}
