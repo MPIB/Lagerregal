@@ -30,15 +30,7 @@
     </div>
 {% endblock %}
 
-{% block scriptend %}
-    {% include 'snippets/searchform_js.html' %}
-{% endblock %}
-
 {% block htmlend %}
-    <script src="{% static "js/dependencies.js" %}" type="text/javascript"></script>
-    <script src="{% static "js/underscore-1.4.3.js" %}" type="text/javascript"></script>
-    <script src="{% static "js/backbone-0.9.10.js" %}" type="text/javascript"></script>
-    <script src="{% static "js/visualsearch.js" %}" type="text/javascript"></script>
     <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
     <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
 {% endblock %}

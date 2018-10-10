@@ -18,8 +18,8 @@ from history.views import *
 from users.views import *
 from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
 from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, \
-    LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, LoadSearchoptions, \
-    AjaxSearch, UserLendings, PuppetDetails, PuppetSoftware
+    LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, \
+    UserLendings, PuppetDetails, PuppetSoftware
 from devicetypes.ajax import GetTypeAttributes
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
@@ -239,8 +239,6 @@ urlpatterns = [
     url(r'^ajax/add_device_field', login_required(AddDeviceField.as_view()), name="add-device-field"),
     url(r'^ajax/get_attributes', login_required(GetTypeAttributes.as_view()), name="get-attributes"),
     url(r'^ajax/user_lendings', login_required(UserLendings.as_view()), name="get-user-lendings"),
-    url(r'^ajax/searchoptions', login_required(LoadSearchoptions.as_view()), name="load-searchoptions"),
-    url(r'^ajax/search', login_required(AjaxSearch.as_view()), name="ajax-search"),
     url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
     url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
 ]

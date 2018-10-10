@@ -29,7 +29,7 @@ from devices.models import Device, Template, Room, Building, Manufacturer, Lendi
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
-from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
+from devices.forms import IpAddressForm, LendForm, DeviceViewForm, IpAddressPurposeForm
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
     DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
 from devicetags.forms import DeviceTagForm
@@ -1544,31 +1544,6 @@ class Search(TemplateView):
         context = super(Search, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
         return context
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        searchlist = self.request.POST["searchname"].split(" ")
-        for i, item in enumerate(searchlist):
-            if "." in item:
-                is_ip = True
-                for element in item.split("."):
-                    try:
-                        intelement = int(element)
-                        if not (0 <= intelement <= 255):
-                            is_ip = False
-                    except:
-                        is_ip = False
-                if is_ip:
-                    searchlist[i] = "ipaddress: " + item
-            elif len(item) == 7:
-                try:
-                    int(item)
-                    searchlist[i] = "id: " + item
-                except:
-                    pass
-        context["searchterm"] = " ".join(searchlist)
-
-        return render(request, self.template_name, context)
 
 
 class PublicDeviceListView(ListView):
