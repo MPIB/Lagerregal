@@ -122,11 +122,10 @@
                         </form>
                     </li>
                     <li class="visible-lg visible-md">
-                        <form method="post" action="{% url 'search' %}" class="navbar-form">{% csrf_token %}
-                            <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
+                        <form method="get" action="{% url 'search' %}" class="navbar-form">
                             <div class="form-group">
                                 <div class="input-group" style="width: 200px;">
-                                    <input id="id_searchname" name="searchname" placeholder="{% trans 'Search for device' %}"
+                                    <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}"
                                            type="text" class="form-control input-sm">
                                     <span class="input-group-btn">
                                     <button type="submit" class="btn btn-default btn-sm">
