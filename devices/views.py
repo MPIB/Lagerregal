@@ -1549,7 +1549,7 @@ class Search(ListView):
         Example:
 
             `foo "foo bar" baz:2`
-            [('name', 'foo'), ('name', 'foo bar'), ('baz', '2')]
+            [(None, 'foo'), (None, 'foo bar'), ('baz', '2')]
         """
 
         in_string = False
@@ -1570,7 +1570,7 @@ class Search(ListView):
                         key = ''
                         token = ''
                     elif token:
-                        yield 'name', token
+                        yield None, token
                         token = ''
                 elif c == ':' and not key:
                     key = token
@@ -1612,7 +1612,13 @@ class Search(ListView):
 
         result = models.Q()
         for key, values in data.items():
-            if key in string_fields:
+            if key is None:
+                for value in values:
+                    q = models.Q()
+                    for k in string_fields.values():
+                        q |= models.Q(**{k + '__icontains': value})
+                    result &= q
+            elif key in string_fields:
                 k = string_fields[key] + '__icontains'
 
                 q = models.Q()
