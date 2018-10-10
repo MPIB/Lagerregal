@@ -818,7 +818,7 @@ class DeviceMail(FormView):
         template.body = form.cleaned_data["emailbody"]
         template.send(self.request, recipients, {"device": device, "user": self.request.user})
         if template.usage == "reminder" or template.usage == "overdue":
-            device.currentlending.duedate_email = datetime.datetime.utcnow().replace(tzinfo=utc)
+            device.currentlending.duedate_email = datetime.date.today()
             device.currentlending.save()
         messages.success(self.request, _('Mail successfully sent'))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
