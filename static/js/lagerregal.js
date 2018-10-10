@@ -56,7 +56,12 @@
             }, 60000 );
         });
 
-        $('[data-timeago]').timeago();
-        $('[data-toggle="popover"]').popover();
+        // HACK: the search page overwrites jquery
+        try {
+            $('[data-timeago]').timeago();
+        } catch {}
+        try {
+            $('[data-toggle="popover"]').popover();
+        } catch {}
     });
 })();
