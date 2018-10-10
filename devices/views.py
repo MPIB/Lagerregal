@@ -22,7 +22,9 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic
 from django.conf import settings
 from django.db.models.query import QuerySet
+from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
@@ -1539,13 +1541,103 @@ class Search(ListView):
     model = Device
     template_name = 'devices/search.html'
 
+    def get_searchstring(self):
+        return self.request.GET.get('searchstring', '')
+
+    def parse_searchstring(self, searchstring):
+        """
+        Example:
+
+            `foo "foo bar" baz:2`
+            [('name', 'foo'), ('name', 'foo bar'), ('baz', '2')]
+        """
+
+        in_string = False
+        key = ''
+        token = ''
+        for c in searchstring + ' ':
+            if in_string:
+                if c == '"':
+                    in_string = False
+                else:
+                    token += c
+            else:
+                if c == '"':
+                    in_string = True
+                elif c == ' ':
+                    if key:
+                        yield key, token
+                        key = ''
+                        token = ''
+                    elif token:
+                        yield 'name', token
+                        token = ''
+                elif c == ':' and not key:
+                    key = token
+                    token = ''
+                else:
+                    token += c
+
+    def parse_boolean(self, s):
+        return s.lower() in ['', '0', 'false', 'no']
+
+    def get_q(self):
+        string_fields = {
+            'name': 'name',
+            'inventorynumber': 'inventorynumber',
+            'serialnumber': 'serialnumber',
+            'hostname': 'hostname',
+            'description': 'description',
+            'manufacturer': 'manufacturer__name',
+            'room': 'room__name',
+            'building': 'room__building__name',
+            'type': 'devicetype__name',
+            'group': 'group__name',
+            'contact': 'contact__username',
+            'department': 'department__name',
+            'tag': 'tags__name',
+            'user': 'currentlending__owner__username',
+        }
+        date_fields = {
+            'archived': 'archived',
+            'trashed': 'trashed',
+            'inventoried': 'inventoried',
+        }
+
+        data = {}
+        for key, value in self.parse_searchstring(self.get_searchstring()):
+            if key not in data:
+                data[key] = []
+            data[key].append(value)
+
+        result = models.Q()
+        for key, values in data.items():
+            if key in string_fields:
+                k = string_fields[key] + '__icontains'
+
+                q = models.Q()
+                for value in values:
+                    q |= models.Q(**{k: value})
+                result &= q
+            elif key in date_fields:
+                k = date_fields[key] + '__isnull'
+
+                q = models.Q()
+                for value in values:
+                    q |= models.Q(**{k: self.parse_boolean(value)})
+                result &= q
+            else:
+                raise SuspiciousOperation(_('Invalid search'))
+        return result
+
     def get_queryset(self):
-        return Device.objects.all()
+        return Device.objects.filter(self.get_q())
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(Search, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
+        context["searchstring"] = self.get_searchstring()
         return context
 
 
