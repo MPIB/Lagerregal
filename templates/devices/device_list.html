@@ -114,12 +114,6 @@
     $(document).ready(function() {
     $('input[name=departmentfilter]').val($("#id_departmentfilter").val());
 
-    $('#devicetable tr').click(function() {
-    var href = $(this).find("a").attr("href");
-    if(href) {
-    window.location = href;
-    }
-    });
     $('#id_viewfilter').change(function() {
     if ($("#id_departmentfilter").val() == "") {
         department = "all"

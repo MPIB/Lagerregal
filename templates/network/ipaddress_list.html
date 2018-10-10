@@ -60,12 +60,6 @@
             { type: 'ip-address', targets: 0 }
         ]
     } );
-    $('#devicetable tr').click(function() {
-    var href = $(this).find("a").attr("href");
-    if(href) {
-    window.location = href;
-    }
-    });
 
     $('#id_viewfilter').change(function() {
     if ($("#id_departmentfilter").val() == "") {
