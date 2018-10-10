@@ -2,8 +2,6 @@
 from __future__ import unicode_literals
 
 import json
-import time
-import csv
 
 try:
     import urllib.parse as urllib
@@ -24,20 +22,14 @@ from django.http import HttpResponse
 import pystache
 from django.http import QueryDict
 from django.shortcuts import render
-from django.db.models import Q
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext
-from django.utils.dateparse import parse_date
 
 from devices.models import Device, Room, Building, Manufacturer, Lending
-from users.models import Lageruser, Department
+from users.models import Lageruser
 from mail.models import MailTemplate
 from devicetypes.models import Type
 from devices.forms import AddForm
 from devicegroups.models import Devicegroup
-from devicetags.models import Devicetag
-from csv import QUOTE_ALL
 
 
 class AutocompleteDevice(View):
@@ -223,42 +215,6 @@ class LoadMailtemplate(View):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
-class LoadSearchoptions(View):
-
-    def post(self, request):
-        term = request.POST["searchTerm"]
-        if term[:4] == "not ":
-            term = term[4:]
-            invert = True
-        else:
-            invert = False
-        facet = request.POST["facet"]
-        if facet == "manufacturer":
-            items = Manufacturer.objects.filter(name__icontains=term)
-        elif facet == "devicetype":
-            items = Type.objects.filter(name__icontains=term)
-        elif facet == "room":
-            items = Room.objects.filter(name__icontains=term)
-        elif facet == "devicegroup":
-            items = Devicegroup.objects.filter(name__icontains=term)
-        elif facet == "user":
-            items = Lageruser.objects.filter(username__icontains=term)
-        elif facet == "tag":
-            items = Devicetag.objects.filter(name__icontains=term)
-        elif facet == "department":
-            items = Department.objects.filter(name__icontains=term)
-        else:
-            return HttpResponse("")
-        if invert:
-            data = [
-                {"value": "not " + str(object.pk) + "-" + six.text_type(object), "label": "not " + six.text_type(object)}
-                for object in items]
-        else:
-            data = [{"value": str(object.pk) + "-" + six.text_type(object), "label": six.text_type(object)}
-                    for object in items]
-        return HttpResponse(json.dumps(data), content_type='application/json')
-
-
 class UserLendings(View):
     def post(self, request):
         user = request.POST["user"]
@@ -275,231 +231,6 @@ class UserLendings(View):
                                                                                          "smalldevice", "duedate")]
 
         return HttpResponse(json.dumps(data), content_type='application/json')
-
-
-class AjaxSearch(View):
-    def post(self, request):
-        search = json.loads(request.POST["search"])
-        searchdict = {}
-        if request.user.departments.count() > 0:
-            searchdict["department__in"] = list(request.user.departments.all())
-        excludedict = {}
-        search_q_list = []
-        exclude_q_list = []
-        textfilter = None
-        statusfilter = None
-        displayed_columns = []
-        searchvalues = ["id", "name", "inventorynumber", "serialnumber", "devicetype__name", "room__name",
-                        "room__building__name", "currentlending__owner__username", "currentlending__owner__id"]
-        for searchitem in search:
-            key, value = list(searchitem.items())[0]
-
-            if value[:4] == "not ":
-                value = value[4:]
-                dictionary = excludedict
-                q_list = exclude_q_list
-            else:
-                dictionary = searchdict
-                q_list = search_q_list
-
-            if key == "manufacturer":
-                value = value.split("-", 1)[0]
-                try:
-                    value = int(value)
-                except:
-                    break
-                if len(displayed_columns) < 8:
-                    displayed_columns.append(("manufacturer", ugettext("Manufacturer")))
-                    searchvalues.append("manufacturer__name")
-                if "manufacturer__in" in dictionary:
-                    dictionary["manufacturer__in"].append(value)
-                else:
-                    dictionary["manufacturer__in"] = [value]
-
-            elif key == "room":
-                value = value.split("-", 1)[0]
-                try:
-                    value = int(value)
-                except:
-                    break
-                if "room__in" in dictionary:
-                    dictionary["room__in"].append(value)
-                else:
-                    dictionary["room__in"] = [value]
-
-            elif key == "devicetype":
-                value = value.split("-", 1)[0]
-                try:
-                    value = int(value)
-                except:
-                    break
-                if "devicetype__in" in dictionary:
-                    dictionary["devicetype__in"].append(value)
-                else:
-                    dictionary["devicetype__in"] = [value]
-
-            elif key == "devicegroup":
-                value = value.split("-", 1)[0]
-                try:
-                    value = int(value)
-                except:
-                    break
-                if len(displayed_columns) < 8:
-                    displayed_columns.append(("group", ugettext("Group")))
-                    searchvalues.append("group__name")
-                if "group__in" in dictionary:
-                    dictionary["group__in"].append(value)
-                else:
-                    dictionary["group__in"] = [value]
-
-            elif key == "user":
-                value = value.split("-", 1)[0]
-                try:
-                    value = int(value)
-                    dictionary["currentlending__owner__id"] = value
-                except:
-                    if value.lower() == "null":
-                        dictionary["currentlending"] = None
-                    else:
-                        q_list.append(Q(currentlending__owner__username__icontains=value) |
-                                      Q(currentlending__owner__first_name__icontains=value) |
-                                      Q(currentlending__owner__last_name__icontains=value))
-
-            elif key == "ipaddress":
-                if len(displayed_columns) < 8:
-                    displayed_columns.append(("ipaddress", ugettext("IP-Address")))
-                    searchvalues.append("ipaddress__address")
-                if value.lower() == "null":
-                    dictionary["ipaddress"] = None
-                else:
-                    dictionary["ipaddress__address__icontains"] = value
-
-            elif key == "inventoried" or key == "trashed" or key == "archived":
-                if value.startswith("before"):
-                    value = value[7:]
-                    modifier = "__lt"
-                elif value.startswith("after"):
-                    value = value[6:]
-                    modifier = "__gt"
-                else:
-                    modifier = ""
-
-                if len(displayed_columns) < 8:
-                    displayed_columns.append((key, _("{0} on").format(key.capitalize())))
-                    searchvalues.append(key)
-                if key == "archived" or key == "inventoried":
-                    statusfilter = "all"
-                dictionary[key + modifier] = parse_date(value)
-
-            elif key == "tag":
-                value = value.split("-", 1)[0]
-                try:
-                    value = int(value)
-                except:
-                    break
-                if "tags__in" in dictionary:
-                    dictionary["tags__in"].append(value)
-                else:
-                    dictionary["tags__in"] = [value]
-
-            elif key == "department":
-                value = value.split("-", 1)[0]
-                if value == "all":
-                    del dictionary["department__in"]
-                try:
-                    value = int(value)
-                except:
-                    break
-                dictionary["department__in"] = [value]
-
-            elif key == "hostname":
-                if len(displayed_columns) < 8:
-                    displayed_columns.append(("hostname", ugettext("Hostname")))
-                    searchvalues.append("hostname")
-
-                dictionary["hostname__icontains"] = value
-
-            elif key == "inventorynumber":
-                dictionary["inventorynumber__icontains"] = value
-
-            elif key == "serialnumber":
-                dictionary["serialnumber__icontains"] = value
-
-            elif key == "text":
-                textfilter = value
-
-            elif key == "status":
-                statusfilter = value
-
-            elif key == "id":
-                try:
-                    value = int(value)
-                    context = {"device_list": Device.objects.filter(id=value).values("id", "name", "inventorynumber",
-                                                                                     "devicetype__name", "room__name",
-                                                                                     "room__building__name")}
-                    return render(request, 'devices/searchresult.html', context)
-                except ValueError:
-                    context = {
-                        "wrong_id_format": True
-                    }
-                    return render(request, 'devices/searchempty.html', context)
-                except Device.DoesNotExist:
-                    return render(request, 'devices/searchempty.html')
-            elif key == "shortterm":
-                if value.lower() == "yes":
-                    dictionary["templending"] = True
-                else:
-                    dictionary["templending"] = False
-
-        devices = Device.objects.filter(*search_q_list, **searchdict)
-        devices = devices.exclude(*exclude_q_list, **excludedict)
-
-        if statusfilter == "all":
-            pass
-        elif statusfilter == "available":
-            devices = devices.filter(currentlending=None, archived=None, trashed=None)
-        elif statusfilter == "unavailable":
-            devices = devices.exclude(currentlending=None).filter(archived=None, trashed=None)
-        elif statusfilter == "archived":
-            devices = devices.exclude(archived=None)
-        elif statusfilter == "trashed":
-            devices = devices.exclude(trashed=None)
-        else:
-            devices = devices.filter(archived=None, trashed=None)
-
-        if textfilter is not None:
-            SEARCHSTRIP = getattr(settings, "SEARCHSTRIP", [])
-            if "text" in SEARCHSTRIP:
-                textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
-            try:
-                searchid = int(textfilter.replace(" ", ""))
-                devices = devices.filter(Q(name__icontains=textfilter) |
-                                         Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
-                    serialnumber__icontains=textfilter.replace(" ", "")) | Q(id=searchid))
-            except ValueError:
-                devices = devices.filter(Q(name__icontains=textfilter) |
-                                         Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
-                    serialnumber__icontains=textfilter.replace(" ", "")))
-        if "format" in request.POST:
-            if request.POST["format"] == "csv":
-                response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
-
-                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=QUOTE_ALL)
-                headers = [ugettext("ID"), ugettext("Device"), ugettext("Inventorynumber"), ugettext("Serialnumber"),
-                           ugettext("Devicetype"), ugettext("Room"), ugettext("Building")]
-                if len(displayed_columns) > 0:
-                    headers.extend([col[1] for col in displayed_columns])
-                writer.writerow(headers)
-                for device in devices.values_list(*searchvalues):
-                    writer.writerow(device)
-
-                return response
-        context = {
-            "device_list": devices.values(*searchvalues),
-            "columns": displayed_columns
-        }
-        return render(request, 'devices/searchresult.html', context)
 
 
 class PuppetDetails(View):

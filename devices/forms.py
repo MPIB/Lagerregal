@@ -113,55 +113,6 @@ class IpAddressPurposeForm(forms.Form):
     purpose = forms.CharField(required=False)
 
 
-class SearchForm(forms.Form):
-    error_css_class = 'has-error'
-    searchname = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search name", "class": "form-control input-sm"}), required=False)
-    namemodifier = forms.ChoiceField(choices=CHARMODIFIER,
-                                     widget=Select2Widget(attrs={"class": "form-control input-sm"}))
-
-    inventorynumber = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search inventorynumber", "class": "form-control input-sm"}),
-        required=False)
-    inventorynumbermodifier = forms.ChoiceField(choices=CHARMODIFIER,
-                                                widget=Select2Widget(attrs={"class": "form-control input-sm"}),
-                                                required=False)
-
-    serialnumber = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search serialnumber", "class": "form-control input-sm"}),
-        required=False)
-    serialnumbermodifier = forms.ChoiceField(choices=CHARMODIFIER,
-                                             widget=Select2Widget(attrs={"class": "form-control input-sm"}),
-                                             required=False)
-
-    macaddress = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search MAC-Address", "class": "form-control input-sm"}),
-        required=False)
-    macaddressmodifier = forms.ChoiceField(choices=CHARMODIFIER,
-                                           widget=Select2Widget(attrs={"class": "form-control input-sm"}),
-                                           required=False)
-
-    devicetype = forms.ModelMultipleChoiceField(Type.objects.all(), required=False,
-                                                widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
-    manufacturer = forms.ModelMultipleChoiceField(Manufacturer.objects.all(), required=False,
-                                                  widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
-    devicegroup = forms.ModelMultipleChoiceField(Devicegroup.objects.all(), required=False,
-                                                 widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
-    room = forms.ModelMultipleChoiceField(Room.objects.all(), required=False,
-                                          widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
-    ipaddress = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search IP-Address", "class": "form-control input-sm"}),
-        required=False)
-    overdue = forms.ChoiceField(choices=(('b', 'both'), ('y', 'Yes'), ('n', 'No'),), required=False,
-                                widget=Select2Widget(attrs={"style": "width:100%;"}))
-
-    viewfilter = forms.ChoiceField(choices=VIEWFILTER, required=False,
-                                   widget=Select2Widget(attrs={"style": "width:100%;"}))
-    lender = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "Search Lender", "class": "form-control input-sm"}),
-        required=False)
-
-
 class LendForm(forms.Form):
     error_css_class = 'has-error'
     owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=Select2Widget(attrs={"style": "width:100%;"}),

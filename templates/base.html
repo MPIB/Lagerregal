@@ -17,13 +17,11 @@
     <link href="{% static "css/font-awesome.css" %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static "css/jquery.dataTables.css" %}">
     <link rel="stylesheet" href="{% static "css/bootstrap-formhelpers.css" %}">
-    <link rel="stylesheet" href="{% static "css/ladda-themeless.min.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "css/clippy.css" %}" media="all">
 
     <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
     <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
 
-    <link href="{% static "css/visualsearch.css" %}" media="screen" rel="stylesheet" type="text/css"/>
     {% block extracss %}{% endblock %}
 </head>
 <body>
@@ -124,11 +122,10 @@
                         </form>
                     </li>
                     <li class="visible-lg visible-md">
-                        <form method="post" action="{% url 'search' %}" class="navbar-form">{% csrf_token %}
-                            <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
+                        <form method="get" action="{% url 'search' %}" class="navbar-form">
                             <div class="form-group">
                                 <div class="input-group" style="width: 200px;">
-                                    <input id="id_searchname" name="searchname" placeholder="{% trans 'Search for device' %}"
+                                    <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}"
                                            type="text" class="form-control input-sm">
                                     <span class="input-group-btn">
                                     <button type="submit" class="btn btn-default btn-sm">
@@ -228,7 +225,6 @@
 {% endif %}
 
 <script src="{% static "js/spin.min.js" %}"></script>
-<script src="{% static "js/ladda.min.js" %}"></script>
 <script src="{% static "js/clippy.min.js" %} "></script>
 
 {% block htmlend %}{% endblock %}

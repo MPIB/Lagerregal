@@ -5,7 +5,7 @@ import datetime
 import time
 import csv
 
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView, TemplateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.models import Group
@@ -22,14 +22,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.transaction import atomic
 from django.conf import settings
 from django.db.models.query import QuerySet
+from django.db import models
 from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import SuspiciousOperation
 from django.http import Http404
 
 from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
 from devicetypes.models import TypeAttribute, TypeAttributeValue
 from network.models import IpAddress
 from mail.models import MailTemplate, MailHistory
-from devices.forms import IpAddressForm, SearchForm, LendForm, DeviceViewForm, IpAddressPurposeForm
+from devices.forms import IpAddressForm, LendForm, DeviceViewForm, IpAddressPurposeForm
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
     DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
 from devicetags.forms import DeviceTagForm
@@ -1535,40 +1537,116 @@ class PictureDelete(DeleteView):
         return context
 
 
-class Search(TemplateView):
+class Search(ListView):
+    model = Device
     template_name = 'devices/search.html'
-    form_class = SearchForm
+
+    STRING_FIELDS = {
+        'name': 'name',
+        'inventorynumber': 'inventorynumber',
+        'serialnumber': 'serialnumber',
+        'hostname': 'hostname',
+        'description': 'description',
+        'manufacturer': 'manufacturer__name',
+        'room': 'room__name',
+        'building': 'room__building__name',
+        'type': 'devicetype__name',
+        'group': 'group__name',
+        'contact': 'contact__username',
+        'department': 'department__name',
+        'tag': 'tags__name',
+        'user': 'currentlending__owner__username',
+    }
+    DATE_FIELDS = {
+        'archived': 'archived',
+        'trashed': 'trashed',
+        'inventoried': 'inventoried',
+    }
+
+    def get_searchstring(self):
+        return self.request.GET.get('searchstring', '')
+
+    def parse_searchstring(self, searchstring):
+        """
+        Example:
+
+            `foo "foo bar" baz:2`
+            [(None, 'foo'), (None, 'foo bar'), ('baz', '2')]
+        """
+
+        in_string = False
+        key = ''
+        token = ''
+        for c in searchstring + ' ':
+            if in_string:
+                if c == '"':
+                    in_string = False
+                else:
+                    token += c
+            else:
+                if c == '"':
+                    in_string = True
+                elif c == ' ':
+                    if key:
+                        yield key, token
+                        key = ''
+                        token = ''
+                    elif token:
+                        yield None, token
+                        token = ''
+                elif c == ':' and not key:
+                    key = token
+                    token = ''
+                else:
+                    token += c
+
+    def parse_boolean(self, s):
+        return s.lower() in ['', '0', 'false', 'no']
+
+    def get_q(self):
+        data = {}
+        for key, value in self.parse_searchstring(self.get_searchstring()):
+            if key not in data:
+                data[key] = []
+            data[key].append(value)
+
+        result = models.Q()
+        for key, values in data.items():
+            if key is None:
+                for value in values:
+                    q = models.Q()
+                    for k in self.STRING_FIELDS.values():
+                        q |= models.Q(**{k + '__icontains': value})
+                    result &= q
+            elif key in self.STRING_FIELDS:
+                k = self.STRING_FIELDS[key] + '__icontains'
+
+                q = models.Q()
+                for value in values:
+                    q |= models.Q(**{k: value})
+                result &= q
+            elif key in self.DATE_FIELDS:
+                k = self.DATE_FIELDS[key] + '__isnull'
+
+                q = models.Q()
+                for value in values:
+                    q |= models.Q(**{k: self.parse_boolean(value)})
+                result &= q
+            else:
+                raise SuspiciousOperation(_('Invalid search'))
+        return result
+
+    def get_queryset(self):
+        return Device.objects.filter(self.get_q())
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(Search, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
+        context["searchstring"] = self.get_searchstring()
+        context["keys"] = sorted(list(self.STRING_FIELDS.keys()) +
+            list(self.DATE_FIELDS.keys()))
         return context
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        searchlist = self.request.POST["searchname"].split(" ")
-        for i, item in enumerate(searchlist):
-            if "." in item:
-                is_ip = True
-                for element in item.split("."):
-                    try:
-                        intelement = int(element)
-                        if not (0 <= intelement <= 255):
-                            is_ip = False
-                    except:
-                        is_ip = False
-                if is_ip:
-                    searchlist[i] = "ipaddress: " + item
-            elif len(item) == 7:
-                try:
-                    int(item)
-                    searchlist[i] = "id: " + item
-                except:
-                    pass
-        context["searchterm"] = " ".join(searchlist)
-
-        return render(request, self.template_name, context)
 
 
 class PublicDeviceListView(ListView):
