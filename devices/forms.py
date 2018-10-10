@@ -174,7 +174,8 @@ class LendForm(forms.Form):
                                                              '%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y',
                                                              '%d.%m.%y'),
                               widget=forms.TextInput(attrs={"class": "form-control input-sm"}))
-    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
+    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
+                                  widget=Select2Widget(attrs={"style": "width:100%;"}))
 
     def clean(self):
         cleaned_data = super(LendForm, self).clean()

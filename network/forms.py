@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
-from django_select2.forms import Select2Widget
 from django_select2.forms import Select2MultipleWidget
 
 from network.models import IpAddress
@@ -33,10 +32,10 @@ class IpAddressForm(forms.ModelForm):
 
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-                                   widget=Select2Widget(attrs={"style": "width:200px;margin-left:10px;",
+                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
                                                               "class": "pull-right input-sm form-control"}))
     departmentfilter = forms.ChoiceField(choices=get_department_options(),
-                                    widget=Select2Widget(attrs={"style": "width:150px;margin-left:10px;",
+                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
                                                                "class": "pull-right form-control input-sm"}))
 
 
