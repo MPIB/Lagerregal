@@ -214,11 +214,6 @@ class DeviceTests(TestCase):
         room.save()
         lending = mommy.make(Lending)
         lending.save()
-        devices = Device.objects.all()
-        device = devices[0]
-        url = reverse("device-lend")
-        resp = self.client.post(url)
-        self.assertEqual(resp.status_code, 200)
         deviceurl = reverse("device-detail", kwargs={"pk": device.pk})
         resp = self.client.get(deviceurl)
         self.assertEqual(resp.status_code, 200)
