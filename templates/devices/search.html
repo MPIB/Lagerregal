@@ -10,12 +10,13 @@
 {% block content %}
     <form class="row">
         <div class="form-group col-md-10">
-            <input type="text" name="searchstring" class="form-control" autofocus value="{{ searchstring }}">
+            <input type="text" name="searchstring" class="form-control" autofocus value="{{ searchstring }}" placeholder="lenovo type:tablet trashed:true">
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary btn-block">{% trans "Search" %}</button>
         </div>
     </form>
+    <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
 
     <table id="devicetable" class="table table-bordered table-striped">
         <thead>

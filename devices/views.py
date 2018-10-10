@@ -1541,6 +1541,28 @@ class Search(ListView):
     model = Device
     template_name = 'devices/search.html'
 
+    STRING_FIELDS = {
+        'name': 'name',
+        'inventorynumber': 'inventorynumber',
+        'serialnumber': 'serialnumber',
+        'hostname': 'hostname',
+        'description': 'description',
+        'manufacturer': 'manufacturer__name',
+        'room': 'room__name',
+        'building': 'room__building__name',
+        'type': 'devicetype__name',
+        'group': 'group__name',
+        'contact': 'contact__username',
+        'department': 'department__name',
+        'tag': 'tags__name',
+        'user': 'currentlending__owner__username',
+    }
+    DATE_FIELDS = {
+        'archived': 'archived',
+        'trashed': 'trashed',
+        'inventoried': 'inventoried',
+    }
+
     def get_searchstring(self):
         return self.request.GET.get('searchstring', '')
 
@@ -1582,28 +1604,6 @@ class Search(ListView):
         return s.lower() in ['', '0', 'false', 'no']
 
     def get_q(self):
-        string_fields = {
-            'name': 'name',
-            'inventorynumber': 'inventorynumber',
-            'serialnumber': 'serialnumber',
-            'hostname': 'hostname',
-            'description': 'description',
-            'manufacturer': 'manufacturer__name',
-            'room': 'room__name',
-            'building': 'room__building__name',
-            'type': 'devicetype__name',
-            'group': 'group__name',
-            'contact': 'contact__username',
-            'department': 'department__name',
-            'tag': 'tags__name',
-            'user': 'currentlending__owner__username',
-        }
-        date_fields = {
-            'archived': 'archived',
-            'trashed': 'trashed',
-            'inventoried': 'inventoried',
-        }
-
         data = {}
         for key, value in self.parse_searchstring(self.get_searchstring()):
             if key not in data:
@@ -1615,18 +1615,18 @@ class Search(ListView):
             if key is None:
                 for value in values:
                     q = models.Q()
-                    for k in string_fields.values():
+                    for k in self.STRING_FIELDS.values():
                         q |= models.Q(**{k + '__icontains': value})
                     result &= q
-            elif key in string_fields:
-                k = string_fields[key] + '__icontains'
+            elif key in self.STRING_FIELDS:
+                k = self.STRING_FIELDS[key] + '__icontains'
 
                 q = models.Q()
                 for value in values:
                     q |= models.Q(**{k: value})
                 result &= q
-            elif key in date_fields:
-                k = date_fields[key] + '__isnull'
+            elif key in self.DATE_FIELDS:
+                k = self.DATE_FIELDS[key] + '__isnull'
 
                 q = models.Q()
                 for value in values:
@@ -1644,6 +1644,8 @@ class Search(ListView):
         context = super(Search, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
         context["searchstring"] = self.get_searchstring()
+        context["keys"] = sorted(list(self.STRING_FIELDS.keys()) +
+            list(self.DATE_FIELDS.keys()))
         return context
 
 
