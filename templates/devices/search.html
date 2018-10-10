@@ -1,33 +1,42 @@
 {% extends "base.html" %}
-{% load i18n %}{% load staticfiles %}
+{% load i18n staticfiles devicetags %}
+
 {% block title %}{% trans "Search" %}{% endblock %}
 
 {% block header %}
     {% trans "Search" %}
 {% endblock %}
-{% block content %}
-    {% include 'snippets/searchform.html' %}
 
-    <div id="searchspinner" style="display:none">
-        <div style="text-align:center">
-            <h4>{% trans "Searching" %}...</h4>
-            <i class="fa fa-spinner fa-spin fa-3x"></i>
+{% block content %}
+    <form class="row">
+        <div class="form-group col-md-10">
+            <input type="text" name="searchstring" class="form-control" autofocus value="{{ searchstring }}">
         </div>
-    </div>
-    <div id="searchresult" style="display:none">
-        <table id="devicetable" class="table table-bordered table-striped">
-            <thead>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary btn-block">{% trans "Search" %}</button>
+        </div>
+    </form>
+
+    <table id="devicetable" class="table table-bordered table-striped">
+        <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
                 <th>{% trans "Inventorynumber" %}</th>
                 <th>{% trans "Devicetype" %}</th>
                 <th>{% trans "Room" %}</th>
             </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </div>
+        </thead>
+        <tbody>
+            {% for device in object_list %}
+                <tr>
+                    <td>{{ device.name }}</td>
+                    <td>{{ device.Inventorynumber }}</td>
+                    <td>{{ device.devicetype }}</td>
+                    <td>{{ device.room }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 
 {% block htmlend %}
