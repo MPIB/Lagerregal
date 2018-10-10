@@ -31,7 +31,7 @@ class MailTemplateForm(forms.ModelForm):
     error_css_class = 'has-error'
     body = forms.CharField(widget=forms.Textarea())
     default_recipients = forms.MultipleChoiceField(required=False,
-                                                   widget=Select2MultipleWidget(attrs={'style':'width:100%;'}))
+                                                   widget=Select2MultipleWidget(attrs={'style': 'width:100%;'}))
 
     class Meta:
         model = MailTemplate
