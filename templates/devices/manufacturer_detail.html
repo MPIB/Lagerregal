@@ -86,17 +86,3 @@
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=LABEL_TEMPLATES.type.0 %}
     {% endif %}
 {% endblock %}
-
-{% block scriptend %}
-    {% if perms.devices.delete_manufacturer %}
-        $("#deletebutton").popover({
-        html: 'true',
-        placement: "bottom",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "are you sure?" %}</strong></span>',
-        content :"<form action='{% url "manufacturer-delete" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
-            "</form>"
-        })
-    {% endif %}
-{% endblock %}
