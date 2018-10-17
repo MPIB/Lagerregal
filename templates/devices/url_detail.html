@@ -9,12 +9,13 @@
 
 {% block pullright %}
 {% if perms.devices.read_url %}
-        <a href="#" id="deletebutton" data-toggle="popover" class="btn btn-danger btn-sm pull-right"
-           style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
         <a href="{% url 'url-edit' url.manufacturer.id url.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
         <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
 
+{% endif %}
+{% if perms.devices.delete_url %}
+    {% deletebutton "url-delete" object.manufacturer.id object.id %}
 {% endif %}
 {% endblock %}
 
@@ -42,18 +43,4 @@
       </div>
   </div>
 {% endif %}
-{% endblock %}
-
-
-
-{% block scriptend %}
-        $("#deletebutton").popover({
-        html: 'true',
-        placement: "bottom",
-        title : '<span class="text-info" style="margin-right:10px"><strong>{% trans "Are you sure?" %}</strong></span>',
-        content :"<form action='{% url "url-delete" object.maunfacturer.id object.id %}' method='post' class='form-horizontal'>{% csrf_token %}"+
-            "<button type='button' class='btn btn-default'onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button>"+
-            "<input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/>"+
-            "</form>"
-        })
 {% endblock %}
