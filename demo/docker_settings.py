@@ -3,7 +3,7 @@
 from Lagerregal.base_settings import *
 
 DEBUG = True
-DEMO_MODE = True
+PRODUCTION = False
 
 DATABASES = {
     'default': {
