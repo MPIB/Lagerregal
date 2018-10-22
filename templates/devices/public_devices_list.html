@@ -9,7 +9,7 @@
 {% block pullright %}
     {{ filterform.filterstring }}
     {{ viewform.viewsorting }}
-    {{ groupfilterform.groupfilter }}
+    {{ devicegroupfilterform.devicegroupfilter }}
 {% endblock %}
 
 {% block content %}
@@ -64,11 +64,11 @@
     $('#id_filterstring').change(function() {
     window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/filter/" + $(this).val()
     });
-    $('#id_groupfilter').change(function() {
+    $('#id_devicegroupfilter').change(function() {
     if ($("#id_filterstring").val() != "") {
-    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/group/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
+    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/devicegroup/" + $(this).val() + "/filter/" + $("#id_filterstring").val()
     } else {
-    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/group/" + $(this).val()
+    window.location = "/devices/public/sorting/" + $("#id_viewsorting").val() + "/devicegroup/" + $(this).val()
     }
     });
     {% include "snippets/pagination_simple_js.html" with pageurl="public-device-list" %}

@@ -54,7 +54,7 @@ class MailTemplate(models.Model):
         datadict["device"] = {
             "description": data["device"].description,
             "devicetype": (data["device"].devicetype.name if data["device"].devicetype is not None else ""),
-            "group": data["device"].devicegroup,
+            "devicegroup": data["device"].devicegroup,
             "hostname": data["device"].hostname,
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,

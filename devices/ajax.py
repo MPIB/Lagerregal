@@ -142,7 +142,7 @@ class LoadExtraform(View):
             form = modelform_factory(Type, exclude=(), form=AddForm)()
         elif classname == "room":
             form = modelform_factory(Room, exclude=(), form=AddForm)()
-        elif classname == "group":
+        elif classname == "devicegroup":
             form = modelform_factory(Devicegroup, exclude=(), form=AddForm)()
         else:
             return HttpResponse("")

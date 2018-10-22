@@ -60,8 +60,8 @@ def get_widget_data(user, widgetlist=[], departments=None):
         else:
             lendings = Lending.objects.select_related("device", "owner")
         context["overdue"] = lendings.filter(duedate__lt=context["today"], returndate=None).order_by("duedate")[:10]
-    if "groups" in widgetlist:
-        context["groups"] = Devicegroup.objects.all()
+    if "devicegroups" in widgetlist:
+        context["devicegroups"] = Devicegroup.objects.all()
     if "sections" in widgetlist:
         context["sections"] = Section.objects.all()
     if "recentlendings" in widgetlist:

@@ -134,7 +134,7 @@ class DeviceList(PaginationMixin, ListView):
 
             return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
                                   "room__building__name",
-                                  "group__name", "currentlending__owner__username", "currentlending__duedate")
+                                  "devicegroup__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         '''method for getting context data (filter, time, templates, breadcrumbs)'''
@@ -167,7 +167,7 @@ class ExportCsv(View):
                 response = HttpResponse(content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
                 devices = None
-                searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
+                searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "devicegroup__name"]
 
                 if request.POST['viewfilter'] == "active":
                     devices = Device.active()
@@ -1551,7 +1551,7 @@ class Search(ListView):
         'room': 'room__name',
         'building': 'room__building__name',
         'type': 'devicetype__name',
-        'group': 'group__name',
+        'devicegroup': 'devicegroup__name',
         'contact': 'contact__username',
         'department': 'department__name',
         'tag': 'tags__name',
@@ -1651,7 +1651,7 @@ class Search(ListView):
 
 class PublicDeviceListView(ListView):
     filterstring = ""
-    groupfilter = None
+    devicegroupfilter = None
     viewsorting = None
     template_name = "devices/public_devices_list.html"
 
@@ -1667,12 +1667,12 @@ class PublicDeviceListView(ListView):
         self.viewsorting = self.kwargs.pop("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devices = devices.order_by(self.viewsorting)
-        self.groupfilter = self.kwargs.pop("group", "all")
-        if self.groupfilter != "all":
-            devices = devices.filter(group__id=self.groupfilter)
+        self.devicegroupfilter = self.kwargs.pop("devicegroup", "all")
+        if self.devicegroupfilter != "all":
+            devices = devices.filter(devicegroup__id=self.devicegroupfilter)
         return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
                                   "room__building__name",
-                                  "group__name", "currentlending__owner__username", "currentlending__duedate")
+                                  "devicegroup__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super(PublicDeviceListView, self).get_context_data(**kwargs)
@@ -1682,7 +1682,7 @@ class PublicDeviceListView(ListView):
             context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
-        context["groupfilterform"] = DeviceGroupFilterForm(initial={"groupfilter": self.groupfilter})
+        context["devicegroupfilterform"] = DeviceGroupFilterForm(initial={"devicegroupfilter": self.devicegroupfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         context["nochrome"] = self.request.GET.get("nochrome", False)
