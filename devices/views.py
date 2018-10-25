@@ -113,8 +113,8 @@ class DeviceList(PaginationMixin, ListView):
             elif self.departmentfilter != "all":
                 lendings = lendings.filter(owner__departments=self.departmentfilter)
                 self.departmentfilter = self.departmentfilter.id
-            lendings = lendings.exclude(~Q(device__department__in=self.request.user.departments.all()) &
-                                        ~Q(device=None), device__is_private=True)
+            lendings = lendings.exclude(~Q(device__department__in=self.request.user.departments.all())
+                                        & ~Q(device=None), device__is_private=True)
             return lendings.values("device__id", "device__name", "device__inventorynumber",
                                    "device__devicetype__name", "device__room__name", "device__group",
                                    "device__room__building__name", "owner__username", "owner__id",
@@ -1644,8 +1644,8 @@ class Search(ListView):
         context = super(Search, self).get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
         context["searchstring"] = self.get_searchstring()
-        context["keys"] = sorted(list(self.STRING_FIELDS.keys()) +
-            list(self.DATE_FIELDS.keys()))
+        context["keys"] = sorted(list(self.STRING_FIELDS.keys())
+                                + list(self.DATE_FIELDS.keys()))
         return context
 
 

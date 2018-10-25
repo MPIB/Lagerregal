@@ -237,10 +237,10 @@ class PuppetDetails(View):
 
     def post(self, request):
         searchvalue = request.POST["id"]
-        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",' +
-                                            '["select_facts",["and",["=", "name","' +
-                                            settings.PUPPETDB_SETTINGS['query_fact'] + '"],' +
-                                            '["=","value","' + searchvalue + '"]]]]]'})
+        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",'
+                                            + '["select_facts",["and",["=", "name","'
+                                            + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
+                                            + '["=","value","' + searchvalue + '"]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
@@ -250,8 +250,8 @@ class PuppetDetails(View):
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:
-            return HttpResponse('Failed to fetch puppet details from ' +
-                                settings.PUPPETDB_SETTINGS['host'])
+            return HttpResponse('Failed to fetch puppet details from '
+                                    + settings.PUPPETDB_SETTINGS['host'])
         context = {
             'puppetdetails': json.loads(res.read().decode('utf-8'))
         }
@@ -265,10 +265,10 @@ class PuppetSoftware(View):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 
-        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],' +
-                                            '["in", "certname",["extract", "certname",' +
-                                            '["select_facts",["and",["=", "name","' + query_fact + '"],' +
-                                            '["=","value","' + searchvalue + '"]]]]]]'})
+        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
+                                            + '["in", "certname",["extract", "certname",'
+                                            + '["select_facts",["and",["=", "name","' + query_fact + '"],'
+                                            + '["=","value","' + searchvalue + '"]]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
@@ -278,8 +278,8 @@ class PuppetSoftware(View):
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:
-            return HttpResponse('Failed to fetch puppet details from ' +
-                                settings.PUPPETDB_SETTINGS['host'])
+            return HttpResponse('Failed to fetch puppet details from '
+                                + settings.PUPPETDB_SETTINGS['host'])
 
         try:
             res = json.loads(res.read().decode('utf-8'))[0]
