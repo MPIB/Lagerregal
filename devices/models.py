@@ -122,13 +122,9 @@ class ManufacturerUrl(models.Model):
         fieldnames = ['serialnumber']
         # look for wanted variable
         attribute = re.search('{(.*)}', self.url)
-        print("RE!")
-        print(attribute)
         if attribute:
             # get desired value from SRE_Match object
             attribute = attribute.group(1)
-            print("blubb!")
-            print(attribute)
             if attribute not in fieldnames:
                 raise ValidationError(_('Please only use attributes of device listed in help'))
 
