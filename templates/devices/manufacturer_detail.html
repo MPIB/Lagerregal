@@ -38,9 +38,9 @@
 
 <div class="row">
 {% if object.urls %}
-<div class="col-xs-12 col-md-4">
+
   <h4>{% trans "Urls" %}</h4>
-    <table class="table table-bordered table-striped">
+    <table width="100%"  class="table table-bordered table-striped">
         <tbody>
         {% for url_object in object.urls.all %}
           <tr>
@@ -50,13 +50,14 @@
         {% endfor %}
         </tbody>
     </table>
+
   </div>
 {% endif %}
-<br /><br /><br /><br /><br /><br />
+<div class="row">
     {% if device_list %}
         {% if perms.devices.read_device %}
             <h4>Devices</h4>
-            <table width="100%" id="devicetable" class="table table-bordered table-striped">
+            <table id="devicetable" class="table table-bordered table-striped" style="margin:0px;">
                 <thead>
                 <tr>
                     <th>{% trans "Name" %}</th>
