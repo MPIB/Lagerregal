@@ -56,14 +56,6 @@
             }, 60000 );
         });
 
-        // HACK: the search page overwrites jquery
-        try {
-            $('[data-timeago]').timeago();
-        } catch {}
-        try {
-            $('[data-toggle="popover"]').popover();
-        } catch {}
-
         var getFilterBasePath = function() {
             var index = window.location.pathname.length;
             ['department', 'sorting', 'group', 'filter', 'page'].forEach(function(key) {
@@ -114,5 +106,8 @@
             var s = "/page/" + $(this).val();
             window.location.pathname = getFilterBasePath() + s + getFilterPath();
         });
+      
+        $('[data-timeago]').timeago();
+        $('[data-toggle="popover"]').popover();
     });
 })();
