@@ -40,23 +40,3 @@
     </table>
     {% include "snippets/userpagination.html" with listurl='user-list' %}
 {% endblock %}
-
-{% block scriptend %}
-    $('#id_filterstring').change(function() {
-    if ($("#id_departmentfilter").val() == "") {
-        department = "all"
-    } else {
-        department = $("#id_departmentfilter").val()
-    }
-    window.location = "/users/department/" + department + "/filter/" + $(this).val()
-    });
-    $('#id_departmentfilter').change(function() {
-    if ($("#id_departmentfilter").val() == "") {
-        department = "all"
-    } else {
-        department = $(this).val()
-    }
-    window.location = "/users/department/" + department + "/filter/" + $('#id_filterstring').val()
-    });
-    {% include "snippets/userpagination_js.html" with pageurl="user-list" %}
-{% endblock %}

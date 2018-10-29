@@ -48,79 +48,78 @@
 {% block scriptend %}
     {% if user.is_staff %}
         $(function() {
-        $( "#id_duedate" ).datepicker();
-        $( ".dashboard" ).sortable({
-        connectWith: ".dashboard",
-        placeholder: "alert alert-success dashboard-placeholder",
-        distance: 15,
-        update: function(event, ui) {
-        widgets = {};
-        $(".dashboard-left").children('.widget').each(function(i) {
-        widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "l"};
-        });
-        $(".dashboard-right").children('.widget').each(function(i) {
-        widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
-        });
-        $.ajax({
-        type: "POST",
-        url: "{% url "widget_move" %}",
-        data: {widgets:JSON.stringify(widgets)}
-        });
-        }
-        });
+            $( "#id_duedate" ).datepicker();
+            $( ".dashboard" ).sortable({
+                connectWith: ".dashboard",
+                placeholder: "alert alert-success dashboard-placeholder",
+                distance: 15,
+                update: function(event, ui) {
+                    widgets = {};
+                    $(".dashboard-left").children('.widget').each(function(i) {
+                        widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "l"};
+                    });
+                    $(".dashboard-right").children('.widget').each(function(i) {
+                        widgets[$(this).attr("id")] = {"index": $(this).index()+1, "column": "r"};
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url "widget_move" %}",
+                        data: {widgets:JSON.stringify(widgets)}
+                    });
+                }
+            });
 
-        $('body').on('click', '.panel-title .w-minimize', function() {
-        $.ajax({
-        type: "POST",
-        url: "{% url "widget_toggle" %}",
-        context: $(this).parents( ".widget:first" ),
-        data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
-        }).done(function(data) {
-        $(this).find( ".w-minimize" ).toggleClass( "fa-minus" ).toggleClass( "fa-plus" );
-        $(this).find(".panel-heading").next().slideToggle("fast");
-        });
-        });
+            $('body').on('click', '.panel-title .w-minimize', function() {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url "widget_toggle" %}",
+                    context: $(this).parents( ".widget:first" ),
+                    data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
+                }).done(function(data) {
+                    $(this).find( ".w-minimize" ).toggleClass( "fa-minus" ).toggleClass( "fa-plus" );
+                    $(this).find(".panel-heading").next().slideToggle("fast");
+                });
+            });
 
-        $('body').on('click', '.panel-title .w-close', function() {
-        $.ajax({
-        type: "POST",
-        url: "{% url "widget_remove" %}",
-        context: $(this).parents( ".widget:first" ),
-        data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
-        }).done(function(data) {
-        $(this).slideUp("fast", function() {
-        $(this).remove()});
-        $("#widgetlist").append('<li><a href="#" data-name="' + $(this).attr("id") + '" class="addWidget">' +
-            $(this).find(".panel-title").html() + '</a></li>')
-        });
-        });
+            $('body').on('click', '.panel-title .w-close', function() {
+                $.ajax({
+                    type: "POST",
+                    url: "{% url "widget_remove" %}",
+                    context: $(this).parents( ".widget:first" ),
+                    data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
+                }).done(function(data) {
+                    $(this).slideUp("fast", function() {
+                    $(this).remove()});
+                    $("#widgetlist").append('<li><a href="#" data-name="' + $(this).attr("id") + '" class="addWidget">' +
+                        $(this).find(".panel-title").html() + '</a></li>')
+                });
+            });
 
-        $('body').on('click', '.addWidget', function() {
-        $.ajax({
-        type: "POST",
-        context: $(this),
-        url: "{% url "widget_add" %}",
-        data: {"widgetname":$( this ).data("name")}
-        }).done(function(data) {
-        $(this).remove();
-        $(".dashboard-left").append(data);
-        $('#addWidgetModal').modal('hide');
-        });
-        });
+            $('body').on('click', '.addWidget', function() {
+                $.ajax({
+                    type: "POST",
+                    context: $(this),
+                    url: "{% url "widget_add" %}",
+                    data: {"widgetname":$( this ).data("name")}
+                }).done(function(data) {
+                    $(this).remove();
+                    $(".dashboard-left").append(data);
+                    $('#addWidgetModal').modal('hide');
+                });
+            });
 
-        $(".panel-title .pull-right").hide();
+            $(".panel-title .pull-right").hide();
 
-        $('body').on({
-        mouseenter: function () {
-        $(this).find(".pull-right").fadeIn();
-        },
-        mouseleave: function () {
-        $(this).find(".pull-right").fadeOut();
-        }},
-        '.panel-heading'
-        );
+            $('body').on({
+                mouseenter: function () {
+                    $(this).find(".pull-right").fadeIn();
+                },
+                mouseleave: function () {
+                    $(this).find(".pull-right").fadeOut();
+                }
+            }, '.panel-heading');
 
-        $( ".dashboard" ).disableSelection();
+            $( ".dashboard" ).disableSelection();
         });
     {% endif %}
 {% endblock %}

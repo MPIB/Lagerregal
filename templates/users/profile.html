@@ -268,46 +268,46 @@
 {% block scriptend %}
 
     $("#id_ipaddresses").
-    on("change", function(e) {
-    if ($(this).val()) {
-    $("#submitipaddress").removeClass("disabled")
-    } else {
-    $("#submitipaddress").addClass("disabled")
-    }
-    });
+        on("change", function(e) {
+            if ($(this).val()) {
+                $("#submitipaddress").removeClass("disabled")
+            } else {
+                $("#submitipaddress").addClass("disabled")
+            }
+        });
 
     var device_initialized = false;
     {% if perms.users.read_user %}
         var change_initialized = false;
 
         $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
-        e.target // activated tab
-        e.relatedTarget // previous tab
-        if ($(e.target).data("tab") === "edits") {
-        if (!change_initialized) {
-        $('#changehistory').dataTable({});
-        change_initialized = true;
-        }
-        }
+            e.target // activated tab
+            e.relatedTarget // previous tab
+            if ($(e.target).data("tab") === "edits") {
+                if (!change_initialized) {
+                    $('#changehistory').dataTable({});
+                    change_initialized = true;
+                }
+            }
         });
     {% endif %}
     if (!device_initialized) {
-    $('#devicetable').dataTable({});
-    device_initialized = true;
+        $('#devicetable').dataTable({});
+        device_initialized = true;
     }
 
     $(function() {
-    var $affix = $(".affix-container"),
-    $parent = $affix.parent(),
-    resize = function() { $affix.width($parent.width()); };
-    $(window).resize(resize);
-    resize();
+        var $affix = $(".affix-container"),
+        $parent = $affix.parent(),
+        resize = function() { $affix.width($parent.width()); };
+        $(window).resize(resize);
+        resize();
     });
 
     $(document).ready(function() {
-    var url = document.location.toString();
-    if (url.match('#')) {
-        $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
-    }
+        var url = document.location.toString();
+        if (url.match('#')) {
+            $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
+        }
     });
 {% endblock %}
