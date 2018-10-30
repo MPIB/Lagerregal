@@ -48,7 +48,6 @@
 {% block scriptend %}
     {% if user.is_staff %}
         $(function() {
-            $( "#id_duedate" ).datepicker();
             $( ".dashboard" ).sortable({
                 connectWith: ".dashboard",
                 placeholder: "alert alert-success dashboard-placeholder",

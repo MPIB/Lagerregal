@@ -109,5 +109,6 @@
 
         $('[data-timeago]').timeago();
         $('[data-toggle="popover"]').popover();
+        $('#id_duedate').datepicker();
     });
 })();
