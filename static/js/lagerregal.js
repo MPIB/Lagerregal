@@ -106,7 +106,7 @@
             var s = "/page/" + $(this).val();
             window.location.pathname = getFilterBasePath() + s + getFilterPath();
         });
-      
+
         $('[data-timeago]').timeago();
         $('[data-toggle="popover"]').popover();
     });
