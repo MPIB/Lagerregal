@@ -637,6 +637,7 @@ class DeviceLend(FormView):
         return kwargs
 
     def form_valid(self, form):
+        lending = Lending()
         device = None
         templates = []
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
@@ -645,12 +646,10 @@ class DeviceLend(FormView):
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
             if device.currentlending is not None:
-                lending = device.currentlending
-                lending.returndate = datetime.date.today()
-                lending.save()
-                lending = Lending()
-            else:
-                lending = Lending()
+                # return current lending first
+                oldlending = device.currentlending
+                oldlending.returndate = datetime.date.today()
+                oldlending.save()
             try:
                 templates.append(MailTemplate.objects.get(usage="lent"))
             except:
