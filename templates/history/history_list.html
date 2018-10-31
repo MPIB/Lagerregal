@@ -4,7 +4,7 @@
 {% block title %}{% trans "History for" %} {{ device.name }}{% endblock %}
 
 {% block content %}
-    {% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
+    {% include "snippets/subpagination.html" with parent=device.pk listurl='history-list' %}
     <div class="module">
         {% if version_list %}
             <table id="change-history" class="table table-bordered table-striped">
@@ -19,7 +19,7 @@
                 {% for action in version_list %}
                     <tr>
                         <th scope="row"><a
-                                href="{% url 'device-history' device.pk action.revision.pk %}">{{ action.revision.date_created }}</a>
+                                href="{% url 'history-detail' action.revision.pk %}">{{ action.revision.date_created }}</a>
                         </th>
                         <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
                         </td>
@@ -32,5 +32,5 @@
             <p>{% trans "This object doesn't have a change history." %}</p>
         {% endif %}
     </div>
-    {% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
+    {% include "snippets/subpagination.html" with parent=device.pk listurl='history-list' %}
 {% endblock %}

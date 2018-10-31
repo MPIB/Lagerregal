@@ -252,6 +252,7 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
                                                          content_type_id=ContentType.objects.get(
                                                              model='device').id) \
                                       .select_related("revision", "revision__user").order_by("-pk")[:10]
+        context['content_type'] = ContentType.objects.get(model='device').id
         context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
                                    .select_related("sent_by").order_by("-pk")[:10]
 
