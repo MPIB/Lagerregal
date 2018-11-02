@@ -12,6 +12,7 @@ from django.core.validators import URLValidator
 import reversion
 import six
 import re
+import pystache
 
 from users.models import Lageruser
 from devicetypes.models import Type, TypeAttributeValue
@@ -119,9 +120,10 @@ class ManufacturerUrl(models.Model):
 
     def clean(self):
         # get all fieldnames of device to determine valid choices
-        fieldnames = ['serialnumber']
+        forbidden_fields = ['hostname', 'webinterface', 'description']
+        fieldnames = [x.name for x in Device._meta.fields if x.get_internal_type() == 'CharField' and x.name not in forbidden_fields]
         # look for wanted variable
-        attribute = re.search('{(.*)}', self.url)
+        attribute = re.search('{{(.*)}}', self.url)
         if attribute:
             # get desired value from SRE_Match object
             attribute = attribute.group(1)
@@ -131,7 +133,8 @@ class ManufacturerUrl(models.Model):
         val = URLValidator()
         url = self.url
         if attribute:
-            url = url.replace("{" + attribute + "}", attribute)
+            # because with curly braces it's not a valid url
+            url = url.replace("{{" + attribute + "}}", attribute)
         try:
             val(url)
         except:
@@ -215,7 +218,9 @@ class Device(models.Model):
 
     def get_urls(self):
         if self.manufacturer:
-            return {url.name: url.url.format(serialnumber=self.serialnumber) for url in self.manufacturer.urls.all()}
+            field_dict = {x.name: getattr(self, x.name) for x in Device._meta.fields}
+            return {url.name: pystache.render(url.url, field_dict) for url in self.manufacturer.urls.all()}
+            # return {url.name: url.url.format(serialnumber=self.serialnumber) for url in self.manufacturer.urls.all()}
         else:
             return {}
 

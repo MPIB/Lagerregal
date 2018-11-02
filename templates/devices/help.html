@@ -1,9 +1,15 @@
 {% load i18n %}
 <h5>{% trans "valid url structure" %}:</h5>
-https://www.dell.com/support/home/us/en/debsdt1/product-support/servicetag/{serialnumber}/drivers
+{% verbatim %}
+https://www.dell.com/support/home/us/en/debsdt1/product-support/servicetag/{{serialnumber}}/drivers
+{% endverbatim %}
 
 <h5>{% trans "available variables" %}:</h5>
-<dl>
-    <dd>{serialnumber}</dd>
 
+<dl>
+    {% verbatim %}
+    <dd>{{device.inventorynumber}}</dd>
+    <dd>{{device.name}}</dd>
+    <dd>{{device.serialnumber}}</dd>
+    {% endverbatim %}
 </dl>
