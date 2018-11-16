@@ -27,6 +27,15 @@ def get_verbose_name_lowercase(object):
 
 @register.simple_tag
 def history_compare(old, new):
+
+    if not isinstance(new, str):
+        try:
+            new = new.name
+        except:
+            try:
+                new = new.username
+            except:
+                pass
     if old != new:
         if old == "" and new != "":
             return format_html("+ <span class='diff add'>{0}</span>", new)

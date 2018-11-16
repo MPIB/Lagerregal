@@ -8,14 +8,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.apps import apps
+from django.db.models import ForeignKey
 
 import six
 from reversion.models import Version, Revision
 from reversion import revisions as reversion
 
 from Lagerregal.utils import PaginationMixin
-from devices.models import Device, Room, Manufacturer
-from devicetypes.models import Type, TypeAttributeValue
 
 
 class Globalhistory(PaginationMixin, ListView):
@@ -33,41 +32,38 @@ class Globalhistory(PaginationMixin, ListView):
 
 
 excluded_fields = ["currentlending", "created_at", "archived", "trashed", "inventoried", "bookmarks", "trashed",
-                   "last_seen", "creator"]
+                   "last_seen", "creator_id"]
 
 
 def cleanup_fielddict(version):
     del version.field_dict["id"]
-    if version.field_dict.get("devicetype") is not None:
-        try:
-            version.field_dict["devicetype"] = Type.objects.get(
-                pk=version.field_dict["devicetype"])
-        except Type.DoesNotExist:
-            version.field_dict["devicetype"] = "[deleted]"
-    if version.field_dict.get("manufacturer") is not None:
-        try:
-            version.field_dict["manufacturer"] = Manufacturer.objects.get(
-                pk=version.field_dict["manufacturer"])
-        except Manufacturer.DoesNotExist:
-            version.field_dict["manufacturer"] = "[deleted]"
-    if version.field_dict.get("room") is not None:
-        try:
-            version.field_dict["room"] = Room.objects.get(
-                pk=version.field_dict["room"])
-        except Room.DoesNotExist:
-            version.field_dict["room"] = "[deleted]"
-
-    if version.field_dict.get("device") is not None:
-        try:
-            version.field_dict["device"] = Device.objects.get(
-                pk=version.field_dict["device"])
-        except Device.DoesNotExist:
-            version.field_dict["device"] = "[deleted]"
-
     for excluded_field in excluded_fields:
         if excluded_field in version.field_dict:
             del version.field_dict[excluded_field]
+    # because field_dict can't be changed when iterating
+    update_dict = {}
+    to_be_deleted = []
 
+    for field_name, value in version.field_dict.items():
+        if '_id' in field_name:
+            to_be_deleted.append(field_name)
+            field_name = field_name.split('_id')[0]
+            if value is None:
+                update_dict.update({field_name: None})
+                continue
+        field = version.object._meta.get_field(field_name)
+        if isinstance(field, ForeignKey):
+            try:
+                related_object = field.related_model.objects.get(pk=value)
+                if field_name != 'creator':
+                    update_dict.update({field_name: related_object.name})
+                else:
+                    update_dict.update({field_name: related_object.username})
+            except:
+                update_dict.update({field_name: '[deleted]'})
+    for element in to_be_deleted:
+        del version.field_dict[element]
+    version.field_dict.update(update_dict)
     return version
 
 
