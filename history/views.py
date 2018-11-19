@@ -15,6 +15,7 @@ from reversion.models import Version, Revision
 from reversion import revisions as reversion
 
 from Lagerregal.utils import PaginationMixin
+from devicetypes.models import TypeAttributeValue
 
 
 class Globalhistory(PaginationMixin, ListView):
