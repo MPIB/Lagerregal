@@ -52,10 +52,16 @@ class MailTemplate(models.Model):
     def send(self, request, recipients=None, data=None):
         datadict = {}
         datadict["device"] = {
+            "archived": data["device"].archived,
+            "created_at": data["device"].created_at,
+            "creator": data["device"].creator,
+            "currentlending": data["device"].currentlending,
+            "department": data["device"].department,
             "description": data["device"].description,
             "devicetype": (data["device"].devicetype.name if data["device"].devicetype is not None else ""),
             "group": data["device"].group,
             "hostname": data["device"].hostname,
+            "id": data["device"].id,
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
@@ -66,7 +72,6 @@ class MailTemplate(models.Model):
             "templending": data["device"].templending,
             "trashed": data["device"].trashed,
             "webinterface": data["device"].webinterface,
-            "department": data["device"].department
         }
         if data["device"].currentlending is not None:
             datadict["device"]["currentlending"] = {
@@ -80,7 +85,8 @@ class MailTemplate(models.Model):
         datadict["user"] = {
             "username": data["user"].username,
             "first_name": data["user"].first_name,
-            "last_name": data["user"].last_name
+            "last_name": data["user"].last_name,
+            "main_department": data["user"].main_department
         }
         if "owner" in data:
             datadict["owner"] = {
