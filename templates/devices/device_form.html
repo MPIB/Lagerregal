@@ -79,7 +79,6 @@
         source: function( request, response ) {
             var term = request.term;
             $.ajax({
-                type: "POST",
                 url: "{% url "autocomplete-device" %}",
                 data: {'name':term}
             }).done(response);
@@ -87,7 +86,6 @@
     });
     $("#id_devicetype").change(function() {
         $.ajax({
-            type: "POST",
             url: "{% url "get-attributes" %}",
             data: {'pk':$(this).val()}
         }).done(function(data) {
@@ -106,7 +104,6 @@
         $("#addmodal_header").text($(this).data("name"))
         $("#addmodal_classname").val($(this).data("classname"));
         $.ajax({
-            type: "POST",
             url: "{% url "load-extraform" %}",
             data: {'classname':$(this).data("classname")}
         }).done(function(data) {
@@ -198,7 +195,6 @@
             "webinterface": $("#id_webinterface").val()
         }
         $.ajax({
-            type: "POST",
             url: "{% url "preview-mail" %}",
             data: {"template":template, "device":device}
         }).done(function(data) {
@@ -217,7 +213,6 @@
         } else {
             $(this).parents(".form-group:first").find(".previewbutton").removeClass("disabled")
             $.ajax({
-                type: "POST",
                 url: "{% url "load-mailtemplate" %}",
                 data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
             }).done(function(data) {

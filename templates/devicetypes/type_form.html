@@ -36,7 +36,6 @@
     $( "input:text[name=name]" ).keyup(function() {
         if($(this).val().length > 1) {
             $.ajax({
-                type: "POST",
                 url: "{% url "autocomplete-name" %}",
                 data: {'classtype':'{{ type }}', 'name':$(this).val()}
             }).done(function(data){

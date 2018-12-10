@@ -33,8 +33,8 @@ from devicegroups.models import Devicegroup
 
 
 class AutocompleteDevice(View):
-    def post(self, request):
-        name = request.POST["name"]
+    def get(self, request):
+        name = request.GET["name"]
         devices = Device.objects.filter(name__icontains=name).values("name").distinct()[:20]
         results = []
         for device in devices:
@@ -47,8 +47,8 @@ class AutocompleteDevice(View):
 
 
 class AutocompleteSmallDevice(View):
-    def post(self, request):
-        name = request.POST["name"]
+    def get(self, request):
+        name = request.GET["name"]
         devices = Lending.objects.filter(smalldevice__icontains=name).values("smalldevice").distinct()
         results = []
         for device in devices:
@@ -59,9 +59,9 @@ class AutocompleteSmallDevice(View):
 
 
 class AutocompleteName(View):
-    def post(self, request):
-        name = request.POST["name"]
-        classtype = request.POST["classtype"]
+    def get(self, request):
+        name = request.GET["name"]
+        classtype = request.GET["classtype"]
         if classtype == "type":
             objects = Type.objects.filter(name__icontains=name)[:20]
             urlname = "type-detail"
@@ -134,8 +134,8 @@ class AddDeviceField(View):
 
 
 class LoadExtraform(View):
-    def post(self, request):
-        classname = request.POST["classname"]
+    def get(self, request):
+        classname = request.GET["classname"]
         if classname == "manufacturer":
             form = modelform_factory(Manufacturer, exclude=(), form=AddForm)()
         elif classname == "devicetype":
@@ -151,21 +151,21 @@ class LoadExtraform(View):
 
 
 class PreviewMail(View):
-    def post(self, request):
-        template = request.POST["template"]
+    def get(self, request):
+        template = request.GET["template"]
         device = {
-            "currentlending": request.POST.get("device[currentlending]", ""),
-            "description": request.POST.get("device[description]", ""),
-            "devicetype": request.POST.get("device[devicetype]", ""),
-            "group": request.POST.get("device[group]", ""),
-            "hostname": request.POST.get("device[hostname]", ""),
-            "inventorynumber": request.POST.get("device[inventorynumber]", ""),
-            "manufacturer": request.POST.get("device[manufacturer]", ""),
-            "name": request.POST.get("device[name]", ""),
-            "room": request.POST.get("device[room]", ""),
-            "serialnumber": request.POST.get("device[serialnumber]", ""),
-            "templending": request.POST.get("device[templending]", ""),
-            "webinterface": request.POST.get("device[webinterface]", "")
+            "currentlending": request.GET.get("device[currentlending]", ""),
+            "description": request.GET.get("device[description]", ""),
+            "devicetype": request.GET.get("device[devicetype]", ""),
+            "group": request.GET.get("device[group]", ""),
+            "hostname": request.GET.get("device[hostname]", ""),
+            "inventorynumber": request.GET.get("device[inventorynumber]", ""),
+            "manufacturer": request.GET.get("device[manufacturer]", ""),
+            "name": request.GET.get("device[name]", ""),
+            "room": request.GET.get("device[room]", ""),
+            "serialnumber": request.GET.get("device[serialnumber]", ""),
+            "templending": request.GET.get("device[templending]", ""),
+            "webinterface": request.GET.get("device[webinterface]", "")
         }
         if template == "":
             return HttpResponse("")
@@ -198,9 +198,9 @@ class PreviewMail(View):
 
 class LoadMailtemplate(View):
 
-    def post(self, request):
-        template = request.POST["template"]
-        recipients = request.POST.get("recipients[]", [])
+    def get(self, request):
+        template = request.GET["template"]
+        recipients = request.GET.get("recipients[]", [])
         if template == "":
             return HttpResponse("")
         template = get_object_or_404(MailTemplate, pk=template)
@@ -216,8 +216,8 @@ class LoadMailtemplate(View):
 
 
 class UserLendings(View):
-    def post(self, request):
-        user = request.POST["user"]
+    def get(self, request):
+        user = request.GET["user"]
         if user == "":
             return HttpResponse("")
         user = get_object_or_404(Lageruser, pk=user)
@@ -235,8 +235,8 @@ class UserLendings(View):
 
 class PuppetDetails(View):
 
-    def post(self, request):
-        searchvalue = request.POST["id"]
+    def get(self, request):
+        searchvalue = request.GET["id"]
         params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",'
                                             + '["select_facts",["and",["=", "name","'
                                             + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
@@ -260,8 +260,8 @@ class PuppetDetails(View):
 
 class PuppetSoftware(View):
 
-    def post(self, request):
-        searchvalue = request.POST["id"]
+    def get(self, request):
+        searchvalue = request.GET["id"]
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 

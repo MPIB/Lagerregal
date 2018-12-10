@@ -27,7 +27,6 @@
         $("#return_userlist").on("select2:selecting", function (e) {
             $("#listwrapper").html('<table id="lendinglist"class="table table-bordered table-striped"></table>');
             $.ajax({
-                type: "POST",
                 context: $(this),
                 url: "{% url "get-user-lendings" %}",
                 data: {"user": e.val}
