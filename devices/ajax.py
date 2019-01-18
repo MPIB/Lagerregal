@@ -89,7 +89,7 @@ class AutocompleteName(View):
             return HttpResponse("")
         if len(objects) > 0:
             retobjects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
-                reverse(urlname, kwargs={"pk": obj[0]}), obj[1].decode('utf-8'))
+                reverse(urlname, kwargs={"pk": obj[0]}), obj[1])
                           for obj in objects.values_list("pk", "name")]
             return HttpResponse(json.dumps(retobjects), content_type='application/json')
         else:
@@ -523,7 +523,7 @@ class PuppetDetails(View):
             return HttpResponse('Failed to fetch puppet details from '
                                 + settings.PUPPETDB_SETTINGS['host'])
         context = {
-            'puppetdetails': json.loads(res.read().decode('utf-8'))
+            'puppetdetails': json.loads(res.read())
         }
         return render(request, 'devices/puppetdetails.html', context)
 
@@ -552,7 +552,7 @@ class PuppetSoftware(View):
                                 + settings.PUPPETDB_SETTINGS['host'])
 
         try:
-            res = json.loads(res.read().decode('utf-8'))[0]
+            res = json.loads(res.read())[0]
             software = res['value']
             context = {
                 'puppetsoftware': list(software.values())
