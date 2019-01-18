@@ -279,7 +279,7 @@ class UserLendings(View):
 
 class AjaxSearch(View):
     def post(self, request):
-        search = json.loads(request.POST["search"])
+        search = json.loads(request.POST.get('search', '{}'))
         searchdict = {}
         if request.user.departments.count() > 0:
             searchdict["department__in"] = list(request.user.departments.all())
