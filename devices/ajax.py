@@ -361,9 +361,9 @@ class AjaxSearch(View):
                     if value.lower() == "null":
                         dictionary["currentlending"] = None
                     else:
-                        q_list.append(Q(currentlending__owner__username__icontains=value) |
-                                      Q(currentlending__owner__first_name__icontains=value) |
-                                      Q(currentlending__owner__last_name__icontains=value))
+                        q_list.append(Q(currentlending__owner__username__icontains=value)
+                                      | Q(currentlending__owner__first_name__icontains=value)
+                                      | Q(currentlending__owner__last_name__icontains=value))
 
             elif key == "ipaddress":
                 if len(displayed_columns) < 8:
@@ -473,13 +473,14 @@ class AjaxSearch(View):
                 textfilter = textfilter.strip(settings.SEARCHSTRIP["text"]).strip()
             try:
                 searchid = int(textfilter.replace(" ", ""))
-                devices = devices.filter(Q(name__icontains=textfilter) |
-                                         Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
-                    serialnumber__icontains=textfilter.replace(" ", "")) | Q(id=searchid))
+                devices = devices.filter(Q(name__icontains=textfilter)
+                                         | Q(inventorynumber__icontains=textfilter.replace(" ", ""))
+                                         | Q(serialnumber__icontains=textfilter.replace(" ", ""))
+                                         | Q(id=searchid))
             except ValueError:
-                devices = devices.filter(Q(name__icontains=textfilter) |
-                                         Q(inventorynumber__icontains=textfilter.replace(" ", "")) | Q(
-                    serialnumber__icontains=textfilter.replace(" ", "")))
+                devices = devices.filter(Q(name__icontains=textfilter)
+                                         | Q(inventorynumber__icontains=textfilter.replace(" ", ""))
+                                         | Q(serialnumber__icontains=textfilter.replace(" ", "")))
         if "format" in request.POST:
             if request.POST["format"] == "csv":
                 response = HttpResponse(content_type='text/csv')
@@ -506,10 +507,10 @@ class PuppetDetails(View):
 
     def post(self, request):
         searchvalue = request.POST["id"]
-        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",' +
-                                            '["select_facts",["and",["=", "name","' +
-                                            settings.PUPPETDB_SETTINGS['query_fact'] + '"],' +
-                                            '["=","value","' + searchvalue + '"]]]]]'})
+        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",'
+                                            + '["select_facts",["and",["=", "name","'
+                                            + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
+                                            + '["=","value","' + searchvalue + '"]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
@@ -519,8 +520,8 @@ class PuppetDetails(View):
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:
-            return HttpResponse('Failed to fetch puppet details from ' +
-                                settings.PUPPETDB_SETTINGS['host'])
+            return HttpResponse('Failed to fetch puppet details from '
+                                + settings.PUPPETDB_SETTINGS['host'])
         context = {
             'puppetdetails': json.loads(res.read().decode('utf-8'))
         }
@@ -534,10 +535,10 @@ class PuppetSoftware(View):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 
-        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],' +
-                                            '["in", "certname",["extract", "certname",' +
-                                            '["select_facts",["and",["=", "name","' + query_fact + '"],' +
-                                            '["=","value","' + searchvalue + '"]]]]]]'})
+        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
+                                            + '["in", "certname",["extract", "certname",'
+                                            + '["select_facts",["and",["=", "name","' + query_fact + '"],'
+                                            + '["=","value","' + searchvalue + '"]]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
@@ -547,8 +548,8 @@ class PuppetSoftware(View):
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != httplib.OK:
-            return HttpResponse('Failed to fetch puppet details from ' +
-                                settings.PUPPETDB_SETTINGS['host'])
+            return HttpResponse('Failed to fetch puppet details from '
+                                + settings.PUPPETDB_SETTINGS['host'])
 
         try:
             res = json.loads(res.read().decode('utf-8'))[0]

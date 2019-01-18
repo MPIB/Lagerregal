@@ -55,8 +55,8 @@ def get_widget_data(user, widgetlist=[], departments=None):
         context['newest_devices'] = devices.order_by("-pk")[:10]
     if "overdue" in widgetlist:
         if departments:
-            lendings = Lending.objects.select_related("device", "owner").filter(Q(device__department__in=departments) |
-                                                                                Q(owner__main_department__in=departments))
+            lendings = Lending.objects.select_related("device", "owner").filter(Q(device__department__in=departments)
+                                                                                | Q(owner__main_department__in=departments))
         else:
             lendings = Lending.objects.select_related("device", "owner")
         context["overdue"] = lendings.filter(duedate__lt=context["today"], returndate=None).order_by("duedate")[:10]
@@ -66,8 +66,8 @@ def get_widget_data(user, widgetlist=[], departments=None):
         context["sections"] = Section.objects.all()
     if "recentlendings" in widgetlist:
         if departments:
-            lendings = Lending.objects.select_related("device", "owner").filter(Q(device__department__in=departments) |
-                                                                                Q(owner__main_department__in=departments))
+            lendings = Lending.objects.select_related("device", "owner").filter(Q(device__department__in=departments)
+                                                                                | Q(owner__main_department__in=departments))
         else:
             lendings = Lending.objects.select_related("device", "owner")
         context["recentlendings"] = lendings.all().order_by("-pk")[:10]
@@ -78,8 +78,8 @@ def get_widget_data(user, widgetlist=[], departments=None):
     if "returnsoon" in widgetlist:
         soon = context["today"] + datetime.timedelta(days=10)
         if departments:
-            lendings = Lending.objects.select_related("device", "owner").filter(Q(device__department__in=departments) |
-                                                                                Q(owner__main_department__in=departments))
+            lendings = Lending.objects.select_related("device", "owner").filter(Q(device__department__in=departments)
+                                                                                | Q(owner__main_department__in=departments))
         else:
             lendings = Lending.objects.select_related("device", "owner")
         context["returnsoon"] = lendings.filter(duedate__lte=soon, duedate__gt=context["today"],
