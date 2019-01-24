@@ -523,7 +523,7 @@ class PuppetDetails(View):
             return HttpResponse('Failed to fetch puppet details from '
                                 + settings.PUPPETDB_SETTINGS['host'])
         context = {
-            'puppetdetails': json.loads(res.read())
+            'puppetdetails': json.loads(res.read().decode())
         }
         return render(request, 'devices/puppetdetails.html', context)
 
@@ -552,7 +552,7 @@ class PuppetSoftware(View):
                                 + settings.PUPPETDB_SETTINGS['host'])
 
         try:
-            res = json.loads(res.read())[0]
+            res = json.loads(res.read().decode())[0]
             software = res['value']
             context = {
                 'puppetsoftware': list(software.values())
