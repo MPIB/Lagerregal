@@ -70,7 +70,6 @@
             source: function (request, response) {
                 var term = request.term;
                 $.ajax({
-                    type: "POST",
                     url: "{% url "autocomplete-smalldevice" %}",
                     data: {'name': term}
                 }).done(response);

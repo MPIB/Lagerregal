@@ -582,7 +582,6 @@
             if ($(this).val() === "") {
             } else {
                 $.ajax({
-                    type: "POST",
                     url: "{% url "load-mailtemplate" %}",
                     data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
                 }).done(function(data) {
