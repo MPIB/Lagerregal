@@ -53,38 +53,12 @@
 
 {% block scriptend %}
     $(document).ready(function() {
-    $('#adresstable').dataTable( {
-        "bFilter": false,
-        "paging": false,
-        columnDefs: [
-            { type: 'ip-address', targets: 0 }
-        ]
-    } );
-
-    $('#id_viewfilter').change(function() {
-    if ($("#id_departmentfilter").val() == "") {
-        department = "all"
-    } else {
-        department = $('#id_departmentfilter').val()
-    }
-    window.location = "/ipaddresses/page/1/department/" + department + "/filter/" + $("#id_viewfilter").val() + "/search/" + $("#id_filterstring").val()
+        $('#adresstable').dataTable( {
+            "bFilter": false,
+            "paging": false,
+            columnDefs: [
+                { type: 'ip-address', targets: 0 }
+            ]
+        });
     });
-    $('#id_filterstring').change(function() {
-    if ($("#id_departmentfilter").val() == "") {
-        department = "all"
-    } else {
-        department = $('#id_departmentfilter').val()
-    }
-    window.location = "/ipaddresses/page/1/department/" + department + "/filter/" + $("#id_viewfilter").val() + "/search/" + $("#id_filterstring").val()
-    });
-    $('#id_departmentfilter').change(function() {
-    if ($("#id_departmentfilter").val() == "") {
-        department = "all"
-    } else {
-        department = $('#id_departmentfilter').val()
-    }
-    window.location = "/ipaddresses/page/1/department/" + department + "/filter/" + $("#id_viewfilter").val() + "/search/" + $("#id_filterstring").val()
-    });
-    });
-    {% include "snippets/ipaddresspagination_js.html" with pageurl="ipaddress-list" %}
 {% endblock %}

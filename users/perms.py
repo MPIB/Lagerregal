@@ -69,9 +69,9 @@ class DepartmentPermissionLogic(PermissionLogic):
             return False
         elif user_obj.is_active:
             if obj in user_obj.departments.all():
-                    department_membership = user_obj.departmentuser_set.get(department=obj)
-                    if department_membership.role == "a":
-                        return True
+                department_membership = user_obj.departmentuser_set.get(department=obj)
+                if department_membership.role == "a":
+                    return True
             try:
                 if obj.department in user_obj.departments.all():
                     department_membership = user_obj.departmentuser_set.get(department=obj.department)

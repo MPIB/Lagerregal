@@ -11,8 +11,8 @@ from devicetypes.models import TypeAttribute
 
 class GetTypeAttributes(View):
 
-    def post(self, request):
-        pk = request.POST.get("pk", "")
+    def get(self, request):
+        pk = request.GET.get("pk", "")
 
         if not pk == "":
             attributes = TypeAttribute.objects.filter(devicetype__pk=pk)

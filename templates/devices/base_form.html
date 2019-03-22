@@ -41,41 +41,35 @@
 
 {% block scriptend %}
     $( "input:text[name=name]" ).keyup(function() {
-    if($(this).val().length > 1) {
-    $.ajax({
-    type: "POST",
-    url: "{% url "autocomplete-name" %}",
-    data: {'classtype':'{{ type }}', 'name':$(this).val()}
-    }).done(function(data){
-    if (data != "") {
-    if ($("#alternatives").length == 0){
-    $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul></div>")
-    }
-    $("#alternatives").empty()
-    for (var i=0; i < data.length; i++) {
-    $("#alternatives").append(data[i])
-    };
-    } else {
-    $("#alternativebox").remove();
-    }
-    });
-    }
+        if($(this).val().length > 1) {
+            $.ajax({
+                url: "{% url "autocomplete-name" %}",
+                data: {'classtype':'{{ type }}', 'name':$(this).val()}
+            }).done(function(data){
+                if (data != "") {
+                    if ($("#alternatives").length == 0){
+                        $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul></div>")
+                    }
+                    $("#alternatives").empty()
+                    for (var i=0; i < data.length; i++) {
+                        $("#alternatives").append(data[i])
+                    };
+                } else {
+                    $("#alternativebox").remove();
+                }
+            });
+        }
     });
 
-
-    $(function() {
-    $( "#id_duedate" ).datepicker();
-    });
     $( "input:text[name=smalldevice]" ).autocomplete({
-    minLength: 2,
-    source: function( request, response ) {
-    var term = request.term;
-    $.ajax({
-    type: "POST",
-    url: "{% url "autocomplete-smalldevice" %}",
-    data: {'name':term}
-    }).done(response);
-    }
+        minLength: 2,
+        source: function( request, response ) {
+            var term = request.term;
+            $.ajax({
+                url: "{% url "autocomplete-smalldevice" %}",
+                data: {'name':term}
+            }).done(response);
+        }
     });
     {% autoescape off %}{{ form_scripts }}{% endautoescape %}
 {% endblock %}

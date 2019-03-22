@@ -561,96 +561,86 @@
 {% endblock %}
 
 {% block scriptend %}
-    $("#id_ipaddresses").
-    on("change", function(e) {
-    if ($(this).val()) {
-    $("#submitipaddress").removeClass("disabled")
-    } else {
-    $("#submitipaddress").addClass("disabled")
-    }
+    $("#id_ipaddresses").on("change", function(e) {
+        if ($(this).val()) {
+            $("#submitipaddress").removeClass("disabled")
+        } else {
+            $("#submitipaddress").addClass("disabled")
+        }
     });
 
-    $("#id_tags").
-    on("change", function(e) {
-    if ($(this).val()) {
-    $("#submittags").removeClass("disabled")
-    } else {
-    $("#submittags").addClass("disabled")
-    }
-    });
-
-    $(function() {
-    $( "#id_duedate" ).datepicker();
-    });
-    $(document).ready(function() {
-
-    $("#id_mailtemplate").change(function() {
-    if ($(this).val() === "") {
-    } else {
-    $.ajax({
-    type: "POST",
-    url: "{% url "load-mailtemplate" %}",
-    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
-    }).done(function(data) {
-    $("#id_emailsubject").val(data.subject)
-    $("#id_emailbody").val(data.body)
-    $('#id_emailrecipients').val(data.recipients)
-    })
-    }
-    });
+    $("#id_tags").on("change", function(e) {
+        if ($(this).val()) {
+            $("#submittags").removeClass("disabled")
+        } else {
+            $("#submittags").addClass("disabled")
+        }
     });
 
     $(document).ready(function() {
-    $(document).on('click', '.dropdown-cancel', function (e) {
-    e.stopPropagation();
-    });
-
-    $(document).on('click', '.delete-picture', function (e) {
-        var picture_id = e.target.id.replace("picture", "")
-        var url = "{% url "device-api-picture" device.pk 0 %}".replace("pictures/0", "pictures/"+picture_id)
-        $.ajax({
-            url: url,
-            type: 'DELETE',
-            success: function() {
-                var row = e.target.parentNode.parentNode
-                var modalBody = row.parentNode
-                modalBody.removeChild(row)
-
-            },
+        $("#id_mailtemplate").change(function() {
+            if ($(this).val() === "") {
+            } else {
+                $.ajax({
+                    url: "{% url "load-mailtemplate" %}",
+                    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()}
+                }).done(function(data) {
+                    $("#id_emailsubject").val(data.subject)
+                    $("#id_emailbody").val(data.body)
+                    $('#id_emailrecipients').val(data.recipients)
+                })
+            }
         });
     });
 
-
-    $(document).on('click', '.rotate-picture-right', function (e) {
-      rotate_and_reload(e, "right");
-    });
-    $(document).on('click', '.rotate-picture-left', function (e) {
-      rotate_and_reload(e, "left");
-    });
-
-    function rotate_and_reload(e, direction){
-        var picture_id = e.target.id.replace("picture", "")
-        var url = "{% url "device-api-picture-rotate" device.pk 0 "placeholder" %}".replace("pictures/0", "pictures/"+picture_id).replace("placeholder", direction)
-        $.ajax({
-            url: url,
-            type: 'PATCH',
-            success: function(data) {
-              var d = new Date();
-              img = e.target.parentElement.parentElement.getElementsByTagName('img')[0];
-              if (data.new_source.length){
-                // image was converted to png
-                img.src = img.src.replace(data.old_source, data.new_source)
-              } else {
-                // force cache invalidation and reload
-                img.src = img.src.split("?")[0] + '?' + d.getTime();
-              }
-            },
+    $(document).ready(function() {
+        $(document).on('click', '.dropdown-cancel', function (e) {
+            e.stopPropagation();
         });
-    }
+
+        $(document).on('click', '.delete-picture', function (e) {
+            var picture_id = e.target.id.replace("picture", "")
+            var url = "{% url "device-api-picture" device.pk 0 %}".replace("pictures/0", "pictures/"+picture_id)
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function() {
+                    var row = e.target.parentNode.parentNode
+                    var modalBody = row.parentNode
+                    modalBody.removeChild(row)
+                },
+            });
+        });
 
 
+        $(document).on('click', '.rotate-picture-right', function (e) {
+            rotate_and_reload(e, "right");
+        });
+        $(document).on('click', '.rotate-picture-left', function (e) {
+            rotate_and_reload(e, "left");
+        });
 
-    $("#puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
-    $("#softwaredetails").load("{% url "puppet-software" %}", { "id" : "{{ device.pk }}"});
-});
+        function rotate_and_reload(e, direction){
+            var picture_id = e.target.id.replace("picture", "")
+            var url = "{% url "device-api-picture-rotate" device.pk 0 "placeholder" %}".replace("pictures/0", "pictures/"+picture_id).replace("placeholder", direction)
+            $.ajax({
+                url: url,
+                type: 'PATCH',
+                success: function(data) {
+                    var d = new Date();
+                    img = e.target.parentElement.parentElement.getElementsByTagName('img')[0];
+                    if (data.new_source.length){
+                        // image was converted to png
+                        img.src = img.src.replace(data.old_source, data.new_source)
+                    } else {
+                        // force cache invalidation and reload
+                        img.src = img.src.split("?")[0] + '?' + d.getTime();
+                    }
+                },
+            });
+        }
+
+        $("#puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
+        $("#softwaredetails").load("{% url "puppet-software" %}", { "id" : "{{ device.pk }}"});
+    });
 {% endblock %}

@@ -1,8 +1,0 @@
-$(".pageselect").change(function() {
-urlpart = "{% url pageurl 1 %}"
-console.log($(this).val())
-console.log(urlpart.replace("/1", "/" + $(this).val()))
-urlpart = urlpart.replace("/1", "/" + $(this).val())
-console.log(urlpart)
-window.location = urlpart
-});
