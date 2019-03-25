@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from .base_settings import *
 
 DEBUG = True
+PRODUCTION = False
 
 DATABASES = {
     'default': {

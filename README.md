@@ -76,6 +76,11 @@ Optional (not optional for production):
 $ python generate_secret_key.py
 ```
 
+Generate sample data:
+```
+$ python manage.py populate
+```
+
 Label Printing
 ===============
 

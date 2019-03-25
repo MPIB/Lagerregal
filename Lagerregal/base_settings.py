@@ -200,4 +200,4 @@ SELECT2_CSS = ''
 
 TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
 TEST_MODE = False
-DEMO_MODE = False
+PRODUCTION = False

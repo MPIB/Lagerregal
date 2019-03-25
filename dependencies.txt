@@ -13,3 +13,4 @@ django_auth_ldap
 django-favicon
 django-select2
 psycopg2-binary
+faker
