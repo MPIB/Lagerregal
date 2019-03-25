@@ -90,13 +90,13 @@ def fake_lending(device, user):
         lenddate=fake.date_between(start_date='-100d', end_date='-50d')
     )
     if random.randint(0, 100) > 75:
-        lending.due_date = fake.future_date(end_date='+50d')
+        lending.duedate = fake.future_date(end_date='+50d')
     else:
-        lending.return_date = fake.date_between(start_date='-50d', end_date='today')
+        lending.returndate = fake.date_between(start_date='-50d', end_date='today')
     if random.randint(0, 100) > 80:
         lending.smalldevice = fake.word()
     else:
-        lending.smalldevice = device
+        lending.device = device
     return lending
 
 
@@ -165,7 +165,12 @@ def generate_lendings(number):
     print("Generating lendings")
     devices = random.sample(list(Device.objects.all()), number)
     users = random.sample(list(Lageruser.objects.all()), number)
-    Lending.objects.bulk_create(fake_lending(devices[i], users[i]) for i in range(number))
+    for i in range(number):
+        lending = fake_lending(devices[i], users[i])
+        lending.save()
+        if lending.device:
+            devices[i].currentlending = lending
+            devices[i].save()
 
 
 def generate_pictures(number):
