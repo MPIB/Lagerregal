@@ -29,8 +29,11 @@ def get_file_location(instance=None, filename=""):
         destination += instance.__class__.__name__.lower()
 
     destination += "/"
-    ext = filename.split(".")[-1]
-    destination += "{0}.{1}".format(uuid.uuid4(), ext)
+    if settings.PRODUCTION:
+        ext = filename.split(".")[-1]
+        destination += "{0}.{1}".format(uuid.uuid4(), ext)
+    else:
+        destination += filename
 
     return destination
 

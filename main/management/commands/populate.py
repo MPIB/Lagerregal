@@ -1,10 +1,11 @@
-from django.conf import settings  # import the settings file
-from django.core.management.base import BaseCommand
-from django.core.files.base import ContentFile
-
-from faker import Faker
 import random
 import urllib
+from os import path, makedirs
+
+from faker import Faker
+
+from django.conf import settings  # import the settings file
+from django.core.management.base import BaseCommand
 
 from Lagerregal import utils
 from devices.models import Building, Room, Manufacturer, Device, Picture, Lending
@@ -167,18 +168,26 @@ def generate_lendings(number):
     Lending.objects.bulk_create(fake_lending(devices[i], users[i]) for i in range(number))
 
 
-# every device gets a picture, but we only download a few unique images
 def generate_pictures(number):
+    """
+    Every device gets one picture, but we only download a few unique images and
+    recycle after that. Try to be as dynamic as possible and share state through
+    settings.PRODUCTION with get_file_location so we do not get a uuid
+    every time we save a fake image.
+    """
     print("Generating pictures")
     devices = Device.objects.all()
-    picture_pool = []
+    img_root = path.join(settings.MEDIA_ROOT, utils.get_file_location(Picture()))
     for i in range(number):
-        with urllib.request.urlopen("https://lorempixel.com/640/480/technics") as r:
-            picture_pool.append(r.read())
+        img_path = path.join(img_root, 'dev_{:03}.png'.format(i))
+        if not path.exists(img_path):
+            makedirs(path.dirname(img_path), exist_ok=True)
+            urllib.request.urlretrieve("https://lorempixel.com/640/480/technics", img_path)
     for index, device in enumerate(devices):
         pic = Picture(device=device)
-        pic.image.save(utils.get_file_location() + 'jpg',
-            ContentFile(picture_pool[index % number]))
+        # recycle images after <number> uses
+        pic.image = utils.get_file_location(pic, 'dev_{:03}.png'.format(index % number))
+        pic.save()
 
 
 class Command(BaseCommand):
