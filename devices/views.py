@@ -238,7 +238,7 @@ class DeviceDetail(DetailView):
         # ip context data
         context['ipaddressform'] = IpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(
-            department=self.object.department, device=None, user=None)
+            device=None, user=None).filter(Q(department=self.object.department) | Q(department=None))
 
         # tag context data
         context['tagform'] = DeviceTagForm()

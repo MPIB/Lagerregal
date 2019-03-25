@@ -18,6 +18,7 @@ class IpAddress(models.Model):
     user = models.ForeignKey(Lageruser, blank=True, null=True, on_delete=models.SET_NULL)
     last_seen = models.DateTimeField(null=True, blank=True)
     purpose = models.CharField(max_length=200, null=True, blank=True)
+    # an IP that does not belong to a department is considered public
     department = models.ForeignKey(Department, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
