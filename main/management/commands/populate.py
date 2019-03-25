@@ -220,4 +220,6 @@ class Command(BaseCommand):
             generate_devices(150)
             generate_lendings(30)
             generate_pictures(20)
-            Lageruser.objects.create_superuser('admin', 'admin@localhost', 'admin')
+            admin = Lageruser.objects.create_superuser('admin', 'admin@localhost', 'admin')
+            for department in Department.objects.all():
+                DepartmentUser.objects.create(user=admin, department=department)
