@@ -8,7 +8,7 @@
 
 {% block pullright %}
     {{ filterform.filterstring }}
-    {{ viewform.viewfilter }}
+    {{ viewform.usagefilter }}
     {{ viewform.departmentfilter }}
     {% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right">
         <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}

@@ -9,7 +9,7 @@ from network.models import IpAddress
 from users.models import Lageruser
 from devices.forms import get_department_options
 
-VIEWFILTER = (
+USAGEFILTER = (
     ('all', _('All IP-Addresses')),
     ('free', _('Free IP-Addresses')),
     ('used', _('Used IP-Addresses')),
@@ -31,7 +31,7 @@ class IpAddressForm(forms.ModelForm):
 
 
 class ViewForm(forms.Form):
-    viewfilter = forms.ChoiceField(choices=VIEWFILTER,
+    usagefilter = forms.ChoiceField(choices=USAGEFILTER,
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
                                                               "class": "pull-right input-sm form-control"}))
     departmentfilter = forms.ChoiceField(choices=get_department_options(),

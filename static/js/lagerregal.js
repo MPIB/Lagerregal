@@ -72,7 +72,8 @@
                 department: ["#id_departmentfilter"],
                 sorting: ["#id_viewsorting"],
                 group: ["#id_groupfilter"],
-                filter: ["#id_viewfilter", "#id_filterstring"],
+                usage: ["#id_usagefilter"],
+                filter: ["#id_viewfilter", "#id_filterstring"]
             };
             var defaults = {
                 department: "all",
@@ -80,7 +81,7 @@
 
             var path = '';
             var index = window.location.pathname.length;
-            ['department', 'sorting', 'group', 'filter'].forEach(function(key) {
+            for( var key in ids) {
                 ids[key].forEach(function(id) {
                     var element = $(id);
                     if (element.length) {
@@ -88,7 +89,7 @@
                         path += "/" + key + "/" + value;
                     }
                 });
-            });
+            };
 
             return path;
         };
@@ -100,6 +101,7 @@
         $('#id_departmentfilter').change(setFilters);
         $('#id_viewsorting').change(setFilters);
         $('#id_groupfilter').change(setFilters);
+        $('#id_usagefilter').change(setFilters);
         $('#id_viewfilter').change(setFilters);
         $('#id_filterstring').change(setFilters);
         $(".pageselect").change(function() {

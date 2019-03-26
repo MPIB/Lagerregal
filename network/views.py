@@ -1,5 +1,6 @@
 # coding: utf-8
 from __future__ import unicode_literals
+
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -23,17 +24,17 @@ class IpAddressList(PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
 
     def get_queryset(self):
-        self.viewfilter = self.kwargs.get("filter", "all")
-        self.filterstring = self.kwargs.get("search", "")
-        if self.viewfilter == "all":
+        self.usagefilter = self.kwargs.get("usage", "all")
+        self.filterstring = self.kwargs.get("filter", "")
+        if self.usagefilter == "all":
             addresses = IpAddress.objects.all()
-        elif self.viewfilter == "free":
+        elif self.usagefilter == "free":
             addresses = IpAddress.objects.filter(device=None, user=None)
-        elif self.viewfilter == "used":
+        elif self.usagefilter == "used":
             addresses = IpAddress.objects.exclude(device=None, user=None)
-        elif self.viewfilter == "byuser":
+        elif self.usagefilter == "byuser":
             addresses = IpAddress.objects.exclude(user=None).filter(device=None)
-        elif self.viewfilter == "bydevice":
+        elif self.usagefilter == "bydevice":
             addresses = IpAddress.objects.exclude(device=None).filter(user=None)
         else:
             addresses = IpAddress.objects.all()
@@ -56,8 +57,9 @@ class IpAddressList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(IpAddressList, self).get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={
-                                                'viewfilter': self.viewfilter,
-                                                "departmentfilter": self.departmentfilter})
+            "usagefilter": self.usagefilter,
+            "departmentfilter": self.departmentfilter
+        })
         context["filterform"] = FilterForm(initial={
             "filterstring": self.filterstring
         })
