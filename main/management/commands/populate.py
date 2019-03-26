@@ -207,7 +207,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if Building.objects.exists():
-            raise SystemExit("It looks like your database already contains objects")
+            print("It looks like your database already contains objects. Skipping…")
         else:
             generate_buildings(20)
             generate_sections(20)
