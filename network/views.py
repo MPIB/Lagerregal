@@ -9,6 +9,7 @@ from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.db.models import Q
 
 import six
 from reversion import revisions as reversion
@@ -45,9 +46,11 @@ class IpAddressList(PaginationMixin, ListView):
             self.departmentfilter = self.kwargs.get("department", "all")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
-            addresses = addresses.filter(department__id=self.departmentfilter)
+            addresses = addresses.filter(Q(department__id=self.departmentfilter)
+                                         | Q(department=None))
         elif self.departmentfilter == "my":
-            addresses = addresses.filter(department__in=self.request.user.departments.all())
+            addresses = addresses.filter(Q(department__in=self.request.user.departments.all())
+                                         | Q(department=None))
 
         if self.filterstring != "":
             addresses = addresses.filter(address__icontains=self.filterstring)
