@@ -139,7 +139,8 @@ def generate_department_users():
     print("Generating departmentusers")
     users = Lageruser.objects.all()
     for user in users:
-        DepartmentUser.objects.create(user=user, department=user.main_department)
+        if user.main_department:
+            DepartmentUser.objects.create(user=user, department=user.main_department)
 
 
 def generate_devicetypes(number):
