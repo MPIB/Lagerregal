@@ -57,14 +57,14 @@
         });
 
         var getFilterBasePath = function() {
-            var index = window.location.pathname.length;
-            ['department', 'sorting', 'group', 'filter', 'page'].forEach(function(key) {
+            var index = window.location.pathname.length - 1;
+            ['/department/', '/sorting/', '/group/', '/usage/', '/filter/', '/page/'].forEach(function(key) {
                 var i = window.location.pathname.indexOf(key)
                 if (i !== -1 && i < index) {
                     index = i;
                 }
             });
-            return window.location.pathname.substr(0, index - 1);
+            return window.location.pathname.substr(0, index);
         };
 
         var getFilterPath = function() {
@@ -77,6 +77,7 @@
             };
             var defaults = {
                 department: "all",
+                filter: "",
             };
 
             var path = '';
