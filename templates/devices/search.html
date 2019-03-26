@@ -18,6 +18,7 @@
     </form>
     <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
 
+    {% include "snippets/pagination_simple.html" with listurl='search' %}
     <table id="devicetable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -42,6 +43,7 @@
             {% endfor %}
         </tbody>
     </table>
+    {% include "snippets/pagination_simple.html" with listurl='search' %}
 {% endblock %}
 
 {% block htmlend %}

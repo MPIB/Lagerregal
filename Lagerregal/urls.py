@@ -40,6 +40,7 @@ urlpatterns = [
     url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context": {"breadcrumbs": [("", _("Logout"))]}}, name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
+    url(r'^search/page/(?P<page>[0-9]*)$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
     url(r'^devices/$', DeviceList.as_view(), name="device-list"),
     url(r'^devices/page/(?P<page>[0-9]*)$', DeviceList.as_view(), name="device-list"),

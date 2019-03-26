@@ -1536,7 +1536,7 @@ class PictureDelete(DeleteView):
         return context
 
 
-class Search(ListView):
+class Search(PaginationMixin, ListView):
     model = Device
     template_name = 'devices/search.html'
 
@@ -1645,6 +1645,9 @@ class Search(ListView):
         context["searchstring"] = self.get_searchstring()
         context["keys"] = sorted(list(self.STRING_FIELDS.keys())
                                 + list(self.DATE_FIELDS.keys()))
+        # add page number to breadcrumbs
+        if context["is_paginated"] and context["page_obj"].number > 1:
+            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
 
 
