@@ -139,7 +139,8 @@ def generate_department_users():
     print("Generating departmentusers")
     users = Lageruser.objects.all()
     for user in users:
-        DepartmentUser.objects.create(user=user, department=user.main_department)
+        if user.main_department:
+            DepartmentUser.objects.create(user=user, department=user.main_department)
 
 
 def generate_devicetypes(number):
@@ -206,7 +207,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if Building.objects.exists():
-            raise SystemExit("It looks like your database already contains objects")
+            print("It looks like your database already contains objects. Skipping…")
         else:
             generate_buildings(20)
             generate_sections(20)
