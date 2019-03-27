@@ -235,12 +235,11 @@ class UserLendings(View):
 
 class PuppetDetails(View):
 
-    def get(self, request):
-        searchvalue = request.GET["id"]
+    def get(self, request, device):
         params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",'
                                             + '["select_facts",["and",["=", "name","'
                                             + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
-                                            + '["=","value","' + searchvalue + '"]]]]]'})
+                                            + '["=","value","' + device + '"]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
@@ -260,15 +259,14 @@ class PuppetDetails(View):
 
 class PuppetSoftware(View):
 
-    def get(self, request):
-        searchvalue = request.GET["id"]
+    def get(self, request, device):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 
         params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
                                             + '["in", "certname",["extract", "certname",'
                                             + '["select_facts",["and",["=", "name","' + query_fact + '"],'
-                                            + '["=","value","' + searchvalue + '"]]]]]]'})
+                                            + '["=","value","' + device + '"]]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])

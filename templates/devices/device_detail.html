@@ -640,7 +640,7 @@
             });
         }
 
-        $("#puppetdetails").load("{% url "puppet-details" %}", { "id" : "{{ device.pk }}"});
-        $("#softwaredetails").load("{% url "puppet-software" %}", { "id" : "{{ device.pk }}"});
+        $("#puppetdetails").load("{% url "puppet-details" device=device.pk %}");
+        $("#softwaredetails").load("{% url "puppet-software" device=device.pk %}");
     });
 {% endblock %}

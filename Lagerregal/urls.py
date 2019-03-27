@@ -243,8 +243,8 @@ urlpatterns = [
     url(r'^ajax/add_device_field', login_required(AddDeviceField.as_view()), name="add-device-field"),
     url(r'^ajax/get_attributes', login_required(GetTypeAttributes.as_view()), name="get-attributes"),
     url(r'^ajax/user_lendings', login_required(UserLendings.as_view()), name="get-user-lendings"),
-    url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
-    url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
+    url(r'^ajax/puppetdetails/(?P<device>\d+)', login_required(PuppetDetails.as_view()), name="puppet-details"),
+    url(r'^ajax/puppetsoftware/(?P<device>\d+)', login_required(PuppetSoftware.as_view()), name="puppet-software"),
 ]
 
 urlpatterns += format_suffix_patterns([
