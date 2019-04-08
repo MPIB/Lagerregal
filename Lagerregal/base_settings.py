@@ -202,6 +202,10 @@ NPM_FILE_PATTERNS = {
         'js/noty/layouts/*.js',
         'js/noty/themes/*.js',
     ],
+    'select2': [
+        'dist/js/select2.min.js',
+        'dist/css/select2.min.css',
+    ],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
