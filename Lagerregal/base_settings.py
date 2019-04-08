@@ -183,6 +183,9 @@ LOGGING = {
 NPM_ROOT_PATH = os.getcwd()
 
 NPM_FILE_PATTERNS = {
+    'bootstrap': [
+        'dist/js/bootstrap.min.js',
+    ],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
