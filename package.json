@@ -3,5 +3,6 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "bootstrap": "^3.3.6",
+    "font-awesome": "^4.7.0",
   }
 }

@@ -186,6 +186,10 @@ NPM_FILE_PATTERNS = {
     'bootstrap': [
         'dist/js/bootstrap.min.js',
     ],
+    'font-awesome': [
+        'css/font-awesome.min.css',
+        'fonts/*',
+    ],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
