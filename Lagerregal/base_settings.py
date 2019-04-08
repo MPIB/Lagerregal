@@ -192,6 +192,11 @@ NPM_FILE_PATTERNS = {
         'fonts/*',
     ],
     'jquery': ['dist/jquery.min.js'],
+    'jquery-ui-dist': [
+        'jquery-ui.min.js',
+        'jquery-ui.min.css',
+        'images/*.png',
+    ],
     'datatables': [
         'media/css/jquery.dataTables.min.css',
         'media/images/*.png',
