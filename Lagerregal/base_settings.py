@@ -190,6 +190,7 @@ NPM_FILE_PATTERNS = {
         'css/font-awesome.min.css',
         'fonts/*',
     ],
+    'jquery': ['dist/jquery.min.js'],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
