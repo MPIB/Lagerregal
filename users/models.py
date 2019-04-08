@@ -61,7 +61,7 @@ class Lageruser(AbstractUser):
 
     def get_theme_path(self):
         theme = self.theme or settings.THEMES[0]
-        return 'css/themes/%s.min.css' % theme
+        return 'bootswatch/%s/bootstrap.min.css' % theme
 
     @staticmethod
     def users_from_departments(departments=[]):

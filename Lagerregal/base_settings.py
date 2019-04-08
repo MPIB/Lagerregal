@@ -186,6 +186,7 @@ NPM_FILE_PATTERNS = {
     'bootstrap': [
         'dist/js/bootstrap.min.js',
     ],
+    'bootswatch': ['*/bootstrap.min.css'],
     'font-awesome': [
         'css/font-awesome.min.css',
         'fonts/*',
@@ -217,7 +218,7 @@ PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
 # get more themes from https://bootswatch.com/ and download them to:
 #   static/css/themes/<name>.min.css
 THEMES = [
-    'default',
+    'flatly',
     'darkly',
     'simplex',
     'superhero',
