@@ -50,6 +50,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'npm.finders.NpmFinder',
 )
 
 MIDDLEWARE = (
@@ -179,6 +180,10 @@ LOGGING = {
     }
 }
 
+NPM_ROOT_PATH = os.getcwd()
+
+NPM_FILE_PATTERNS = {
+}
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
 
