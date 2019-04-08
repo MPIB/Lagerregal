@@ -3,6 +3,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "bootstrap": "^3.3.6",
+    "datatables": "^1.10.18",
     "font-awesome": "^4.7.0",
     "jquery": "^2.2.4",
   }

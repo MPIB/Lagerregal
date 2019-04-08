@@ -191,6 +191,11 @@ NPM_FILE_PATTERNS = {
         'fonts/*',
     ],
     'jquery': ['dist/jquery.min.js'],
+    'datatables': [
+        'media/css/jquery.dataTables.min.css',
+        'media/images/*.png',
+        'media/js/jquery.dataTables.min.js',
+    ],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
