@@ -206,6 +206,10 @@ NPM_FILE_PATTERNS = {
         'dist/js/select2.min.js',
         'dist/css/select2.min.css',
     ],
+    'timeago': [
+        'jquery.timeago.js',
+        'locales/jquery.timeago.de.js',
+    ],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}

@@ -219,9 +219,9 @@
 <script type="text/javascript" language="javascript"
         src="{% static "js/bootstrap-formhelpers-datepicker.en_US.js" %}"></script>
 
-<script src="{% static "js/jquery.timeago.js" %}"></script>
+<script src="{% static "timeago/jquery.timeago.js" %}"></script>
 {% if user.language != "en" %}
-    <script src="{% static "js/jquery.timeago.de.js" %}"></script>
+    <script src="{% static "timeago/locales/jquery.timeago.de.js" %}"></script>
 {% endif %}
 
 <script src="{% static "js/spin.min.js" %}"></script>
