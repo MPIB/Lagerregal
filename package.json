@@ -7,5 +7,6 @@
     "font-awesome": "^4.7.0",
     "jquery": "^2.2.4",
     "mustache": "^2.3.0",
+    "noty": "^2.1.0",
   }
 }

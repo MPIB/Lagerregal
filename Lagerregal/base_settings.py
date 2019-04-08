@@ -197,6 +197,11 @@ NPM_FILE_PATTERNS = {
         'media/js/jquery.dataTables.min.js',
     ],
     'mustache': ['mustache.min.js'],
+    'noty': [
+        'js/noty/jquery.noty.js',
+        'js/noty/layouts/*.js',
+        'js/noty/themes/*.js',
+    ],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
