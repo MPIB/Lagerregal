@@ -196,6 +196,7 @@ NPM_FILE_PATTERNS = {
         'media/images/*.png',
         'media/js/jquery.dataTables.min.js',
     ],
+    'mustache': ['mustache.min.js'],
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
