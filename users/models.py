@@ -24,7 +24,7 @@ from Lagerregal import utils
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
-    theme = models.CharField(max_length=50, null=False, blank=False, default='default',
+    theme = models.CharField(max_length=50, blank=True,
                              choices=[(theme, theme) for theme in settings.THEMES])
     timezone = models.CharField(max_length=50, null=True, blank=True,
                                 choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
@@ -58,6 +58,10 @@ class Lageruser(AbstractUser):
         # initial ldap population returns a positive int as string
         # will be set correctly later by populate_ldap_user() / ldapimport cmd
         self.expiration_date = None
+
+    def get_theme_path(self):
+        theme = self.theme or settings.THEMES[0]
+        return 'css/themes/%s.min.css' % theme
 
     @staticmethod
     def users_from_departments(departments=[]):
