@@ -1,8 +1,5 @@
 from __future__ import unicode_literals
 
-from django.contrib import auth
-from django.core.exceptions import PermissionDenied
-
 from permission.logics import PermissionLogic
 
 __author__ = 'viirus'
@@ -14,12 +11,6 @@ class DevicePermissionLogic(PermissionLogic):
             return False
 
         if obj is None:
-            backend = auth.get_backends()[0]
-            try:
-                if backend.has_perm(user_obj, perm, obj):
-                    return True
-            except PermissionDenied:
-                return False
             return False
         elif user_obj.is_active and user_obj.has_perm(perm):
             try:
