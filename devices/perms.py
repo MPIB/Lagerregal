@@ -7,12 +7,7 @@ __author__ = 'viirus'
 
 class DevicePermissionLogic(PermissionLogic):
     def has_perm(self, user_obj, perm, obj=None):
-        if not user_obj.is_authenticated:
-            return False
-
-        if obj is None:
-            return False
-        elif user_obj.is_active and user_obj.has_perm(perm):
+        if user_obj.is_active and user_obj.has_perm(perm):
             try:
                 if not obj.is_private:
                     if perm == "devices.read_device":
@@ -20,7 +15,6 @@ class DevicePermissionLogic(PermissionLogic):
             except:
                 pass
             return obj.department in user_obj.departments.all()
-        return False
 
 
 PERMISSION_LOGICS = (

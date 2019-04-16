@@ -7,12 +7,7 @@ __author__ = 'viirus'
 
 class DepartmentPermissionLogic(PermissionLogic):
     def has_perm(self, user_obj, perm, obj=None):
-        if not user_obj.is_authenticated:
-            return False
-
-        if obj is None:
-            return False
-        elif user_obj.is_active:
+        if user_obj.is_active:
             if obj in user_obj.departments.all():
                 department_membership = user_obj.departmentuser_set.get(department=obj)
                 if department_membership.role == "a":
@@ -24,8 +19,6 @@ class DepartmentPermissionLogic(PermissionLogic):
                         return True
             except TypeError:
                 return False
-
-        return False
 
 
 PERMISSION_LOGICS = (
