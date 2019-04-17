@@ -24,12 +24,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-import permission
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
-
-admin.autodiscover()
-permission.autodiscover()
 
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
