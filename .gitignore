@@ -17,3 +17,4 @@ media/
 scripts/
 exports/
 backup/
+node_modules/
