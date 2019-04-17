@@ -22,7 +22,6 @@ from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmall
 from devicetypes.ajax import GetTypeAttributes
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
