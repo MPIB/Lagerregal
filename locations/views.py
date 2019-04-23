@@ -30,7 +30,7 @@ class SectionList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -51,7 +51,7 @@ class SectionCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "section"
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Section")),
@@ -66,7 +66,7 @@ class SectionDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Section.objects.exclude(pk=context["object"].pk).order_by("name")
         context['device_list'] = Device.objects.filter(room__section=context["object"], archived=None,
@@ -96,7 +96,7 @@ class SectionUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Section")),
             (reverse("section-edit", kwargs={"pk": self.object.pk}), self.object)]
@@ -110,7 +110,7 @@ class SectionDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections")),
             (reverse("section-delete", kwargs={"pk": self.object.pk}), self.object)]

@@ -68,9 +68,9 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self, query=None):
         if query:
-            device = super(DeviceApiDetail, self).get_object(query)
+            device = super().get_object(query)
         else:
-            device = super(DeviceApiDetail, self).get_object()
+            device = super().get_object()
         device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
         return device
 
@@ -84,7 +84,7 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
         return self.put(request, pk)
 
     def put(self, request, pk, **kwargs):
-        response = super(DeviceApiRoomChange, self).put(request, pk)
+        response = super().put(request, pk)
         try:
             template = MailTemplate.objects.get(usage="room")
         except:
@@ -145,7 +145,7 @@ class DeviceApiLend(generics.CreateAPIView):
                 room = None
         else:
             room = None
-        response = super(DeviceApiLend, self).post(request)
+        response = super().post(request)
         if request.POST["device"] != "" and response.status_code == 201:
             device = Device.objects.get(pk=request.POST["device"])
             device.currentlending = self.object

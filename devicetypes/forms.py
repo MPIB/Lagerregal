@@ -17,7 +17,7 @@ class TypeForm(forms.ModelForm):
         else:
             extra_fields = 1
 
-        super(TypeForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['extra_fieldcount'].initial = extra_fields
 
         for index in range(int(extra_fields)):

@@ -55,7 +55,7 @@ class DevicegroupList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         '''method for getting context data and use it'''
         # Call the base implementation first to get a context
-        context = super(DevicegroupList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups"))]
         context["viewform"] = DepartmentViewForm(initial={"viewsorting": self.viewsorting,
@@ -81,7 +81,7 @@ class DevicegroupDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicegroupDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # if label templates exist, use it to show details
         if "devicegroup" in settings.LABEL_TEMPLATES:
@@ -106,7 +106,7 @@ class DevicegroupCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicegroupCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "devicegroup"
 
         # if user has main department use it as default in form
@@ -128,7 +128,7 @@ class DevicegroupUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicegroupUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # add devicegroup and "edit" to breadcrumbs
         context["breadcrumbs"] = [
@@ -146,7 +146,7 @@ class DevicegroupDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicegroupDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # should add devicegroup and "delete" to breadcrumbs
         context["breadcrumbs"] = [

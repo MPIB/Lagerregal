@@ -18,7 +18,7 @@ class SettingsForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(SettingsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["timezone"].choices[0] = ("", ugettext("Default ({0})".format(settings.TIME_ZONE)))
         self.fields["timezone"].widget.choices[0] = ("", ugettext("Default ({0})".format(settings.TIME_ZONE)))
 

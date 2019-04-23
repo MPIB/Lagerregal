@@ -61,7 +61,7 @@ class UserList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(UserList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # adds "Users" to breadcrumbs
         context["breadcrumbs"] = [
@@ -83,7 +83,7 @@ class ProfileView(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ProfileView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         # shows list of edits made by user
         context['edits'] = Version.objects.select_related("revision", "revision__user"
@@ -116,7 +116,7 @@ class UserprofileView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(UserprofileView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["profileuser"] = self.request.user
 
@@ -152,7 +152,7 @@ class UsersettingsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(UsersettingsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         if self.request.method != "POST":
             context['settingsform'] = SettingsForm(instance=self.request.user)
@@ -302,7 +302,7 @@ class DepartmentList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -323,7 +323,7 @@ class DepartmentCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "section"
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Departments")),
@@ -331,7 +331,7 @@ class DepartmentCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        response = super(DepartmentCreate, self).form_valid(form)
+        response = super().form_valid(form)
         department_user = DepartmentUser(user=self.request.user, department=self.object, role="a")
         department_user.save()
         return response
@@ -343,7 +343,7 @@ class DepartmentDetail(DetailView):
     template_name = "users/department_detail.html"
 
     def get_context_data(self, **kwargs):
-        context = super(DepartmentDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['department_users'] = DepartmentUser.objects.select_related("user").filter(department=self.object)
 
         if "department" in settings.LABEL_TEMPLATES:
@@ -369,7 +369,7 @@ class DepartmentUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
             (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
@@ -385,7 +385,7 @@ class DepartmentDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
             (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
@@ -404,7 +404,7 @@ class DepartmentAddUser(FormView):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
         if not self.request.user.has_perm("users.add_department_user", self.department):
             raise PermissionDenied
-        context = super(DepartmentAddUser, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["form"].fields["department"].initial = self.department
         context["form"].fields["user"].queryset = Lageruser.objects.exclude(departments__id=self.department.id)
 
@@ -436,7 +436,7 @@ class DepartmentDeleteUser(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentDeleteUser, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
             (reverse("department-detail", kwargs={"pk": self.object.department.pk}), self.object.department),

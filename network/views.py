@@ -52,7 +52,7 @@ class IpAddressList(PaginationMixin, ListView):
                                 "user__first_name", "user__last_name")
 
     def get_context_data(self, **kwargs):
-        context = super(IpAddressList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={
                                                 'viewfilter': self.viewfilter,
                                                 "departmentfilter": self.departmentfilter})
@@ -71,7 +71,7 @@ class IpAddressDetail(DetailView):
     context_object_name = 'ipaddress'
 
     def get_context_data(self, **kwargs):
-        context = super(IpAddressDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         if "ipaddress" in settings.LABEL_TEMPLATES:
             context["label_js"] = ""
@@ -92,7 +92,7 @@ class IpAddressCreate(CreateView):
     template_name = 'devices/base_form.html'
 
     def get_context_data(self, **kwargs):
-        context = super(IpAddressCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['actionstring'] = "Create new"
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         if self.request.user.main_department:
@@ -105,7 +105,7 @@ class IpAddressCreate(CreateView):
     def form_valid(self, form):
         form.instance.address = ".".join(
             [(x.lstrip("0") if x != "0" else x) for x in form.cleaned_data["address"].split(".")])
-        return super(IpAddressCreate, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class IpAddressUpdate(UpdateView):
@@ -115,7 +115,7 @@ class IpAddressUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(IpAddressUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
@@ -127,7 +127,7 @@ class IpAddressUpdate(UpdateView):
     def form_valid(self, form):
         form.instance.address = ".".join(
             [(x.lstrip("0") if x != "0" else x) for x in form.cleaned_data["address"].split(".")])
-        return super(IpAddressUpdate, self).form_valid(form)
+        return super().form_valid(form)
 
 
 class IpAddressDelete(DeleteView):
@@ -170,7 +170,7 @@ class UserIpAddress(FormView):
     success_url = "/devices"
 
     def get_context_data(self, **kwargs):
-        context = super(UserIpAddress, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         user = context["form"].cleaned_data["user"]
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),

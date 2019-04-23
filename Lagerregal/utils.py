@@ -58,4 +58,4 @@ def convert_ad_accountexpires(timestamp):
 class DetectableTestRunner(DiscoverRunner):
     def __init__(self, *args, **kwargs):
         settings.TEST_MODE = True
-        super(DetectableTestRunner, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
