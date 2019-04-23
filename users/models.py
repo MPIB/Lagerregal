@@ -59,10 +59,6 @@ class Lageruser(AbstractUser):
         # will be set correctly later by populate_ldap_user() / ldapimport cmd
         self.expiration_date = None
 
-    def get_theme_path(self):
-        theme = self.theme or settings.THEMES[0]
-        return 'bootswatch/%s/bootstrap.min.css' % theme
-
     @staticmethod
     def users_from_departments(departments=[]):
         if len(departments) == 0:

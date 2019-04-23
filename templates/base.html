@@ -1,4 +1,4 @@
-{% load i18n %}{% load staticfiles %}<!DOCTYPE html>
+{% load i18n usertags %}{% load staticfiles %}<!DOCTYPE html>
 <html lang="{{ user.language|default:"en" }}">
 <head>
     <meta charset="utf-8"/>
@@ -8,7 +8,7 @@
         connect-src 'self' https://localhost:41951 https://127.0.0.1:41951;
         font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com" >
     <title>{% block title %}{% endblock %} &middot; {{ SITE_NAME }}</title>
-    <link rel="stylesheet" href="{% static user.get_theme_path %}">
+    <link rel="stylesheet" href="{% static user|theme_path %}">
     <link rel="stylesheet" href="{% static "select2/dist/css/select2.min.css" %}">
     <link rel="stylesheet" href="{% static "css/main.css" %}">
     <link rel="stylesheet" href="{% static "jquery-ui-dist/jquery-ui.min.css" %}">
