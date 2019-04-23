@@ -1604,7 +1604,13 @@ class Search(ListView):
 
     def get_q(self):
         data = {}
-        for key, value in self.parse_searchstring(self.get_searchstring()):
+        searchstring = self.get_searchstring()
+
+        if not searchstring:
+            # Force empty result
+            return Q(pk=0) & Q(pk=1)
+
+        for key, value in self.parse_searchstring(searchstring):
             if key not in data:
                 data[key] = []
             data[key].append(value)
