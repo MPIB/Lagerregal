@@ -1,5 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
