@@ -17,11 +17,6 @@ def get_verbose_name(object):
 
 
 @register.simple_tag
-def get_verbose_name_lowercase(object):
-    return object._meta.verbose_name.lower()
-
-
-@register.simple_tag
 def history_compare(old, new):
     if old != new:
         if old == "" and new != "":
@@ -85,11 +80,6 @@ def get_attribute(object, attribute):
         return getattr(object, attribute)
     except AttributeError:
         return object.get(attribute)
-
-
-@register.filter
-def get_attribute_from_list(device, attribute):
-    return device[attribute]
 
 
 @register.filter
