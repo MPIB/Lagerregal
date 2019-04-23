@@ -1,13 +1,8 @@
 import json
 
-try:
-    import urllib.parse as urllib
-    import http.client as httplib
-    from http.client import ssl
-except ImportError:
-    import urllib
-    import httplib
-    from httplib import ssl
+import urllib
+import http.client
+from http.client import ssl
 
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -233,19 +228,19 @@ class PuppetDetails(View):
 
     def get(self, request):
         searchvalue = request.GET["id"]
-        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",'
+        params = urllib.parse.urlencode({'query': '["in", "certname",["extract", "certname",'
                                             + '["select_facts",["and",["=", "name","'
                                             + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
                                             + '["=","value","' + searchvalue + '"]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
-        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
+        conn = http.client.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
                                        context=context)
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
-        if res.status != httplib.OK:
+        if res.status != http.client.OK:
             return HttpResponse('Failed to fetch puppet details from '
                                 + settings.PUPPETDB_SETTINGS['host'])
         context = {
@@ -261,19 +256,19 @@ class PuppetSoftware(View):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 
-        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
+        params = urllib.parse.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
                                             + '["in", "certname",["extract", "certname",'
                                             + '["select_facts",["and",["=", "name","' + query_fact + '"],'
                                             + '["=","value","' + searchvalue + '"]]]]]]'})
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
         context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
                                 keyfile=settings.PUPPETDB_SETTINGS['key'])
-        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
+        conn = http.client.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
                                        settings.PUPPETDB_SETTINGS['port'],
                                        context=context)
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
-        if res.status != httplib.OK:
+        if res.status != http.client.OK:
             return HttpResponse('Failed to fetch puppet details from '
                                 + settings.PUPPETDB_SETTINGS['host'])
 
