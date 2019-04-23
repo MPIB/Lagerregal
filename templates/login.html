@@ -1,16 +1,9 @@
-{% load devicetags %}{% load i18n %}{% load staticfiles %}<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
+{% load i18n %}
 
-    <title>{% trans "Log in" %} &middot; {{ SITE_NAME }}</title>
-    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
-    <link href="{% static "css/font-awesome.css" %}" rel="stylesheet">
+{% block title %}{% trans "Log in" %}{% endblock %}
 
-    <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
-    <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
+{% block extracss %}
     <style>
         body {
             padding-top: 40px;
@@ -74,11 +67,9 @@
             border-top-right-radius: 0;
         }
     </style>
-</head>
+{% endblock %}
 
-<body>
-
-<div class="container">
+{% block content %}
     <h1><i class="fa fa-archive"></i> {{ SITE_NAME }}</h1>
     {% if form.errors %}
         <div data-alert class="alert-danger alert">
@@ -101,10 +92,4 @@
 
         <a href="{% url "public-device-list" %}" class="btn btn-info btn-block" style="margin-top:30px"><i class="fa fa-globe"></i> {% trans "Public Device List" %}</a>
     </form>
-
-</div>
-<!-- /container -->
-<script src="{% static "js/jquery.min.js" %}"></script>
-<script src="{% static "js/bootstrap.min.js" %}"></script>
-</body>
-</html>
+{% endblock %}
