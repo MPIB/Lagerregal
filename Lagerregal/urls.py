@@ -36,8 +36,8 @@ permission.autodiscover()
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', LoginView.as_view(template_name='login.html'), name="login"),
-    url(r'^accounts/logout/$', LogoutView.as_view(template_name='logout.html'), name="logout"),
+    url(r'^accounts/login/$', LoginView.as_view(), name="login"),
+    url(r'^accounts/logout/$', LogoutView.as_view(), name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
