@@ -12,13 +12,6 @@ class DepartmentPermissionLogic(PermissionLogic):
                 department_membership = user_obj.departmentuser_set.get(department=obj)
                 if department_membership.role == "a":
                     return True
-            try:
-                if obj.department in user_obj.departments.all():
-                    department_membership = user_obj.departmentuser_set.get(department=obj.department)
-                    if department_membership.role == "a":
-                        return True
-            except TypeError:
-                return False
 
 
 PERMISSION_LOGICS = (
