@@ -26,7 +26,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 import permission
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -37,8 +36,8 @@ permission.autodiscover()
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', LoginView.as_view(template_name='login.html', extra_context={"breadcrumbs": [("", _("Login"))]}), name="login"),
-    url(r'^accounts/logout/$', LogoutView.as_view(template_name='logout.html', extra_context={"breadcrumbs": [("", _("Logout"))]}), name="logout"),
+    url(r'^accounts/login/$', LoginView.as_view(template_name='login.html'), name="login"),
+    url(r'^accounts/logout/$', LogoutView.as_view(template_name='logout.html'), name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
