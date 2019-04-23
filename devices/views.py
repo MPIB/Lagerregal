@@ -1555,6 +1555,7 @@ class Search(ListView):
         'department': 'department__name',
         'tag': 'tags__name',
         'user': 'currentlending__owner__username',
+        'ip': 'ipaddress__address',
     }
     DATE_FIELDS = {
         'archived': 'archived',
