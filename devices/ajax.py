@@ -9,7 +9,6 @@ except ImportError:
     import httplib
     from httplib import ssl
 
-import six
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.forms.models import modelform_factory
@@ -87,7 +86,7 @@ class AutocompleteName(View):
 
 class AddDeviceField(View):
     def post(self, request):
-        dform = QueryDict(query_string=six.text_type(request.POST["form"]).encode('utf-8'))
+        dform = QueryDict(query_string=str(request.POST["form"]).encode('utf-8'))
         classname = dform["classname"]
         if classname == "manufacturer":
             form = modelform_factory(Manufacturer, exclude=(), form=AddForm)(dform)
@@ -202,7 +201,7 @@ class LoadMailtemplate(View):
             return HttpResponse("")
         template = get_object_or_404(MailTemplate, pk=template)
         data = {"subject": template.subject, "body": template.body}
-        if isinstance(recipients, six.text_type):
+        if isinstance(recipients, str):
             recipients = [recipients]
         newrecipients = [obj for obj in recipients]
         newrecipients += [obj.content_type.name[0].lower() + str(obj.object_id) for obj in

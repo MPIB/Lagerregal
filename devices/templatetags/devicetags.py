@@ -6,8 +6,6 @@ from django.urls import reverse
 from django.utils.html import mark_safe, format_html
 from django.forms import CheckboxInput
 
-import six
-
 from devices.models import Bookmark
 
 register = Library()
@@ -56,7 +54,7 @@ class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
 
 @register.filter
 def add_class(value, css_class):
-    string = six.text_type(value)
+    string = str(value)
     match = class_re.search(string)
     if match:
         m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class,
@@ -120,7 +118,7 @@ def as_nested_list(factvalue):
             res += "<li>{}</li>".format(item)
         res += "</ul>"
     else:
-        res += six.text_type(factvalue)
+        res += str(factvalue)
 
     return mark_safe(res)
 

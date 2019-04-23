@@ -2,7 +2,6 @@ from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
 
-import six
 from model_mommy import mommy
 
 from locations.models import Section
@@ -17,6 +16,6 @@ class SectionTests(TestCase):
 
     def test_section_creation(self):
         section = mommy.make(Section)
-        self.assertEqual(six.text_type(section), section.name)
+        self.assertEqual(str(section), section.name)
         self.assertEqual(section.get_absolute_url(), reverse('section-detail', kwargs={'pk': section.pk}))
         self.assertEqual(section.get_edit_url(), reverse('section-edit', kwargs={'pk': section.pk}))

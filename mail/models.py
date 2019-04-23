@@ -6,7 +6,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 
 import pystache
-import six
 
 from users.models import Lageruser
 
@@ -22,7 +21,6 @@ USAGES = [
 ]
 
 
-@six.python_2_unicode_compatible
 class MailTemplate(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
@@ -62,7 +60,7 @@ class MailTemplate(models.Model):
             "inventoried": data["device"].inventoried,
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
-            "name": six.text_type(data["device"]),
+            "name": str(data["device"]),
             "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
                                                                                                       "device"].room is not None else ""),
             "serialnumber": data["device"].serialnumber,
@@ -72,7 +70,7 @@ class MailTemplate(models.Model):
         }
         if data["device"].currentlending is not None:
             datadict["device"]["currentlending"] = {
-                "owner": six.text_type(data["device"].currentlending.owner),
+                "owner": str(data["device"].currentlending.owner),
                 "duedate": data["device"].currentlending.duedate,
                 "lenddate": data["device"].currentlending.lenddate
             },
@@ -106,7 +104,6 @@ class MailTemplate(models.Model):
         mailhistory.save()
 
 
-@six.python_2_unicode_compatible
 class MailTemplateRecipient(models.Model):
     mailtemplate = models.ForeignKey(MailTemplate, related_name='default_recipients', on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -114,7 +111,7 @@ class MailTemplateRecipient(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
-        return six.text_type(self.content_type.name + ": " + six.text_type(self.content_object))
+        return str(self.content_type.name + ": " + str(self.content_object))
 
 
 class MailHistory(models.Model):

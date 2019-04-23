@@ -2,14 +2,12 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 
-import six
 from reversion import revisions as reversion
 
 from devices.models import Device
 from users.models import Department, Lageruser
 
 
-@six.python_2_unicode_compatible
 class IpAddress(models.Model):
     address = models.GenericIPAddressField(unique=True)
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)

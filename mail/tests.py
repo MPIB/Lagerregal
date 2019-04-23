@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.urls import reverse
 from django.contrib.contenttypes.models import ContentType
 
-import six
 from model_mommy import mommy
 
 from mail.models import MailTemplate, MailTemplateRecipient, MailHistory
@@ -20,7 +19,7 @@ class TestMailTemplate(TestCase):
 
     def test_template_creation(self):
         template = mommy.make(MailTemplate)
-        self.assertEqual(six.text_type(template), template.name)
+        self.assertEqual(str(template), template.name)
         self.assertEqual(template.get_absolute_url(), reverse('mail-detail', kwargs={'pk': template.pk}))
         self.assertEqual(template.get_edit_url(), reverse('mail-edit', kwargs={'pk': template.pk}))
 
@@ -35,7 +34,7 @@ class TestMailTemplateRecipient(TestCase):
     def test_template_creation(self):
         con = mommy.make(ContentType)
         rec = mommy.make(MailTemplateRecipient, content_type=con)
-        self.assertEqual(six.text_type(rec), six.text_type(rec.content_type.name + ": " + six.text_type(rec.content_object)))
+        self.assertEqual(str(rec), str(rec.content_type.name + ": " + str(rec.content_object)))
 
 
 class TestMailHistory(TestCase):

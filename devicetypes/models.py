@@ -2,11 +2,9 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 
-import six
 from reversion import revisions as reversion
 
 
-@six.python_2_unicode_compatible
 class Type(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
 
@@ -27,7 +25,6 @@ class Type(models.Model):
         return reverse('type-edit', kwargs={'pk': self.pk})
 
 
-@six.python_2_unicode_compatible
 class TypeAttribute(models.Model):
     devicetype = models.ForeignKey(Type, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -44,7 +41,6 @@ class TypeAttribute(models.Model):
         return self.name
 
 
-@six.python_2_unicode_compatible
 class TypeAttributeValue(models.Model):
     typeattribute = models.ForeignKey(TypeAttribute, on_delete=models.CASCADE)
     value = models.CharField(max_length=400)

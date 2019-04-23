@@ -2,10 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 
-import six
 
-
-@six.python_2_unicode_compatible
 class Section(models.Model):
     name = models.CharField(max_length=200)
 
