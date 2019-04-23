@@ -11,6 +11,7 @@ django-casper
 django-permission
 django_auth_ldap
 django-favicon
+django-npm
 django-select2 < 7.0.0
 psycopg2-binary
 faker
