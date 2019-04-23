@@ -89,7 +89,6 @@ def get_attribute(object, attribute):
 
 @register.filter
 def get_attribute_from_list(device, attribute):
-    print(device, attribute)
     return device[attribute]
 
 
