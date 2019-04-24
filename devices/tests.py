@@ -1,12 +1,9 @@
-from __future__ import unicode_literals
-
 from datetime import datetime, timedelta
 
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
 
-import six
 from model_mommy import mommy
 
 from devices.models import Device, Building, Room, Manufacturer, Template, Note, Lending, DeviceInformationType, DeviceInformation, Picture
@@ -28,7 +25,7 @@ class DeviceTests(TestCase):
         lending_past = mommy.make(Lending, duedate=(datetime.today() - timedelta(days=1)).date())
         lending_future = mommy.make(Lending, duedate=(datetime.today() + timedelta(days=1)).date())
         self.assertTrue(isinstance(device, Device))
-        self.assertEqual(six.text_type(device), device.name)
+        self.assertEqual(str(device), device.name)
         self.assertEqual(device.get_absolute_url(), reverse('device-detail', kwargs={'pk': device.pk}))
         self.assertEqual(device.get_edit_url(), reverse('device-edit', kwargs={'pk': device.pk}))
         self.assertEqual(device.get_as_dict(), {
@@ -250,7 +247,7 @@ class BuildingTests(TestCase):
         building = mommy.make(Building)
         building.save()
         self.assertTrue(isinstance(building, Building))
-        self.assertEqual(six.text_type(building), building.name)
+        self.assertEqual(str(building), building.name)
         self.assertEqual(building.get_absolute_url(), reverse('building-detail', kwargs={'pk': building.pk}))
         self.assertEqual(building.get_edit_url(), reverse('building-edit', kwargs={'pk': building.pk}))
 
@@ -306,9 +303,9 @@ class RoomTests(TestCase):
         building = mommy.make(Building)
         room_in_building = mommy.make(Room, building=building)
         self.assertTrue(isinstance(room, Room))
-        self.assertEqual(six.text_type(room), room.name)
+        self.assertEqual(str(room), room.name)
         self.assertTrue(isinstance(room_in_building, Room))
-        self.assertEqual(six.text_type(room_in_building), room_in_building.name + " (" + six.text_type(building) + ")")
+        self.assertEqual(str(room_in_building), room_in_building.name + " (" + str(building) + ")")
         self.assertEqual(room.get_absolute_url(), reverse('room-detail', kwargs={'pk': room.pk}))
         self.assertEqual(room.get_edit_url(), reverse('room-edit', kwargs={'pk': room.pk}))
 
@@ -362,7 +359,7 @@ class ManufacturerTests(TestCase):
     def test_manufacturer_creation(self):
         manufacturer = mommy.make(Manufacturer)
         self.assertTrue(isinstance(manufacturer, Manufacturer))
-        self.assertEqual(six.text_type(manufacturer), manufacturer.name)
+        self.assertEqual(str(manufacturer), manufacturer.name)
         self.assertEqual(manufacturer.get_absolute_url(),
                          reverse('manufacturer-detail', kwargs={'pk': manufacturer.pk}))
         self.assertEqual(manufacturer.get_edit_url(), reverse('manufacturer-edit', kwargs={'pk': manufacturer.pk}))
@@ -417,7 +414,7 @@ class TemplateTests(TestCase):
     def test_template_creation(self):
         template = mommy.make(Template)
         self.assertTrue(isinstance(template, Template))
-        self.assertEqual(six.text_type(template), template.templatename)
+        self.assertEqual(str(template), template.templatename)
         self.assertEqual(template.get_absolute_url(), reverse('device-list'))
         self.assertEqual(template.get_as_dict(), {
             'name': template.name,
@@ -480,7 +477,7 @@ class DeviceInformationTypeTests(TestCase):
     def test_device_information_type_creation(self):
         information = mommy.make(DeviceInformationType)
         self.assertTrue(isinstance(information, DeviceInformationType))
-        self.assertEqual(six.text_type(information), information.humanname)
+        self.assertEqual(str(information), information.humanname)
 
 
 class DeviceInformationTests(TestCase):
@@ -491,7 +488,7 @@ class DeviceInformationTests(TestCase):
 
     def test_device_information_creation(self):
         device_information = mommy.make(DeviceInformation)
-        self.assertEqual(six.text_type(device_information), six.text_type(device_information.infotype) + ": " + device_information.information)
+        self.assertEqual(str(device_information), str(device_information.infotype) + ": " + device_information.information)
 
 
 class PictureTests(TestCase):

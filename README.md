@@ -48,6 +48,7 @@ Install necessary requirements (either globally or with virtualenv)
 
 ```
 $ pip install -U -r dependencies.txt
+$ npm install
 ```
 
 Generate settings.py

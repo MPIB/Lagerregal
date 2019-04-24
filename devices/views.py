@@ -1,6 +1,3 @@
-# coding: utf-8
-from __future__ import unicode_literals
-
 import datetime
 import time
 import csv
@@ -138,7 +135,7 @@ class DeviceList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         '''method for getting context data (filter, time, templates, breadcrumbs)'''
-        context = super(DeviceList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # getting filters
         context["viewform"] = DeviceViewForm(initial={
@@ -230,7 +227,7 @@ class DeviceDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DeviceDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['usedset'] = Device.objects.filter(used_in=self.object)
 
         # Add in a QuerySet of all the books
@@ -341,7 +338,7 @@ class DeviceIpAddress(FormView):
     success_url = "/devices"
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceIpAddress, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         device = context["form"].cleaned_data["device"]
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -373,7 +370,7 @@ class DeviceIpAddressPurpose(FormView):
     success_url = "/devices"
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceIpAddressPurpose, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         device = get_object_or_404(Device, pk=self.kwargs["pk"])
         ipaddress = get_object_or_404(IpAddress, pk=self.kwargs["ipaddress"])
         if ipaddress.purpose:
@@ -406,7 +403,7 @@ class DeviceLendingList(PaginationMixin, ListView):
         return Lending.objects.filter(device=device).order_by("-pk")
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceLendingList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -422,7 +419,7 @@ class DeviceCreate(CreateView):
     form_class = DeviceForm
 
     def get_initial(self):
-        initial = super(DeviceCreate, self).get_initial()
+        initial = super().get_initial()
         creator = self.request.user.pk
         templateid = self.kwargs.pop("templateid", None)
         if templateid is not None:
@@ -450,7 +447,7 @@ class DeviceCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DeviceCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.all()
         context['actionstring'] = "Create new Device"
@@ -465,7 +462,7 @@ class DeviceCreate(CreateView):
                 return HttpResponseBadRequest()
         form.cleaned_data["creator"] = self.request.user
         reversion.set_comment(_("Created"))
-        r = super(DeviceCreate, self).form_valid(form)
+        r = super().form_valid(form)
         for key, value in form.cleaned_data.items():
             if key.startswith("attribute_") and value != "":
                 attributenumber = key.split("_")[1]
@@ -510,7 +507,7 @@ class DeviceUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DeviceUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
@@ -589,7 +586,7 @@ class DeviceUpdate(UpdateView):
                     used_device.save()
 
         messages.success(self.request, _('Device was successfully updated.'))
-        return super(DeviceUpdate, self).form_valid(form)
+        return super().form_valid(form)
 
 
 @permission_required('devices.delete_device', raise_exception=True)
@@ -600,7 +597,7 @@ class DeviceDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DeviceDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -614,7 +611,7 @@ class DeviceLend(FormView):
     form_class = LendForm
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceLend, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['actionstring'] = "Mark device as lend"
         context['form_scripts'] = "$('#id_owner').select2();"
         if "device" in self.request.POST:
@@ -634,7 +631,7 @@ class DeviceLend(FormView):
         return context
 
     def get_form_kwargs(self):
-        kwargs = super(DeviceLend, self).get_form_kwargs()
+        kwargs = super().get_form_kwargs()
         kwargs.update(self.kwargs)
         return kwargs
 
@@ -719,7 +716,7 @@ class DeviceReturn(FormView):
     form_class = ReturnForm
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceReturn, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['actionstring'] = "Mark device as returned"
 
         # get lending object with given pk
@@ -788,7 +785,7 @@ class DeviceMail(FormView):
     form_class = DeviceMailForm
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceMail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # Add in a QuerySet of all the books
         context['form_scripts'] = "$('#id_owner').select2();"
@@ -906,7 +903,7 @@ class DeviceStorage(SingleObjectMixin, FormView):
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
-        context = super(DeviceStorage, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         return context
 
     def form_valid(self, form):
@@ -970,7 +967,7 @@ class TemplateList(PaginationMixin, ListView):
     context_object_name = 'template_list'
 
     def get_context_data(self, **kwargs):
-        context = super(TemplateList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")), ]
@@ -986,7 +983,7 @@ class TemplateCreate(CreateView):
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        context = super(TemplateCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")),
@@ -1000,7 +997,7 @@ class TemplateUpdate(UpdateView):
     fields = '__all__'
 
     def get_context_data(self, **kwargs):
-        context = super(TemplateUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")),
@@ -1014,7 +1011,7 @@ class TemplateDelete(DeleteView):
     template_name = 'devices/base_delete.html'
 
     def get_context_data(self, **kwargs):
-        context = super(TemplateDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("template-list"), _("Templates")),
@@ -1038,7 +1035,7 @@ class RoomList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(RoomList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
@@ -1056,7 +1053,7 @@ class RoomDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(RoomDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("id", "name",
                                                                                                     "building__name")
@@ -1089,7 +1086,7 @@ class RoomCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(RoomCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Room"
         context['type'] = "room"
@@ -1106,7 +1103,7 @@ class RoomUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(RoomUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
@@ -1123,7 +1120,7 @@ class RoomDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(RoomDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1172,7 +1169,7 @@ class BuildingList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(BuildingList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
@@ -1188,7 +1185,7 @@ class BuildingDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(BuildingDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Building.objects.exclude(pk=context["building"].pk).order_by("name")
         context['device_list'] = Device.objects.select_related().filter(room__building=context["building"],
@@ -1221,7 +1218,7 @@ class BuildingCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(BuildingCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Building"
         context['type'] = "building"
@@ -1238,7 +1235,7 @@ class BuildingUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(BuildingUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
@@ -1255,7 +1252,7 @@ class BuildingDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(BuildingDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1303,7 +1300,7 @@ class ManufacturerList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ManufacturerList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
@@ -1322,7 +1319,7 @@ class ManufacturerDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ManufacturerDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Manufacturer.objects.exclude(pk=context["object"].pk).order_by("name")
         context['device_list'] = Device.objects.filter(manufacturer=context["object"], archived=None,
@@ -1353,7 +1350,7 @@ class ManufacturerCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ManufacturerCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Create new Manufacturer"
         context['type'] = "manufacturer"
@@ -1370,7 +1367,7 @@ class ManufacturerUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ManufacturerUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = "Update"
         context["breadcrumbs"] = [
@@ -1387,7 +1384,7 @@ class ManufacturerDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ManufacturerDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1426,13 +1423,13 @@ class NoteCreate(CreateView):
     fields = '__all__'
 
     def get_initial(self):
-        initial = super(NoteCreate, self).get_initial()
+        initial = super().get_initial()
         initial["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
         initial["creator"] = self.request.user
         return initial
 
     def get_context_data(self, **kwargs):
-        context = super(NoteCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         device = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -1452,7 +1449,7 @@ class NoteUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(NoteUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
@@ -1469,7 +1466,7 @@ class NoteDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(NoteDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
@@ -1483,13 +1480,13 @@ class PictureCreate(CreateView):
     fields = '__all__'
 
     def get_initial(self):
-        initial = super(PictureCreate, self).get_initial()
+        initial = super().get_initial()
         initial["device"] = get_object_or_404(Device, pk=self.kwargs["pk"])
         initial["creator"] = self.request.user
         return initial
 
     def get_context_data(self, **kwargs):
-        context = super(PictureCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         device = get_object_or_404(Device, pk=self.kwargs["pk"])
         context["enctype"] = "multipart/form-data"
         context["breadcrumbs"] = [
@@ -1510,7 +1507,7 @@ class PictureUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(PictureUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["enctype"] = "multipart/form-data"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -1528,7 +1525,7 @@ class PictureDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(PictureDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": context["object"].device.pk}), context["object"].device.name),
@@ -1555,6 +1552,7 @@ class Search(ListView):
         'department': 'department__name',
         'tag': 'tags__name',
         'user': 'currentlending__owner__username',
+        'ip': 'ipaddress__address',
     }
     DATE_FIELDS = {
         'archived': 'archived',
@@ -1604,7 +1602,13 @@ class Search(ListView):
 
     def get_q(self):
         data = {}
-        for key, value in self.parse_searchstring(self.get_searchstring()):
+        searchstring = self.get_searchstring()
+
+        if not searchstring:
+            # Force empty result
+            return Q(pk=0) & Q(pk=1)
+
+        for key, value in self.parse_searchstring(searchstring):
             if key not in data:
                 data[key] = []
             data[key].append(value)
@@ -1640,7 +1644,7 @@ class Search(ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(Search, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
         context["searchstring"] = self.get_searchstring()
         context["keys"] = sorted(list(self.STRING_FIELDS.keys())
@@ -1674,7 +1678,7 @@ class PublicDeviceListView(ListView):
                                   "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
-        context = super(PublicDeviceListView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("public-device-list"), _("Public Devices"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
@@ -1706,7 +1710,7 @@ class PublicDeviceDetailView(DetailView):
         return devices
 
     def get_context_data(self, **kwargs):
-        context = super(PublicDeviceDetailView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("public-device-list"), _("Public Devices")),
             (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]

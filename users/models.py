@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import re
 from datetime import date
 import logging
@@ -14,17 +11,15 @@ from django.urls import reverse
 from django.dispatch import receiver
 
 import pytz
-import six
 from django_auth_ldap.backend import populate_user
 
 from Lagerregal import utils
 
 
-@six.python_2_unicode_compatible
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
-    theme = models.CharField(max_length=50, null=False, blank=False, default='default',
+    theme = models.CharField(max_length=50, blank=True,
                              choices=[(theme, theme) for theme in settings.THEMES])
     timezone = models.CharField(max_length=50, null=True, blank=True,
                                 choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
@@ -110,7 +105,6 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
     user.save()
 
 
-@six.python_2_unicode_compatible
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
 

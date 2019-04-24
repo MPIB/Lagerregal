@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -38,7 +37,7 @@ class TypeList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         '''method for getting context data for filtering, viewsorting and breadcrumbs'''
         # Call the base implementation first to get a context
-        context = super(TypeList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")), ]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -63,7 +62,7 @@ class TypeDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(TypeDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         # adds data of related devices and attributes
         context["merge_list"] = Type.objects.exclude(pk=context["object"].pk).order_by("name")
@@ -92,7 +91,7 @@ class TypeCreate(CreateView):
     def get_context_data(self, **kwargs):
         '''method for getting context data and show in breadcrumbs'''
         # Call the base implementation first to get a context
-        context = super(TypeCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = _("Create new Devicetype")
         context['type'] = "type"
@@ -125,7 +124,7 @@ class TypeUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(TypeUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = _("Update")
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
@@ -149,7 +148,7 @@ class TypeDelete(DeleteView):
     # !!!! there is no forwarding or loading so the code is never run
     # def get_context_data(self, **kwargs):
     #     # Call the base implementation first to get a context
-    #     context = super(TypeDelete, self).get_context_data(**kwargs)
+    #     context = super().get_context_data(**kwargs)
     #
     #     # should add "Delete" to breadcrumbs
     #     context["breadcrumbs"] = [
@@ -215,7 +214,7 @@ class TypeAttributeUpdate(UpdateView):
     def post(self, request, *args, **kwargs):
         self.success_url = reverse('type-detail',
                                    kwargs={'pk': request.POST['devicetype']})
-        return super(TypeAttributeUpdate, self).post(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         return self.success_url
@@ -228,7 +227,7 @@ class TypeAttributeDelete(DeleteView):
 
     def post(self, request, *args, **kwargs):
         self.next = request.POST["next"]
-        return super(TypeAttributeDelete, self).post(request, **kwargs)
+        return super().post(request, **kwargs)
 
     def get_success_url(self):
         return self.next

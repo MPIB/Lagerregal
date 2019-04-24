@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -35,7 +33,7 @@ class DevicetagList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicetag-list"), _("Devicetags"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -61,7 +59,7 @@ class DevicetagCreate(CreateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "devicetag"
 
         # add "create new devicetag" to breadcrumbs
@@ -80,7 +78,7 @@ class DevicetagUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # adds "Devicetag" to breadcrumbs
         context["breadcrumbs"] = [
@@ -97,7 +95,7 @@ class DevicetagDelete(DeleteView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # adds "Devicetag" to breadcrumbs
         context["breadcrumbs"] = [
@@ -113,7 +111,7 @@ class DeviceTags(FormView):
     success_url = "/devices"
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceTags, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         device = context["form"].cleaned_data["device"]
 
         # adds "Devices" to breadcrumbs

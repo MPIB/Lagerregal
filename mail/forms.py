@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django import forms
 
 from django_select2.forms import Select2MultipleWidget
@@ -12,7 +9,7 @@ from devices.forms import get_emailrecipientlist
 
 class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(MailTemplateForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["default_recipients"].choices = get_emailrecipientlist()
         # get all valid options for template usages
         available = dict(USAGES)

@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import re
 
 from django import forms
@@ -129,7 +127,7 @@ class LendForm(forms.Form):
                                   widget=Select2Widget(attrs={"style": "width:100%;"}))
 
     def clean(self):
-        cleaned_data = super(LendForm, self).clean()
+        cleaned_data = super().clean()
         if "device" in cleaned_data and "smalldevice" in cleaned_data:
             if cleaned_data["device"] and cleaned_data["smalldevice"]:
                 raise forms.ValidationError("can not set both device and smalldevice")
@@ -138,7 +136,7 @@ class LendForm(forms.Form):
         return cleaned_data
 
     def __init__(self, pk=None, *args, **kwargs):
-        super(LendForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         device = None
         try:
             device = Device.objects.filter(pk=pk)[0]
@@ -236,7 +234,7 @@ class DeviceForm(forms.ModelForm):
         exclude = ("archived", "currentlending", "bookmarkers", "inventoried", "trashed")
 
     def clean(self):
-        cleaned_data = super(DeviceForm, self).clean()
+        cleaned_data = super().clean()
         unclean_data = []
         if cleaned_data["emailrecipients"] and not cleaned_data["emailtemplate"]:
             self._errors["emailtemplate"] = self.error_class(
@@ -254,7 +252,7 @@ class DeviceForm(forms.ModelForm):
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
-        super(DeviceForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # if edit
         if kwargs["instance"]:
@@ -316,7 +314,7 @@ class AddForm(forms.ModelForm):
         widget=forms.HiddenInput())
 
     def clean(self):
-        cleaned_data = super(AddForm, self).clean()
+        cleaned_data = super().clean()
         if cleaned_data["classname"] == "manufacturer":
             count = Manufacturer.objects.filter(name=cleaned_data["name"]).count()
         elif cleaned_data["classname"] == "devicetype":
@@ -332,7 +330,7 @@ class AddForm(forms.ModelForm):
 
 class DeviceMailForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(DeviceMailForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
     error_css_class = 'has-error'

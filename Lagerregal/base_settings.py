@@ -1,5 +1,4 @@
 # Django settings for Lagerregal project.
-from __future__ import unicode_literals
 import os
 
 
@@ -50,6 +49,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'npm.finders.NpmFinder',
 )
 
 MIDDLEWARE = (
@@ -179,13 +179,50 @@ LOGGING = {
     }
 }
 
+NPM_ROOT_PATH = os.getcwd()
+
+NPM_FILE_PATTERNS = {
+    'bootstrap': [
+        'dist/js/bootstrap.min.js',
+    ],
+    'bootswatch': ['*/bootstrap.min.css'],
+    'font-awesome': [
+        'css/font-awesome.min.css',
+        'fonts/*',
+    ],
+    'jquery': ['dist/jquery.min.js'],
+    'jquery-ui-dist': [
+        'jquery-ui.min.js',
+        'jquery-ui.min.css',
+        'images/*.png',
+    ],
+    'datatables': [
+        'media/css/jquery.dataTables.min.css',
+        'media/images/*.png',
+        'media/js/jquery.dataTables.min.js',
+    ],
+    'mustache': ['mustache.min.js'],
+    'noty': [
+        'js/noty/jquery.noty.js',
+        'js/noty/layouts/*.js',
+        'js/noty/themes/*.js',
+    ],
+    'select2': [
+        'dist/js/select2.min.js',
+        'dist/css/select2.min.css',
+    ],
+    'timeago': [
+        'jquery.timeago.js',
+        'locales/jquery.timeago.de.js',
+    ],
+}
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
 
 # get more themes from https://bootswatch.com/ and download them to:
 #   static/css/themes/<name>.min.css
 THEMES = [
-    'default',
+    'flatly',
     'darkly',
     'simplex',
     'superhero',

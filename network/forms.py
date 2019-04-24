@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 
@@ -24,7 +22,7 @@ class IpAddressForm(forms.ModelForm):
         exclude = ("last_seen", )
 
     def clean(self):
-        cleaned_data = super(IpAddressForm, self).clean()
+        cleaned_data = super().clean()
         if cleaned_data["device"] is not None and cleaned_data["user"] is not None:
             raise forms.ValidationError(_("IP-Address can not be owned by a user and a device at the same time."))
         return cleaned_data
