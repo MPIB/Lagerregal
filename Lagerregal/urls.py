@@ -81,11 +81,11 @@ urlpatterns = [
     url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     url(r'^devices/public/(?P<pk>[0-9]*)/$', xframe_options_exempt(PublicDeviceDetailView.as_view()), name="public-device-detail"),
-    url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
-    url(r'^devices/templates/(?P<page>[0-9]*)$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
-    url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
-    url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_template")(TemplateUpdate.as_view()), name="template-edit"),
-    url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_template")(TemplateDelete.as_view()), name="template-delete"),
+    url(r'^devices/templates/$', TemplateList.as_view(), name="template-list"),
+    url(r'^devices/templates/(?P<page>[0-9]*)$', TemplateList.as_view(), name="template-list"),
+    url(r'^devices/templates/add$', TemplateCreate.as_view(), name="template-add"),
+    url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', TemplateUpdate.as_view(), name="template-edit"),
+    url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', TemplateDelete.as_view(), name="template-delete"),
 
 
     url(r'^types/$', TypeList.as_view(), name="type-list"),

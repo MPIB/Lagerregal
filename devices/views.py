@@ -963,9 +963,10 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-class TemplateList(PaginationMixin, ListView):
+class TemplateList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Template
     context_object_name = 'template_list'
+    permission_required = 'devices.read_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -978,10 +979,11 @@ class TemplateList(PaginationMixin, ListView):
         return context
 
 
-class TemplateCreate(CreateView):
+class TemplateCreate(PermissionRequiredMixin, CreateView):
     model = Template
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -992,10 +994,11 @@ class TemplateCreate(CreateView):
         return context
 
 
-class TemplateUpdate(UpdateView):
+class TemplateUpdate(PermissionRequiredMixin, UpdateView):
     model = Template
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1006,10 +1009,11 @@ class TemplateUpdate(UpdateView):
         return context
 
 
-class TemplateDelete(DeleteView):
+class TemplateDelete(PermissionRequiredMixin, DeleteView):
     model = Template
     success_url = reverse_lazy('device-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
