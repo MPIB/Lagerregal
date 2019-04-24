@@ -8,7 +8,6 @@ pytz
 pystache
 model_mommy
 django-casper
-django-permission
 django_auth_ldap
 django-favicon
 django-npm

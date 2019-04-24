@@ -92,7 +92,6 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
-            'builtins': ['permission.templatetags.permissionif']
         },
     },
 ]
@@ -119,7 +118,6 @@ INSTALLED_APPS = (
     'history',
     'reversion',
     'rest_framework',
-    'permission',
     'debug_toolbar',
     'oauth2_provider',
     'django_select2',
