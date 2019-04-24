@@ -37,7 +37,7 @@ urlpatterns = [
     url(r'^accounts/login/$', LoginView.as_view(), name="login"),
     url(r'^accounts/logout/$', LogoutView.as_view(), name="logout"),
 
-    url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
+    url(r'^search/$', Search.as_view(), name="search"),
 
     url(r'^devices/$', DeviceList.as_view(), name="device-list"),
     url(r'^devices/page/(?P<page>[0-9]*)$', DeviceList.as_view(), name="device-list"),

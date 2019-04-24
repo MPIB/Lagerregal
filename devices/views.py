@@ -1556,9 +1556,10 @@ class PictureDelete(DeleteView):
         return context
 
 
-class Search(ListView):
+class Search(PermissionRequiredMixin, ListView):
     model = Device
     template_name = 'devices/search.html'
+    permission_required = "devices.read_device"
 
     STRING_FIELDS = {
         'name': 'name',
