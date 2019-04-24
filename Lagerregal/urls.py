@@ -140,12 +140,12 @@ urlpatterns = [
     url(r'^manufacturers/view/(?P<pk>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerDetail.as_view()), name="manufacturer-detail"),
     url(r'^manufacturers/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("devices.change_manufacturer")(ManufacturerMerge.as_view()), name="manufacturer-merge"),
 
-    url(r'^mails/$', permission_required("mail.read_mailtemplate")(MailList.as_view()), name="mail-list"),
-    url(r'^mails/(?P<page>[0-9]*)$', permission_required("mail.read_mailtemplate")(MailList.as_view()), name="mail-list"),
-    url(r'^mails/add$', permission_required("mail.add_mailtemplate")(MailCreate.as_view()), name="mail-add"),
-    url(r'^mails/edit/(?P<pk>[^/]*)$', permission_required("mail.change_mailtemplate")(MailUpdate.as_view()), name="mail-edit"),
-    url(r'^mails/view/(?P<pk>[^/]*)$', permission_required("mail.read_mailtemplate")(MailDetail.as_view()), name="mail-detail"),
-    url(r'^mails/delete/(?P<pk>[^/]*)$', permission_required("mail.delete_mailtemplate")(MailDelete.as_view()), name="mail-delete"),
+    url(r'^mails/$', MailList.as_view(), name="mail-list"),
+    url(r'^mails/(?P<page>[0-9]*)$', MailList.as_view(), name="mail-list"),
+    url(r'^mails/add$', MailCreate.as_view(), name="mail-add"),
+    url(r'^mails/edit/(?P<pk>[^/]*)$', MailUpdate.as_view(), name="mail-edit"),
+    url(r'^mails/view/(?P<pk>[^/]*)$', MailDetail.as_view(), name="mail-detail"),
+    url(r'^mails/delete/(?P<pk>[^/]*)$', MailDelete.as_view(), name="mail-delete"),
 
     url(r'^devicegroups/$', DevicegroupList.as_view(), name="devicegroup-list"),
     url(r'^devicegroups/(?P<page>[0-9]*)$', DevicegroupList.as_view(), name="devicegroup-list"),
