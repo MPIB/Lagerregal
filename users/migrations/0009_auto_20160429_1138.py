@@ -12,6 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='lageruser',
             name='theme',
-            field=models.CharField(choices=[(b'default', b'default'), (b'darkly', b'darkly'), (b'simplex', b'simplex'), (b'superhero', b'superhero'), (b'united', b'united')], default=b'default', max_length=50),
+            field=models.CharField(choices=[('default', 'default'), ('darkly', 'darkly'), ('simplex', 'simplex'), ('superhero', 'superhero'), ('united', 'united')], default='default', max_length=50),
         ),
     ]
