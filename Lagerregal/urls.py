@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import logout
+from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LogoutView
 from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
 from devices.views import *
@@ -23,7 +24,6 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from . import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
 import permission
 from permission.decorators import permission_required
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -34,8 +34,8 @@ permission.autodiscover()
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context": {"breadcrumbs": [("", _("Login"))]}}, name="login"),
-    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context": {"breadcrumbs": [("", _("Logout"))]}}, name="logout"),
+    url(r'^accounts/login/$', LoginView.as_view(), name="login"),
+    url(r'^accounts/logout/$', LogoutView.as_view(), name="logout"),
 
     url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
 
