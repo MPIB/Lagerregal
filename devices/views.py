@@ -5,6 +5,7 @@ import csv
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import render
 from reversion.models import Version
@@ -1284,9 +1285,10 @@ class BuildingMerge(View):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class ManufacturerList(PaginationMixin, ListView):
+class ManufacturerList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
+    permission_required = 'devices.read_manufacturer'
 
     def get_queryset(self):
         manufacturers = Manufacturer.objects.all()
@@ -1312,10 +1314,11 @@ class ManufacturerList(PaginationMixin, ListView):
         return context
 
 
-class ManufacturerDetail(DetailView):
+class ManufacturerDetail(PermissionRequiredMixin, DetailView):
     model = Manufacturer
     context_object_name = 'object'
     template_name = "devices/manufacturer_detail.html"
+    permission_required = 'devices.read_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1343,10 +1346,11 @@ class ManufacturerDetail(DetailView):
         return context
 
 
-class ManufacturerCreate(CreateView):
+class ManufacturerCreate(PermissionRequiredMixin, CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1360,10 +1364,11 @@ class ManufacturerCreate(CreateView):
         return context
 
 
-class ManufacturerUpdate(UpdateView):
+class ManufacturerUpdate(PermissionRequiredMixin, UpdateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1377,10 +1382,11 @@ class ManufacturerUpdate(UpdateView):
         return context
 
 
-class ManufacturerDelete(DeleteView):
+class ManufacturerDelete(PermissionRequiredMixin, DeleteView):
     model = Manufacturer
     success_url = reverse_lazy('manufacturer-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1392,8 +1398,9 @@ class ManufacturerDelete(DeleteView):
         return context
 
 
-class ManufacturerMerge(View):
+class ManufacturerMerge(PermissionRequiredMixin, View):
     model = Manufacturer
+    permission_required = 'devices.change_manufacturer'
 
     def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
