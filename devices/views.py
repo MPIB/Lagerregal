@@ -36,16 +36,15 @@ from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser, Department
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
-from permission.decorators import permission_required
 from django.db.models import Q
 
 
-@permission_required('devices.read_device', raise_exception=True)
-class DeviceList(PaginationMixin, ListView):
+class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
     context_object_name = 'device_list'
     template_name = 'devices/device_list.html'
     viewfilter = None
     viewsorting = None
+    permission_required = 'devices.read_device'
 
     def post(self, request):
         '''post-requesting the detail-view of device by id'''
@@ -156,8 +155,9 @@ class DeviceList(PaginationMixin, ListView):
         return context
 
 
-@permission_required('devices.read_device', raise_exception=True)
-class ExportCsv(View):
+class ExportCsv(PermissionRequiredMixin, View):
+    permission_required = 'devices.read_device'
+
     def post(self, request):
 
         if "format" in request.POST:
@@ -207,8 +207,7 @@ class ExportCsv(View):
                 return response
 
 
-@permission_required('devices.read_device', raise_exception=True)
-class DeviceDetail(DetailView):
+class DeviceDetail(PermissionRequiredMixin, DetailView):
     # get related data to chosen device
     queryset = Device.objects \
         .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department",
@@ -216,6 +215,7 @@ class DeviceDetail(DetailView):
         .prefetch_related("pictures", )
     context_object_name = 'device'
     object = None
+    permission_required = 'devices.read_device'
 
     def get_object(self, queryset=None):
         if self.object is not None:
@@ -225,6 +225,9 @@ class DeviceDetail(DetailView):
         queryset = self.queryset.filter(pk=pk)
         self.object = get_object_or_404(queryset)
         return self.object
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -307,9 +310,9 @@ class DeviceDetail(DetailView):
 
 
 # to do
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceIpAddressRemove(View):
+class DeviceIpAddressRemove(PermissionRequiredMixin, View):
     template_name = 'devices/unassign_ipaddress.html'
+    permission_required = 'devices.change_device'
 
     def get(self, request, *args, **kwargs):
         context = {"device": get_object_or_404(Device, pk=kwargs["pk"]),
@@ -332,11 +335,11 @@ class DeviceIpAddressRemove(View):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceIpAddress(FormView):
+class DeviceIpAddress(PermissionRequiredMixin, FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = IpAddressForm
     success_url = "/devices"
+    permission_required = 'devices.change_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -364,11 +367,11 @@ class DeviceIpAddress(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceIpAddressPurpose(FormView):
+class DeviceIpAddressPurpose(PermissionRequiredMixin, FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = IpAddressPurposeForm
     success_url = "/devices"
+    permission_required = 'devices.change_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -393,10 +396,10 @@ class DeviceIpAddressPurpose(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.read_device', raise_exception=True)
-class DeviceLendingList(PaginationMixin, ListView):
+class DeviceLendingList(PermissionRequiredMixin, PaginationMixin, ListView):
     context_object_name = 'lending_list'
     template_name = 'devices/device_lending_list.html'
+    permission_required = 'devices.read_device'
 
     def get_queryset(self):
         deviceid = self.kwargs["pk"]
@@ -413,11 +416,11 @@ class DeviceLendingList(PaginationMixin, ListView):
         return context
 
 
-@permission_required('devices.add_device', raise_exception=True)
-class DeviceCreate(CreateView):
+class DeviceCreate(PermissionRequiredMixin, CreateView):
     model = Device
     template_name = 'devices/device_form.html'
     form_class = DeviceForm
+    permission_required = 'devices.add_device'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -500,11 +503,14 @@ class DeviceCreate(CreateView):
         return r
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceUpdate(UpdateView):
+class DeviceUpdate(PermissionRequiredMixin, UpdateView):
     model = Device
     template_name = 'devices/device_form.html'
     form_class = DeviceForm
+    permission_required = 'devices.change_device'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -590,11 +596,14 @@ class DeviceUpdate(UpdateView):
         return super().form_valid(form)
 
 
-@permission_required('devices.delete_device', raise_exception=True)
-class DeviceDelete(DeleteView):
+class DeviceDelete(PermissionRequiredMixin, DeleteView):
     model = Device
     success_url = reverse_lazy('device-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_device'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -606,10 +615,10 @@ class DeviceDelete(DeleteView):
         return context
 
 
-@permission_required('devices.lend_device', raise_exception=True)
-class DeviceLend(FormView):
+class DeviceLend(PermissionRequiredMixin, FormView):
     template_name = 'devices/device_lend.html'
     form_class = LendForm
+    permission_required = 'devices.lend_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -697,8 +706,9 @@ class DeviceLend(FormView):
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": lending.owner.pk}))
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceInventoried(View):
+class DeviceInventoried(PermissionRequiredMixin, View):
+    permission_required = 'devices.change_device'
+
     def get(self, request, **kwargs):
         deviceid = kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
@@ -711,10 +721,10 @@ class DeviceInventoried(View):
         return self.get(request, **kwargs)
 
 
-@permission_required('devices.lend_device', raise_exception=True)
-class DeviceReturn(FormView):
+class DeviceReturn(PermissionRequiredMixin, FormView):
     template_name = 'devices/base_form.html'
     form_class = ReturnForm
+    permission_required = 'devices.lend_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -780,10 +790,10 @@ class DeviceReturn(FormView):
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": owner.pk}))
 
 
-@permission_required('devices.lend_device', raise_exception=True)
-class DeviceMail(FormView):
+class DeviceMail(PermissionRequiredMixin, FormView):
     template_name = 'devices/base_form.html'
     form_class = DeviceMailForm
+    permission_required = 'devices.lend_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -823,10 +833,13 @@ class DeviceMail(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
+class DeviceArchive(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_archive.html'
+    permission_required = 'devices.change_device'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def post(self, request, **kwargs):
         device = self.get_object()
@@ -845,10 +858,13 @@ class DeviceArchive(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
+class DeviceTrash(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
     template_name = 'devices/device_trash.html'
+    permission_required = 'devices.change_device'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def post(self, request, **kwargs):
         device = self.get_object()
@@ -896,11 +912,14 @@ class DeviceTrash(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.change_device', raise_exception=True)
-class DeviceStorage(SingleObjectMixin, FormView):
+class DeviceStorage(PermissionRequiredMixin, SingleObjectMixin, FormView):
     model = Device
     form_class = DeviceStorageForm
     template_name = 'devices/device_storage.html'
+    permission_required = 'devices.change_device'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
@@ -946,9 +965,12 @@ class DeviceStorage(SingleObjectMixin, FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-@permission_required('devices.read_device', raise_exception=True)
-class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
+class DeviceBookmark(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
+    permission_required = 'devices.read_device'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def post(self, request, **kwargs):
         device = self.get_object()
