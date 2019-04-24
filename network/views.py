@@ -134,11 +134,6 @@ class IpAddressDelete(DeleteView):
     success_url = reverse_lazy('ipaddress-list')
 
 
-class IpAdressAssign(FormView):
-    model = IpAddress
-    success_url = reverse_lazy('device-list')
-
-
 class UserIpAddressRemove(DeleteView):
     template_name = 'users/unassign_ipaddress.html'
     model = IpAddress
