@@ -1020,9 +1020,10 @@ class TemplateDelete(DeleteView):
         return context
 
 
-class RoomList(PaginationMixin, ListView):
+class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Room
     context_object_name = 'room_list'
+    permission_required = 'devices.read_room'
 
     def get_queryset(self):
         rooms = Room.objects.select_related("building").all()
@@ -1048,9 +1049,10 @@ class RoomList(PaginationMixin, ListView):
         return context
 
 
-class RoomDetail(DetailView):
+class RoomDetail(PermissionRequiredMixin, DetailView):
     model = Room
     context_object_name = 'room'
+    permission_required = 'devices.read_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1080,10 +1082,11 @@ class RoomDetail(DetailView):
         return context
 
 
-class RoomCreate(CreateView):
+class RoomCreate(PermissionRequiredMixin, CreateView):
     model = Room
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1097,10 +1100,11 @@ class RoomCreate(CreateView):
         return context
 
 
-class RoomUpdate(UpdateView):
+class RoomUpdate(PermissionRequiredMixin, UpdateView):
     model = Room
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1114,10 +1118,11 @@ class RoomUpdate(UpdateView):
         return context
 
 
-class RoomDelete(DeleteView):
+class RoomDelete(PermissionRequiredMixin, DeleteView):
     model = Room
     success_url = reverse_lazy('room-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1129,8 +1134,9 @@ class RoomDelete(DeleteView):
         return context
 
 
-class RoomMerge(View):
+class RoomMerge(PermissionRequiredMixin, View):
     model = Room
+    permission_required = 'devices.change_room'
 
     def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
