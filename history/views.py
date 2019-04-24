@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, UpdateView
@@ -15,11 +16,12 @@ from devices.models import Device, Room, Manufacturer
 from devicetypes.models import Type, TypeAttributeValue
 
 
-class Globalhistory(PaginationMixin, ListView):
+class Globalhistory(PermissionRequiredMixin, PaginationMixin, ListView):
     queryset = Revision.objects.select_related("user").prefetch_related("version_set", "version_set__content_type"
         ).filter().order_by("-date_created")
     context_object_name = "revision_list"
     template_name = 'history/globalhistory.html'
+    permission_required = 'devices.change_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,11 +70,12 @@ def cleanup_fielddict(version):
     return version
 
 
-class HistoryDetail(UpdateView):
+class HistoryDetail(PermissionRequiredMixin, UpdateView):
     model = Version
     template_name = 'history/history_detail.html'
     context_object_name = "this_version"
     fields = "__all__"
+    permission_required = 'devices.change_device'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -133,9 +136,10 @@ class HistoryDetail(UpdateView):
         return HttpResponseRedirect(object.get_absolute_url())
 
 
-class HistoryList(ListView):
+class HistoryList(PermissionRequiredMixin, ListView):
     context_object_name = 'version_list'
     template_name = 'history/history_list.html'
+    permission_required = 'devices.change_device'
 
     def get_queryset(self):
         object_id = self.kwargs["object_id"]

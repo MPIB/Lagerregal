@@ -210,11 +210,11 @@ urlpatterns = [
     url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
     url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
 
-    url(r'^history/global/$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
-    url(r'^history/global/(?P<page>[0-9]*)$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
-    url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)$', permission_required("devices.change_device")(HistoryList.as_view()), name="history-list"),
-    url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)/(?P<page>[0-9]*)$', permission_required("devices.change_device")(HistoryList.as_view()), name="history-list"),
-    url(r'^history/version/(?P<pk>[0-9]*)$', permission_required("devices.change_device")(HistoryDetail.as_view()), name="history-detail"),
+    url(r'^history/global/$', Globalhistory.as_view(), name="globalhistory"),
+    url(r'^history/global/(?P<page>[0-9]*)$', Globalhistory.as_view(), name="globalhistory"),
+    url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)$', HistoryList.as_view(), name="history-list"),
+    url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)/(?P<page>[0-9]*)$', HistoryList.as_view(), name="history-list"),
+    url(r'^history/version/(?P<pk>[0-9]*)$', HistoryDetail.as_view(), name="history-detail"),
 
     url(r'^admin/', admin.site.urls),
     url(r'^i18n/', include('django.conf.urls.i18n')),
