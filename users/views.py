@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.debug import sensitive_post_parameters
@@ -33,10 +34,11 @@ from network.forms import UserIpAddressForm
 from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterForm
 
 
-class UserList(PaginationMixin, ListView):
+class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Lageruser
     context_object_name = 'user_list'
     template_name = "users/user_list.html"
+    permission_required = "users.read_user"
 
     def get_queryset(self):
         users = Lageruser.objects.all()
@@ -75,9 +77,10 @@ class UserList(PaginationMixin, ListView):
         return context
 
 
-class ProfileView(DetailView):
+class ProfileView(PermissionRequiredMixin, DetailView):
     model = Lageruser
     context_object_name = 'profileuser'
+    permission_required = "users.read_user"
 
     template_name = 'users/profile.html'
 
@@ -286,9 +289,10 @@ def login(request, template_name='registration/login.html', redirect_field_name=
     return TemplateResponse(request, template_name, context)
 
 
-class DepartmentList(PaginationMixin, ListView):
+class DepartmentList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Department
     context_object_name = 'department_list'
+    permission_required = "users.read_department"
 
     def get_queryset(self):
         sections = Department.objects.all()
@@ -315,11 +319,12 @@ class DepartmentList(PaginationMixin, ListView):
         return context
 
 
-class DepartmentCreate(CreateView):
+class DepartmentCreate(PermissionRequiredMixin, CreateView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_form.html'
     fields = "__all__"
+    permission_required = "users.add_department"
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -337,10 +342,11 @@ class DepartmentCreate(CreateView):
         return response
 
 
-class DepartmentDetail(DetailView):
+class DepartmentDetail(PermissionRequiredMixin, DetailView):
     model = Department
     context_object_name = 'department'
     template_name = "users/department_detail.html"
+    permission_required = "users.read_department"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

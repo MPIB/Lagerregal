@@ -139,9 +139,10 @@ class IpAdressAssign(FormView):
     success_url = reverse_lazy('device-list')
 
 
-class UserIpAddressRemove(DeleteView):
+class UserIpAddressRemove(PermissionRequiredMixin, DeleteView):
     template_name = 'users/unassign_ipaddress.html'
     model = IpAddress
+    permission_required = 'users.change_user'
 
     def get(self, request, *args, **kwargs):
         context = {}
@@ -163,10 +164,11 @@ class UserIpAddressRemove(DeleteView):
         return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": user.pk}))
 
 
-class UserIpAddress(FormView):
+class UserIpAddress(PermissionRequiredMixin, FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = UserIpAddressForm
     success_url = "/devices"
+    permission_required = 'users.change_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

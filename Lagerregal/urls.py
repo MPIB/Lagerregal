@@ -201,12 +201,12 @@ urlpatterns = [
     url(r'^ipaddresses/delete/(?P<pk>[^/]*)$', permission_required("network.delete_ipaddress")(IpAddressDelete.as_view()), name="ipaddress-delete"),
     url(r'^ipaddresses/view/(?P<pk>[^/]*)$', permission_required("network.read_ipaddress")(IpAddressDetail.as_view()), name="ipaddress-detail"),
 
-    url(r'^users/$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
-    url(r'^users/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
-    url(r'^users/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
-    url(r'^users/view/(?P<pk>[0-9]*)$', permission_required("users.read_user")(ProfileView.as_view()), name="userprofile"),
-    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/$', permission_required("users.change_user")(UserIpAddress.as_view()), name="user-ipaddress"),
-    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)$', permission_required("users.change_user")(UserIpAddressRemove.as_view()), name="user-ipaddress-remove"),
+    url(r'^users/$', UserList.as_view(), name="user-list"),
+    url(r'^users/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', UserList.as_view(), name="user-list"),
+    url(r'^users/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', UserList.as_view(), name="user-list"),
+    url(r'^users/view/(?P<pk>[0-9]*)$', ProfileView.as_view(), name="userprofile"),
+    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/$', UserIpAddress.as_view(), name="user-ipaddress"),
+    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)$', UserIpAddressRemove.as_view(), name="user-ipaddress-remove"),
     url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
     url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
 
