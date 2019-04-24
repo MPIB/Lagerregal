@@ -1154,9 +1154,10 @@ class RoomMerge(View):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class BuildingList(PaginationMixin, ListView):
+class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Building
     context_object_name = 'building_list'
+    permission_required = 'devices.read_building'
 
     def get_queryset(self):
         buildings = Building.objects.all()
@@ -1180,9 +1181,10 @@ class BuildingList(PaginationMixin, ListView):
         return context
 
 
-class BuildingDetail(DetailView):
+class BuildingDetail(PermissionRequiredMixin, DetailView):
     model = Building
     context_object_name = 'building'
+    permission_required = 'devices.read_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1212,10 +1214,11 @@ class BuildingDetail(DetailView):
         return context
 
 
-class BuildingCreate(CreateView):
+class BuildingCreate(PermissionRequiredMixin, CreateView):
     model = Building
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1229,10 +1232,11 @@ class BuildingCreate(CreateView):
         return context
 
 
-class BuildingUpdate(UpdateView):
+class BuildingUpdate(PermissionRequiredMixin, UpdateView):
     model = Building
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1246,10 +1250,11 @@ class BuildingUpdate(UpdateView):
         return context
 
 
-class BuildingDelete(DeleteView):
+class BuildingDelete(PermissionRequiredMixin, DeleteView):
     model = Building
     success_url = reverse_lazy('building-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1261,8 +1266,9 @@ class BuildingDelete(DeleteView):
         return context
 
 
-class BuildingMerge(View):
+class BuildingMerge(PermissionRequiredMixin, View):
     model = Building
+    permission_required = 'devices.change_building'
 
     def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
