@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -13,6 +12,7 @@ from devicetypes.models import Type, TypeAttribute
 from devicetypes.forms import TypeForm
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 
 
 class TypeList(PermissionRequiredMixin, PaginationMixin, ListView):

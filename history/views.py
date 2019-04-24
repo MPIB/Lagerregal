@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, UpdateView
@@ -14,6 +13,7 @@ from reversion import revisions as reversion
 from Lagerregal.utils import PaginationMixin
 from devices.models import Device, Room, Manufacturer
 from devicetypes.models import Type, TypeAttributeValue
+from users.mixins import PermissionRequiredMixin
 
 
 class Globalhistory(PermissionRequiredMixin, PaginationMixin, ListView):

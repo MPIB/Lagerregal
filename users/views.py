@@ -6,7 +6,6 @@ from django.utils import translation
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
@@ -15,6 +14,7 @@ from django.db.models import Q
 from permission.decorators import permission_required
 from reversion.models import Version
 
+from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser, Department, DepartmentUser
 from devices.models import Lending
 from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm

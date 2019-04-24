@@ -5,7 +5,6 @@ import csv
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import render
 from reversion.models import Version
@@ -33,6 +32,7 @@ from devices.forms import IpAddressForm, LendForm, DeviceViewForm, IpAddressPurp
 from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
     DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
 from devicetags.forms import DeviceTagForm
+from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser, Department
 from Lagerregal.utils import PaginationMixin
 from devicetags.models import Devicetag
