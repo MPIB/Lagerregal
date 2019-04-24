@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from permission.logics import PermissionLogic
 from permission.conf import settings
 

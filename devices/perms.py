@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.contrib import auth
 from django.core.exceptions import PermissionDenied
 

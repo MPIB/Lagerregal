@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, UpdateView
@@ -9,7 +7,6 @@ from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.apps import apps
 
-import six
 from reversion.models import Version, Revision
 from reversion import revisions as reversion
 
@@ -25,7 +22,7 @@ class Globalhistory(PaginationMixin, ListView):
     template_name = 'history/globalhistory.html'
 
     def get_context_data(self, **kwargs):
-        context = super(Globalhistory, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("globalhistory"), _("Global edit history"))]
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
@@ -78,7 +75,7 @@ class HistoryDetail(UpdateView):
     fields = "__all__"
 
     def get_context_data(self, **kwargs):
-        context = super(HistoryDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_version"] = get_object_or_404(
             apps.get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
                                                        id=context["this_version"].object_id)
@@ -105,7 +102,7 @@ class HistoryDetail(UpdateView):
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(context["this_version"].content_type.model)),
                 _(context["this_version"].content_type.name)),
-            (context["current_version"].get_absolute_url(), six.text_type(context["current_version"])),
+            (context["current_version"].get_absolute_url(), str(context["current_version"])),
             (reverse("history-list", kwargs={"content_type_id": context["this_version"].content_type.id,
                                              "object_id": context["this_version"].object_id}), _("History")),
             ("", _("Version {0}".format(context["this_version"].pk)))
@@ -149,11 +146,11 @@ class HistoryList(ListView):
                                       content_type_id=self.content_type.id).order_by("-pk")
 
     def get_context_data(self, **kwargs):
-        context = super(HistoryList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(self.content_type.model)),
                 _(self.content_type.name)),
-            (self.object.get_absolute_url(), six.text_type(self.object)),
+            (self.object.get_absolute_url(), str(self.object)),
             (reverse("history-list", kwargs={"content_type_id": self.content_type.id,
                                              "object_id": self.object.id}), _("History"))
         ]

@@ -1,9 +1,7 @@
-from __future__ import unicode_literals
-
 from django.utils import timezone
 
 
-class TimezoneMiddleware(object):
+class TimezoneMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 

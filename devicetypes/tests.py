@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
-
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
 
-import six
 from model_mommy import mommy
 
 from devicetypes.models import Type
@@ -26,7 +23,7 @@ class TypeTests(TestCase):
         self.assertTrue(isinstance(devicetype, Type))
 
         # testing naming
-        self.assertEqual(six.text_type(devicetype), devicetype.name)
+        self.assertEqual(str(devicetype), devicetype.name)
 
         # testing creation of absolute and relative url
         self.assertEqual(devicetype.get_absolute_url(), reverse('type-detail', kwargs={'pk': devicetype.pk}))
