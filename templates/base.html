@@ -6,7 +6,8 @@
         script-src 'self' 'unsafe-inline';
         style-src 'self' 'unsafe-inline' http://fonts.googleapis.com https://fonts.googleapis.com;
         connect-src 'self' https://localhost:41951 https://127.0.0.1:41951;
-        font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com" >
+        font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com;
+        img-src 'self' data:; ">
     <title>{% block title %}{% endblock %} &middot; {{ SITE_NAME }}</title>
     <link rel="stylesheet" href="{% static user|theme_path %}">
     <link rel="stylesheet" href="{% static "select2/dist/css/select2.min.css" %}">
