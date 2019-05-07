@@ -8,3 +8,8 @@ register = Library()
 def theme_path(user):
     theme = getattr(user, 'theme', None) or settings.THEMES[0]
     return 'bootswatch/%s/bootstrap.min.css' % theme
+
+
+@register.simple_tag
+def has_perm(perm, user, obj=None):
+    return user.has_perm(perm, obj=obj)
