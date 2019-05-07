@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -14,9 +15,10 @@ from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
 
 
-class SectionList(PaginationMixin, ListView):
+class SectionList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Section
     context_object_name = 'section_list'
+    permission_required = 'locations.read_section'
 
     def get_queryset(self):
         sections = Section.objects.all()
@@ -43,11 +45,12 @@ class SectionList(PaginationMixin, ListView):
         return context
 
 
-class SectionCreate(CreateView):
+class SectionCreate(PermissionRequiredMixin, CreateView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'locations.add_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -59,10 +62,11 @@ class SectionCreate(CreateView):
         return context
 
 
-class SectionDetail(DetailView):
+class SectionDetail(PermissionRequiredMixin, DetailView):
     model = Section
     context_object_name = 'section'
     template_name = "locations/section_detail.html"
+    permission_required = 'locations.read_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -88,11 +92,12 @@ class SectionDetail(DetailView):
         return context
 
 
-class SectionUpdate(UpdateView):
+class SectionUpdate(PermissionRequiredMixin, UpdateView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'locations.change_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -103,10 +108,11 @@ class SectionUpdate(UpdateView):
         return context
 
 
-class SectionDelete(DeleteView):
+class SectionDelete(PermissionRequiredMixin, DeleteView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'locations.delete_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -117,8 +123,9 @@ class SectionDelete(DeleteView):
         return context
 
 
-class SectionMerge(View):
+class SectionMerge(PermissionRequiredMixin, View):
     model = Section
+    permission_required = 'locations.change_section'
 
     def get(self, request, *args, **kwargs):
         context = {}

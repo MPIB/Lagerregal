@@ -119,7 +119,6 @@ class AddDeviceField(View):
                 data["name"] = newitem.name
                 data["classname"] = classname
         else:
-            print(form.errors)
             data["error"] = "Error: {0}".format(form.non_field_errors())
         return HttpResponse(json.dumps(data), content_type='application/json')
 

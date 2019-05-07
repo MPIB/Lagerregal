@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -10,9 +11,10 @@ from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 
 
-class MailList(PaginationMixin, ListView):
+class MailList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
+    permission_required = 'mail.read_mailtemplate'
 
     def get_queryset(self):
         return MailTemplate.objects.all()
@@ -28,10 +30,11 @@ class MailList(PaginationMixin, ListView):
         return context
 
 
-class MailDetail(DetailView):
+class MailDetail(PermissionRequiredMixin, DetailView):
     model = MailTemplate
     context_object_name = 'mailtemplate'
     template_name = "mail/mailtemplate_detail.html"
+    permission_required = 'mail.read_mailtemplate'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -42,10 +45,11 @@ class MailDetail(DetailView):
         return context
 
 
-class MailCreate(CreateView):
+class MailCreate(PermissionRequiredMixin, CreateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
+    permission_required = 'mail.add_mailtemplate'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -74,10 +78,11 @@ class MailCreate(CreateView):
         return r
 
 
-class MailUpdate(UpdateView):
+class MailUpdate(PermissionRequiredMixin, UpdateView):
     form_class = MailTemplateForm
     model = MailTemplate
     template_name = 'devices/base_form.html'
+    permission_required = 'mail.change_mailtemplate'
 
     def get_initial(self):
         initial = super().get_initial()
@@ -114,11 +119,12 @@ class MailUpdate(UpdateView):
         return r
 
 
-class MailDelete(DeleteView):
+class MailDelete(PermissionRequiredMixin, DeleteView):
     form_class = MailTemplateForm
     model = MailTemplate
     success_url = reverse_lazy('mail-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'mail.delete_mailtemplate'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
