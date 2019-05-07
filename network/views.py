@@ -140,11 +140,6 @@ class IpAddressDelete(PermissionRequiredMixin, DeleteView):
     permission_required = 'network.delete_ipaddress'
 
 
-class IpAdressAssign(FormView):
-    model = IpAddress
-    success_url = reverse_lazy('device-list')
-
-
 class UserIpAddressRemove(PermissionRequiredMixin, DeleteView):
     template_name = 'users/unassign_ipaddress.html'
     model = IpAddress

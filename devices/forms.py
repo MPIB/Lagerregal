@@ -147,7 +147,6 @@ class LendForm(forms.Form):
             self.fields['duedate'].initial = device.currentlending.duedate
             self.fields['room'].initial = device.room
             self.fields['device'].initial = device
-            print(self.fields['device'].initial)
 
     def clean_device(self):
         device = self.cleaned_data["device"]

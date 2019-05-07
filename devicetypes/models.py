@@ -5,6 +5,7 @@ from django.urls import reverse
 from reversion import revisions as reversion
 
 
+@reversion.register()
 class Type(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
 
@@ -25,6 +26,7 @@ class Type(models.Model):
         return reverse('type-edit', kwargs={'pk': self.pk})
 
 
+@reversion.register()
 class TypeAttribute(models.Model):
     devicetype = models.ForeignKey(Type, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -41,6 +43,7 @@ class TypeAttribute(models.Model):
         return self.name
 
 
+@reversion.register()
 class TypeAttributeValue(models.Model):
     typeattribute = models.ForeignKey(TypeAttribute, on_delete=models.CASCADE)
     value = models.CharField(max_length=400)
@@ -52,7 +55,3 @@ class TypeAttributeValue(models.Model):
 
     def __str__(self):
         return self.value
-
-
-reversion.register(Type)
-reversion.register(TypeAttribute)
