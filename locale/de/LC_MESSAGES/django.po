@@ -2179,36 +2179,3 @@ msgstr "Neue Abteilung erstellen"
 #: users/views.py:392
 msgid "Remove User"
 msgstr "Benutzer*in entfernen"
-
-#~ msgid "{0} on"
-#~ msgstr "{0} an"
-
-#~ msgid "person currently lending is changed"
-#~ msgstr "Person die das Gerät leihnt wird geändert"
-
-#~ msgid "Device is trashed"
-#~ msgstr "Gerät ist verschrottet"
-
-#~ msgid "Searching"
-#~ msgstr "Wird gesucht"
-
-#~ msgid "All"
-#~ msgstr "Alle"
-
-#~ msgid "Active (Default)"
-#~ msgstr "Aktiv (Standard)"
-
-#~ msgid "Lent"
-#~ msgstr "Ausgeliehen"
-
-#~ msgid "Archived"
-#~ msgstr "Archiviert"
-
-#~ msgid "Trashed"
-#~ msgstr "Verschrottet"
-
-#~ msgid "Overdue"
-#~ msgstr "Fällig"
-
-#~ msgid "Search Name"
-#~ msgstr "Name suchen"
