@@ -11,15 +11,14 @@ from locations.models import Section
 from main.models import DashboardWidget, WIDGETS, get_progresscolor
 from Lagerregal.utils import PaginationMixin
 from devices.forms import LendForm
-from users.models import Department
 
 
-def get_widget_data(user, widgetlist=[], departments=None):
+def get_widget_data(user, widgetlist=[], only_user=False):
     context = {}
     context["today"] = datetime.date.today()
-    if departments is None:
-        # so we can run Queryset.difference() later
-        departments = Department.objects.none()
+    departments = None
+    if only_user:
+        departments = user.departments.all()
     if "statistics" in widgetlist:
         if departments:
             devices = Device.active().filter(department__in=departments)
@@ -39,12 +38,16 @@ def get_widget_data(user, widgetlist=[], departments=None):
             ) / context["ipaddress_all"]) * 100)
             context["ipaddress_percentcolor"] = get_progresscolor(context["ipaddress_percent"])
     if "edithistory" in widgetlist:
-        # using exclude(...=other_deps) is much faster than filter(...=departments).distinct()
-        other_deps = Department.objects.all().difference(departments)
-        context['revisions'] = Revision.objects.select_related('user') \
-                                       .prefetch_related('version_set', 'version_set__content_type') \
-                                       .exclude(user__departments__in=other_deps) \
-                                       .order_by("-date_created")[:20]
+        if only_user:
+            revisions = Revision.objects.filter(user=user)
+        else:
+            revisions = Revision.objects.all()
+        context['revisions'] = (
+            revisions
+            .select_related('user')
+            .prefetch_related('version_set', 'version_set__content_type')
+            .order_by("-date_created")[:20]
+        )
     if "newestdevices" in widgetlist:
         if departments:
             devices = Device.objects.filter(department__in=departments)
@@ -101,7 +104,7 @@ class Home(TemplateView):
             userwidget_list = dict(WIDGETS)
             widgetlist = [x[0] for x in DashboardWidget.objects.filter(user=self.request.user
             ).values_list("widgetname")]
-            context.update(get_widget_data(self.request.user, widgetlist, self.request.user.departments.all()))
+            context.update(get_widget_data(self.request.user, widgetlist, only_user=True))
             for w in context["widgets_left"]:
                 if w.widgetname in userwidget_list:
                     del userwidget_list[w.widgetname]
