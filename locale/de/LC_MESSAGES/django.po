@@ -21,13 +21,12 @@ msgstr ""
 
 #: api/views.py:92 api/views.py:160 api/views.py:200 devices/views.py:933
 msgid "MAIL NOT SENT - Template for room change does not exist"
-msgstr ""
+msgstr "MAIL WURD NICHT GESENDET - Template für Raumwechsel existiert nicht"
 
 #: api/views.py:104
-#, fuzzy, python-brace-format
-#| msgid "Device lent and moved to room {0}"
+#, python-brace-format
 msgid "Device moved to room {0}"
-msgstr "Gerät ausgeliehen und in Raum {0} verschoben"
+msgstr "Gerät in Raum {0} verschoben"
 
 #: api/views.py:210 devices/views.py:770
 #, python-brace-format
@@ -203,16 +202,12 @@ msgid "All Departments"
 msgstr "Alle Abteilungen"
 
 #: devices/forms.py:66
-#, fuzzy
-#| msgid "Departments"
 msgid "My Departments"
-msgstr "Abteilungen"
+msgstr "Meine Abteilungen"
 
 #: devices/forms.py:79
-#, fuzzy
-#| msgid "Groups"
 msgid "All Groups"
-msgstr "Gruppen"
+msgstr "Alle Gruppen"
 
 #: devices/forms.py:88
 msgid "Special"
@@ -452,7 +447,7 @@ msgstr "Für kurzzeitigen Verleih"
 
 #: devices/models.py:120
 msgid "Person to contact about using this device"
-msgstr ""
+msgstr "Kontaktperson für dieses Gerät"
 
 #: devices/models.py:137 devices/views.py:151 devices/views.py:303
 #: devices/views.py:318 devices/views.py:345 devices/views.py:380
@@ -519,10 +514,8 @@ msgid "Lending"
 msgstr "Verleih"
 
 #: devices/models.py:216
-#, fuzzy
-#| msgid "Lending"
 msgid "Lendings"
-msgstr "Verleih"
+msgstr "Ausleihen"
 
 #: devices/models.py:220
 msgid "Templatename"
@@ -549,11 +542,11 @@ msgstr "Notitzen"
 
 #: devices/models.py:269
 msgid "Picture"
-msgstr ""
+msgstr "Bild"
 
 #: devices/models.py:270
 msgid "Pictures"
-msgstr ""
+msgstr "Bilder"
 
 #: devices/views.py:202
 msgid "ID"
@@ -575,10 +568,8 @@ msgid "Devicetype"
 msgstr "Gerätetyp"
 
 #: devices/views.py:271
-#, fuzzy
-#| msgid "Create new mailtemplate"
 msgid "Please create reminder mail template"
-msgstr "Neues E-Mailtemplate erstellen"
+msgstr "Bitte E-Mailtemplate für Erinnerungen erstellen"
 
 #: devices/views.py:320
 msgid "Unassign IP-Addresses"
@@ -664,22 +655,18 @@ msgid ""
 msgstr ""
 
 #: devices/views.py:677 devices/views.py:768
-#, fuzzy
-#| msgid "Mail successfully sent"
 msgid "Mails successfully sent"
-msgstr "E-Mail erfolgreiche versendet"
+msgstr "E-Mails erfolgreiche versendet"
 
 #: devices/views.py:679
-#, fuzzy, python-brace-format
-#| msgid "Device lent and moved to room {0}"
+#, python-brace-format
 msgid "Device lent to {0} and moved to room {1}"
-msgstr "Gerät ausgeliehen und in Raum {0} verschoben"
+msgstr "Gerät ausgeliehen an {0} und in Raum {1} verschoben"
 
 #: devices/views.py:682
-#, fuzzy, python-brace-format
-#| msgid "Device lent and moved to room {0}"
+#, python-brace-format
 msgid "Device lent to {0}"
-msgstr "Gerät ausgeliehen und in Raum {0} verschoben"
+msgstr "Gerät ausgeliehen an {0}"
 
 #: devices/views.py:690
 #, python-brace-format
@@ -798,10 +785,8 @@ msgid "Create new note"
 msgstr "Neue Notitz erstellen"
 
 #: devices/views.py:1663
-#, fuzzy
-#| msgid "Advanced Search"
 msgid "Invalid search"
-msgstr "Erweiterte Suche"
+msgstr "Ungültige Suche"
 
 #: devices/views.py:1672 templates/base.html:139
 #: templates/devices/search.html:4 templates/devices/search.html:7
@@ -810,10 +795,8 @@ msgid "Search"
 msgstr "Suchen"
 
 #: devices/views.py:1706 devices/views.py:1739 templates/base.html:60
-#, fuzzy
-#| msgid "All Devices"
 msgid "Public Devices"
-msgstr "Alle Geräte"
+msgstr "Öffentliche Geräte"
 
 #: devicetags/models.py:17 devicetags/views.py:70 devicetags/views.py:89
 msgid "Devicetag"
@@ -937,8 +920,6 @@ msgid "Merged Section {0} into {1}"
 msgstr "Bereich {0} mit {1} zusammengeführt"
 
 #: mail/models.py:13
-#, fuzzy
-#| msgid "Mark device as lent"
 msgid "Device has been lent"
 msgstr "Gerät wurde verliehen"
 
@@ -951,14 +932,10 @@ msgid "Reminder that device is still owned"
 msgstr "Erinnerung, das Gerät immernoch im besitz ist"
 
 #: mail/models.py:16
-#, fuzzy
-#| msgid "Device was trashed"
 msgid "Device has been returned by user"
 msgstr "Gerät wurde zurückgegeben"
 
 #: mail/models.py:17
-#, fuzzy
-#| msgid "Room is changed"
 msgid "Room has been changed"
 msgstr "Raum wurde geändert"
 
@@ -971,8 +948,6 @@ msgid "Lending owner has been changed"
 msgstr ""
 
 #: mail/models.py:20
-#, fuzzy
-#| msgid "Device was trashed"
 msgid "Device has been trashed"
 msgstr "Gerät wurde Verschrottet"
 
@@ -1165,13 +1140,11 @@ msgstr "Abteilungen"
 
 #: templates/base.html:112
 msgid "Jump to ID"
-msgstr ""
+msgstr "Springe zu ID"
 
 #: templates/base.html:127
-#, fuzzy
-#| msgid "Short term device"
 msgid "Search for device"
-msgstr "Kurzausleih-Gerät"
+msgstr "Suche nach Gerät"
 
 #: templates/base.html:138
 msgid "Advanced Search"
@@ -1297,10 +1270,8 @@ msgstr "Archivieren"
 
 #: templates/devices/device_detail.html:31
 #: templates/snippets/modals/deviceImageModal.html:4
-#, fuzzy
-#| msgid "Manufacturers"
 msgid "Manage Pictures"
-msgstr "Hersteller"
+msgstr "Bilder verwalten"
 
 #: templates/devices/device_detail.html:35
 msgid "Inventoried"
@@ -1347,10 +1318,8 @@ msgstr "Markieren"
 
 #: templates/devices/device_detail.html:109
 #: templates/snippets/modals/lending.html:8
-#, fuzzy
-#| msgid "Current Lending information"
 msgid "Edit lending information"
-msgstr "Aktuelle Verleihinformationen"
+msgstr "Verleihinformationen bearbeiten"
 
 #: templates/devices/device_detail.html:111
 msgid "returned"
@@ -1366,13 +1335,11 @@ msgstr "Aus dem Schrott entfernen"
 
 #: templates/devices/device_detail.html:145
 msgid "Lagerregal ID"
-msgstr ""
+msgstr "Lagerregal ID"
 
 #: templates/devices/device_detail.html:177
-#, fuzzy
-#| msgid "Used by"
 msgid "Used in"
-msgstr "Benutzt von"
+msgstr "Benutzt in"
 
 #: templates/devices/device_detail.html:183
 msgid "Uses"
@@ -1389,13 +1356,11 @@ msgstr "Kurzausleih-Gerät"
 
 #: templates/devices/device_detail.html:211
 msgid "Manual"
-msgstr ""
+msgstr "Anleitung"
 
 #: templates/devices/device_detail.html:220
-#, fuzzy
-#| msgid "Contains"
 msgid "Contact"
-msgstr "Enthält"
+msgstr "Kontakt"
 
 #: templates/devices/device_detail.html:224
 msgid "Created by"
@@ -1465,7 +1430,7 @@ msgstr "Puppet Fakten"
 
 #: templates/devices/device_detail.html:391
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 #: templates/devices/device_detail.html:444
 msgid "Add note"
@@ -1509,7 +1474,7 @@ msgstr "Zurückgegeben"
 
 #: templates/devices/device_detail.html:473
 msgid "View lending history"
-msgstr "Verlehverlauf ansehen"
+msgstr "Verleihverlauf ansehen"
 
 #: templates/devices/device_detail.html:479
 msgid "10 last edits"
@@ -1556,17 +1521,15 @@ msgstr "Puppet Fakten aus puppetdb"
 
 #: templates/devices/device_detail.html:541
 msgid "Loading Puppet Facts..."
-msgstr ""
+msgstr "Lade Puppet Fakten..."
 
 #: templates/devices/device_detail.html:545
-#, fuzzy
-#| msgid "Puppet facts from puppetdb"
 msgid "Installed software from puppetdb"
-msgstr "Puppet Fakten aus puppetdb"
+msgstr "Installierte Software aus puppetdb"
 
 #: templates/devices/device_detail.html:547
 msgid "Loading Software List..."
-msgstr ""
+msgstr "Lade Software Liste..."
 
 #: templates/devices/device_form.html:44
 #: templates/mail/mailtemplate_detail.html:48
@@ -1626,28 +1589,24 @@ msgid "Value"
 msgstr "Wert"
 
 #: templates/devices/puppetsoftware.html:7
-#, fuzzy
-#| msgid "Version {0}"
 msgid "Version"
-msgstr "Version {0}"
+msgstr "Version"
 
 #: templates/devices/room_list.html:13
 msgid "Add Room"
 msgstr "Raum hinzufügen"
 
 #: templates/devices/search.html:19
-#, fuzzy
-#| msgid "Available"
 msgid "Available keys"
-msgstr "Verfügbar"
+msgstr "Verfügbare Schlüssel"
 
 #: templates/devices/searchempty.html:4
 msgid "Invalid!"
-msgstr ""
+msgstr "Ungültig!"
 
 #: templates/devices/searchempty.html:4
 msgid "The id must be a whole number."
-msgstr ""
+msgstr "Die id muss eine ganze Zahl sein."
 
 #: templates/devices/searchempty.html:7
 msgid "No results found"
@@ -1791,7 +1750,7 @@ msgstr "Nicht zugewiesen"
 
 #: templates/network/ipaddress_detail.html:57
 msgid "Purpose"
-msgstr ""
+msgstr "Zweck"
 
 #: templates/network/ipaddress_detail.html:61
 msgid "Last seen"
@@ -1836,10 +1795,8 @@ msgid "Password"
 msgstr "Passwort"
 
 #: templates/registration/login.html:93
-#, fuzzy
-#| msgid "All Devices"
 msgid "Public Device List"
-msgstr "Alle Geräte"
+msgstr "Liste der öffentlichen Geräte"
 
 #: templates/snippets/devicegrouppagination.html:9
 #: templates/snippets/devicepagination.html:9
@@ -1949,10 +1906,8 @@ msgid "Avatar"
 msgstr "Avatar"
 
 #: templates/snippets/modals/deviceImageModal.html:9
-#, fuzzy
-#| msgid "Add Manufacturer"
 msgid "Add Picture"
-msgstr "Hersteller hinzufügen"
+msgstr "Bild hinzufügen"
 
 #: templates/snippets/modals/devicemailModal.html:4
 msgid "Send mail to user"
@@ -2079,7 +2034,7 @@ msgstr "Letzter Login"
 
 #: templates/users/profile.html:71
 msgid "Account Expires on"
-msgstr ""
+msgstr "Konto läuft aus am"
 
 #: templates/users/profile.html:75
 msgid "Is Staff"
@@ -2114,28 +2069,20 @@ msgid "User doesn't own any devices."
 msgstr "Benutzer*in besitzt keine Geräte"
 
 #: templates/users/profile.html:154
-#, fuzzy
-#| msgid "Device is trashed"
 msgid "Device history"
-msgstr "Gerät ist verschrottet"
+msgstr "Gerätehistorie"
 
 #: templates/users/profile.html:160
-#, fuzzy
-#| msgid "Lend"
 msgid "Lenddate"
-msgstr "Verleihen"
+msgstr "Verleihdatum"
 
 #: templates/users/profile.html:161
-#, fuzzy
-#| msgid "Returned"
 msgid "Returndate"
-msgstr "Zurückgegeben"
+msgstr "Rückgabedatum"
 
 #: templates/users/profile.html:179
-#, fuzzy
-#| msgid "View lending history"
 msgid "User has no lending history"
-msgstr "Verlehverlauf ansehen"
+msgstr "Benutzer*in hat keinen Verleihverlauf"
 
 #: templates/users/profile.html:185
 msgid "Owned IP-Addresses"
