@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -11,9 +12,10 @@ from Lagerregal.utils import PaginationMixin
 from users.models import Department
 
 
-class DevicegroupList(PaginationMixin, ListView):
+class DevicegroupList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Devicegroup
     context_object_name = 'devicegroup_list'
+    permission_required = 'devicegroups.read_devicegroup'
 
     def get_queryset(self):
         '''method to query all devicegroups and filter and sort it'''
@@ -74,10 +76,11 @@ class DevicegroupList(PaginationMixin, ListView):
         return context
 
 
-class DevicegroupDetail(DetailView):
+class DevicegroupDetail(PermissionRequiredMixin, DetailView):
     model = Devicegroup
     context_object_name = 'devicegroup'
     template_name = "devicegroups/devicegroup_detail.html"
+    permission_required = 'devicegroups.read_devicegroup'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -99,10 +102,11 @@ class DevicegroupDetail(DetailView):
         return context
 
 
-class DevicegroupCreate(CreateView):
+class DevicegroupCreate(PermissionRequiredMixin, CreateView):
     model = Devicegroup
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devicegroups.add_devicegroup'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -121,10 +125,11 @@ class DevicegroupCreate(CreateView):
         return context
 
 
-class DevicegroupUpdate(UpdateView):
+class DevicegroupUpdate(PermissionRequiredMixin, UpdateView):
     model = Devicegroup
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devicegroups.change_devicegroup'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -139,10 +144,11 @@ class DevicegroupUpdate(UpdateView):
         return context
 
 
-class DevicegroupDelete(DeleteView):
+class DevicegroupDelete(PermissionRequiredMixin, DeleteView):
     model = Devicegroup
     success_url = reverse_lazy('devicegroup-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devicegroups.delete_devicegroup'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

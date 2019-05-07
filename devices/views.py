@@ -5,6 +5,7 @@ import csv
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
 from django.urls import reverse_lazy, reverse
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.shortcuts import render
 from reversion.models import Version
@@ -962,9 +963,10 @@ class DeviceBookmark(SingleObjectTemplateResponseMixin, BaseDetailView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-class TemplateList(PaginationMixin, ListView):
+class TemplateList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Template
     context_object_name = 'template_list'
+    permission_required = 'devices.read_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -977,10 +979,11 @@ class TemplateList(PaginationMixin, ListView):
         return context
 
 
-class TemplateCreate(CreateView):
+class TemplateCreate(PermissionRequiredMixin, CreateView):
     model = Template
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -991,10 +994,11 @@ class TemplateCreate(CreateView):
         return context
 
 
-class TemplateUpdate(UpdateView):
+class TemplateUpdate(PermissionRequiredMixin, UpdateView):
     model = Template
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1005,10 +1009,11 @@ class TemplateUpdate(UpdateView):
         return context
 
 
-class TemplateDelete(DeleteView):
+class TemplateDelete(PermissionRequiredMixin, DeleteView):
     model = Template
     success_url = reverse_lazy('device-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1019,9 +1024,10 @@ class TemplateDelete(DeleteView):
         return context
 
 
-class RoomList(PaginationMixin, ListView):
+class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Room
     context_object_name = 'room_list'
+    permission_required = 'devices.read_room'
 
     def get_queryset(self):
         rooms = Room.objects.select_related("building").all()
@@ -1047,9 +1053,10 @@ class RoomList(PaginationMixin, ListView):
         return context
 
 
-class RoomDetail(DetailView):
+class RoomDetail(PermissionRequiredMixin, DetailView):
     model = Room
     context_object_name = 'room'
+    permission_required = 'devices.read_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1079,10 +1086,11 @@ class RoomDetail(DetailView):
         return context
 
 
-class RoomCreate(CreateView):
+class RoomCreate(PermissionRequiredMixin, CreateView):
     model = Room
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1096,10 +1104,11 @@ class RoomCreate(CreateView):
         return context
 
 
-class RoomUpdate(UpdateView):
+class RoomUpdate(PermissionRequiredMixin, UpdateView):
     model = Room
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1113,10 +1122,11 @@ class RoomUpdate(UpdateView):
         return context
 
 
-class RoomDelete(DeleteView):
+class RoomDelete(PermissionRequiredMixin, DeleteView):
     model = Room
     success_url = reverse_lazy('room-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1128,8 +1138,9 @@ class RoomDelete(DeleteView):
         return context
 
 
-class RoomMerge(View):
+class RoomMerge(PermissionRequiredMixin, View):
     model = Room
+    permission_required = 'devices.change_room'
 
     def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
@@ -1153,9 +1164,10 @@ class RoomMerge(View):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class BuildingList(PaginationMixin, ListView):
+class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Building
     context_object_name = 'building_list'
+    permission_required = 'devices.read_building'
 
     def get_queryset(self):
         buildings = Building.objects.all()
@@ -1179,9 +1191,10 @@ class BuildingList(PaginationMixin, ListView):
         return context
 
 
-class BuildingDetail(DetailView):
+class BuildingDetail(PermissionRequiredMixin, DetailView):
     model = Building
     context_object_name = 'building'
+    permission_required = 'devices.read_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1211,10 +1224,11 @@ class BuildingDetail(DetailView):
         return context
 
 
-class BuildingCreate(CreateView):
+class BuildingCreate(PermissionRequiredMixin, CreateView):
     model = Building
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1228,10 +1242,11 @@ class BuildingCreate(CreateView):
         return context
 
 
-class BuildingUpdate(UpdateView):
+class BuildingUpdate(PermissionRequiredMixin, UpdateView):
     model = Building
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1245,10 +1260,11 @@ class BuildingUpdate(UpdateView):
         return context
 
 
-class BuildingDelete(DeleteView):
+class BuildingDelete(PermissionRequiredMixin, DeleteView):
     model = Building
     success_url = reverse_lazy('building-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1260,8 +1276,9 @@ class BuildingDelete(DeleteView):
         return context
 
 
-class BuildingMerge(View):
+class BuildingMerge(PermissionRequiredMixin, View):
     model = Building
+    permission_required = 'devices.change_building'
 
     def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
@@ -1284,9 +1301,10 @@ class BuildingMerge(View):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class ManufacturerList(PaginationMixin, ListView):
+class ManufacturerList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
+    permission_required = 'devices.read_manufacturer'
 
     def get_queryset(self):
         manufacturers = Manufacturer.objects.all()
@@ -1312,10 +1330,11 @@ class ManufacturerList(PaginationMixin, ListView):
         return context
 
 
-class ManufacturerDetail(DetailView):
+class ManufacturerDetail(PermissionRequiredMixin, DetailView):
     model = Manufacturer
     context_object_name = 'object'
     template_name = "devices/manufacturer_detail.html"
+    permission_required = 'devices.read_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1343,10 +1362,11 @@ class ManufacturerDetail(DetailView):
         return context
 
 
-class ManufacturerCreate(CreateView):
+class ManufacturerCreate(PermissionRequiredMixin, CreateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.add_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1360,10 +1380,11 @@ class ManufacturerCreate(CreateView):
         return context
 
 
-class ManufacturerUpdate(UpdateView):
+class ManufacturerUpdate(PermissionRequiredMixin, UpdateView):
     model = Manufacturer
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devices.change_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1377,10 +1398,11 @@ class ManufacturerUpdate(UpdateView):
         return context
 
 
-class ManufacturerDelete(DeleteView):
+class ManufacturerDelete(PermissionRequiredMixin, DeleteView):
     model = Manufacturer
     success_url = reverse_lazy('manufacturer-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devices.delete_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1392,8 +1414,9 @@ class ManufacturerDelete(DeleteView):
         return context
 
 
-class ManufacturerMerge(View):
+class ManufacturerMerge(PermissionRequiredMixin, View):
     model = Manufacturer
+    permission_required = 'devices.change_manufacturer'
 
     def get(self, request, *args, **kwargs):
         context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
@@ -1533,9 +1556,10 @@ class PictureDelete(DeleteView):
         return context
 
 
-class Search(ListView):
+class Search(PermissionRequiredMixin, ListView):
     model = Device
     template_name = 'devices/search.html'
+    permission_required = "devices.read_device"
 
     STRING_FIELDS = {
         'name': 'name',

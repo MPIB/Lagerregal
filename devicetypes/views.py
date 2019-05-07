@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404
@@ -14,9 +15,10 @@ from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
 
 
-class TypeList(PaginationMixin, ListView):
+class TypeList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Type
     context_object_name = 'type_list'
+    permission_required = 'devicetypes.read_type'
 
     def get_queryset(self):
         '''mehtod for query all devicetypes and present the results depending on existing filter'''
@@ -55,10 +57,11 @@ class TypeList(PaginationMixin, ListView):
         return context
 
 
-class TypeDetail(DetailView):
+class TypeDetail(PermissionRequiredMixin, DetailView):
     model = Type
     context_object_name = 'object'
     template_name = "devicetypes/type_detail.html"
+    permission_required = 'devicetypes.read_type'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -84,9 +87,10 @@ class TypeDetail(DetailView):
         return context
 
 
-class TypeCreate(CreateView):
+class TypeCreate(PermissionRequiredMixin, CreateView):
     form_class = TypeForm
     template_name = 'devicetypes/type_form.html'
+    permission_required = 'devicetypes.add_type'
 
     def get_context_data(self, **kwargs):
         '''method for getting context data and show in breadcrumbs'''
@@ -117,10 +121,11 @@ class TypeCreate(CreateView):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class TypeUpdate(UpdateView):
+class TypeUpdate(PermissionRequiredMixin, UpdateView):
     form_class = TypeForm
     model = Type
     template_name = 'devicetypes/type_form.html'
+    permission_required = 'devicetypes.change_type'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -140,10 +145,11 @@ class TypeUpdate(UpdateView):
         return context
 
 
-class TypeDelete(DeleteView):
+class TypeDelete(PermissionRequiredMixin, DeleteView):
     model = Type
     success_url = reverse_lazy('type-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devicetypes.delete_type'
 
     # !!!! there is no forwarding or loading so the code is never run
     # def get_context_data(self, **kwargs):
@@ -159,8 +165,9 @@ class TypeDelete(DeleteView):
     #     return context
 
 
-class TypeMerge(View):
+class TypeMerge(PermissionRequiredMixin, View):
     model = Type
+    permission_required = 'devicetypes.change_type'
 
     def get(self, request, *args, **kwargs):
         context = {}
@@ -200,16 +207,18 @@ class TypeMerge(View):
 #                                           attribute related views                                                  #
 ######################################################################################################################
 
-class TypeAttributeCreate(CreateView):
+class TypeAttributeCreate(PermissionRequiredMixin, CreateView):
     model = TypeAttribute
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devicetypes.change_type'
 
 
-class TypeAttributeUpdate(UpdateView):
+class TypeAttributeUpdate(PermissionRequiredMixin, UpdateView):
     model = TypeAttribute
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devicetypes.change_type'
 
     def post(self, request, *args, **kwargs):
         self.success_url = reverse('type-detail',
@@ -220,10 +229,11 @@ class TypeAttributeUpdate(UpdateView):
         return self.success_url
 
 
-class TypeAttributeDelete(DeleteView):
+class TypeAttributeDelete(PermissionRequiredMixin, DeleteView):
     model = TypeAttribute
     success_url = reverse_lazy('type-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devicetypes.change_type'
 
     def post(self, request, *args, **kwargs):
         self.next = request.POST["next"]

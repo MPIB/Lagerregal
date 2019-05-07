@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -16,8 +17,9 @@ from Lagerregal.utils import PaginationMixin
 from users.models import Lageruser
 
 
-class IpAddressList(PaginationMixin, ListView):
+class IpAddressList(PermissionRequiredMixin, PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
+    permission_required = 'network.read_ipaddress'
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.get("filter", "all")
@@ -65,9 +67,10 @@ class IpAddressList(PaginationMixin, ListView):
         return context
 
 
-class IpAddressDetail(DetailView):
+class IpAddressDetail(PermissionRequiredMixin, DetailView):
     model = IpAddress
     context_object_name = 'ipaddress'
+    permission_required = 'network.read_ipaddress'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,10 +88,11 @@ class IpAddressDetail(DetailView):
         return context
 
 
-class IpAddressCreate(CreateView):
+class IpAddressCreate(PermissionRequiredMixin, CreateView):
     model = IpAddress
     form_class = IpAddressForm
     template_name = 'devices/base_form.html'
+    permission_required = 'network.add_ipaddress'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -107,10 +111,11 @@ class IpAddressCreate(CreateView):
         return super().form_valid(form)
 
 
-class IpAddressUpdate(UpdateView):
+class IpAddressUpdate(PermissionRequiredMixin, UpdateView):
     model = IpAddress
     form_class = IpAddressForm
     template_name = 'devices/base_form.html'
+    permission_required = 'network.change_ipaddress'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -129,14 +134,16 @@ class IpAddressUpdate(UpdateView):
         return super().form_valid(form)
 
 
-class IpAddressDelete(DeleteView):
+class IpAddressDelete(PermissionRequiredMixin, DeleteView):
     model = IpAddress
     success_url = reverse_lazy('ipaddress-list')
+    permission_required = 'network.delete_ipaddress'
 
 
-class UserIpAddressRemove(DeleteView):
+class UserIpAddressRemove(PermissionRequiredMixin, DeleteView):
     template_name = 'users/unassign_ipaddress.html'
     model = IpAddress
+    permission_required = 'users.change_user'
 
     def get(self, request, *args, **kwargs):
         context = {}
@@ -158,10 +165,11 @@ class UserIpAddressRemove(DeleteView):
         return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": user.pk}))
 
 
-class UserIpAddress(FormView):
+class UserIpAddress(PermissionRequiredMixin, FormView):
     template_name = 'devices/assign_ipaddress.html'
     form_class = UserIpAddressForm
     success_url = "/devices"
+    permission_required = 'users.change_user'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
