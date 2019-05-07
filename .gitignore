@@ -1,4 +1,5 @@
 *.pyc
+*.mo
 database.db
 mails/
 .spyderproject
