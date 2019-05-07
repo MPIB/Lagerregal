@@ -8,6 +8,7 @@ from devices.models import Device
 from users.models import Department, Lageruser
 
 
+@reversion.register(exclude=["last_seen"])
 class IpAddress(models.Model):
     address = models.GenericIPAddressField(unique=True)
     device = models.ForeignKey(Device, blank=True, null=True, on_delete=models.SET_NULL)
@@ -29,6 +30,3 @@ class IpAddress(models.Model):
 
     def get_absolute_url(self):
         return reverse('ipaddress-detail', kwargs={'pk': self.pk})
-
-
-reversion.register(IpAddress, exclude=["last_seen"])

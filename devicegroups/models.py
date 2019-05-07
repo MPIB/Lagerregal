@@ -7,6 +7,7 @@ from reversion import revisions as reversion
 from users.models import Department
 
 
+@reversion.register()
 class Devicegroup(models.Model):
     name = models.CharField(max_length=200)
     department = models.ForeignKey(Department, null=True, on_delete=models.CASCADE)
@@ -26,6 +27,3 @@ class Devicegroup(models.Model):
 
     def get_edit_url(self):
         return reverse('devicegroup-edit', kwargs={'pk': self.pk})
-
-
-reversion.register(Devicegroup)

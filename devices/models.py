@@ -8,7 +8,7 @@ from django.urls import reverse
 import reversion
 
 from users.models import Lageruser
-from devicetypes.models import Type, TypeAttributeValue
+from devicetypes.models import Type
 from devicegroups.models import Devicegroup
 from locations.models import Section
 from Lagerregal import utils
@@ -94,6 +94,9 @@ class Bookmark(models.Model):
     user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
 
 
+@reversion.register(follow=["typeattributevalue_set", ], exclude=[
+    "archived", "currentlending", "inventoried", "bookmarks", "trashed",
+], ignore_duplicates=True)
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     creator = models.ForeignKey(Lageruser, on_delete=models.SET_NULL, null=True)
@@ -196,12 +199,6 @@ class DeviceInformation(models.Model):
     class Meta:
         verbose_name = _('Information')
         verbose_name_plural = _('Information')
-
-
-reversion.register(Device, follow=["typeattributevalue_set", ], exclude=[
-    "archived", "currentlending", "inventoried", "bookmarks", "trashed",
-], ignore_duplicates=True)
-reversion.register(TypeAttributeValue)
 
 
 @reversion.register(ignore_duplicates=True)
