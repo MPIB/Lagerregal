@@ -64,6 +64,11 @@ For production (edit first):
 $ cp Lagerregal/template_production.py Lagerregal/settings.py
 ```
 
+Compile translations:
+```
+$ python manage.py compilemessages -l de
+```
+
 Run:
 
 ```
