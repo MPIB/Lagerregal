@@ -93,7 +93,6 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
-            'builtins': ['permission.templatetags.permissionif']
         },
     },
 ]
@@ -120,7 +119,6 @@ INSTALLED_APPS = (
     'history',
     'reversion',
     'rest_framework',
-    'permission',
     'debug_toolbar',
     'oauth2_provider',
     'django_select2',
@@ -148,7 +146,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     # 'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'permission.backends.PermissionBackend',
+    'main.backends.LagerregalBackend',
 )
 
 # A sample logging configuration. The only tangible logging

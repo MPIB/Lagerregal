@@ -5,15 +5,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from permission.decorators import permission_required
 from reversion.models import Version
 
+from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser, Department, DepartmentUser
 from devices.models import Lending
 from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
@@ -307,11 +306,14 @@ class DepartmentDetail(PermissionRequiredMixin, DetailView):
         return context
 
 
-@permission_required('users.change_department', raise_exception=True)
-class DepartmentUpdate(UpdateView):
+class DepartmentUpdate(PermissionRequiredMixin, UpdateView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_form.html'
+    permission_required = 'users.change_department'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -323,11 +325,14 @@ class DepartmentUpdate(UpdateView):
         return context
 
 
-@permission_required('users.delete_department', raise_exception=True)
-class DepartmentDelete(DeleteView):
+class DepartmentDelete(PermissionRequiredMixin, DeleteView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'users.delete_department'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -372,10 +377,13 @@ class DepartmentAddUser(FormView):
         return HttpResponseRedirect(reverse("department-detail", kwargs={"pk": self.department.pk}))
 
 
-@permission_required('users.delete_department_user', raise_exception=True)
-class DepartmentDeleteUser(DeleteView):
+class DepartmentDeleteUser(PermissionRequiredMixin, DeleteView):
     model = DepartmentUser
     template_name = 'devices/base_delete.html'
+    permission_required = 'users.delete_department_user'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_success_url(self):
         return reverse("department-detail", kwargs={"pk": self.object.department.pk})

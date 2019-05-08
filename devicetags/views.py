@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -11,6 +10,7 @@ from devices.models import Device
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from devicetags.forms import TagForm, DeviceTagForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 
 
 class DevicetagList(PermissionRequiredMixin, PaginationMixin, ListView):

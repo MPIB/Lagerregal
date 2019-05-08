@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +8,7 @@ from devicegroups.models import Devicegroup
 from devices.models import Device
 from devices.forms import DepartmentViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 from users.models import Department
 
 

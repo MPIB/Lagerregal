@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -7,6 +6,7 @@ from django.shortcuts import get_object_or_404
 
 from mail.models import MailTemplate, MailTemplateRecipient
 from mail.forms import MailTemplateForm
+from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser
 from Lagerregal.utils import PaginationMixin
 

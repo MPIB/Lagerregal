@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
@@ -14,6 +13,7 @@ from network.models import IpAddress
 from network.forms import ViewForm, IpAddressForm, UserIpAddressForm
 from devices.forms import FilterForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser
 
 

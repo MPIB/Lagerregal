@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -13,6 +12,7 @@ from locations.models import Section
 from devices.models import Device, Room
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 
 
 class SectionList(PermissionRequiredMixin, PaginationMixin, ListView):
