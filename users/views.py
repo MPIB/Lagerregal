@@ -2,7 +2,6 @@ from django.views.generic import DetailView, TemplateView, ListView, CreateView,
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.utils import translation
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
@@ -172,8 +171,6 @@ class UsersettingsView(TemplateView):
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
-            translation.activate(request.POST["language"])
-            request.session[translation.LANGUAGE_SESSION_KEY] = request.POST["language"]
             return HttpResponseRedirect(reverse("usersettings"))
 
         # handle pagelength/ timezone/ theme settings and use saved settings of user as default

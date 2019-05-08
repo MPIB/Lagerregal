@@ -63,7 +63,8 @@ MIDDLEWARE = (
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'users.middleware.TimezoneMiddleware'
+    'users.middleware.TimezoneMiddleware',
+    'users.middleware.LanguageMiddleware',
 )
 
 ROOT_URLCONF = 'Lagerregal.urls'
