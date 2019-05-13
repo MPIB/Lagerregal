@@ -108,7 +108,9 @@
         });
 
         $('[data-timeago]').timeago();
-        $('[data-toggle="popover"]').popover();
+        $('[data-toggle="popover"]').popover({
+            sanitize: false,
+        });
         $('#id_duedate').datepicker();
     });
 })();
