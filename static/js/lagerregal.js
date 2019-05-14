@@ -61,9 +61,13 @@
         });
 
         $('[data-timeago]').timeago();
-        $('[data-toggle="popover"]').popover({
-            sanitize: false,
-        });
         $('#id_duedate').datepicker();
+
+        $(document).on('submit', 'form[data-confirm]', function(event) {
+            var msg = $(this).data('confirm');
+            if (!window.confirm(msg)) {
+                event.preventDefault();
+            }
+        });
     });
 })();

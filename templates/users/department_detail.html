@@ -8,7 +8,7 @@
 {% block pullright %}
     {% has_perm 'users.add_department_user' user department as can_add_department_user %}
     {% if can_add_department_user %}
-        <a href="{% url "department-add-user" department.id %}" id="adduserbutton" data-toggle="popover" class="btn btn-success btn-sm">
+        <a href="{% url "department-add-user" department.id %}" id="adduserbutton" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add User" %}
         </a>
     {% endif %}
