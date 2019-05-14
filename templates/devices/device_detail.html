@@ -119,14 +119,32 @@
 
 
         {% if can_change_device and device.archived != None %}
-            <a href="#" id="archivebutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"
-               style="margin-left:10px"><i class="fa fa-folder-open"
-                                           style="margin-right:7px"></i>{% trans "Unarchive" %}</a>{% endif %}
+            <a href="#"
+               id="archivebutton"
+               data-toggle="popover"
+               data-html="true"
+               data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
+               data-content="<form action='{% url "device-archive" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default dropdown-cancel' onclick='$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/></form>"
+               class="btn btn-success pull-right btn-sm"
+               style="margin-left:10px">
+                <i class="fa fa-folder-open" style="margin-right:7px"></i>
+                {% trans "Unarchive" %}
+            </a>
+        {% endif %}
 
         {% if can_change_device and device.trashed != None %}
-            <a href="#" id="trashbutton" data-toggle="popover" class="btn btn-success pull-right btn-sm"
-               style="margin-left:10px"><i class="fa fa-folder-open"
-                                           style="margin-right:7px"></i>{% trans "Remove from Trash" %}</a>{% endif %}
+            <a href="#"
+               id="trashbutton"
+               data-toggle="popover"
+               data-html="true"
+               data-title="<span class='text-info' style='margin-right:10px'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
+               data-content="<form action='{% url "device-trash" object.id %}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default dropdown-cancel'onclick='$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right' style='margin-left:10px;'/></form>"
+               class="btn btn-success btn-sm pull-right"
+               style="margin-left:10px">
+                <i class="fa fa-folder-open" style="margin-right:7px"></i>
+                {% trans "Remove from Trash" %}
+            </a>
+        {% endif %}
     {% endif %}
 {% endblock %}
 
