@@ -12,9 +12,6 @@ class Section(models.Model):
     class Meta:
         verbose_name = _('Section')
         verbose_name_plural = _('Sections')
-        permissions = (
-            ("read_section", _("Can read Section")),
-        )
 
     def get_absolute_url(self):
         return reverse('section-detail', kwargs={'pk': self.pk})
