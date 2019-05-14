@@ -1,7 +1,7 @@
 import datetime
 
-from django.views.generic import TemplateView, ListView
-from reversion.models import Version, Revision
+from django.views.generic import TemplateView
+from reversion.models import Revision
 from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import redirect
 from devices.models import *
@@ -9,7 +9,6 @@ from network.models import *
 from devicegroups.models import Devicegroup
 from locations.models import Section
 from main.models import DashboardWidget, WIDGETS, get_progresscolor
-from Lagerregal.utils import PaginationMixin
 from devices.forms import LendForm
 
 
@@ -130,18 +129,4 @@ class Home(TemplateView):
         else:
             if self.request.user.is_authenticated:
                 redirect("userprofile")
-        return context
-
-
-class Globalhistory(PaginationMixin, ListView):
-    queryset = Version.objects.select_related("revision", "revision__user", "content_type"
-    ).filter().order_by("-pk")
-    context_object_name = "revision_list"
-    template_name = 'devices/globalhistory.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["breadcrumbs"] = [(reverse("globalhistory"), _("Global edit history"))]
-        if context["is_paginated"] and context["page_obj"].number > 1:
-            context["breadcrumbs"].append(["", context["page_obj"].number])
         return context
