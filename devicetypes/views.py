@@ -18,7 +18,7 @@ from users.mixins import PermissionRequiredMixin
 class TypeList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Type
     context_object_name = 'type_list'
-    permission_required = 'devicetypes.read_type'
+    permission_required = 'devicetypes.view_type'
 
     def get_queryset(self):
         '''mehtod for query all devicetypes and present the results depending on existing filter'''
@@ -61,7 +61,7 @@ class TypeDetail(PermissionRequiredMixin, DetailView):
     model = Type
     context_object_name = 'object'
     template_name = "devicetypes/type_detail.html"
-    permission_required = 'devicetypes.read_type'
+    permission_required = 'devicetypes.view_type'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

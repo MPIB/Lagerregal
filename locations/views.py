@@ -18,7 +18,7 @@ from users.mixins import PermissionRequiredMixin
 class SectionList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Section
     context_object_name = 'section_list'
-    permission_required = 'locations.read_section'
+    permission_required = 'locations.view_section'
 
     def get_queryset(self):
         sections = Section.objects.all()
@@ -66,7 +66,7 @@ class SectionDetail(PermissionRequiredMixin, DetailView):
     model = Section
     context_object_name = 'section'
     template_name = "locations/section_detail.html"
-    permission_required = 'locations.read_section'
+    permission_required = 'locations.view_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

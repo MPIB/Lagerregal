@@ -16,7 +16,7 @@ from users.mixins import PermissionRequiredMixin
 class DevicetagList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Devicetag
     context_object_name = 'devicetag_list'
-    permission_required = 'devicetags.read_devicetag'
+    permission_required = 'devicetags.view_devicetag'
 
     def get_queryset(self):
         devicetags = Devicetag.objects.all()
