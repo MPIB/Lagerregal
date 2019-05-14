@@ -121,6 +121,3 @@ class MailHistory(models.Model):
     sent_by = models.ForeignKey(Lageruser, null=True, on_delete=models.SET_NULL)
     sent_at = models.DateTimeField(auto_now_add=True)
     device = models.ForeignKey("devices.Device", null=True, on_delete=models.CASCADE)
-
-    def get_absolute_url(self):
-        return reverse('mailhistory-detail', kwargs={'pk': self.pk})

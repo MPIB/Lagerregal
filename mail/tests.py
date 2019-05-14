@@ -7,7 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from model_mommy import mommy
 
-from mail.models import MailTemplate, MailTemplateRecipient, MailHistory
+from mail.models import MailTemplate, MailTemplateRecipient
 from users.models import Lageruser
 
 
@@ -58,15 +58,3 @@ class TestMailTemplateRecipient(TestCase):
         con = mommy.make(ContentType)
         rec = mommy.make(MailTemplateRecipient, content_type=con)
         self.assertEqual(str(rec), str(rec.content_type.name + ": " + str(rec.content_object)))
-
-
-class TestMailHistory(TestCase):
-    def setUp(self):
-        self.client = Client()
-        Lageruser.objects.create_superuser("test", "test@test.com", "test")
-        self.client.login(username="test", password="test")
-
-    @unittest.skip("find out why url does not exist")
-    def test_mail_history_creation(self):
-        hist = mommy.make(MailHistory)
-        self.assertEqual(hist.get_absolute_url(), reverse('mailhistory-detail', kwargs={'pk': hist.pk}))
