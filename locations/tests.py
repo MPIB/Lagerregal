@@ -25,26 +25,26 @@ class SectionTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
-        response = self.client.get('/sections/add')
+        response = self.client.get('/sections/add/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
         section = mommy.make(Section)
-        response = self.client.get('/sections/view/%i' % section.pk)
+        response = self.client.get('/sections/view/%i/' % section.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         section = mommy.make(Section)
-        response = self.client.get('/sections/edit/%i' % section.pk)
+        response = self.client.get('/sections/edit/%i/' % section.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         section = mommy.make(Section)
-        response = self.client.get('/sections/delete/%i' % section.pk)
+        response = self.client.get('/sections/delete/%i/' % section.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         section1 = mommy.make(Section)
         section2 = mommy.make(Section)
-        response = self.client.get('/sections/merge/%i/%i' % (section1.pk, section2.pk))
+        response = self.client.get('/sections/merge/%i/%i/' % (section1.pk, section2.pk))
         self.assertEqual(response.status_code, 200)
