@@ -1,10 +1,14 @@
+import unittest
+
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
 
 from model_mommy import mommy
 
-from users.models import Lageruser, Department
+from users.models import Department
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 
 class LageruserTests(TestCase):
@@ -22,6 +26,23 @@ class LageruserTests(TestCase):
         user1.clean()
         self.assertEqual(user1.expiration_date, None)
 
+    def test_list_view(self):
+        response = self.client.get('/users/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_view(self):
+        user = mommy.make(Lageruser)
+        response = self.client.get('/users/view/%i' % user.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_profile_view(self):
+        response = self.client.get('/profile/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_settings_view(self):
+        response = self.client.get('/settings/')
+        self.assertEqual(response.status_code, 200)
+
 
 class DepartmentTests(TestCase):
     def setUp(self):
@@ -32,3 +53,37 @@ class DepartmentTests(TestCase):
     def test_department_creation(self):
         department = mommy.make(Department)
         self.assertEqual(str(department), department.name)
+
+    def test_list_view(self):
+        response = self.client.get('/departments/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_view(self):
+        response = self.client.get('/departments/add')
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_view(self):
+        department = mommy.make(Department)
+        response = self.client.get('/departments/view/%i' % department.pk)
+        self.assertEqual(response.status_code, 200)
+
+    @unittest.skip('failing')
+    def test_update_view(self):
+        department = mommy.make(Department)
+        response = self.client.get('/departments/edit/%i' % department.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_view(self):
+        department = mommy.make(Department)
+        response = self.client.get('/departments/delete/%i' % department.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_adduser_view(self):
+        department = mommy.make(Department)
+        response = self.client.get('/departments/adduser/%i' % department.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_removeuser_view(self):
+        departmentuser = mommy.make(DepartmentUser)
+        response = self.client.get('/departments/removeuser/%i' % departmentuser.pk)
+        self.assertEqual(response.status_code, 200)

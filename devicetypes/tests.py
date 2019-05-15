@@ -53,3 +53,9 @@ class TypeTests(TestCase):
         devicetype = mommy.make(Type)
         response = self.client.get('/types/delete/%i' % devicetype.pk)
         self.assertEqual(response.status_code, 200)
+
+    def test_merge_view(self):
+        devicetype1 = mommy.make(Type)
+        devicetype2 = mommy.make(Type)
+        response = self.client.get('/types/merge/%i/%i' % (devicetype1.pk, devicetype2.pk))
+        self.assertEqual(response.status_code, 200)

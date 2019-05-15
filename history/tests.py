@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from django.test.client import Client
 from django.test import TestCase
 
@@ -12,6 +13,16 @@ class HistoryTests(TestCase):
         self.client = Client()
         self.admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
+
+    def test_global_view(self):
+        response = self.client.get('/history/global/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_view(self):
+        content_type = ContentType.objects.get(model='device')
+        device = mommy.make(Device)
+        response = self.client.get('/history/%i/%i' % (content_type.pk, device.pk))
+        self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
         device = mommy.make(Device)
