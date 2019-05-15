@@ -262,7 +262,7 @@ class BuildingTests(TestCase):
         self.assertEqual(len(response.context["building_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/buildings/2/')
+        response = self.client.get('/buildings/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
@@ -316,7 +316,7 @@ class RoomTests(TestCase):
         self.assertEqual(len(response.context["room_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/rooms/2/')
+        response = self.client.get('/rooms/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
@@ -422,7 +422,7 @@ class TemplateTests(TestCase):
         self.assertEqual(len(response.context["template_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/devices/templates/2/')
+        response = self.client.get('/devices/templates/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):

@@ -67,7 +67,7 @@ urlpatterns = [
     path('devices/<int:pk>/tags/', DeviceTags.as_view(), name="device-tags"),
     path('devices/<int:pk>/tags/<int:tag>/', DeviceTagRemove.as_view(), name="device-tag-remove"),
     path('devices/<int:pk>/lending/', DeviceLendingList.as_view(), name="device-lending-list"),
-    path('devices/<int:pk>/lending/<int:page>/', DeviceLendingList.as_view(), name="device-lending-list"),
+    path('devices/<int:pk>/lending/page/<int:page>/', DeviceLendingList.as_view(), name="device-lending-list"),
     path('devices/<int:pk>/inventoried/', DeviceInventoried.as_view(), name="device-inventoried"),
     path('devices/<int:pk>/bookmark/', DeviceBookmark.as_view(), name="device-bookmark"),
     path('devices/<int:pk>/notes/create/', NoteCreate.as_view(), name="device-note-create"),
@@ -81,7 +81,7 @@ urlpatterns = [
     path('devices/export/csv/', ExportCsv.as_view(), name='export-csv'),
     path('devices/return/<int:lending>/', DeviceReturn.as_view(), name="device-return"),
     path('devices/public/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    path('devices/public/<int:page>/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
+    path('devices/public/page/<int:page>/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     path('devices/public/sorting/<sorting>/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     path('devices/public/page/<int:page>/sorting/<sorting>/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     path('devices/public/sorting/<sorting>/group/<group>/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
@@ -90,14 +90,14 @@ urlpatterns = [
     path('devices/public/page/<int:page>/sorting/<sorting>/group/<group>/filter/<filter>/', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
     path('devices/public/<int:pk>/', xframe_options_exempt(PublicDeviceDetailView.as_view()), name="public-device-detail"),
     path('devices/templates/', TemplateList.as_view(), name="template-list"),
-    path('devices/templates/<int:page>/', TemplateList.as_view(), name="template-list"),
+    path('devices/templates/page/<int:page>/', TemplateList.as_view(), name="template-list"),
     path('devices/templates/add/', TemplateCreate.as_view(), name="template-add"),
     path('devices/templates/<int:pk>/edit/', TemplateUpdate.as_view(), name="template-edit"),
     path('devices/templates/<int:pk>/delete/', TemplateDelete.as_view(), name="template-delete"),
 
 
     path('types/', TypeList.as_view(), name="type-list"),
-    path('types/<int:page>/', TypeList.as_view(), name="type-list"),
+    path('types/page/<int:page>/', TypeList.as_view(), name="type-list"),
     path('types/sorting/<sorting>/', TypeList.as_view(), name="type-list"),
     path('types/page/<int:page>/sorting/<sorting>/', TypeList.as_view(), name="type-list"),
     path('types/sorting/<sorting>/filter/<filter>/', TypeList.as_view(), name="type-list"),
@@ -113,7 +113,7 @@ urlpatterns = [
 
 
     path('rooms/', RoomList.as_view(), name="room-list"),
-    path('rooms/<int:page>/', RoomList.as_view(), name="room-list"),
+    path('rooms/page/<int:page>/', RoomList.as_view(), name="room-list"),
     path('rooms/sorting/<sorting>/', RoomList.as_view(), name="room-list"),
     path('rooms/page/<int:page>/sorting/<sorting>/', RoomList.as_view(), name="room-list"),
     path('rooms/sorting/<sorting>/filter/<filter>/', RoomList.as_view(), name="room-list"),
@@ -125,7 +125,7 @@ urlpatterns = [
     path('rooms/merge/<int:oldpk>/<int:newpk>/', RoomMerge.as_view(), name="room-merge"),
 
     path('buildings/', BuildingList.as_view(), name="building-list"),
-    path('buildings/<int:page>/', BuildingList.as_view(), name="building-list"),
+    path('buildings/page/<int:page>/', BuildingList.as_view(), name="building-list"),
     path('buildings/sorting/<sorting>/', BuildingList.as_view(), name="building-list"),
     path('buildings/page/<int:page>/sorting/<sorting>/', BuildingList.as_view(), name="building-list"),
     path('buildings/sorting/<sorting>/filter/<filter>/', BuildingList.as_view(), name="building-list"),
@@ -149,14 +149,14 @@ urlpatterns = [
     path('manufacturers/merge/<int:oldpk>/<int:newpk>/', ManufacturerMerge.as_view(), name="manufacturer-merge"),
 
     path('mails/', MailList.as_view(), name="mail-list"),
-    path('mails/<int:page>/', MailList.as_view(), name="mail-list"),
+    path('mails/page/<int:page>/', MailList.as_view(), name="mail-list"),
     path('mails/add/', MailCreate.as_view(), name="mail-add"),
     path('mails/edit/<pk>/', MailUpdate.as_view(), name="mail-edit"),
     path('mails/view/<pk>/', MailDetail.as_view(), name="mail-detail"),
     path('mails/delete/<pk>/', MailDelete.as_view(), name="mail-delete"),
 
     path('devicegroups/', DevicegroupList.as_view(), name="devicegroup-list"),
-    path('devicegroups/<int:page>/', DevicegroupList.as_view(), name="devicegroup-list"),
+    path('devicegroups/page/<int:page>/', DevicegroupList.as_view(), name="devicegroup-list"),
     path('devicegroups/department/<department>/sorting/<sorting>/filter/<filter>/', DevicegroupList.as_view(), name="devicegroup-list"),
     path('devicegroups/page/<int:page>/department/<department>/sorting/<sorting>/filter/<filter>/', DevicegroupList.as_view(), name="devicegroup-list"),
     path('devicegroups/add/', DevicegroupCreate.as_view(), name="devicegroup-add"),
@@ -165,7 +165,7 @@ urlpatterns = [
     path('devicegroups/delete/<pk>/', DevicegroupDelete.as_view(), name="devicegroup-delete"),
 
     path('devicetags/', DevicetagList.as_view(), name="devicetag-list"),
-    path('devicetags/<int:page>/', DevicetagList.as_view(), name="devicetag-list"),
+    path('devicetags/page/<int:page>/', DevicetagList.as_view(), name="devicetag-list"),
     path('devicetags/sorting/<sorting>/', DevicetagList.as_view(), name="devicetag-list"),
     path('devicetags/page/<int:page>/sorting/<sorting>/', DevicetagList.as_view(), name="devicetag-list"),
     path('devicetags/sorting/<sorting>/filter/<filter>/', DevicetagList.as_view(), name="devicetag-list"),
@@ -175,7 +175,7 @@ urlpatterns = [
     path('devicetags/delete/<pk>/', DevicetagDelete.as_view(), name="devicetag-delete"),
 
     path('sections/', SectionList.as_view(), name="section-list"),
-    path('sections/<int:page>/', SectionList.as_view(), name="section-list"),
+    path('sections/page/<int:page>/', SectionList.as_view(), name="section-list"),
     path('sections/sorting/<sorting>/', SectionList.as_view(), name="section-list"),
     path('sections/page/<int:page>/sorting/<sorting>/', SectionList.as_view(), name="section-list"),
     path('sections/sorting/<sorting>/filter/<filter>/', SectionList.as_view(), name="section-list"),
@@ -187,7 +187,7 @@ urlpatterns = [
     path('sections/merge/<int:oldpk>/<int:newpk>/', SectionMerge.as_view(), name="section-merge"),
 
     path('departments/', DepartmentList.as_view(), name="department-list"),
-    path('departments/<int:page>/', DepartmentList.as_view(), name="department-list"),
+    path('departments/page/<int:page>/', DepartmentList.as_view(), name="department-list"),
     path('departments/sorting/<sorting>/', DepartmentList.as_view(), name="department-list"),
     path('departments/page/<int:page>/sorting/<sorting>/', DepartmentList.as_view(), name="department-list"),
     path('departments/sorting/<sorting>/filter/<filter>/', DepartmentList.as_view(), name="department-list"),
@@ -222,9 +222,9 @@ urlpatterns = [
     path('settings/', login_required(UsersettingsView.as_view()), name="usersettings"),
 
     path('history/global/', Globalhistory.as_view(), name="globalhistory"),
-    path('history/global/<int:page>/', Globalhistory.as_view(), name="globalhistory"),
+    path('history/global/page/<int:page>/', Globalhistory.as_view(), name="globalhistory"),
     path('history/<int:content_type_id>/<int:object_id>/', HistoryList.as_view(), name="history-list"),
-    path('history/<int:content_type_id>/<int:object_id>/<int:page>/', HistoryList.as_view(), name="history-list"),
+    path('history/<int:content_type_id>/<int:object_id>/page/<int:page>/', HistoryList.as_view(), name="history-list"),
     path('history/version/<int:pk>/', HistoryDetail.as_view(), name="history-detail"),
 
     path('admin/', admin.site.urls),
