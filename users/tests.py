@@ -30,7 +30,7 @@ class LageruserTests(TestCase):
 
     def test_detail_view(self):
         user = mommy.make(Lageruser)
-        response = self.client.get('/users/%i/view/' % user.pk)
+        response = self.client.get('/users/%i/' % user.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_profile_view(self):
@@ -62,7 +62,7 @@ class DepartmentTests(TestCase):
 
     def test_detail_view(self):
         department = mommy.make(Department)
-        response = self.client.get('/departments/%i/view/' % department.pk)
+        response = self.client.get('/departments/%i/' % department.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):

@@ -30,7 +30,7 @@ class SectionTests(TestCase):
 
     def test_detail_view(self):
         section = mommy.make(Section)
-        response = self.client.get('/sections/%i/view/' % section.pk)
+        response = self.client.get('/sections/%i/' % section.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):

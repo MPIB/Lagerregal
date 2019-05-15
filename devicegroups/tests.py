@@ -30,7 +30,7 @@ class DevicegroupTests(TestCase):
 
     def test_detail_view(self):
         devicegroup = mommy.make(Devicegroup)
-        response = self.client.get('/devicegroups/%i/view/' % devicegroup.pk)
+        response = self.client.get('/devicegroups/%i/' % devicegroup.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):

@@ -37,7 +37,7 @@ class TypeTests(TestCase):
 
     def test_detail_view(self):
         devicetype = mommy.make(Type)
-        response = self.client.get('/types/%i/view/' % devicetype.pk)
+        response = self.client.get('/types/%i/' % devicetype.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):

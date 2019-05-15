@@ -30,7 +30,7 @@ class TestMailTemplate(TestCase):
 
     def test_detail_view(self):
         template = mommy.make(MailTemplate)
-        response = self.client.get('/mails/%i/view/' % template.pk)
+        response = self.client.get('/mails/%i/' % template.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):

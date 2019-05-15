@@ -267,7 +267,7 @@ class BuildingTests(TestCase):
 
     def test_detail_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/%i/view/' % building.pk)
+        response = self.client.get('/buildings/%i/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
@@ -321,7 +321,7 @@ class RoomTests(TestCase):
 
     def test_detail_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/%i/view/' % room.pk)
+        response = self.client.get('/rooms/%i/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
@@ -372,7 +372,7 @@ class ManufacturerTests(TestCase):
 
     def test_detail_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/%i/view/' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
