@@ -27,6 +27,7 @@ class IpAddress(models.Model):
         permissions = (
             ("read_ipaddress", _("Can read IP-Address")),
         )
+        ordering = ['address']
 
     def get_absolute_url(self):
         return reverse('ipaddress-detail', kwargs={'pk': self.pk})

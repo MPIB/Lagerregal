@@ -45,6 +45,7 @@ class Lageruser(AbstractUser):
         permissions = (
             ("read_user", _("Can read User")),
         )
+        ordering = ['username']
 
     def get_absolute_url(self):
         return reverse('userprofile', kwargs={'pk': self.pk})
