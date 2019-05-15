@@ -1,4 +1,3 @@
-from django.utils.crypto import get_random_string
+from django.core.management.utils import get_random_secret_key
 
-chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*(-_=+)'
-print(get_random_string(50, chars))
+print(get_random_secret_key())
