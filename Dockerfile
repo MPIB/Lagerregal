@@ -9,7 +9,7 @@ ENV BUILDPKGS gcc python3-dev libldap2-dev libsasl2-dev libssl-dev
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends $BUILDPKGS
-RUN pip install -r dependencies.txt
+RUN pip install -r requirements.txt
 RUN pip install flake8
 RUN cp Lagerregal/template_development.py Lagerregal/settings.py
 RUN python manage.py migrate
