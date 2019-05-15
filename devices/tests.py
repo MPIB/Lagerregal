@@ -267,7 +267,7 @@ class BuildingTests(TestCase):
 
     def test_detail_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/view/%i/' % building.pk)
+        response = self.client.get('/buildings/%i/view/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
@@ -276,18 +276,18 @@ class BuildingTests(TestCase):
 
     def test_update_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/edit/%i/' % building.pk)
+        response = self.client.get('/buildings/%i/edit/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/delete/%i/' % building.pk)
+        response = self.client.get('/buildings/%i/delete/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         building1 = mommy.make(Building)
         building2 = mommy.make(Building)
-        response = self.client.get('/buildings/merge/%i/%i/' % (building1.pk, building2.pk))
+        response = self.client.get('/buildings/%i/merge/%i/' % (building1.pk, building2.pk))
         self.assertEqual(response.status_code, 200)
 
 
@@ -321,7 +321,7 @@ class RoomTests(TestCase):
 
     def test_detail_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/view/%i/' % room.pk)
+        response = self.client.get('/rooms/%i/view/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
@@ -330,18 +330,18 @@ class RoomTests(TestCase):
 
     def test_update_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/edit/%i/' % room.pk)
+        response = self.client.get('/rooms/%i/edit/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/delete/%i/' % room.pk)
+        response = self.client.get('/rooms/%i/delete/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         room1 = mommy.make(Room)
         room2 = mommy.make(Room)
-        response = self.client.get('/rooms/merge/%i/%i/' % (room1.pk, room2.pk))
+        response = self.client.get('/rooms/%i/merge/%i/' % (room1.pk, room2.pk))
         self.assertEqual(response.status_code, 200)
 
 
@@ -372,7 +372,7 @@ class ManufacturerTests(TestCase):
 
     def test_detail_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/view/%i/' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/view/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
@@ -381,18 +381,18 @@ class ManufacturerTests(TestCase):
 
     def test_update_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/edit/%i/' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/edit/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/delete/%i/' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/delete/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         manufacturer1 = mommy.make(Manufacturer)
         manufacturer2 = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/merge/%i/%i/' % (manufacturer1.pk, manufacturer2.pk))
+        response = self.client.get('/manufacturers/%i/merge/%i/' % (manufacturer1.pk, manufacturer2.pk))
         self.assertEqual(response.status_code, 200)
 
 

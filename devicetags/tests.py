@@ -32,12 +32,12 @@ class DevicetagsTests(TestCase):
 
     def test_update_view(self):
         tag = mommy.make(Devicetag)
-        response = self.client.get('/devicetags/edit/%i/' % tag.pk)
+        response = self.client.get('/devicetags/%i/edit/' % tag.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         tag = mommy.make(Devicetag)
-        response = self.client.get('/devicetags/delete/%i/' % tag.pk)
+        response = self.client.get('/devicetags/%i/delete/' % tag.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_devicetags_view(self):

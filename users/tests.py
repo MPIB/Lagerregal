@@ -30,7 +30,7 @@ class LageruserTests(TestCase):
 
     def test_detail_view(self):
         user = mommy.make(Lageruser)
-        response = self.client.get('/users/view/%i/' % user.pk)
+        response = self.client.get('/users/%i/view/' % user.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_profile_view(self):
@@ -62,25 +62,25 @@ class DepartmentTests(TestCase):
 
     def test_detail_view(self):
         department = mommy.make(Department)
-        response = self.client.get('/departments/view/%i/' % department.pk)
+        response = self.client.get('/departments/%i/view/' % department.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         department = mommy.make(Department)
-        response = self.client.get('/departments/edit/%i/' % department.pk)
+        response = self.client.get('/departments/%i/edit/' % department.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         department = mommy.make(Department)
-        response = self.client.get('/departments/delete/%i/' % department.pk)
+        response = self.client.get('/departments/%i/delete/' % department.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_adduser_view(self):
         department = mommy.make(Department)
-        response = self.client.get('/departments/adduser/%i/' % department.pk)
+        response = self.client.get('/departments/%i/adduser/' % department.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_removeuser_view(self):
         departmentuser = mommy.make(DepartmentUser)
-        response = self.client.get('/departments/removeuser/%i/' % departmentuser.pk)
+        response = self.client.get('/departments/%i/removeuser/' % departmentuser.pk)
         self.assertEqual(response.status_code, 200)

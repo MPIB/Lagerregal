@@ -40,19 +40,19 @@ class IpAddressTests(TestCase):
 
     def test_detail_view(self):
         address = mommy.make(IpAddress)
-        response = self.client.get('/ipaddresses/view/%i/' % address.pk)
+        response = self.client.get('/ipaddresses/%i/view/' % address.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         address = mommy.make(IpAddress)
-        response = self.client.get('/ipaddresses/edit/%i/' % address.pk)
+        response = self.client.get('/ipaddresses/%i/edit/' % address.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         address = mommy.make(IpAddress)
-        response = self.client.get('/ipaddresses/delete/%i/' % address.pk)
+        response = self.client.get('/ipaddresses/%i/delete/' % address.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_user_view(self):
-        response = self.client.get('/users/view/%i/ipaddress/' % self.admin.pk)
+        response = self.client.get('/users/%i/view/ipaddress/' % self.admin.pk)
         self.assertEqual(response.status_code, 200)

@@ -37,7 +37,7 @@ class TypeTests(TestCase):
 
     def test_detail_view(self):
         devicetype = mommy.make(Type)
-        response = self.client.get('/types/view/%i/' % devicetype.pk)
+        response = self.client.get('/types/%i/view/' % devicetype.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
@@ -46,16 +46,16 @@ class TypeTests(TestCase):
 
     def test_update_view(self):
         devicetype = mommy.make(Type)
-        response = self.client.get('/types/edit/%i/' % devicetype.pk)
+        response = self.client.get('/types/%i/edit/' % devicetype.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         devicetype = mommy.make(Type)
-        response = self.client.get('/types/delete/%i/' % devicetype.pk)
+        response = self.client.get('/types/%i/delete/' % devicetype.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         devicetype1 = mommy.make(Type)
         devicetype2 = mommy.make(Type)
-        response = self.client.get('/types/merge/%i/%i/' % (devicetype1.pk, devicetype2.pk))
+        response = self.client.get('/types/%i/merge/%i/' % (devicetype1.pk, devicetype2.pk))
         self.assertEqual(response.status_code, 200)
