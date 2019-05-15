@@ -8,7 +8,7 @@ from devicetags.models import Devicetag
 from users.models import Lageruser
 
 
-class DevitagsTests(TestCase):
+class DevicetagsTests(TestCase):
     def setUp(self):
         self.client = Client()
         Lageruser.objects.create_superuser('test', 'test@test.com', 'test')
