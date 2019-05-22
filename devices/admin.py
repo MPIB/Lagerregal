@@ -8,9 +8,13 @@ class DeviceAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-admin.site.register(Device, DeviceAdmin)
-
-admin.site.register(Type)
 admin.site.register(Building)
 admin.site.register(Room)
 admin.site.register(Manufacturer)
+admin.site.register(Device, DeviceAdmin)
+admin.site.register(DeviceInformationType)
+admin.site.register(DeviceInformation)
+admin.site.register(Lending)
+admin.site.register(Template)
+admin.site.register(Note)
+admin.site.register(Picture)
