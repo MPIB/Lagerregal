@@ -333,7 +333,7 @@ class DeviceMailForm(forms.Form):
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
     error_css_class = 'has-error'
-    emailrecipients = forms.MultipleChoiceField()
+    emailrecipients = forms.MultipleChoiceField(widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
