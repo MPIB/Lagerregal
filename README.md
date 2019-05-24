@@ -47,7 +47,7 @@ Manual Quickstart
 Install necessary requirements (either globally or with virtualenv)
 
 ```
-$ pip install -U -r dependencies.txt
+$ pip install -U -r requirements.txt
 $ npm install
 ```
 
