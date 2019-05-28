@@ -1,5 +1,3 @@
-import unittest
-
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
@@ -42,7 +40,6 @@ class DevicetagsTests(TestCase):
         response = self.client.get('/devicetags/delete/%i' % tag.pk)
         self.assertEqual(response.status_code, 200)
 
-    @unittest.skip('failing')
     def test_devicetags_view(self):
         device = mommy.make(Device)
         tag = mommy.make(Devicetag)

@@ -56,7 +56,6 @@ class IpAddressTests(TestCase):
         response = self.client.get('/ipaddresses/delete/%i' % address.pk)
         self.assertEqual(response.status_code, 200)
 
-    @unittest.skip('failing')
     def test_user_view(self):
         response = self.client.get('/users/view/%i/ipaddress/' % self.admin.pk)
         self.assertEqual(response.status_code, 200)

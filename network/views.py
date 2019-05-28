@@ -171,21 +171,23 @@ class UserIpAddress(PermissionRequiredMixin, FormView):
     success_url = "/devices"
     permission_required = 'users.change_user'
 
+    def dispatch(self, request, **kwargs):
+        self.object = get_object_or_404(Lageruser, pk=self.kwargs['pk'])
+        return super().dispatch(request, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = context["form"].cleaned_data["user"]
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")),
-            (reverse("userprofile", kwargs={"pk": user.pk}), str(user)),
+            (reverse("userprofile", kwargs={"pk": self.object.pk}), str(self.object)),
             ("", _("Assign IP-Addresses"))]
         return context
 
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
-        user = form.cleaned_data["user"]
-        reversion.set_comment(_("Assigned to User {0}").format(str(user)))
+        reversion.set_comment(_("Assigned to User {0}").format(str(self.object)))
         for ipaddress in ipaddresses:
-            ipaddress.user = user
+            ipaddress.user = self.object
             ipaddress.save()
 
-        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": user.pk}))
+        return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": self.object.pk}))

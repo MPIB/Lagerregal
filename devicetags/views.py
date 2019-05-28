@@ -115,24 +115,26 @@ class DeviceTags(FormView):
     form_class = DeviceTagForm
     success_url = "/devices"
 
+    def dispatch(self, request, **kwargs):
+        self.object = get_object_or_404(Device, pk=self.kwargs['pk'])
+        return super().dispatch(request, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        device = context["form"].cleaned_data["device"]
 
         # adds "Devices" to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
+            (reverse("device-detail", kwargs={"pk": self.object.pk}), self.object.name),
             ("", _("Assign Tags"))]
 
         return context
 
     def form_valid(self, form):
         tags = form.cleaned_data["tags"]
-        device = form.cleaned_data["device"]
-        device.tags.add(*tags)
+        self.object.tags.add(*tags)
 
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": self.object.pk}))
 
 
 class DeviceTagRemove(PermissionRequiredMixin, DeleteView):

@@ -103,7 +103,6 @@ class IpAddressForm(forms.Form):
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
         widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
-    device = forms.ModelChoiceField(Device.objects.all())
 
 
 class IpAddressPurposeForm(forms.Form):
