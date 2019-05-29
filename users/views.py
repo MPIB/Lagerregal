@@ -66,17 +66,14 @@ class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
         return context
 
 
-class ProfileView(PermissionRequiredMixin, DetailView):
+class ProfileBaseView(DetailView):
     model = Lageruser
     context_object_name = 'profileuser'
-    permission_required = "users.read_user"
-
     template_name = 'users/profile.html'
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+
         # shows list of edits made by user
         context['edits'] = Version.objects.select_related("revision", "revision__user"
         ).filter(content_type_id=ContentType.objects.get(model='device').id,
@@ -86,57 +83,31 @@ class ProfileView(PermissionRequiredMixin, DetailView):
         context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
                                                              "owner").filter(owner=context["profileuser"],
                                                                              returndate=None)
-        context['lendhistory'] = Lending.objects.filter(owner=context["profileuser"]).order_by('-lenddate').exclude(returndate=None)
+        context['lendhistory'] = Lending.objects.filter(owner=self.object).order_by('-lenddate').exclude(returndate=None)
+
         # shows list of user related ip-adresses
-        context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
+        context['ipaddresses'] = self.object.ipaddress_set.all()
         context['ipaddressform'] = UserIpAddressForm()
         context["ipaddressform"].fields["ipaddresses"].queryset = IpAddress.objects.filter(department__in=self.object.departments.all(), device=None, user=None)
 
         # shows list of users permission (group permission, user permission)
         context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
-        context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
-        context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
-
-        # adds username to breadcrumbs
-        context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", context["profileuser"])]
-
-        return context
-
-
-class UserprofileView(TemplateView):
-    template_name = "users/profile.html"
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context["profileuser"] = self.request.user
-
-        # shows list of edits made by user
-        context['edits'] = Version.objects.select_related("revision", "revision__user"
-        ).filter(content_type_id=ContentType.objects.get(model='device').id,
-                 revision__user=context["profileuser"]).order_by("-pk")
-
-        # shows list users lendings
-        context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
-                                                             "owner").filter(owner=context["profileuser"],
-                                                                             returndate=None)
-
-        # shows user related ip-adresses
-        context['ipaddresses'] = IpAddress.objects.filter(user=context["profileuser"])
-        context['ipaddressform'] = UserIpAddressForm()
-
-        # shows list of users permissions (group permissions, user permissions)
-        context["permission_list"] = Permission.objects.all().values("name", "codename", "content_type__app_label")
-        context["userperms"] = [x[0] for x in context["profileuser"].user_permissions.values_list("codename")]
-        context["groupperms"] = [x.split(".")[1] for x in context["profileuser"].get_group_permissions()]
+        context["userperms"] = [x[0] for x in self.object.user_permissions.values_list("codename")]
+        context["groupperms"] = [x.split(".")[1] for x in self.object.get_group_permissions()]
 
         # adds user name to breadcrumbs
-        context["breadcrumbs"] = [
-            (reverse("user-list"), _("Users")),
-            (reverse("userprofile", kwargs={"pk": self.request.user.pk}), self.request.user), ]
+        context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", self.object)]
 
         return context
+
+
+class ProfileView(PermissionRequiredMixin, ProfileBaseView):
+    permission_required = "users.read_user"
+
+
+class UserprofileView(ProfileBaseView):
+    def get_object(self):
+        return self.request.user
 
 
 class UsersettingsView(TemplateView):
