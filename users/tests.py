@@ -1,5 +1,3 @@
-import unittest
-
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
@@ -67,7 +65,6 @@ class DepartmentTests(TestCase):
         response = self.client.get('/departments/view/%i' % department.pk)
         self.assertEqual(response.status_code, 200)
 
-    @unittest.skip('failing')
     def test_update_view(self):
         department = mommy.make(Department)
         response = self.client.get('/departments/edit/%i' % department.pk)
