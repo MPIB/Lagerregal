@@ -111,7 +111,7 @@ class MailTemplateRecipient(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
-        return str(self.content_type.name + ": " + str(self.content_object))
+        return str(self.content_type.name) + ": " + str(self.content_object)
 
 
 class MailHistory(models.Model):
