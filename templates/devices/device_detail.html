@@ -238,10 +238,12 @@
                     <td>{% trans "Contact" %}</td>
                     <td><a href="{% url 'userprofile' device.contact.pk %}">{{ device.contact }}</a></td>
                 {% endif %}
-                <tr>
-                    <td>{% trans "Created by" %}</td>
-                    <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
-                </tr>
+                {% if device.creator %}
+                    <tr>
+                        <td>{% trans "Created by" %}</td>
+                        <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                    </tr>
+                {% endif %}
                 <tr>
                     <td>{% trans "Last edited" %}</td>
                     <td>{% if lastedit != None %}<a href="{% url 'history-detail' lastedit.pk %}">
@@ -576,7 +578,9 @@
 
     {% if can_lend_device %}
         {% include "snippets/modals/lending.html" with modalname="lendModal" %}
-        {% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
+        {% if device.currentlending %}
+            {% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
+        {% endif %}
 
         {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
         {% include "snippets/modals/deviceImageModal.html" with modalname="pictureModal" %}

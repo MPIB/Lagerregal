@@ -44,7 +44,13 @@
                             </tr>
                             <tr>
                                 <td>{% trans "Main Department" %}</td>
-                                <td><a href="{% url "department-detail" profileuser.main_department.id %}">{{ profileuser.main_department }}</a></td>
+                                <td>
+                                    {% if profileuser.main_department %}
+                                        <a href="{% url "department-detail" profileuser.main_department.id %}">{{ profileuser.main_department }}</a>
+                                    {% else %}
+                                        &mdash;
+                                    {% endif %}
+                                </td>
                             </tr>
                             <tr>
                                 <td>{% trans "Member of Departments" %}</td>
