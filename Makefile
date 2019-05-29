@@ -24,8 +24,8 @@ test: $(VIRTUAL_ENV)
 .PHONY: lint
 lint: $(VIRTUAL_ENV)
 	$(VIRTUAL_ENV)/bin/pip install flake8 isort
+	$(VIRTUAL_ENV)/bin/isort -rc api demo devicegroups devices devicetags devicetypes history Lagerregal locale locations mail main media network users
 	$(VIRTUAL_ENV)/bin/flake8
-	$(VIRTUAL_ENV)/bin/isort -rc -c api demo devicegroups devices devicetags history Lagerregal locale locations mail main media network users
 
 $(VIRTUAL_ENV):
 	python3 -m venv $(VIRTUAL_ENV)
