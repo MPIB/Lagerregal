@@ -50,7 +50,6 @@ class IpAddressTests(TestCase):
         response = self.client.get('/ipaddresses/edit/%i' % address.pk)
         self.assertEqual(response.status_code, 200)
 
-    @unittest.skip('missing template')
     def test_delete_view(self):
         address = mommy.make(IpAddress)
         response = self.client.get('/ipaddresses/delete/%i' % address.pk)
