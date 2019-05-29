@@ -1,5 +1,6 @@
 import datetime
 
+from django.db.models import Q
 from django.shortcuts import redirect
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import TemplateView
@@ -8,12 +9,14 @@ from reversion.models import Revision
 
 from devicegroups.models import Devicegroup
 from devices.forms import LendForm
-from devices.models import *
+from devices.models import Device
+from devices.models import Lending
 from locations.models import Section
 from main.models import WIDGETS
 from main.models import DashboardWidget
 from main.models import get_progresscolor
-from network.models import *
+from network.models import IpAddress
+from users.models import Lageruser
 
 
 def get_widget_data(user, widgetlist=[], only_user=False):
