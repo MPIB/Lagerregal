@@ -1,10 +1,11 @@
 import os
 import re
 
+from django.forms import CheckboxInput
 from django.template import Library
 from django.urls import reverse
-from django.utils.html import mark_safe, format_html
-from django.forms import CheckboxInput
+from django.utils.html import format_html
+from django.utils.html import mark_safe
 
 from devices.models import Bookmark
 

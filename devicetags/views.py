@@ -1,14 +1,22 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
-from django.urls import reverse_lazy, reverse
-from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import FormView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
 
-from devicetags.models import Devicetag
+from devices.forms import VIEWSORTING
+from devices.forms import FilterForm
+from devices.forms import ViewForm
 from devices.models import Device
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
-from devicetags.forms import TagForm, DeviceTagForm
+from devicetags.forms import DeviceTagForm
+from devicetags.forms import TagForm
+from devicetags.models import Devicetag
 from Lagerregal.utils import PaginationMixin
 from users.mixins import PermissionRequiredMixin
 

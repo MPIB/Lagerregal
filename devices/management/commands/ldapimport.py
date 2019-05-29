@@ -1,13 +1,16 @@
 import re
 from datetime import date
 
-from ldap.controls import SimplePagedResultsControl
-from ldap.ldapobject import LDAPObject
 from django.conf import settings  # import the settings file
 from django.core.management.base import BaseCommand
 
-from users.models import Lageruser, Department, DepartmentUser
+from ldap.controls import SimplePagedResultsControl
+from ldap.ldapobject import LDAPObject
+
 from Lagerregal import utils
+from users.models import Department
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 
 class PagedResultsSearchObject(LDAPObject):

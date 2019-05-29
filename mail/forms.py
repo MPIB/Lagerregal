@@ -2,9 +2,9 @@ from django import forms
 
 from django_select2.forms import Select2MultipleWidget
 
+from devices.forms import get_emailrecipientlist
 from mail.models import USAGES
 from mail.models import MailTemplate
-from devices.forms import get_emailrecipientlist
 
 
 class MailTemplateForm(forms.ModelForm):

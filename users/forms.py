@@ -1,9 +1,10 @@
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 from django.utils.translation import ugettext
+from django.utils.translation import ugettext_lazy as _
 
-from users.models import Lageruser, DepartmentUser
 from Lagerregal import settings
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 
 class SettingsForm(forms.ModelForm):

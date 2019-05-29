@@ -1,11 +1,11 @@
+from django.test import TestCase
 from django.test.client import Client
 from django.urls import reverse
-from django.test import TestCase
 
 from model_mommy import mommy
 
-from users.models import Lageruser
 from network.models import IpAddress
+from users.models import Lageruser
 
 
 class IpAddressTests(TestCase):

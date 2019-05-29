@@ -1,16 +1,26 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse_lazy, reverse
-from reversion import revisions as reversion
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
+from django.views.generic import View
 
+from reversion import revisions as reversion
+
+from devices.forms import VIEWSORTING
+from devices.forms import FilterForm
+from devices.forms import ViewForm
 from devices.models import Device
-from devicetypes.models import Type, TypeAttribute
 from devicetypes.forms import TypeForm
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from devicetypes.models import Type
+from devicetypes.models import TypeAttribute
 from Lagerregal.utils import PaginationMixin
 from users.mixins import PermissionRequiredMixin
 
@@ -21,7 +31,7 @@ class TypeList(PermissionRequiredMixin, PaginationMixin, ListView):
     permission_required = 'devicetypes.read_type'
 
     def get_queryset(self):
-        '''mehtod for query all devicetypes and present the results depending on existing filter'''
+        '''method for query all devicetypes and present the results depending on existing filter'''
         devicetype = Type.objects.all()
 
         # filtering with existing filterstring

@@ -2,21 +2,26 @@ import re
 
 from django import forms
 from django.contrib.auth.models import Group
+from django.db.models import Count
+from django.db.utils import OperationalError
+from django.db.utils import ProgrammingError
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.db.utils import OperationalError, ProgrammingError
-from django.db.models import Count
 
-from django_select2.forms import Select2Widget
 from django_select2.forms import Select2MultipleWidget
+from django_select2.forms import Select2Widget
 
-from network.models import IpAddress
-from devices.models import Device, Type, Room, Manufacturer
-from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
-from users.models import Lageruser, Department
+from devices.models import Device
+from devices.models import Manufacturer
+from devices.models import Room
+from devices.models import Type
+from devicetypes.models import TypeAttribute
+from devicetypes.models import TypeAttributeValue
 from mail.models import MailTemplate
-
+from network.models import IpAddress
+from users.models import Department
+from users.models import Lageruser
 
 CHARMODIFIER = (
     ('icontains', _('Contains')),

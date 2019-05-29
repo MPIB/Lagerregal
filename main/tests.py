@@ -1,5 +1,5 @@
-from django.test.client import Client
 from django.test import TestCase
+from django.test.client import Client
 
 from main.models import get_progresscolor
 from users.models import Lageruser

@@ -1,8 +1,9 @@
-from django.db import models, migrations
+import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
 from django.conf import settings
-import django.core.validators
+from django.db import migrations
+from django.db import models
 
 
 class Migration(migrations.Migration):

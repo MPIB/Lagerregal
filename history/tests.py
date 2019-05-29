@@ -1,6 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
-from django.test.client import Client
 from django.test import TestCase
+from django.test.client import Client
 
 from model_mommy import mommy
 

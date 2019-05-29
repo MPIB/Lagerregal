@@ -1,11 +1,12 @@
 import json
 
 from django.db.models import Max
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views.generic.base import View
-from django.http import HttpResponse
 
-from main.models import DashboardWidget, WIDGETS
+from main.models import WIDGETS
+from main.models import DashboardWidget
 from main.views import get_widget_data
 
 

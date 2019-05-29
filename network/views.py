@@ -1,18 +1,25 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
-from django.urls import reverse_lazy
-from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse
 from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import FormView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
 
 from reversion import revisions as reversion
 
-from network.models import IpAddress
-from network.forms import ViewForm, IpAddressForm, UserIpAddressForm
 from devices.forms import FilterForm
 from Lagerregal.utils import PaginationMixin
+from network.forms import IpAddressForm
+from network.forms import UserIpAddressForm
+from network.forms import ViewForm
+from network.models import IpAddress
 from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser
 

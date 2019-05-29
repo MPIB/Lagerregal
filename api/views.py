@@ -1,24 +1,25 @@
 import datetime
 
-from rest_framework import generics
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-import rest_framework.reverse
-from rest_framework.permissions import AllowAny
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework import status
-from reversion import revisions as reversion
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+from django.contrib.auth.models import Group
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
+
+import rest_framework.reverse
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from reversion import revisions as reversion
 
 from api.serializers import *
 from devices.models import *
 from devicetypes.models import *
-from network.models import *
-from django.contrib.auth.models import Group
-from django.conf import settings
 from mail.models import MailTemplate
+from network.models import *
 
 
 @api_view(('GET',))
