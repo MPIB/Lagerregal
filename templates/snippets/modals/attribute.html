@@ -1,12 +1,14 @@
 {% extends "snippets/modals/base.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
+
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Edit the Attribute" %}</h4>
 {% endblock %}
 
 {% block modalBody %}
-    <form class="form-horizontal" role="form" action="{% url "typeattribute-edit" 0 %}" method="post"
-          id="attribute_editform">{% csrf_token %}
+    <form class="form-horizontal" role="form" action="{% url "typeattribute-edit" 0 %}" method="post" id="attribute_editform">
+        {% csrf_token %}
 
         <div class="form-group">
             <label for="id_name" class="col-lg-5 control-label">{% trans "Name" %}</label>
@@ -32,11 +34,12 @@
 {% endblock %}
 
 {% block modalFooter %}
-    <div class="alert-danger alert" style="text-align:left;">{% blocktrans %}Do you want to delete  the
-        attribute?{% endblocktrans %}</div>
-    <form action="{% url "typeattribute-delete" 0 %}" method="post"
-          class="form-horizontal" id="attribute_deleteform">{% csrf_token %}
-          <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger"/>
-          <input type="hidden" name="next" value="{% url "type-detail" object.id %}">
+    <div class="alert-danger alert" style="text-align:left;">
+        {% trans "Do you want to delete the attribute?" %}
+    </div>
+    <form action="{% url "typeattribute-delete" 0 %}" method="post" class="form-horizontal" id="attribute_deleteform">
+        {% csrf_token %}
+        <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger"/>
+        <input type="hidden" name="next" value="{% url "type-detail" object.id %}">
     </form>
 {% endblock %}

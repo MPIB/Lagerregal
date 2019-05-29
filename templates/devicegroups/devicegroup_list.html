@@ -12,7 +12,9 @@
     {{ viewform.departmentfilter }}
     {% if perms.devicegroups.add_devicegroup %}
         <a href="{% url 'devicegroup-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicegroup" %}</a>{% endif %}
+            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicegroup" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -21,15 +23,14 @@
             {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
             <table class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                </tr>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                    </tr>
                 </thead>
                 {% for devicegroup in devicegroup_list %}
-
                     <tr>
                         <td>
-                            <a href="{% url 'devicegroup-detail' devicegroup.id %}">{{ devicegroup.name | default:"(None)" }}</a>
+                            <a href="{% url 'devicegroup-detail' devicegroup.id %}">{{ devicegroup.name|default:_("(None)") }}</a>
                         </td>
                     </tr>
                 {% endfor %}

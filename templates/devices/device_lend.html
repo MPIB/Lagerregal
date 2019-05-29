@@ -3,43 +3,46 @@
 {% load i18n %}
 {% load staticfiles %}
 
-
 {% block content %}
-<div class="col-xs-12 col-md-6 col-md-offset-{% if formhelp %}1{% else %}3{% endif %} well well-lg">
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger">
-            {{ form.non_field_errors }}
+    <div class="col-xs-12 col-md-6 col-md-offset-{% if formhelp %}1{% else %}3{% endif %} well well-lg">
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <form action="" method="post" class="form-horizontal" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+                {% if field.name == 'device' %}
+                    {{ field.as_hidden }}
+                {% elif field.name != 'smalldevice' %}
+                    <div class="form-group {{ field.css_classes }}">
+                        <label for="{{ field.html_name }}" class="col-lg-3 control-label">
+                            {{ field.label }}{% if field.field.required %}*{% endif %}
+                        </label>
+
+                        <div class="col-lg-9">
+                            {% if field|is_select or field|is_selectmultiple %}
+                                {{ field }}
+                            {% else %}
+                                {{ field|add_class:'form-control' }}
+                            {% endif %}
+                            <p class="help-block">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            {% for field in form.hidden_fields %}
+                 <div style="display:none;">{{ field }}</div>
+            {% endfor %}
+
+            <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
+        </form>
+    </div>
+
+    {% if formhelp %}
+        <div class="col-xs-12 col-md-4 col-md-offset-1 well">
+            <h3 style="margin-top:0px">{% trans "Help" %}</h3>
+            {% include formhelp %}
         </div>
     {% endif %}
-    <form action="" method="post" class="form-horizontal" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">{% csrf_token %}
-        {% for field in form.visible_fields %}
-            {% if field.name == 'device' %}
-                {{ field.as_hidden }}
-            {% elif field.name != 'smalldevice' %}
-                <div class="form-group {{ field.css_classes }}">
-                    <label for="{{ field.html_name }}" class="col-lg-3 control-label">
-                        {{ field.label }}{% if field.field.required %}*{% endif %}</label>
-
-                    <div class="col-lg-9">
-                        {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
-                            {{ field|add_class:'form-control' }}{% endif %}
-                        <p class="help-block">
-                            {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}</p>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-        {% for field in form.hidden_fields %}
-             <div style="display:none;">{{ field }}</div>
-        {% endfor %}
-
-        <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
-    </form>
-</div>
-{% if formhelp %}
-    <div class="col-xs-12 col-md-4 col-md-offset-1 well">
-        <h3 style="margin-top:0px">{% trans "Help" %}</h3>
-        {% include formhelp %}
-    </div>
-{% endif %}
 {% endblock %}

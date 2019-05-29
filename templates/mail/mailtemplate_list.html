@@ -7,8 +7,11 @@
 {% endblock %}
 
 {% block pullright %}
-    {% if perms.mail.add_mailtemplate %}<a href="{% url 'mail-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Mailtemplate" %}</a>{% endif %}
+    {% if perms.mail.add_mailtemplate %}
+        <a href="{% url 'mail-add' %}" class="btn btn-success btn-sm pull-right">
+            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Mailtemplate" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -17,20 +20,21 @@
             {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
             <table class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Subject" %}</th>
-                    <th>{% trans "Usage" %}</th>
-                </tr>
-                </thead>
-                {% for mail in mail_list %}
-
                     <tr>
-                        <td><a href="{% url 'mail-detail' mail.id %}">{{ mail.name }}</a></td>
-                        <td>{{ mail.subject }}</td>
-                        <td>{{ mail.get_usage_display }}</td>
+                        <th>{% trans "Name" %}</th>
+                        <th>{% trans "Subject" %}</th>
+                        <th>{% trans "Usage" %}</th>
                     </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {% for mail in mail_list %}
+                        <tr>
+                            <td><a href="{% url 'mail-detail' mail.id %}">{{ mail.name }}</a></td>
+                            <td>{{ mail.subject }}</td>
+                            <td>{{ mail.get_usage_display }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
             {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
         </div>

@@ -15,12 +15,12 @@
                 {% for field in form %}
                     <div class="form-group {{ field.css_classes }}">
                         <label class="col-lg-4 control-label">
-                            {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+                            {{ field.label }}{% if field.field.required %}*{% endif %}
+                        </label>
 
                         <div class="col-lg-8">
                             {{ field|add_class:'form-control' }}
-                            <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{ error }},
-                            {% endfor %}{% endif %}</p>
+                            <p class="help-block">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
                         </div>
                     </div>
                 {% endfor %}

@@ -1,8 +1,10 @@
 {% load i18n %}
-{%if wrong_id_format == True%}
-<div class="alert alert-danger" role="alert">
-  <strong>{% trans "Invalid!" %}</strong> {% trans "The id must be a whole number." %}
-</div>
-{%else%}
-{% trans "No results found" %}
-{%endif%}
+
+{% if wrong_id_format == True %}
+    <div class="alert alert-danger" role="alert">
+        <strong>{% trans "Invalid!" %}</strong>
+        {% trans "The id must be a whole number." %}
+    </div>
+{% else %}
+    {% trans "No results found" %}
+{% endif %}

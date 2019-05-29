@@ -84,15 +84,20 @@
                     </a>
                     <ul class="dropdown-menu">
                         {% if perms.network.view_ipaddress %}
-                            <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
+                            <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>
+                        {% endif %}
                         {% if perms.mail.view_mailtemplate %}
-                            <li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
+                            <li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>
+                        {% endif %}
                         {% if perms.users.view_user %}
-                            <li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>{% endif %}
+                            <li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>
+                        {% endif %}
                         {% if perms.users.view_department %}
-                            <li><a href="{% url 'department-list' %}">{% trans "Departments" %}</a></li>{% endif %}
+                            <li><a href="{% url 'department-list' %}">{% trans "Departments" %}</a></li>
+                        {% endif %}
                         {% if perms.devicetags.view_devicetag %}
-                            <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>{% endif %}
+                            <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>
+                        {% endif %}
                     </ul>
                 </li>
             {% endif %}
@@ -105,12 +110,12 @@
             {% if user.is_authenticated %}
                 {% if perms.devices.view_device %}
                     <li class="visible-lg visible-md">
-                        <form method="post" action="{% url 'device-list' %}" class="navbar-form">{% csrf_token %}
+                        <form method="post" action="{% url 'device-list' %}" class="navbar-form">
+                            {% csrf_token %}
                             <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
                             <div class="form-group">
                                 <div class="input-group input-group-sm" style="width: 200px;">
-                                    <input id="id_deviceid" name="deviceid" placeholder="{% trans 'Jump to ID' %}"
-                                           type="text" class="form-control">
+                                    <input id="id_deviceid" name="deviceid" placeholder="{% trans 'Jump to ID' %}" type="text" class="form-control">
                                     <span class="input-group-btn">
                                         <button type="submit" class="btn btn-default btn-sm">
                                             <i class="fa fa-rocket"></i>
@@ -124,12 +129,11 @@
                         <form method="get" action="{% url 'search' %}" class="navbar-form">
                             <div class="form-group">
                                 <div class="input-group" style="width: 200px;">
-                                    <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}"
-                                           type="text" class="form-control input-sm">
+                                    <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}" type="text" class="form-control input-sm">
                                     <span class="input-group-btn">
-                                    <button type="submit" class="btn btn-default btn-sm">
-                                        <i class="fa fa-search"></i>
-                                    </button>
+                                        <button type="submit" class="btn btn-default btn-sm">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                     </span>
                                 </div>
                             </div>
@@ -164,7 +168,6 @@
             {% endif %}
         </ul>
     </div>
-    <!-- /.navbar-collapse -->
 </header>
 {% endif %}
 

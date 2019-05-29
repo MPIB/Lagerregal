@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{{ room.name }}{% endblock %}
 
 {% block header %}
@@ -12,12 +13,14 @@
         {% deletebutton "room-delete" object.id %}
     {% endif %}
     {% if "room" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
+        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}
+        </a>
     {% endif %}
     {% if perms.devices.change_room %}
         <a href="{% url 'room-edit' room.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+            <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}
+        </a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -25,13 +28,11 @@
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'room-merge' room.pk merge.id %}">{{ merge.name }}
-                        ({{ merge.building__name }})</a></li>
+                    <li><a href="{% url 'room-merge' room.pk merge.id %}">{{ merge.name }} ({{ merge.building__name }})</a></li>
                 {% endfor %}
             </ul>
         </div>
     {% endif %}
-
 {% endblock %}
 
 {% block content %}
@@ -54,20 +55,20 @@
                 {% if device_list %}
                     <table width="100%" id="devicetable" class="table table-bordered table-striped">
                         <thead>
-                        <tr>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Inventorynumber" %}</th>
-                            <th>{% trans "Devicetype" %}</th>
-                        </tr>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Inventorynumber" %}</th>
+                                <th>{% trans "Devicetype" %}</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {% for device in device_list %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-                                <td>{{ device.inventorynumber }}</td>
-                                <td>{{ device.devicetype__name }}</td>
-                            </tr>
-                        {% endfor %}
+                            {% for device in device_list %}
+                                <tr>
+                                    <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+                                    <td>{{ device.inventorynumber }}</td>
+                                    <td>{{ device.devicetype__name }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 {% endif %}

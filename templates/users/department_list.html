@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Departments" %}{% endblock %}
 
 {% block header %}
@@ -9,8 +10,11 @@
 {% block pullright %}
     {{ filterform.filterstring }}
     {{ viewform.viewsorting }}
-    {% if perms.users.add_department %}<a href="{% url 'department-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Department" %}</a>{% endif %}
+    {% if perms.users.add_department %}
+        <a href="{% url 'department-add' %}" class="btn btn-success btn-sm pull-right">
+            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Department" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -19,17 +23,17 @@
             {% include "snippets/pagination.html" with listurl='department-list' %}
             <table class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                </tr>
-                </thead>
-                {% for department in department_list %}
-
                     <tr>
-                        <td><a href="{% url 'department-detail' department.id %}">{{ department.name | default:"(None)" }}</a>
-                        </td>
+                        <th>{% trans "Name" %}</th>
                     </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {% for department in department_list %}
+                        <tr>
+                            <td><a href="{% url 'department-detail' department.id %}">{{ department.name | default:"(None)" }}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
 
             {% include "snippets/pagination.html" with listurl='department-list' %}

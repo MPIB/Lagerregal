@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Devicetags" %}{% endblock %}
 
 {% block header %}
@@ -11,7 +12,9 @@
     {{ viewform.viewsorting }}
     {% if perms.devicetags.add_devicetag %}
         <a href="{% url 'devicetag-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicetag" %}</a>{% endif %}
+            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicetag" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -20,12 +23,11 @@
             {% include "snippets/pagination.html" with listurl='devicetag-list' %}
             <table class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                </tr>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                    </tr>
                 </thead>
                 {% for devicetag in devicetag_list %}
-
                     <tr>
                         <td>
                             <a href="{% url 'devicetag-edit' devicetag.id %}">{{ devicetag.name | default:"(None)" }}</a>

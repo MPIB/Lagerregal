@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Sections" %}{% endblock %}
 
 {% block header %}
@@ -9,8 +10,11 @@
 {% block pullright %}
     {{ filterform.filterstring }}
     {{ viewform.viewsorting }}
-    {% if perms.devicetags.add_devicetag %}<a href="{% url 'section-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Section" %}</a>{% endif %}
+    {% if perms.devicetags.add_devicetag %}
+        <a href="{% url 'section-add' %}" class="btn btn-success btn-sm pull-right">
+            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Section" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -19,15 +23,13 @@
             {% include "snippets/pagination.html" with listurl='section-list' %}
             <table class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                </tr>
+                    <tr>
+                        <th>{% trans "Name" %}</th>
+                    </tr>
                 </thead>
                 {% for section in section_list %}
-
                     <tr>
-                        <td><a href="{% url 'section-detail' section.id %}">{{ section.name | default:"(None)" }}</a>
-                        </td>
+                        <td><a href="{% url 'section-detail' section.id %}">{{ section.name|default:"(None)" }}</a></td>
                     </tr>
                 {% endfor %}
             </table>

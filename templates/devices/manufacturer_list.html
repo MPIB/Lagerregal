@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Manufacturers" %}{% endblock %}
 
 {% block header %}
@@ -11,7 +12,9 @@
     {{ viewform.viewsorting }}
     {% if perms.devices.add_manufacturer %}
         <a href="{% url 'manufacturer-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Manufacturer" %}</a>{% endif %}
+            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Manufacturer" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -20,12 +23,12 @@
             {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
             <div class="list-group">
                 {% for manufacturer in manufacturer_list %}
-                    <a href="{% url 'manufacturer-detail' manufacturer.id %}"
-                       class="list-group-item">{{ manufacturer.name | default:"(None)" }}</a>
+                    <a href="{% url 'manufacturer-detail' manufacturer.id %}" class="list-group-item">
+                        {{ manufacturer.name | default:"(None)" }}
+                    </a>
                 {% endfor %}
             </div>
             {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
-
         </div>
     </div>
 {% endblock %}

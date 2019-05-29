@@ -79,10 +79,8 @@
     <form method="post" action="{% url 'login' %}" class="form-signin" role="form">
         {% csrf_token %}
         <h2 class="form-signin-heading">{% trans "Please log in" %}</h2>
-        <input id="id_username" maxlength="254" name="username" type="text" class="form-control"
-               placeholder="{% trans "username" %}">
-        <input id="id_password" name="password" type="password" class="form-control"
-               placeholder="{% trans "Password" %}">
+        <input id="id_username" maxlength="254" name="username" type="text" class="form-control" placeholder="{% trans "username" %}">
+        <input id="id_password" name="password" type="password" class="form-control" placeholder="{% trans "Password" %}">
         <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Log in" %}</button>
         {% if next %}
             <input type="hidden" name="next" value="{{ next }}"/>
@@ -90,6 +88,8 @@
             <input type="hidden" name="next" value="{% url 'home' %}"/>
         {% endif %}
 
-        <a href="{% url "public-device-list" %}" class="btn btn-info btn-block" style="margin-top:30px"><i class="fa fa-globe"></i> {% trans "Public Device List" %}</a>
+        <a href="{% url "public-device-list" %}" class="btn btn-info btn-block" style="margin-top:30px">
+            <i class="fa fa-globe"></i> {% trans "Public Device List" %}
+        </a>
     </form>
 {% endblock %}

@@ -8,7 +8,6 @@
 {% block widgetname %}statistics{% endblock %}
 
 {% block content %}
-
     <div class="row" style="padding:15px 15px 5px 15px">
         <div class="col-md-9 col-md-offset-3">
             <span>{% trans "Available" %}</span>
@@ -27,7 +26,8 @@
                      style="width: {{ device_percent }}%;">
                 </div>
             </div>
-            <span>{{ device_available }}</span><span class="pull-right">{{ device_all }}</span>
+            <span>{{ device_available }}</span>
+            <span class="pull-right">{{ device_all }}</span>
         </div>
     </div>
 
@@ -42,8 +42,8 @@
                      style="width: {{ ipaddress_percent }}%;">
                 </div>
             </div>
-            <span>{{ ipaddress_available }}</span><span class="pull-right">{{ ipaddress_all }}</span>
+            <span>{{ ipaddress_available }}</span>
+            <span class="pull-right">{{ ipaddress_all }}</span>
         </div>
     </div>
 {% endblock %}
-

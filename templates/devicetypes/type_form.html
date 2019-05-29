@@ -5,6 +5,7 @@
 {% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
 
 {% block header %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-xs-12 col-md-6 col-md-offset-3 well well-lg">
@@ -15,12 +16,12 @@
                     {% else %}
                         <div class="form-group {{ field.css_classes }}">
                             <label for="{{ field.html_name }}" class="col-lg-4 control-label">
-                                {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+                                {{ field.label }}{% if field.field.required %}*{% endif %}
+                            </label>
 
                             <div class="col-lg-8">
                                 {{ field|add_class:'form-control' }}
-                                <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{ error }},
-                                {% endfor %}{% endif %}</p>
+                                <p class="help-block">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
                             </div>
                         </div>
                     {% endif %}

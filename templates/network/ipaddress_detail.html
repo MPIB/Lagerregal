@@ -17,10 +17,13 @@
     {% endif %}
     {% if can_change_ipaddress %}
         <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+            <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}
+        </a>
+    {% endif %}
     {% if "ipaddress" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
+        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}
+        </a>
     {% endif %}
 {% endblock %}
 
@@ -28,7 +31,6 @@
     <div class="row">
         <div class="col-md-4 col-xs-12">
             <table class="table table-bordered table-striped">
-                <tbody>
                 <tr>
                     <td>{% trans "Address" %}</td>
                     <td>{{ ipaddress.address }}</td>
@@ -54,14 +56,13 @@
                     </tr>
                 {% endif %}
                 <tr>
-                    <td>{%  trans "Purpose" %}</td>
+                    <td>{% trans "Purpose" %}</td>
                     <td>{{ ipaddress.purpose|default:"None" }}</td>
                 </tr>
                 <tr>
-                    <td>{%  trans "Last seen" %}</td>
+                    <td>{% trans "Last seen" %}</td>
                     <td>{{ ipaddress.last_seen|default:"never" }}</td>
                 </tr>
-                </tbody>
             </table>
         </div>
     </div>

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block pullright %}
@@ -9,7 +10,8 @@
     {% endif %}
     {% if perms.devicegroups.change_devicegroup %}
         <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
+            <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}
+        </a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">

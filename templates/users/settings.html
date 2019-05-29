@@ -1,14 +1,14 @@
 {% extends "base.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
+
 {% block title %}{% trans "Settings" %}{% endblock %}
 
 {% block header %}
     {% trans "Settings" %}
 {% endblock %}
 
-{% block pullright %}
-
-{% endblock %}
+{% block pullright %}{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -26,15 +26,16 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-primary pull-right"
-                            style="margin-top:20px">{% trans "Set Language" %}</button>
+                    <button type="submit" class="btn btn-primary pull-right" style="margin-top:20px">
+                        {% trans "Set Language" %}
+                    </button>
                 </form>
                 <div class="clearfix"></div>
                 <hr>
-                <h3>{% trans "Avatar" %}</h3>
 
-                <form enctype="multipart/form-data" action="{% url 'usersettings' %}" method="post"
-                      class="form-horizontal">{% csrf_token %}
+                <h3>{% trans "Avatar" %}</h3>
+                <form enctype="multipart/form-data" action="{% url 'usersettings' %}" method="post" class="form-horizontal">
+                    {% csrf_token %}
                     {% if user.avatar %}
                         <div class="row" style="margin-bottom:5px">
                             <div class="col-sm-6 col-md-6 pull-right">
@@ -43,16 +44,23 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="pull-right"><input id="id_avatar_clear" name="avatar_clear" type="checkbox"/> <label
-                                for="avatar-clear_id">Remove</label></div>
+                        <div class="pull-right"><input id="id_avatar_clear" name="avatar_clear" type="checkbox"/>
+                            <label for="avatar-clear_id">Remove</label>
+                        </div>
                         <div class="clearfix"></div>
                     {% endif %}
                     <div class="form-group {{ avatarform.avatar.css_classes }}">
                         <div class="col-lg-8 col-lg-offset-4">
                             {{ avatarform.avatar|add_class:'form-control' }}
-                            {% if avatarform.avatar.errors or avatarform.avatar.help_text != "" %}<p class="help-block">
-                                {% if avatarform.avatar.errors %}{% for error in avatarform.avatar.errors %}{{ error }},
-                                {% endfor %}{% else %}{{ avatarform.avatar.help_text }}{% endif %}</p>{% endif %}
+                            {% if avatarform.avatar.errors or avatarform.avatar.help_text != "" %}
+                                <p class="help-block">
+                                    {% if avatarform.avatar.errors %}
+                                        {% for error in avatarform.avatar.errors %}{{ error }}, {% endfor %}
+                                    {% else %}
+                                        {{ avatarform.avatar.help_text }}
+                                    {% endif %}
+                                </p>
+                            {% endif %}
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary pull-right">{% trans "Upload" %}</button>
@@ -62,14 +70,15 @@
             <div class="col-xs-12 col-md-6">
                 <h3>{% trans "Appearance" %}</h3>
 
-                <form action="{% url 'usersettings' %}" method="post" class="form-horizontal">{% csrf_token %}
+                <form action="{% url 'usersettings' %}" method="post" class="form-horizontal">
+                    {% csrf_token %}
                     {% include "snippets/formfields.html" with form=settingsform %}
                     <button type="submit" class="btn btn-primary pull-right">{% trans "Submit" %}</button>
                 </form>
             </div>
         </div>
-
     </div>
+
     {% if user.avatar %}
         {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=user.avatar.url %}
     {% endif %}
