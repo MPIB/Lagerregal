@@ -30,7 +30,7 @@
                 {% for devicetag in devicetag_list %}
                     <tr>
                         <td>
-                            <a href="{% url 'devicetag-edit' devicetag.id %}">{{ devicetag.name | default:"(None)" }}</a>
+                            <a href="{% url 'devicetag-edit' devicetag.id %}">{{ devicetag.name|default:_("(None)") }}</a>
                         </td>
                     </tr>
                 {% endfor %}

@@ -34,7 +34,7 @@
         <tbody>
             {% for device in device_list %}
                 <tr {% if device.currentlending__duedate < today.date %}class="text-danger"{% endif %}>
-                    <td><a href="{% url 'public-device-detail' device.id %}?nochrome={{ nochrome }}">{{ device.name | default:"(None)" }}</a></td>
+                    <td><a href="{% url 'public-device-detail' device.id %}?nochrome={{ nochrome }}">{{ device.name|default:_("(None)") }}</a></td>
                     <td>{{ device.inventorynumber}}</td>
                     <td>{{ device.devicetype__name|default:"--" }}</td>
                     <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>

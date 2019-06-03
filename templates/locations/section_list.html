@@ -29,7 +29,7 @@
                 </thead>
                 {% for section in section_list %}
                     <tr>
-                        <td><a href="{% url 'section-detail' section.id %}">{{ section.name|default:"(None)" }}</a></td>
+                        <td><a href="{% url 'section-detail' section.id %}">{{ section.name|default:_("(None)") }}</a></td>
                     </tr>
                 {% endfor %}
             </table>

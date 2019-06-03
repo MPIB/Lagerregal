@@ -75,7 +75,7 @@
                                 </tr>
                                 <tr>
                                     <td>{% trans "Account Expires on" %}</td>
-                                    <td><span>{{ profileuser.expiration_date|default:"Never" }}</span></td>
+                                    <td><span>{{ profileuser.expiration_date|default:_("Never") }}</span></td>
                                 </tr>
                                 <tr>
                                     <td>{% trans "Is Staff" %}</td>

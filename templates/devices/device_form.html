@@ -3,9 +3,9 @@
 {% load devicetags %}
 {% load staticfiles %}
 
-{% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block title %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
-{% block header %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block header %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
 {% block content %}
     <div class="row">

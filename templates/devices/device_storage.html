@@ -9,11 +9,15 @@
 {% block content %}
     <div class="row">
         <div class="small-12 large-6 large-centered columns">
-            <div class="alert alert-danger">Do you really want to move the device to storage: {{ object }}?</div>
+            <div class="alert alert-danger">
+                {% blocktrans %}Do you really want to move the device to storage: {{ object }}?{% endblocktrans %}
+            </div>
 
             <form action="" method="post" class="form-horizontal">{% csrf_token %}
                 <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">Send room-changed email</label>
+                    <label for="inputPassword3" class="col-sm-2 control-label">
+                        {% trans "Send room-changed email" %}
+                    </label>
 
                     <div class="col-sm-10">
                         {{ form.send_mail|add_class:"form-control" }}

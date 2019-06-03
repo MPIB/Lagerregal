@@ -27,7 +27,7 @@
         <tbody>
             {% for room in room_list %}
                 <tr>
-                    <td><a href="{% url 'room-detail' room.id %}">{{ room.name | default:"(None)" }}</a></td>
+                    <td><a href="{% url 'room-detail' room.id %}">{{ room.name|default:_("(None)") }}</a></td>
                     <td>{{ room.building }}</td>
                 </tr>
             {% endfor %}

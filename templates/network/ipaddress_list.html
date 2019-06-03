@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}IP-Addresses{% endblock %}
+{% block title %}{% trans "IP-Addresses" %}{% endblock %}
 
 {% block header %}
-    IP-Addresses
+    {% trans "IP-Addresses" %}
 {% endblock %}
 
 {% block pullright %}
@@ -49,7 +49,7 @@
                             </a>
                         </td>
                     {% else %}
-                        <td>Not assigned</td>
+                        <td>{% trans "Not assigned" %}</td>
                     {% endif %}
                 </tr>
             {% endfor %}

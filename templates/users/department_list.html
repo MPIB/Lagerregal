@@ -30,7 +30,7 @@
                 <tbody>
                     {% for department in department_list %}
                         <tr>
-                            <td><a href="{% url 'department-detail' department.id %}">{{ department.name | default:"(None)" }}</a></td>
+                            <td><a href="{% url 'department-detail' department.id %}">{{ department.name|default:_("(None)") }}</a></td>
                         </tr>
                     {% endfor %}
                 </tbody>

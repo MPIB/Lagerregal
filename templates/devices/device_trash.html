@@ -10,7 +10,11 @@
     <div class="row">
         <div class="small-12 large-6 large-centered columns">
             <div class="alert alert-danger">
-                Do you really want to {% if object.trashed != None %}un{% endif %}trash the device: {{ object }}?
+                {% if object.trashed %}
+                    {% blocktrans %}Do you really want to untrash the device: {{ object }}?{% endblocktrans %}
+                {% else %}
+                    {% blocktrans %}Do you really want to trash the device: {{ object }}?{% endblocktrans %}
+                {% endif %}
             </div>
             <form action="" method="post" class="form-horizontal">
                 {% csrf_token %}

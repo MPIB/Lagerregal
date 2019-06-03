@@ -2,9 +2,9 @@
 {% load devicetags %}
 {% load i18n %}
 
-{% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block title %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
-{% block header %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block header %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
 {% block content %}
     <div class="row">
@@ -27,7 +27,7 @@
                     {% endif %}
                 {% endfor %}
                 <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
-                <a href="#" id="newattribute" class="btn btn-default">add new Attribute</a>
+                <a href="#" id="newattribute" class="btn btn-default">{% trans "add new Attribute" %}</a>
             </form>
         </div>
     </div>

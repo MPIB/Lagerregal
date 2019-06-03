@@ -64,7 +64,9 @@
 
 {% block modalFooter %}
     {% if device.templending %}
-        <span class="text-danger pull-left">Note: This device is intended for short term lending</span>
+        <span class="text-danger pull-left">
+            {% trans "Note: This device is intended for short term lending" %}
+        </span>
     {% endif %}
     <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
     <input type="submit" value="{% trans "Submit" %}" class="btn btn-success"/>

@@ -37,7 +37,7 @@
                 </tr>
                 <tr>
                     <td>{%  trans "Department" %}</td>
-                    <td>{{ ipaddress.department|default:"None" }}</td>
+                    <td>{{ ipaddress.department|default:_("None") }}</td>
                 </tr>
                 {% if ipaddress.device.pk %}
                     <tr>
@@ -57,11 +57,11 @@
                 {% endif %}
                 <tr>
                     <td>{% trans "Purpose" %}</td>
-                    <td>{{ ipaddress.purpose|default:"None" }}</td>
+                    <td>{{ ipaddress.purpose|default:_("None") }}</td>
                 </tr>
                 <tr>
                     <td>{% trans "Last seen" %}</td>
-                    <td>{{ ipaddress.last_seen|default:"never" }}</td>
+                    <td>{{ ipaddress.last_seen|default:_("never") }}</td>
                 </tr>
             </table>
         </div>
