@@ -308,6 +308,7 @@ class DepartmentDetail(PermissionRequiredMixin, DetailView):
 
 class DepartmentUpdate(PermissionRequiredMixin, UpdateView):
     model = Department
+    fields = "__all__"
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_form.html'
     permission_required = 'users.change_department'

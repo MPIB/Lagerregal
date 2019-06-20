@@ -135,6 +135,7 @@ class IpAddressUpdate(PermissionRequiredMixin, UpdateView):
 
 
 class IpAddressDelete(PermissionRequiredMixin, DeleteView):
+    template_name = 'devices/base_delete.html'
     model = IpAddress
     success_url = reverse_lazy('ipaddress-list')
     permission_required = 'network.delete_ipaddress'
