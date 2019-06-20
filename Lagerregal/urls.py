@@ -172,8 +172,8 @@ urlpatterns = [
     path('devices_ajax/add_device_field/', login_required(devices_ajax.AddDeviceField.as_view()), name="add-device-field"),
     path('devices_ajax/get_attributes/', login_required(devicetypes_ajax.GetTypeAttributes.as_view()), name="get-attributes"),
     path('devices_ajax/user_lendings/', login_required(devices_ajax.UserLendings.as_view()), name="get-user-lendings"),
-    path('devices_ajax/puppetdetails/', login_required(devices_ajax.PuppetDetails.as_view()), name="puppet-details"),
-    path('devices_ajax/puppetsoftware/', login_required(devices_ajax.PuppetSoftware.as_view()), name="puppet-software"),
+    path('devices_ajax/puppetdetails/<int:device>/', login_required(devices_ajax.PuppetDetails.as_view()), name="puppet-details"),
+    path('devices_ajax/puppetsoftware/<int:device>/', login_required(devices_ajax.PuppetSoftware.as_view()), name="puppet-software"),
 ]
 
 urlpatterns += format_suffix_patterns([
