@@ -83,7 +83,7 @@
             ['department', 'sorting', 'group', 'filter'].forEach(function(key) {
                 ids[key].forEach(function(id) {
                     var element = $(id);
-                    if (element.length) {
+                    if (element.length && element.val() != '') {
                         var value = element.val() || defaults[key];
                         path += "/" + key + "/" + value;
                     }
