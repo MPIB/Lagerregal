@@ -341,30 +341,32 @@ class DeviceIpAddress(PermissionRequiredMixin, FormView):
     success_url = "/devices"
     permission_required = 'devices.change_device'
 
+    def dispatch(self, request, **kwargs):
+        self.object = get_object_or_404(Device, pk=self.kwargs['pk'])
+        return super().dispatch(request, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        device = context["form"].cleaned_data["device"]
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
-            (reverse("device-detail", kwargs={"pk": device.pk}), device.name),
+            (reverse("device-detail", kwargs={"pk": self.object.pk}), self.object.name),
             ("", _("Assign IP-Addresses"))]
 
         return context
 
     def form_valid(self, form):
         ipaddresses = form.cleaned_data["ipaddresses"]
-        device = form.cleaned_data["device"]
 
-        if device.archived is not None:
+        if self.object.archived is not None:
             messages.error(self.request, _("Archived Devices can't get new IP-Addresses"))
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": self.object.pk}))
 
-        reversion.set_comment(_("Assigned to Device {0}".format(device.name)))
+        reversion.set_comment(_("Assigned to Device {0}").format(self.object.name))
         for ipaddress in ipaddresses:
-            ipaddress.device = device
+            ipaddress.device = self.object
             ipaddress.save()
 
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": self.object.pk}))
 
 
 class DeviceIpAddressPurpose(PermissionRequiredMixin, FormView):

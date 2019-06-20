@@ -162,7 +162,6 @@ class DeviceTests(TestCase):
         device.refresh_from_db()
         self.assertEqual(device.bookmarkers.count(), 0)
 
-    @unittest.skip('failing')
     def test_ipaddress_view(self):
         device = mommy.make(Device)
         ip = mommy.make(IpAddress)

@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import Select2MultipleWidget
 
 from network.models import IpAddress
-from users.models import Lageruser
 from devices.forms import get_department_options
 
 VIEWFILTER = (
@@ -42,4 +41,3 @@ class UserIpAddressForm(forms.Form):
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
         widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
-    user = forms.ModelChoiceField(Lageruser.objects.all())

@@ -3,7 +3,6 @@ from django import forms
 from django_select2.forms import Select2MultipleWidget
 
 from devicetags.models import Devicetag
-from devices.models import Device
 
 
 class TagForm(forms.ModelForm):
@@ -17,4 +16,3 @@ class DeviceTagForm(forms.Form):
     tags = forms.ModelMultipleChoiceField(
         Devicetag.objects.all(),
         widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
-    device = forms.ModelChoiceField(Device.objects.all())
