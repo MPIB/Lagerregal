@@ -76,6 +76,7 @@
             };
             var defaults = {
                 department: "all",
+                filter: "",
             };
 
             var path = '';
