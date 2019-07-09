@@ -20,36 +20,6 @@
         <tbody>
         {% for revision in revision_list %}
             <tr>
-                {% comment %}
-                                <td>{{action.content_type}}</td>
-                                <td>
-                                    {% if action.content_type.model == "ipaddress" %}
-                                    <a href="{% url 'ipaddress-detail' action.object_id %}">{{action.field_dict.address}}
-                                    {% elif action.content_type.model == "building" %}
-                                    <a href="{% url 'building-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "room" %}
-                                    <a href="{% url 'room-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "manufacturer" %}
-                                    <a href="{% url 'manufacturer-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "type" %}
-                                    <a href="{% url 'type-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "mailtemplate" %}
-                                    <a href="{% url 'mail-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "devicegroup" %}
-                                    <a href="{% url 'devicegroup-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "device" %}
-                                    <a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% endif %}
-                                    </a>
-                                </td>
-                                <td>
-                                {% if action.content_type.model == "device" %}
-                                <a href="{% url 'device-history' action.object_id action.pk %}" title="{{revision.date_created|date:'c'}}" data-timeago class="edit-date">{{revision.date_created}}</a>
-                                {% else %}
-                                <span  title="{{revision.date_created|date:'c'}}" data-timeago class="edit-date">{{action.revision.date_created}}</span>
-                                {% endif %}
-                                </td>
-                                {% endcomment %}
                 <td>
                     {% if revision.version_set.count == 1 %}
                         {% with version=revision.version_set.all.0 %}

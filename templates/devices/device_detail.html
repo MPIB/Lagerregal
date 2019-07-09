@@ -516,7 +516,7 @@
                             {% endfor %}
                             </tbody>
                         </table>
-                        <a href="{% url 'history-list' device.content_type.pk device.pk %}" class="btn btn-default"><i
+                        <a href="{% url 'history-list' content_type device.pk %}" class="btn btn-default"><i
                                 class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
                     </div>
                 {% endif %}
