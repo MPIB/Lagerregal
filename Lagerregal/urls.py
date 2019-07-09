@@ -186,6 +186,9 @@ urlpatterns = [
     url(r'^departments/delete/(?P<pk>[^/]*)$', DepartmentDelete.as_view(), name="department-delete"),
 
     url(r'^ipaddresses/$', IpAddressList.as_view(), name="ipaddress-list"),
+    url(r'^ipaddresses/department/(?P<department>[^/]*)$', IpAddressList.as_view(), name="ipaddress-list"),
+    url(r'^ipaddresses/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', IpAddressList.as_view(), name="ipaddress-list"),
+    url(r'^ipaddresses/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)/search/(?P<search>[^/]*)$', IpAddressList.as_view(), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)$', IpAddressList.as_view(), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)$', IpAddressList.as_view(), name="ipaddress-list"),
     url(r'^ipaddresses/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', IpAddressList.as_view(), name="ipaddress-list"),
