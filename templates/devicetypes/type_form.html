@@ -33,24 +33,27 @@
 {% endblock %}
 
 {% block scriptend %}
-    $( "input:text[name=name]" ).keyup(function() {
-        if($(this).val().length > 1) {
+    $("input:text[name=name]").keyup(function() {
+        if ($(this).val().length > 1) {
             $.ajax({
                 url: "{% url "autocomplete-name" %}",
-                data: {'classtype':'{{ type }}', 'name':$(this).val()}
+                data: {
+                    'classtype': '{{ type }}',
+                    'name': $(this).val(),
+                },
             }).done(function(data){
-                if (data != "") {
-                    if ($("#alternatives").length == 0){
-                        $( "input:text[name=name]" ).after("\
+                if (data !== "") {
+                    if ($("#alternatives").length === 0) {
+                        $("input:text[name=name]").after("\
                             <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean
                                 one of those?\
                                 <ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul>
                                 \
-                            </div>")
+                            </div>");
                     }
-                    $("#alternatives").empty()
+                    $("#alternatives").empty();
                     for (var i=0; i < data.length; i++) {
-                        $("#alternatives").append(data[i])
+                        $("#alternatives").append(data[i]);
                     };
                 } else {
                     $("#alternativebox").remove();
