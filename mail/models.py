@@ -111,7 +111,7 @@ class MailTemplateRecipient(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     def __str__(self):
-        return str(self.content_type.name + ": " + str(self.content_object))
+        return str(self.content_type.name) + ": " + str(self.content_object)
 
 
 class MailHistory(models.Model):
@@ -121,6 +121,3 @@ class MailHistory(models.Model):
     sent_by = models.ForeignKey(Lageruser, null=True, on_delete=models.SET_NULL)
     sent_at = models.DateTimeField(auto_now_add=True)
     device = models.ForeignKey("devices.Device", null=True, on_delete=models.CASCADE)
-
-    def get_absolute_url(self):
-        return reverse('mailhistory-detail', kwargs={'pk': self.pk})
