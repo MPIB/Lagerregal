@@ -178,13 +178,24 @@ LOGGING = {
     }
 }
 
+# get more themes from https://bootswatch.com/ and download them to:
+#   static/css/themes/<name>.min.css
+THEMES = [
+    'flatly',
+    'darkly',
+    'simplex',
+    'superhero',
+    'united',
+    'paper',
+]
+
 NPM_ROOT_PATH = os.getcwd()
 
 NPM_FILE_PATTERNS = {
     'bootstrap': [
         'dist/js/bootstrap.min.js',
     ],
-    'bootswatch': ['*/bootstrap.min.css'],
+    'bootswatch': ['{}/bootstrap.min.css'.format(t) for t in THEMES],
     'font-awesome': [
         'css/font-awesome.min.css',
         'fonts/*',
@@ -217,17 +228,6 @@ NPM_FILE_PATTERNS = {
 }
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
-
-# get more themes from https://bootswatch.com/ and download them to:
-#   static/css/themes/<name>.min.css
-THEMES = [
-    'flatly',
-    'darkly',
-    'simplex',
-    'superhero',
-    'united',
-    'paper',
-]
 
 FAVICON_PATH = STATIC_URL + 'images/favicon.ico'
 
