@@ -14,6 +14,8 @@ class LagerregalBackend:
         return None
 
     def has_perm(self, user_obj, perm, obj=None):
+        if obj is None:
+            return False
         if (
             perm == 'devices.read_device'
             and isinstance(obj, Device)
