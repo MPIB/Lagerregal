@@ -193,11 +193,6 @@ class UsersettingsView(TemplateView):
 
         # handle given avatar
         elif "avatar" in request.FILES or "avatar" in request.POST:
-            if request.user.avatar:
-                tempavatar = request.user.avatar
-            else:
-                tempavatar = None
-
             form = AvatarForm(request.POST, request.FILES, instance=request.user)
 
             if form.is_valid():
@@ -205,8 +200,6 @@ class UsersettingsView(TemplateView):
                     request.user.avatar.delete()
                     request.user.avatar = None
                     request.user.save()
-                if tempavatar is not None:
-                    tempavatar.storage.delete(tempavatar)
                 form.save()
             context["avatarform"] = form
 
