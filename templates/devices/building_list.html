@@ -17,16 +17,22 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-5">
-            {% include "snippets/pagination.html" with listurl='building-list' %}
-
-            <div class="list-group">
-                {% for building in building_list %}
-                    <a href="{% url 'building-detail' building.id %}" class="list-group-item">{{ building.name|default:_("(None)") }}</a>
-                {% endfor %}
-            </div>
-            {% include "snippets/pagination.html" with listurl='building-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" with listurl='building-list' %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for building in building_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'building-detail' building.id %}">{{ building.name|default:_("(None)") }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/pagination.html" with listurl='building-list' %}
 {% endblock %}
