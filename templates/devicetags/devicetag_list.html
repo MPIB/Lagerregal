@@ -11,7 +11,7 @@
     {{ filterform.filterstring }}
     {{ viewform.viewsorting }}
     {% if perms.devicetags.add_devicetag %}
-        <a href="{% url 'devicetag-add' %}" class="btn btn-success btn-sm pull-right">
+        <a href="{% url 'devicetag-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Devicetag" %}
         </a>
     {% endif %}

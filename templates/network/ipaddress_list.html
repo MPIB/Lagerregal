@@ -13,7 +13,7 @@
     {{ viewform.viewfilter }}
     {{ viewform.departmentfilter }}
     {% if perms.network.add_ipaddress %}
-        <a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right">
+        <a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add IP-Address" %}
         </a>
     {% endif %}

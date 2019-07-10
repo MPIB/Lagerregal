@@ -5,13 +5,7 @@
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block pullright %}
-    {% if perms.devicegroups.delete_devicegroup %}
-        {% deletebutton "devicegroup-delete" object.id %}
-    {% endif %}
     {% if perms.devicegroups.change_devicegroup %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right">
-            <i class="fa fa-pencil"></i> {% trans "Edit" %}
-        </a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -23,6 +17,12 @@
                 {% endfor %}
             </ul>
         </div>
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
+    {% if perms.devicegroups.delete_devicegroup %}
+        {% deletebutton "devicegroup-delete" object.id %}
     {% endif %}
 {% endblock %}
 

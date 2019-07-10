@@ -11,7 +11,7 @@
     {{ viewform.viewsorting }}
     {{ viewform.departmentfilter }}
     {% if perms.devicegroups.add_devicegroup %}
-        <a href="{% url 'devicegroup-add' %}" class="btn btn-success btn-sm pull-right">
+        <a href="{% url 'devicegroup-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Devicegroup" %}
         </a>
     {% endif %}

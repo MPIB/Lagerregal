@@ -14,7 +14,7 @@
         {% deletebutton "mail-delete" object.id %}
     {% endif %}
     {% if perms.mail.change_mailtemplate %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right">
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
             <i class="fa fa-pencil"></i> {% trans "Edit" %}
         </a>
     {% endif %}

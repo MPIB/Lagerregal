@@ -10,7 +10,7 @@
     {{ filterform.filterstring }}
     {{ viewform.viewsorting }}
     {% if perms.devices.add_building %}
-        <a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right">
+        <a href="{% url 'building-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Building" %}
         </a>
     {% endif %}

@@ -10,20 +10,20 @@
 {% endblock %}
 
 {% block pullright %}
-    {% has_perm 'network.delete_ipaddress' user ipaddress as can_delete_ipaddress %}
-    {% has_perm 'network.change_ipaddress' user ipaddress as can_change_ipaddress %}
-    {% if can_delete_ipaddress %}
-        {% deletebutton "ipaddress-delete" object.id %}
+    {% if "ipaddress" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
     {% endif %}
+    {% has_perm 'network.change_ipaddress' user ipaddress as can_change_ipaddress %}
     {% if can_change_ipaddress %}
-        <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">
+        <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm">
             <i class="fa fa-pencil"></i> {% trans "Edit" %}
         </a>
     {% endif %}
-    {% if "ipaddress" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#printDymoModal" data-toggle="modal">
-            <i class="fa fa-print"></i> {% trans "Print Label" %}
-        </a>
+    {% has_perm 'network.delete_ipaddress' user ipaddress as can_delete_ipaddress %}
+    {% if can_delete_ipaddress %}
+        {% deletebutton "ipaddress-delete" object.id %}
     {% endif %}
 {% endblock %}
 

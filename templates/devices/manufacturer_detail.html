@@ -9,18 +9,7 @@
 {% endblock %}
 
 {% block pullright %}
-    {% if perms.devices.delete_manufacturer %}
-        {% deletebutton "manufacturer-delete" object.id %}
-    {% endif %}
-    {% if "manufacturer" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#printDymoModal" data-toggle="modal">
-            <i class="fa fa-print"></i> {% trans "Print Label" %}
-        </a>
-    {% endif %}
     {% if perms.devices.change_manufacturer %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right">
-            <i class="fa fa-pencil"></i> {% trans "Edit" %}
-        </a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -32,6 +21,17 @@
                 {% endfor %}
             </ul>
         </div>
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
+    {% if "manufacturer" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
+    {% endif %}
+    {% if perms.devices.delete_manufacturer %}
+        {% deletebutton "manufacturer-delete" object.id %}
     {% endif %}
 {% endblock %}
 
