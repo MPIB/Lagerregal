@@ -239,8 +239,8 @@
                         <form method="post" action="{% url 'user-ipaddress' profileuser.pk %}">
                             {% csrf_token %}
                             {{ ipaddressform.ipaddresses }}
-                            <div class="row">
-                                <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submitipaddress">
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
                                     <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
                                 </button>
                             </div>

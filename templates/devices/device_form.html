@@ -38,14 +38,14 @@
                             </div>
                             {% if field|is_select %}
                                 {% if field.html_name == "emailtemplate" %}
-                                    <div class="col-lg-2">
-                                        <a class="previewbutton btn btn-default btn-xs pull-right" data-name="{{ field.label }}">
+                                    <div class="col-lg-2 text-right">
+                                        <a class="previewbutton btn btn-default btn-xs" data-name="{{ field.label }}">
                                             <i class="fa fa-eye"></i> {% trans "Preview" %}
                                         </a>
                                     </div>
                                 {% else %}
-                                    <div class="col-lg-1">
-                                        <a class="modalbutton btn btn-default btn-xs pull-right{% if not user.is_staff %} disabled{% endif %}" data-classname="{{ field.html_name }}" data-name="{{ field.label }}">
+                                    <div class="col-lg-1 text-right">
+                                        <a class="modalbutton btn btn-default btn-xs{% if not user.is_staff %} disabled{% endif %}" data-classname="{{ field.html_name }}" data-name="{{ field.label }}">
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </div>
@@ -64,7 +64,9 @@
                     {% endif %}
                 {% endfor %}
 
-                <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm pull-right"/>
+                <div class="text-right">
+                    <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm"/>
+                </div>
             </form>
         </div>
     </div>

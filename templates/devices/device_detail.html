@@ -417,8 +417,8 @@
                         <form method="post" action="{% url 'device-ipaddress' device.pk %}">
                             {% csrf_token %}
                             {{ ipaddressform.ipaddresses }}
-                            <div class="row">
-                                <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submitipaddress">
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
                                     <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
                                 </button>
                             </div>
@@ -444,8 +444,8 @@
                     <form method="post" action="{% url 'device-tags' device.pk %}">
                         {% csrf_token %}
                         {{ tagform.tags }}
-                        <div class="row">
-                            <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submittags">
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success btn-sm disabled" id="submittags">
                                 <i class="fa fa-plus"></i> {% trans "Assign Tags" %}
                             </button>
                         </div>
@@ -518,9 +518,11 @@
                     <textarea class="form-control" name="note" id="id_note"></textarea>
                     <input type="hidden" name="device" value="{{ device.pk }}"/>
                     <input type="hidden" name="creator" value="{{ user.pk }}"/>
-                    <button type="submit" class="btn btn-success btn-sm pull-right">
-                        <i class="fa fa-pencil"></i> {% trans "Add note" %}
-                    </button>
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <i class="fa fa-pencil"></i> {% trans "Add note" %}
+                        </button>
+                    </div>
                 </form>
             </div>
         {% endif %}

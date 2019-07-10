@@ -40,10 +40,9 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="panel-footer">
-    {%  with dep=user.main_department|default:"all" %}
-        <a href="{% url 'device-list' department=dep filter='overdue' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
-    {% endwith %}
-        <div class="clearfix"></div>
+    <div class="panel-footer text-right">
+        {%  with dep=user.main_department|default:"all" %}
+            <a href="{% url 'device-list' department=dep filter='overdue' sorting='name' %}">{% trans "More…" %}</a>
+        {% endwith %}
     </div>
 {% endblock %}
