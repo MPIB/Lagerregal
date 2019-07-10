@@ -114,7 +114,7 @@
                             {% csrf_token %}
                             <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
                             <div class="form-group">
-                                <div class="input-group input-group-sm" style="width: 200px;">
+                                <div class="input-group input-group-sm">
                                     <input id="id_deviceid" name="deviceid" placeholder="{% trans 'Jump to ID' %}" type="text" class="form-control">
                                     <span class="input-group-btn">
                                         <button type="submit" class="btn btn-default btn-sm">
@@ -128,7 +128,7 @@
                     <li class="visible-lg visible-md">
                         <form method="get" action="{% url 'search' %}" class="navbar-form">
                             <div class="form-group">
-                                <div class="input-group" style="width: 200px;">
+                                <div class="input-group">
                                     <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}" type="text" class="form-control input-sm">
                                     <span class="input-group-btn">
                                         <button type="submit" class="btn btn-default btn-sm">
@@ -174,8 +174,8 @@
 <div class="container">
     <main>
         <header class="page-header row">
-            <h1 style="font-size:1.9em">
-                <ol class="breadcrumb" style="margin-bottom:0px;">
+            <h1>
+                <ol class="breadcrumb">
                     {% for crumb in breadcrumbs %}
                         {% if forloop.last %}
                             <li class="active">{{ crumb.1 }}</li>

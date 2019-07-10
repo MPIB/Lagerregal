@@ -34,7 +34,7 @@
 {% endblock %}
 
 {% block modalFooter %}
-    <div class="alert-danger alert" style="text-align:left;">
+    <div class="alert-danger alert">
         {% trans "Do you want to delete the attribute?" %}
     </div>
     <form action="{% url "typeattribute-delete" 0 %}" method="post" class="form-horizontal" id="attribute_deleteform">

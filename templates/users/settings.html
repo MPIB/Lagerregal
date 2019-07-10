@@ -26,7 +26,7 @@
                             </option>
                         {% endfor %}
                     </select>
-                    <button type="submit" class="btn btn-primary pull-right" style="margin-top:20px">
+                    <button type="submit" class="btn btn-primary pull-right">
                         {% trans "Set Language" %}
                     </button>
                 </form>
@@ -37,7 +37,7 @@
                 <form enctype="multipart/form-data" action="{% url 'usersettings' %}" method="post" class="form-horizontal">
                     {% csrf_token %}
                     {% if user.avatar %}
-                        <div class="row" style="margin-bottom:5px">
+                        <div class="row">
                             <div class="col-sm-6 col-md-6 pull-right">
                                 <a data-toggle="modal" data-target="#avatarModal" class="thumbnail">
                                     <img src="{{ user.avatar.url }}" alt="Avatar">

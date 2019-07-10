@@ -17,7 +17,7 @@
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
 
     {% if device.archived == None and device.trashed == None %}
-        <div class="btn-group pull-right" style="margin-left:10px">
+        <div class="btn-group pull-right">
             <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
                 {% trans "Manage" %} <span class="caret"></span>
             </button>
@@ -25,26 +25,26 @@
                 {% if display_printbutton %}
                     <li>
                         <a href="#" data-target="#printDymoModal" data-toggle="modal">
-                            <i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}
+                            <i class="fa fa-print"></i>{% trans "Print Label" %}
                         </a>
                     </li>
                 {% endif %}
                 <li>
                     <a href="#" data-target="#pictureModal" data-toggle="modal">
-                        <i class="fa fa-picture-o" style="margin-right:7px"></i>{% trans "Manage Pictures" %}
+                        <i class="fa fa-picture-o"></i>{% trans "Manage Pictures" %}
                     </a>
                 </li>
                 {% if can_change_device %}
                     <li>
                         <a href="{% url "device-inventoried" device.id %}">
-                            <i class="fa fa-check" style="margin-right:7px"></i>{% trans "Inventoried" %}
+                            <i class="fa fa-check"></i>{% trans "Inventoried" %}
                         </a>
                     </li>
                 {% endif %}
                 {% if can_add_device %}
                     <li>
                         <a href="{% url 'device-add-copy' device.id %}">
-                            <i class="fa fa-copy" style="margin-right:7px"></i>{% trans "Create Copy" %}
+                            <i class="fa fa-copy"></i>{% trans "Create Copy" %}
                         </a>
                     </li>
                 {% endif %}
@@ -56,25 +56,25 @@
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
-                           data-content='<form action="{% url "device-storage" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<div class="form-group dropdown-cancel"><label for="id_send_mail" class="col-sm-10 control-label">Send room-changed email</label><div class="col-sm-"><input id="id_send_mail" name="send_mail" type="checkbox" class="form-control dropdown-cancel"></div></div><button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);">{% trans "Cancel" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"style="margin-left:10px;"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
+                           data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
+                           data-content='<form action="{% url "device-storage" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<div class="form-group dropdown-cancel"><label for="id_send_mail" class="col-sm-10 control-label">Send room-changed email</label><div class="col-sm-"><input id="id_send_mail" name="send_mail" type="checkbox" class="form-control dropdown-cancel"></div></div><button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);">{% trans "Cancel" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+                           class="dropdown-cancel"><i class="fa fa-folder"></i>{% trans "Move to storage" %}</a></li>
                     <li><a href="#"
                            id="archivebutton"
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
-                           data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
+                           data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
+                           data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+                           class="dropdown-cancel"><i class="fa fa-folder"></i>{% trans "Archive" %}</a></li>
                     <li><a href="#"
                            id="trashbutton"
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
-                           data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
+                           data-title="<span class='text-info'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
+                           data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+                           class="dropdown-cancel"><i class="fa fa-trash-o"></i>{% trans "Trash" %}</a></li>
                 {% endif %}
                 {% if can_change_device %}
                     <li>
@@ -83,9 +83,9 @@
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "are you sure?" %}</strong></span>"
+                           data-title="<span class='text-info'><strong>{% trans "are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default" onclick="$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+                           class="dropdown-cancel"><i class="fa fa-times"></i>{% trans "Delete" %}</a>
                     </li>
                 {% endif %}
             </ul>
@@ -96,37 +96,37 @@
                 {% csrf_token %}
                 {% with is_bookmarked=device|check_bookmark:user %}
                     {% if is_bookmarked %}
-                        <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;'>
-                            <i class="fa fa-bookmark" style="margin-right:7px"></i>{% trans "Remove Bookmark" %}
+                        <button type='submit' class='btn btn-success btn-sm'>
+                            <i class="fa fa-bookmark"></i>{% trans "Remove Bookmark" %}
                         </button>
                     {% else %}
-                        <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;'>
-                            <i class="fa fa-bookmark-o" style="margin-right:7px"></i>{% trans "Bookmark" %}
+                        <button type='submit' class='btn btn-success btn-sm'>
+                            <i class="fa fa-bookmark-o"></i>{% trans "Bookmark" %}
                         </button>
                     {% endif %}
                 {% endwith %}
             </form>
-            <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm" style="margin-left:10px">
-                <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}
+            <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm">
+                <i class="fa fa-pencil"></i>{% trans "Edit" %}
             </a>
         {% endif %}
         {% if can_lend_device %}
-            <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal" data-toggle="modal">
-                <i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}
+            <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#mailModal" data-toggle="modal">
+                <i class="fa fa-envelope"></i>{% trans "Send Mail" %}
             </a>
         {% endif %}
 
         {% if can_lend_device %}
             {% if device.currentlending != None %}
-                <a href="{% url "device-lend" device.pk %}" class="btn btn-success pull-right btn-sm" style="margin-left:10px">
+                <a href="{% url "device-lend" device.pk %}" class="btn btn-success pull-right btn-sm">
                     {% trans "Edit lending information" %}
                 </a>
-                <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px">
-                    <i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}
+                <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm">
+                    <i class="fa fa-check"></i>{% trans "returned" %}
                 </a>
             {% else %}
-                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm" style="margin-left:10px">
-                    <i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}
+                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm">
+                    <i class="fa fa-check"></i>{% trans "Lend" %}
                 </a>
             {% endif %}
         {% endif %}
@@ -136,11 +136,11 @@
                id="archivebutton"
                data-toggle="popover"
                data-html="true"
-               data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
-               data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
+               data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
+               data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
                class="btn btn-success pull-right btn-sm"
-               style="margin-left:10px">
-                <i class="fa fa-folder-open" style="margin-right:7px"></i>
+              >
+                <i class="fa fa-folder-open"></i>
                 {% trans "Unarchive" %}
             </a>
         {% endif %}
@@ -150,11 +150,11 @@
                id="trashbutton"
                data-toggle="popover"
                data-html="true"
-               data-title="<span class='text-info' style='margin-right:10px'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
-               data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel"onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
+               data-title="<span class='text-info'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
+               data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel"onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
                class="btn btn-success btn-sm pull-right"
-               style="margin-left:10px">
-                <i class="fa fa-folder-open" style="margin-right:7px"></i>
+              >
+                <i class="fa fa-folder-open"></i>
                 {% trans "Remove from Trash" %}
             </a>
         {% endif %}
@@ -262,7 +262,7 @@
                     <tr>
                         <td>{% trans "Short term device" %}</td>
                         <td>
-                            <i class="fa fa-check-circle text-{{ device.templending|yesno:'success,danger' }}" style="font-size:1.3em"></i>
+                            <i class="fa fa-check-circle text-{{ device.templending|yesno:'success,danger' }}"></i>
                         </td>
                     </tr>
                     {% if device.manual %}
@@ -403,21 +403,21 @@
                             <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">
                                 <i class="fa fa-times"></i>
                             </a>
-                            <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right" style="margin-right:5px">
+                            <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right">
                                 <i class="fa fa-pencil"></i>
                             </a>
                             <br/>
-                            <small style="margin-top:0;color:#999">{{ address.purpose|default:"" }}</small>
+                            <small>{{ address.purpose|default:"" }}</small>
                         </li>
                     {% endfor %}
                 </ul>
 
                 {% if can_change_device and device.archived == None%}
                     <div class="panel-footer">
-                        <form method="post" action="{% url 'device-ipaddress' device.pk %}" style="margin:0;">
+                        <form method="post" action="{% url 'device-ipaddress' device.pk %}">
                             {% csrf_token %}
                             {{ ipaddressform.ipaddresses }}
-                            <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
+                            <div class="row">
                                 <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submitipaddress">
                                     <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
                                 </button>
@@ -441,10 +441,10 @@
                 </ul>
 
                 <div class="panel-footer">
-                    <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0;">
+                    <form method="post" action="{% url 'device-tags' device.pk %}">
                         {% csrf_token %}
                         {{ tagform.tags }}
-                        <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
+                        <div class="row">
                             <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submittags">
                                 <i class="fa fa-plus"></i> {% trans "Assign Tags" %}
                             </button>
@@ -455,7 +455,7 @@
         </div>
     </div>
 
-    <ul class="nav nav-tabs" style="margin-top:20px">
+    <ul class="nav nav-tabs">
         {% if can_change_device %}
             <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>
         {% endif %}
@@ -479,16 +479,16 @@
     <div class="tab-content">
         {% if can_change_device %}
             <div class="tab-pane active" id="notes">
-                <ul class="list-unstyled" style="padding-top:20px;">
+                <ul class="list-unstyled">
                     {% for note in device.notes.all %}
-                        <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
+                        <li>
                             <div class="row">
                                 <div class="col-xs-2 col-md-2">
                                     {% if note.creator.avatar %}
                                         <img src="{{ note.creator.avatar.url }}" class="img-rounded img-responsive" alt=""/>
                                     {% endif %}
-                                    <p style="padding-top:5px;margin-bottom:0">{{ note.creator }}</p>
-                                    <small style="color:darkgray">{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
+                                    <p>{{ note.creator }}</p>
+                                    <small>{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
                                 </div>
                                 <div class="col-xs-10 col-md-10">
                                     <div class="comment-text">
@@ -499,7 +499,7 @@
                                             <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <form action="{% url "device-note-delete" device.id note.id %}" method="post" class="form-inline pull-left" style="margin-left:10px">
+                                            <form action="{% url "device-note-delete" device.id note.id %}" method="post" class="form-inline pull-left">
                                                 {% csrf_token %}
                                                 <button class="btn btn-danger btn-xs" title="Delete" type="submit">
                                                     <i class="fa fa-trash-o"></i>
@@ -513,12 +513,12 @@
                     {% endfor %}
                 </ul>
 
-                <form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0">
+                <form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1'>
                     {% csrf_token %}
                     <textarea class="form-control" name="note" id="id_note"></textarea>
                     <input type="hidden" name="device" value="{{ device.pk }}"/>
                     <input type="hidden" name="creator" value="{{ user.pk }}"/>
-                    <button type="submit" class="btn btn-success btn-sm pull-right" style="margin-top:10px">
+                    <button type="submit" class="btn btn-success btn-sm pull-right">
                         <i class="fa fa-pencil"></i> {% trans "Add note" %}
                     </button>
                 </form>
@@ -548,7 +548,7 @@
                     </tbody>
                 </table>
                 <a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default">
-                    <i class="fa fa-book" style="margin-right:7px"></i>{% trans "View lending history" %}
+                    <i class="fa fa-book"></i>{% trans "View lending history" %}
                 </a>
             </div>
         {% endif %}
@@ -581,7 +581,7 @@
                     </tbody>
                 </table>
                 <a href="{% url 'history-list' content_type device.pk %}" class="btn btn-default">
-                    <i class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}
+                    <i class="fa fa-book"></i>{% trans "View edit history" %}
                 </a>
             </div>
         {% endif %}

@@ -11,7 +11,7 @@
     {{ viewform.viewsorting }}
     {% if perms.devices.add_building %}
         <a href="{% url 'building-add' %}" class="btn btn-success btn-sm pull-right">
-            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Building" %}
+            <i class="fa fa-plus"></i>{% trans "Add Building" %}
         </a>
     {% endif %}
 {% endblock %}

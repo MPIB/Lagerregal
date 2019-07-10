@@ -12,7 +12,7 @@
     {{ viewform.viewsorting }}
     {% if perms.users.add_department %}
         <a href="{% url 'department-add' %}" class="btn btn-success btn-sm pull-right">
-            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Department" %}
+            <i class="fa fa-plus"></i>{% trans "Add Department" %}
         </a>
     {% endif %}
 {% endblock %}

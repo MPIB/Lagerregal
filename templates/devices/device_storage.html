@@ -23,7 +23,7 @@
                         {{ form.send_mail|add_class:"form-control" }}
                     </div>
                 </div>
-                <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger" style="margin-right:10px;">{% trans "Cancel" %}</a>
+                <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger">{% trans "Cancel" %}</a>
                 <input type="submit" value="{% trans "Submit" %}" class="btn btn-sm btn-success"/>
             </form>
         </div>

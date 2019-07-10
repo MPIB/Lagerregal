@@ -15,7 +15,7 @@
 
 {% block content %}
     {% include "snippets/devicepagination.html" %}
-    <table width="100%" id="devicetable" class="table table-bordered table-striped">
+    <table id="devicetable" class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
@@ -27,7 +27,7 @@
                     <th>{% trans "Owner" %}</th>
                     <th>{% trans "Duedate" %}</th>
                 {% else %}
-                    <th style="width:60px">{% trans "Available" %}</th>
+                    <th>{% trans "Available" %}</th>
                 {% endif %}
             </tr>
         </thead>
@@ -39,7 +39,7 @@
                     <td>{{ device.devicetype__name|default:"--" }}</td>
                     <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>
                     <td>{{ device.group__name|default:"--" }}</td>
-                    <td><i class="fa fa-check-circle text-{{ device.currentlending__owner|yesno:'success,danger' }}" style="font-size:1.3em"></i></td>
+                    <td><i class="fa fa-check-circle text-{{ device.currentlending__owner|yesno:'success,danger' }}"></i></td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -21,9 +21,9 @@
                     <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
                     <td>
                         {% if device.currentlending == None %}
-                            <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                            <i class="fa fa-check-circle text-success"></i>
                         {% else %}
-                            <i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
                         {% endif %}
                     </td>
                 </tr>

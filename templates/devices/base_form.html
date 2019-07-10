@@ -29,14 +29,14 @@
                 </div>
             {% endfor %}
             {% for field in form.hidden_fields %}
-                 <div style="display:none;">{{ field }}</div>
+                 <div>{{ field }}</div>
             {% endfor %}
             <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
         </form>
     </div>
     {% if formhelp %}
         <div class="col-xs-12 col-md-4 col-md-offset-1 well">
-            <h3 style="margin-top:0px">{% trans "Help" %}</h3>
+            <h3>{% trans "Help" %}</h3>
             {% include formhelp %}
         </div>
     {% endif %}
@@ -51,7 +51,7 @@
             }).done(function(data){
                 if (data != "") {
                     if ($("#alternatives").length === 0) {
-                        $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul></div>");
+                        $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' class='list-unstyled'></ul></div>");
                     }
                     $("#alternatives").empty();
                     for (var i=0; i < data.length; i++) {

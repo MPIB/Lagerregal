@@ -48,7 +48,7 @@
                         $("input:text[name=name]").after("\
                             <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean
                                 one of those?\
-                                <ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul>
+                                <ul id='alternatives' class='list-unstyled'></ul>
                                 \
                             </div>");
                     }
@@ -66,9 +66,9 @@
     function display_alternatives(data){
         if ($("#alternatives").length == 0){
             $( "input:text[name=name]" ).after("\
-                <div class='alert-danger alert' id='alternativebox' style='margin-top:10px;'>There seem to be objects with similar
+                <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar
                     name. Do you maybe mean one of those?\
-                    <ul id='alternatives' style='margin-top:5px;' class='list-unstyled'></ul>
+                    <ul id='alternatives' class='list-unstyled'></ul>
                     \
                 </div>")
         }

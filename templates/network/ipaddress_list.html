@@ -14,14 +14,14 @@
     {{ viewform.departmentfilter }}
     {% if perms.network.add_ipaddress %}
         <a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right">
-            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}
+            <i class="fa fa-plus"></i>{% trans "Add IP-Address" %}
         </a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
     {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
-    <table width="100%" id="adresstable" class="table table-bordered table-striped">
+    <table id="adresstable" class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>{% trans "IP Address" %}</th>

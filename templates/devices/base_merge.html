@@ -17,7 +17,7 @@
             </div>
             <form action="" method="post" class="form-horizontal">
                 {% csrf_token %}
-                <a href="{{ oldobject.get_absolute_url }}" class="btn btn-default" style="margin-right:10px;">{% trans "No" %}</a>
+                <a href="{{ oldobject.get_absolute_url }}" class="btn btn-default">{% trans "No" %}</a>
                 <input type="submit" value="Yes" class="btn btn-success"/>
             </form>
         </div>

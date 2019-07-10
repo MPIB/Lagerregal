@@ -10,7 +10,7 @@
 {% block pullright %}
     {% if perms.devices.add_template %}
         <a href="{% url 'template-add' %}" class="btn btn-success btn-sm">
-            <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Template" %}
+            <i class="fa fa-plus"></i>{% trans "Add Template" %}
         </a>
     {% endif %}
 {% endblock %}
@@ -22,7 +22,7 @@
             <li>
                 <a href="{% url 'template-edit' template.id %}">{{ template.name }}</a>
                 {% if perms.devices.delete_template %}
-                    <a href="{% url 'template-delete' template.pk %}" style="margin-left:20px">X</a>
+                    <a href="{% url 'template-delete' template.pk %}">X</a>
                 {% endif %}
             </li>
         {% endfor %}

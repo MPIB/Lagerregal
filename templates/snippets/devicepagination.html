@@ -6,7 +6,7 @@
         {% if page_obj.has_previous %}
             {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
                 <li class="previous">
-                    <a href="{% url 'device-list' 1 %}" style="margin-right:5px">
+                    <a href="{% url 'device-list' 1 %}">
                         <i class="fa fa-double-angle-left"></i> {% trans "First" %}
                     </a>
                 </li>
@@ -17,7 +17,7 @@
                 </li>
             {% else %}
                 <li class="previous">
-                    <a href="{% url 'device-list'  1 viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}" style="margin-right:5px">
+                    <a href="{% url 'device-list'  1 viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
                         <i class="fa fa-double-angle-left"></i> {% trans "First" %}
                     </a>
                 </li>
@@ -49,7 +49,7 @@
         {% if page_obj.has_next %}
             {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
                 <li class="next">
-                    <a href="{% url 'device-list' page_obj.paginator.num_pages %}" style="margin-left:5px">
+                    <a href="{% url 'device-list' page_obj.paginator.num_pages %}">
                         {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
                     </a>
                 </li>
@@ -60,7 +60,7 @@
                 </li>
             {% else %}
                 <li class="next">
-                    <a href="{% url 'device-list' page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}" style="margin-left:5px">
+                    <a href="{% url 'device-list' page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
                         {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
                     </a>
                 </li>

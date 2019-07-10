@@ -6,7 +6,7 @@
         <ul class="pager">
             {% if page_obj.has_previous %}
                 <li class="previous">
-                    <a href="{% url listurl parent 1 %}" style="margin-right:5px">
+                    <a href="{% url listurl parent 1 %}">
                         <i class="fa fa-double-angle-left"></i> {% trans "First" %}
                     </a>
                 </li>
@@ -34,7 +34,7 @@
                 </select> {% trans "of" %} {{ page_obj.paginator.num_pages }}</li>
             {% if page_obj.has_next %}
                 <li class="next">
-                    <a href="{% url listurl parent page_obj.paginator.num_pages %}" style="margin-left:5px">
+                    <a href="{% url listurl parent page_obj.paginator.num_pages %}">
                         {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
                     </a>
                 </li>

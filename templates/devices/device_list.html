@@ -15,14 +15,14 @@
     {% if perms.devices.add_device %}
         <div class="btn-group">
             <a href="{% url 'device-add' %}" class="btn btn-success btn-sm">
-                <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Device" %}
+                <i class="fa fa-plus"></i>{% trans "Add Device" %}
             </a>
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
                 <li class="dropdown-header">{% trans "From Template" %}</li>
-                <li><a href="{% url 'template-list' %}" class="right" style="margin-bottom:10px">{% trans "Edit Templates" %}</a></li>
+                <li><a href="{% url 'template-list' %}" class="right">{% trans "Edit Templates" %}</a></li>
                 {% if template_list %}
                     <li class="divider"></li>
                     {% for template in template_list %}
@@ -46,7 +46,7 @@
         <input type="hidden" name="format" value="csv" />
         <button class="btn btn-default btn-sm pull-right" id="exportbutton"><i class="fa fa-download"></i> {% trans "Export as CSV" %}</button>
     </form>
-    <table width="100%" id="devicetable" class="table table-bordered table-striped">
+    <table id="devicetable" class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>{% trans "Name" %}</th>
@@ -58,7 +58,7 @@
                     <th>{% trans "Owner" %}</th>
                     <th>{% trans "Duedate" %}</th>
                 {% else %}
-                    <th style="width:60px">{% trans "Available" %}</th>
+                    <th>{% trans "Available" %}</th>
                 {% endif %}
             </tr>
         </thead>
@@ -100,9 +100,9 @@
                         <td>{{ device.group__name }}</td>
                         <td>
                             {% if device.currentlending__owner__username == None %}
-                                <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                                <i class="fa fa-check-circle text-success"></i>
                             {% else %}
-                                <i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>
+                                <i class="fa fa-exclamation-circle text-danger"></i>
                             {% endif %}
                         </td>
                     </tr>

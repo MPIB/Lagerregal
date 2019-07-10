@@ -31,16 +31,16 @@
                     <td>{{ user.username }}</td>
                     <td>
                         {% if user.is_staff %}
-                            <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                            <i class="fa fa-check-circle text-success"></i>
                         {% else %}
-                            <i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
                         {% endif %}
                     </td>
                     <td>
                         {% if user.is_superuser %}
-                            <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
+                            <i class="fa fa-check-circle text-success"></i>
                         {% else %}
-                            <i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>
+                            <i class="fa fa-exclamation-circle text-danger"></i>
                         {% endif %}
                     </td>
                     <td>{{ user.last_login }}</td>
