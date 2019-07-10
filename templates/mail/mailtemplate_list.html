@@ -9,7 +9,7 @@
 {% block pullright %}
     {% if perms.mail.add_mailtemplate %}
         <a href="{% url 'mail-add' %}" class="btn btn-success btn-sm pull-right">
-            <i class="fa fa-plus"></i>{% trans "Add Mailtemplate" %}
+            <i class="fa fa-plus"></i> {% trans "Add Mailtemplate" %}
         </a>
     {% endif %}
 {% endblock %}

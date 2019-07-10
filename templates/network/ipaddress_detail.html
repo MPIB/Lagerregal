@@ -17,12 +17,12 @@
     {% endif %}
     {% if can_change_ipaddress %}
         <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">
-            <i class="fa fa-pencil"></i>{% trans "Edit" %}
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
         </a>
     {% endif %}
     {% if "ipaddress" in LABEL_TEMPLATES %}
         <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#printDymoModal" data-toggle="modal">
-            <i class="fa fa-print"></i>{% trans "Print Label" %}
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
         </a>
     {% endif %}
 {% endblock %}

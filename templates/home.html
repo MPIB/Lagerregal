@@ -12,10 +12,10 @@
 {% block pullright %}
     {% if user.is_staff and perms.devices.lend_device %}
         <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm">
-            <i class="fa fa-share"></i>{% trans "Lend Device" %}
+            <i class="fa fa-share"></i> {% trans "Lend Device" %}
         </a>
         <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm">
-            <i class="fa fa-reply"></i>{% trans "Return Device" %}
+            <i class="fa fa-reply"></i> {% trans "Return Device" %}
         </a>
     {% endif %}
 {% endblock %}

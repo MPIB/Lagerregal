@@ -12,7 +12,7 @@
     {{ viewform.viewsorting }}
     {% if perms.devicetypes.add_type %}
         <a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right">
-            <i class="fa fa-plus"></i>{% trans "Add Devicetype" %}
+            <i class="fa fa-plus"></i> {% trans "Add Devicetype" %}
         </a>
     {% endif %}
 {% endblock %}

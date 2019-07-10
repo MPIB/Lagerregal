@@ -11,19 +11,19 @@
     {% endif %}
     {% if "section" in LABEL_TEMPLATES %}
         <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#printDymoModal" data-toggle="modal">
-            <i class="fa fa-print"></i>{% trans "Print Label" %}
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
         </a>
     {% endif %}
     {% if perms.users.change_department %}
         <a href="{% url 'department-edit' object.id %}" class="btn btn-primary btn-sm pull-right">
-            <i class="fa fa-pencil"></i>{% trans "Edit" %}
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
         </a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
     {% endif %}
     {% has_perm 'users.add_department_user' user department as can_add_department_user %}
     {% if can_add_department_user %}
         <a href="{% url "department-add-user" department.id %}" id="adduserbutton" data-toggle="popover" class="btn btn-success btn-sm pull-right">
-            <i class="fa fa-plus"></i>{% trans "Add User" %}
+            <i class="fa fa-plus"></i> {% trans "Add User" %}
         </a>
     {% endif %}
 {% endblock %}

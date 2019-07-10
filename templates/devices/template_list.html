@@ -10,7 +10,7 @@
 {% block pullright %}
     {% if perms.devices.add_template %}
         <a href="{% url 'template-add' %}" class="btn btn-success btn-sm">
-            <i class="fa fa-plus"></i>{% trans "Add Template" %}
+            <i class="fa fa-plus"></i> {% trans "Add Template" %}
         </a>
     {% endif %}
 {% endblock %}

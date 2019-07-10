@@ -25,26 +25,26 @@
                 {% if display_printbutton %}
                     <li>
                         <a href="#" data-target="#printDymoModal" data-toggle="modal">
-                            <i class="fa fa-print"></i>{% trans "Print Label" %}
+                            <i class="fa fa-print"></i> {% trans "Print Label" %}
                         </a>
                     </li>
                 {% endif %}
                 <li>
                     <a href="#" data-target="#pictureModal" data-toggle="modal">
-                        <i class="fa fa-picture-o"></i>{% trans "Manage Pictures" %}
+                        <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
                     </a>
                 </li>
                 {% if can_change_device %}
                     <li>
                         <a href="{% url "device-inventoried" device.id %}">
-                            <i class="fa fa-check"></i>{% trans "Inventoried" %}
+                            <i class="fa fa-check"></i> {% trans "Inventoried" %}
                         </a>
                     </li>
                 {% endif %}
                 {% if can_add_device %}
                     <li>
                         <a href="{% url 'device-add-copy' device.id %}">
-                            <i class="fa fa-copy"></i>{% trans "Create Copy" %}
+                            <i class="fa fa-copy"></i> {% trans "Create Copy" %}
                         </a>
                     </li>
                 {% endif %}
@@ -58,7 +58,7 @@
                            data-placement="left"
                            data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-storage" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<div class="form-group dropdown-cancel"><label for="id_send_mail" class="col-sm-10 control-label">Send room-changed email</label><div class="col-sm-"><input id="id_send_mail" name="send_mail" type="checkbox" class="form-control dropdown-cancel"></div></div><button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);">{% trans "Cancel" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-folder"></i>{% trans "Move to storage" %}</a></li>
+                           class="dropdown-cancel"><i class="fa fa-folder"></i> {% trans "Move to storage" %}</a></li>
                     <li><a href="#"
                            id="archivebutton"
                            data-toggle="popover"
@@ -66,7 +66,7 @@
                            data-placement="left"
                            data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-folder"></i>{% trans "Archive" %}</a></li>
+                           class="dropdown-cancel"><i class="fa fa-folder"></i> {% trans "Archive" %}</a></li>
                     <li><a href="#"
                            id="trashbutton"
                            data-toggle="popover"
@@ -74,7 +74,7 @@
                            data-placement="left"
                            data-title="<span class='text-info'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
                            data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-trash-o"></i>{% trans "Trash" %}</a></li>
+                           class="dropdown-cancel"><i class="fa fa-trash-o"></i> {% trans "Trash" %}</a></li>
                 {% endif %}
                 {% if can_change_device %}
                     <li>
@@ -85,7 +85,7 @@
                            data-placement="left"
                            data-title="<span class='text-info'><strong>{% trans "are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default" onclick="$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-times"></i>{% trans "Delete" %}</a>
+                           class="dropdown-cancel"><i class="fa fa-times"></i> {% trans "Delete" %}</a>
                     </li>
                 {% endif %}
             </ul>
@@ -97,22 +97,22 @@
                 {% with is_bookmarked=device|check_bookmark:user %}
                     {% if is_bookmarked %}
                         <button type='submit' class='btn btn-success btn-sm'>
-                            <i class="fa fa-bookmark"></i>{% trans "Remove Bookmark" %}
+                            <i class="fa fa-bookmark"></i> {% trans "Remove Bookmark" %}
                         </button>
                     {% else %}
                         <button type='submit' class='btn btn-success btn-sm'>
-                            <i class="fa fa-bookmark-o"></i>{% trans "Bookmark" %}
+                            <i class="fa fa-bookmark-o"></i> {% trans "Bookmark" %}
                         </button>
                     {% endif %}
                 {% endwith %}
             </form>
             <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm">
-                <i class="fa fa-pencil"></i>{% trans "Edit" %}
+                <i class="fa fa-pencil"></i> {% trans "Edit" %}
             </a>
         {% endif %}
         {% if can_lend_device %}
             <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#mailModal" data-toggle="modal">
-                <i class="fa fa-envelope"></i>{% trans "Send Mail" %}
+                <i class="fa fa-envelope"></i> {% trans "Send Mail" %}
             </a>
         {% endif %}
 
@@ -122,11 +122,11 @@
                     {% trans "Edit lending information" %}
                 </a>
                 <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm">
-                    <i class="fa fa-check"></i>{% trans "returned" %}
+                    <i class="fa fa-check"></i> {% trans "returned" %}
                 </a>
             {% else %}
                 <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm">
-                    <i class="fa fa-check"></i>{% trans "Lend" %}
+                    <i class="fa fa-check"></i> {% trans "Lend" %}
                 </a>
             {% endif %}
         {% endif %}
@@ -554,7 +554,7 @@
                     </tbody>
                 </table>
                 <a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default">
-                    <i class="fa fa-book"></i>{% trans "View lending history" %}
+                    <i class="fa fa-book"></i> {% trans "View lending history" %}
                 </a>
             </div>
         {% endif %}
@@ -587,7 +587,7 @@
                     </tbody>
                 </table>
                 <a href="{% url 'history-list' content_type device.pk %}" class="btn btn-default">
-                    <i class="fa fa-book"></i>{% trans "View edit history" %}
+                    <i class="fa fa-book"></i> {% trans "View edit history" %}
                 </a>
             </div>
         {% endif %}

@@ -14,17 +14,17 @@
     {% endif %}
     {% if "section" in LABEL_TEMPLATES %}
         <a href="#" class="btn btn-primary pull-right btn-sm" data-target="#printDymoModal" data-toggle="modal">
-            <i class="fa fa-print"></i>{% trans "Print Label" %}
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
         </a>
     {% endif %}
     {% if perms.locations.change_section %}
         <a href="{% url 'section-edit' section.id %}" class="btn btn-primary btn-sm pull-right">
-            <i class="fa fa-pencil"></i>{% trans "Edit" %}
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
         </a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share"></i>{% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
