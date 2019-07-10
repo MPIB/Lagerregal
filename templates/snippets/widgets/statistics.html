@@ -8,42 +8,44 @@
 {% block widgetname %}statistics{% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-9 col-md-offset-3">
-            <span>{% trans "Available" %}</span>
-            <span class="pull-right">{% trans "Overall" %}</span>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-3">
-            {% trans "Devices" %}
-        </div>
-        <div class="col-md-9">
-            <div class="progress" style="margin-bottom:0px">
-                <div class="progress-bar progress-bar-{{ device_percentcolor }}" role="progressbar"
-                     aria-valuenow="{{ device_percent }}" aria-valuemin="0" aria-valuemax="100"
-                     style="width: {{ device_percent }}%;">
-                </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-9 col-md-offset-3">
+                <span>{% trans "Available" %}</span>
+                <span class="pull-right">{% trans "Overall" %}</span>
             </div>
-            <span>{{ device_available }}</span>
-            <span class="pull-right">{{ device_all }}</span>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-3">
-            {% trans "IP-Addresses" %}
-        </div>
-        <div class="col-md-9">
-            <div class="progress" style="margin-bottom:0px">
-                <div class="progress-bar progress-bar-{{ ipaddress_percentcolor }}" role="progressbar"
-                     aria-valuenow="{{ ipaddress_percent }}" aria-valuemin="0" aria-valuemax="100"
-                     style="width: {{ ipaddress_percent }}%;">
-                </div>
+        <div class="row">
+            <div class="col-md-3">
+                {% trans "Devices" %}
             </div>
-            <span>{{ ipaddress_available }}</span>
-            <span class="pull-right">{{ ipaddress_all }}</span>
+            <div class="col-md-9">
+                <div class="progress" style="margin-bottom:0px">
+                    <div class="progress-bar progress-bar-{{ device_percentcolor }}" role="progressbar"
+                         aria-valuenow="{{ device_percent }}" aria-valuemin="0" aria-valuemax="100"
+                         style="width: {{ device_percent }}%;">
+                    </div>
+                </div>
+                <span>{{ device_available }}</span>
+                <span class="pull-right">{{ device_all }}</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                {% trans "IP-Addresses" %}
+            </div>
+            <div class="col-md-9">
+                <div class="progress" style="margin-bottom:0px">
+                    <div class="progress-bar progress-bar-{{ ipaddress_percentcolor }}" role="progressbar"
+                         aria-valuenow="{{ ipaddress_percent }}" aria-valuemin="0" aria-valuemax="100"
+                         style="width: {{ ipaddress_percent }}%;">
+                    </div>
+                </div>
+                <span>{{ ipaddress_available }}</span>
+                <span class="pull-right">{{ ipaddress_all }}</span>
+            </div>
         </div>
     </div>
 {% endblock %}
