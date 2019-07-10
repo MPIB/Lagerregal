@@ -3,8 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_select2.forms import Select2MultipleWidget
 
-from network.models import IpAddress
 from devices.forms import get_department_options
+from network.models import IpAddress
 
 VIEWFILTER = (
     ('all', _('All IP-Addresses')),

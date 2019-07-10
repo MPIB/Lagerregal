@@ -1,17 +1,27 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.urls import reverse_lazy, reverse
-from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.db.transaction import atomic
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.db.transaction import atomic
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
+from django.views.generic import View
+
 from reversion import revisions as reversion
 
-from locations.models import Section
-from devices.models import Device, Room
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from devices.forms import VIEWSORTING
+from devices.forms import FilterForm
+from devices.forms import ViewForm
+from devices.models import Device
+from devices.models import Room
 from Lagerregal.utils import PaginationMixin
+from locations.models import Section
 from users.mixins import PermissionRequiredMixin
 
 

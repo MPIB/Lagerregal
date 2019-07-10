@@ -1,29 +1,43 @@
-from django.conf.urls import include, url
+from django.conf.urls import include
+from django.conf.urls import url
+from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.views import LogoutView
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
-from devices.views import *
-from network.views import *
-from devicetypes.views import *
-from main.views import *
-from api.views import *
-from mail.views import *
-from devicegroups.views import *
-from devicetags.views import *
-from locations.views import *
-from history.views import *
-from users.views import *
-from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
-from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, \
-    LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, \
-    UserLendings, PuppetDetails, PuppetSoftware
-from devicetypes.ajax import GetTypeAttributes
+
 from rest_framework.urlpatterns import format_suffix_patterns
+
+from api.views import *
+from devicegroups.views import *
+from devices.ajax import AddDeviceField
+from devices.ajax import AutocompleteDevice
+from devices.ajax import AutocompleteName
+from devices.ajax import AutocompleteSmallDevice
+from devices.ajax import LoadExtraform
+from devices.ajax import LoadMailtemplate
+from devices.ajax import PreviewMail
+from devices.ajax import PuppetDetails
+from devices.ajax import PuppetSoftware
+from devices.ajax import UserLendings
+from devices.views import *
+from devicetags.views import *
+from devicetypes.ajax import GetTypeAttributes
+from devicetypes.views import *
+from history.views import *
+from locations.views import *
+from mail.views import *
+from main.ajax import WidgetAdd
+from main.ajax import WidgetMove
+from main.ajax import WidgetRemove
+from main.ajax import WidgetToggle
+from main.views import *
+from network.views import *
+from users.views import *
+
 from . import settings
-from django.contrib import admin
-from django.views.decorators.clickjacking import xframe_options_exempt
 
 urlpatterns = [
     url(r'^$', login_required(Home.as_view()), name="home"),

@@ -1,5 +1,6 @@
 import uuid
-from datetime import date, timedelta
+from datetime import date
+from datetime import timedelta
 
 from django.conf import settings
 from django.test.runner import DiscoverRunner

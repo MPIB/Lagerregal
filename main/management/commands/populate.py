@@ -1,18 +1,26 @@
 import random
 import urllib
-from os import path, makedirs
-
-from faker import Faker
+from os import makedirs
+from os import path
 
 from django.conf import settings  # import the settings file
 from django.core.management.base import BaseCommand
 
-from Lagerregal import utils
-from devices.models import Building, Room, Manufacturer, Device, Picture, Lending
+from faker import Faker
+
 from devicegroups.models import Devicegroup
+from devices.models import Building
+from devices.models import Device
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Picture
+from devices.models import Room
 from devicetypes.models import Type
+from Lagerregal import utils
 from locations.models import Section
-from users.models import Lageruser, Department, DepartmentUser
+from users.models import Department
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 fake = Faker('de_DE')
 

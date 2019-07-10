@@ -1,42 +1,75 @@
+import csv
 import datetime
 import time
-import csv
 
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
-from django.views.generic.detail import SingleObjectTemplateResponseMixin, BaseDetailView, SingleObjectMixin
-from django.urls import reverse_lazy, reverse
-from django.contrib.auth.models import Group
-from django.shortcuts import render
-from reversion.models import Version
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponseBadRequest, HttpResponse
-from django.contrib import messages
-from django.utils.timezone import utc
-from django.utils import timezone
-from reversion import revisions as reversion
-from django.utils.translation import ugettext_lazy as _
-from django.contrib.contenttypes.models import ContentType
-from django.db.transaction import atomic
 from django.conf import settings
-from django.db.models.query import QuerySet
-from django.db import models
+from django.contrib import messages
+from django.contrib.auth.models import Group
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
-from django.http import Http404
-
-from devices.models import Device, Template, Room, Building, Manufacturer, Lending, Note, Bookmark, Picture
-from devicetypes.models import TypeAttribute, TypeAttributeValue
-from network.models import IpAddress
-from mail.models import MailTemplate, MailHistory
-from devices.forms import IpAddressForm, LendForm, DeviceViewForm, IpAddressPurposeForm
-from devices.forms import ViewForm, DeviceForm, DeviceMailForm, VIEWSORTING, VIEWSORTING_DEVICES, FilterForm, \
-    DeviceStorageForm, ReturnForm, DeviceGroupFilterForm
-from devicetags.forms import DeviceTagForm
-from users.mixins import PermissionRequiredMixin
-from users.models import Lageruser, Department
-from Lagerregal.utils import PaginationMixin
-from devicetags.models import Devicetag
+from django.db import models
 from django.db.models import Q
+from django.db.models.query import QuerySet
+from django.db.transaction import atomic
+from django.http import Http404
+from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils import timezone
+from django.utils.timezone import utc
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import FormView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
+from django.views.generic import View
+from django.views.generic.detail import BaseDetailView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.detail import SingleObjectTemplateResponseMixin
+
+from reversion import revisions as reversion
+from reversion.models import Version
+
+from devices.forms import VIEWSORTING
+from devices.forms import VIEWSORTING_DEVICES
+from devices.forms import DeviceForm
+from devices.forms import DeviceGroupFilterForm
+from devices.forms import DeviceMailForm
+from devices.forms import DeviceStorageForm
+from devices.forms import DeviceViewForm
+from devices.forms import FilterForm
+from devices.forms import IpAddressForm
+from devices.forms import IpAddressPurposeForm
+from devices.forms import LendForm
+from devices.forms import ReturnForm
+from devices.forms import ViewForm
+from devices.models import Bookmark
+from devices.models import Building
+from devices.models import Device
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Note
+from devices.models import Picture
+from devices.models import Room
+from devices.models import Template
+from devicetags.forms import DeviceTagForm
+from devicetags.models import Devicetag
+from devicetypes.models import TypeAttribute
+from devicetypes.models import TypeAttributeValue
+from Lagerregal.utils import PaginationMixin
+from mail.models import MailHistory
+from mail.models import MailTemplate
+from network.models import IpAddress
+from users.mixins import PermissionRequiredMixin
+from users.models import Department
+from users.models import Lageruser
 
 
 class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):

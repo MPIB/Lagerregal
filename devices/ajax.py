@@ -1,26 +1,30 @@
-import json
-
-import urllib
 import http.client
+import json
+import urllib
 from http.client import ssl
 
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.forms.models import modelform_factory
-from django.template.loader import render_to_string
-from django.views.generic.base import View
-from django.http import HttpResponse
-import pystache
-from django.http import QueryDict
-from django.shortcuts import render
 from django.conf import settings
+from django.forms.models import modelform_factory
+from django.http import HttpResponse
+from django.http import QueryDict
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.views.generic.base import View
 
-from devices.models import Device, Room, Building, Manufacturer, Lending
-from users.models import Lageruser
-from mail.models import MailTemplate
-from devicetypes.models import Type
-from devices.forms import AddForm
+import pystache
+
 from devicegroups.models import Devicegroup
+from devices.forms import AddForm
+from devices.models import Building
+from devices.models import Device
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Room
+from devicetypes.models import Type
+from mail.models import MailTemplate
+from users.models import Lageruser
 
 
 class AutocompleteDevice(View):

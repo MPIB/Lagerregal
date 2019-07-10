@@ -1,9 +1,8 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
+from django.utils.translation import ugettext_lazy as _
 
 from users.models import Lageruser
-
 
 WIDGETS = [
     ("edithistory", _("Edit history")),

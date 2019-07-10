@@ -1,16 +1,26 @@
 import unittest
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 
-from django.test.client import Client
 from django.test import TestCase
+from django.test.client import Client
 from django.urls import reverse
 
 from model_mommy import mommy
 
-from devices.models import Device, Building, Room, Manufacturer, Template, Note, Lending, DeviceInformationType, DeviceInformation, Picture
-from users.models import Lageruser
-from network.models import IpAddress
 from devices import views as device_views
+from devices.models import Building
+from devices.models import Device
+from devices.models import DeviceInformation
+from devices.models import DeviceInformationType
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Note
+from devices.models import Picture
+from devices.models import Room
+from devices.models import Template
+from network.models import IpAddress
+from users.models import Lageruser
 
 
 class DeviceTests(TestCase):

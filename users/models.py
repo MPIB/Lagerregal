@@ -1,14 +1,14 @@
+import logging
 import re
 from datetime import date
-import logging
 
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MaxValueValidator
 from django.conf import settings
-from django.urls import reverse
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator
+from django.db import models
 from django.dispatch import receiver
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 import pytz
 from django_auth_ldap.backend import populate_user

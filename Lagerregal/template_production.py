@@ -1,3 +1,7 @@
+import ldap
+from django_auth_ldap.config import LDAPSearch
+from django_auth_ldap.config import NestedActiveDirectoryGroupType
+
 from .base_settings import *
 
 DEBUG = False
@@ -72,8 +76,6 @@ STORAGE_ROOM = ""
 
 USE_LDAP = True
 
-from django_auth_ldap.config import LDAPSearch, NestedActiveDirectoryGroupType
-import ldap
 ldap.set_option(ldap.OPT_REFERRALS, 0)
 
 AUTHENTICATION_BACKENDS += 'django_auth_ldap.backend.LDAPBackend',

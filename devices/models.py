@@ -2,17 +2,17 @@ import datetime
 
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 import reversion
 
-from users.models import Lageruser
-from devicetypes.models import Type
 from devicegroups.models import Devicegroup
-from locations.models import Section
+from devicetypes.models import Type
 from Lagerregal import utils
+from locations.models import Section
 from users.models import Department
+from users.models import Lageruser
 
 
 @reversion.register()

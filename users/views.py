@@ -1,26 +1,40 @@
-from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import render
 from django.contrib.auth.models import Permission
-from django.urls import reverse_lazy
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import FormView
+from django.views.generic import ListView
+from django.views.generic import TemplateView
+from django.views.generic import UpdateView
+
 from reversion.models import Version
 
-from users.mixins import PermissionRequiredMixin
-from users.models import Lageruser, Department, DepartmentUser
+from devices.forms import VIEWSORTING
+from devices.forms import DepartmentFilterForm
+from devices.forms import FilterForm
+from devices.forms import ViewForm
 from devices.models import Lending
-from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
-from network.models import IpAddress
 from network.forms import UserIpAddressForm
-from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterForm
+from network.models import IpAddress
+from users.forms import AvatarForm
+from users.forms import DepartmentAddUserForm
+from users.forms import SettingsForm
+from users.mixins import PermissionRequiredMixin
+from users.models import Department
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 
 class UserList(PermissionRequiredMixin, PaginationMixin, ListView):

@@ -1,18 +1,23 @@
+from django.apps import apps
 from django.contrib import messages
+from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-from django.views.generic import ListView, UpdateView
+from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import get_object_or_404
-from django.contrib.contenttypes.models import ContentType
-from django.apps import apps
+from django.views.generic import ListView
+from django.views.generic import UpdateView
 
-from reversion.models import Version, Revision
 from reversion import revisions as reversion
+from reversion.models import Revision
+from reversion.models import Version
 
+from devices.models import Device
+from devices.models import Manufacturer
+from devices.models import Room
+from devicetypes.models import Type
+from devicetypes.models import TypeAttributeValue
 from Lagerregal.utils import PaginationMixin
-from devices.models import Device, Room, Manufacturer
-from devicetypes.models import Type, TypeAttributeValue
 from users.mixins import PermissionRequiredMixin
 
 
