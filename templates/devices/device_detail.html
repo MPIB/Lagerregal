@@ -416,7 +416,7 @@
                     <div class="panel-footer">
                         <form method="post" action="{% url 'device-ipaddress' device.pk %}">
                             {% csrf_token %}
-                            {{ ipaddressform.ipaddresses }}
+                            <div class="form-group">{{ ipaddressform.ipaddresses }}</div>
                             <div class="text-right">
                                 <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
                                     <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
@@ -443,7 +443,7 @@
                 <div class="panel-footer">
                     <form method="post" action="{% url 'device-tags' device.pk %}">
                         {% csrf_token %}
-                        {{ tagform.tags }}
+                        <div class="form-group">{{ tagform.tags }}</div>
                         <div class="text-right">
                             <button type="submit" class="btn btn-success btn-sm disabled" id="submittags">
                                 <i class="fa fa-plus"></i> {% trans "Assign Tags" %}
@@ -515,7 +515,9 @@
 
                 <form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1'>
                     {% csrf_token %}
-                    <textarea class="form-control" name="note" id="id_note"></textarea>
+                    <div class="form-group">
+                        <textarea class="form-control" name="note" id="id_note"></textarea>
+                    </div>
                     <input type="hidden" name="device" value="{{ device.pk }}"/>
                     <input type="hidden" name="creator" value="{{ user.pk }}"/>
                     <div class="text-right">

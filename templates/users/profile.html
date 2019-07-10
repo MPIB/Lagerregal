@@ -238,7 +238,7 @@
                     <div class="col-xs-12 col-md-6">
                         <form method="post" action="{% url 'user-ipaddress' profileuser.pk %}">
                             {% csrf_token %}
-                            {{ ipaddressform.ipaddresses }}
+                            <div class="form-group">{{ ipaddressform.ipaddresses }}</div>
                             <div class="text-right">
                                 <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
                                     <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
