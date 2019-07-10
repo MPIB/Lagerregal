@@ -15,28 +15,24 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Subject" %}</th>
-                        <th>{% trans "Usage" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for mail in mail_list %}
-                        <tr>
-                            <td><a href="{% url 'mail-detail' mail.id %}">{{ mail.name }}</a></td>
-                            <td>{{ mail.subject }}</td>
-                            <td>{{ mail.get_usage_display }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Subject" %}</th>
+                <th>{% trans "Usage" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mail in mail_list %}
+                <tr>
+                    <td><a href="{% url 'mail-detail' mail.id %}">{{ mail.name }}</a></td>
+                    <td>{{ mail.subject }}</td>
+                    <td>{{ mail.get_usage_display }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/pagination_simple.html" with listurl='mail-list' %}
 {% endblock %}

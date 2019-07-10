@@ -18,24 +18,20 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                    </tr>
-                </thead>
-                {% for devicegroup in devicegroup_list %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'devicegroup-detail' devicegroup.id %}">{{ devicegroup.name|default:_("(None)") }}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-            {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
-        </div>
-    </div>
+    {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        {% for devicegroup in devicegroup_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'devicegroup-detail' devicegroup.id %}">{{ devicegroup.name|default:_("(None)") }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
 {% endblock %}

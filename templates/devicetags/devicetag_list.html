@@ -18,25 +18,21 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/pagination.html" with listurl='devicetag-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                    </tr>
-                </thead>
-                {% for devicetag in devicetag_list %}
-                    <tr>
-                        <td>
-                            <a href="{% url 'devicetag-edit' devicetag.id %}">{{ devicetag.name|default:_("(None)") }}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
+    {% include "snippets/pagination.html" with listurl='devicetag-list' %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        {% for devicetag in devicetag_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'devicetag-edit' devicetag.id %}">{{ devicetag.name|default:_("(None)") }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
-            {% include "snippets/pagination.html" with listurl='devicetag-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" with listurl='devicetag-list' %}
 {% endblock %}

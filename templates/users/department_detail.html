@@ -29,31 +29,29 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <table class="table table-bordered table-responsive">
-            <thead>
+    <table class="table table-bordered table-responsive">
+        <thead>
+            <tr>
+                <th>{%  trans "User" %}</th>
+                <th>{% trans "Role" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in department_users %}
                 <tr>
-                    <th>{%  trans "User" %}</th>
-                    <th>{% trans "Role" %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for member in department_users %}
-                    <tr>
-                        <td><a href="{% url 'userprofile' member.user.id %}">{{member.user}}</a></td>
-                        <td>{{ member.get_role_display }}
-                            {% if user != member.user %}
-                                {% has_perm 'users.add_department_user' user department as can_add_department_user %}
-                                {% if can_add_department_user %}
-                                    <a href="{% url "department-remove-user" member.id %}" class="close">
-                                        <span aria-hidden="true">&times;</span><span class="sr-only">Remove from Department</span>
-                                    </a>
-                                {% endif %}
+                    <td><a href="{% url 'userprofile' member.user.id %}">{{member.user}}</a></td>
+                    <td>{{ member.get_role_display }}
+                        {% if user != member.user %}
+                            {% has_perm 'users.add_department_user' user department as can_add_department_user %}
+                            {% if can_add_department_user %}
+                                <a href="{% url "department-remove-user" member.id %}" class="close">
+                                    <span aria-hidden="true">&times;</span><span class="sr-only">Remove from Department</span>
+                                </a>
                             {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

@@ -169,7 +169,7 @@
     {% has_perm 'devices.view_puppetdetails' user device as can_view_puppetdetails %}
 
     <div class="row">
-        <div class="col-xs-12 col-md-4">
+        <div class="col-md-4">
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
@@ -323,7 +323,7 @@
                 {{ device.description|linebreaks }}
             {% endif %}
         </div>
-        <div class="col-xs-12 col-md-5">
+        <div class="col-md-5">
             {% if device.pictures.count > 0 %}
                 <div id="device-carousel" class="carousel slide" data-ride="carousel" data-interval=false>
                     <ol class="carousel-indicators">
@@ -393,7 +393,7 @@
                 <p>{% trans "Currently not lent" %}</p>
             {% endif %}
         </div>
-        <div class="col-xs-12 col-md-3">
+        <div class="col-md-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">{% trans "IP-Addresses" %}</div>
                 <ul class="list-group">
@@ -513,19 +513,21 @@
                     {% endfor %}
                 </ul>
 
-                <form action='{% url "device-note-create" device.pk %}' method='post' class='form-horizontal col-md-6 col-md-offset-1'>
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <textarea class="form-control" name="note" id="id_note"></textarea>
-                    </div>
-                    <input type="hidden" name="device" value="{{ device.pk }}"/>
-                    <input type="hidden" name="creator" value="{{ user.pk }}"/>
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <i class="fa fa-pencil"></i> {% trans "Add note" %}
-                        </button>
-                    </div>
-                </form>
+                <div class="row">
+                    <form action='{% url "device-note-create" device.pk %}' method='post' class="col-md-6">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <textarea class="form-control" name="note" id="id_note"></textarea>
+                        </div>
+                        <input type="hidden" name="device" value="{{ device.pk }}"/>
+                        <input type="hidden" name="creator" value="{{ user.pk }}"/>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success btn-sm">
+                                <i class="fa fa-pencil"></i> {% trans "Add note" %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         {% endif %}
         {% if can_change_device %}

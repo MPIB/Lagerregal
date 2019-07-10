@@ -18,25 +18,21 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/pagination.html" with listurl='department-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for department in department_list %}
-                        <tr>
-                            <td><a href="{% url 'department-detail' department.id %}">{{ department.name|default:_("(None)") }}</a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    {% include "snippets/pagination.html" with listurl='department-list' %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in department_list %}
+                <tr>
+                    <td><a href="{% url 'department-detail' department.id %}">{{ department.name|default:_("(None)") }}</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-            {% include "snippets/pagination.html" with listurl='department-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" with listurl='department-list' %}
 {% endblock %}

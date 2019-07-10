@@ -36,7 +36,7 @@
 
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-5">
+        <div class="col-md-5">
             <h4>{% trans "Extra attributes" %}</h4>
             <ul>
                 {% for attribute in attribute_list %}
@@ -58,7 +58,7 @@
                 </a>
             {% endif %}
         </div>
-        <div class="col-xs-12 col-md-7">
+        <div class="col-md-7">
             {% if perms.devices.view_device %}
                 {% if device_list %}
                     <h4>{% trans "Devices" %}</h4>
