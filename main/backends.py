@@ -17,7 +17,7 @@ class LagerregalBackend:
         if obj is None:
             return False
         if (
-            perm == 'devices.read_device'
+            perm == 'devices.view_device'
             and isinstance(obj, Device)
             and not obj.is_private
         ):
@@ -31,7 +31,7 @@ class LagerregalBackend:
                         return True
 
             elif isinstance(obj, IpAddress):
-                if perm == 'network.read_ipaddress':
+                if perm == 'network.view_ipaddress':
                     return True
                 else:
                     return obj.department in user_obj.departments.all()

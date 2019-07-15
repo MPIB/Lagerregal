@@ -22,7 +22,7 @@ from users.models import Department
 class DevicegroupList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Devicegroup
     context_object_name = 'devicegroup_list'
-    permission_required = 'devicegroups.read_devicegroup'
+    permission_required = 'devicegroups.view_devicegroup'
 
     def get_queryset(self):
         '''method to query all devicegroups and filter and sort it'''
@@ -87,7 +87,7 @@ class DevicegroupDetail(PermissionRequiredMixin, DetailView):
     model = Devicegroup
     context_object_name = 'devicegroup'
     template_name = "devicegroups/devicegroup_detail.html"
-    permission_required = 'devicegroups.read_devicegroup'
+    permission_required = 'devicegroups.view_devicegroup'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

@@ -13,20 +13,20 @@
 {% block content %}
     <div class="row">
     <ul class="nav nav-tabs" id="myTab">
-        {% if perms.users.read_user %}
+        {% if perms.users.view_user %}
             <li class="active"><a href="#about" data-toggle="tab" data-tab="about">About</a></li>
             <li><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
         {% else %}
             <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
         {% endif %}
         <li><a href="#ipaddresses" data-toggle="tab" data-tab="edits">IP-Addresses</a></li>
-        {% if perms.users.read_user %}
+        {% if perms.users.view_user %}
             <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
         {% endif %}
     </ul>
 
     <div class="tab-content">
-        {% if perms.users.read_user %}
+        {% if perms.users.view_user %}
             <div class="tab-pane active" id="about">
                 <div data-spy="affix" data-offset-top="160" class="affix-container">
                     {% if profileuser.avatar %}
@@ -219,7 +219,7 @@
                 </div>
             {% endif %}
         </div>
-        {% if perms.users.read_user %}
+        {% if perms.users.view_user %}
 
             <div class="tab-pane" id="edits">
                 <div class="col-xs-12 col-md-12">
@@ -255,7 +255,7 @@
         {% endif %}
         </div>
     </div>
-    {% if perms.users.read_user and profileuser.avatar %}
+    {% if perms.users.view_user and profileuser.avatar %}
         {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
     {% endif %}
 {% endblock %}
@@ -276,7 +276,7 @@
         });
 
     var device_initialized = false;
-    {% if perms.users.read_user %}
+    {% if perms.users.view_user %}
         var change_initialized = false;
 
         $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {

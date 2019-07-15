@@ -77,7 +77,7 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
     template_name = 'devices/device_list.html'
     viewfilter = None
     viewsorting = None
-    permission_required = 'devices.read_device'
+    permission_required = 'devices.view_device'
 
     def post(self, request):
         '''post-requesting the detail-view of device by id'''
@@ -189,7 +189,7 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
 
 
 class ExportCsv(PermissionRequiredMixin, View):
-    permission_required = 'devices.read_device'
+    permission_required = 'devices.view_device'
 
     def post(self, request):
 
@@ -248,7 +248,7 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
         .prefetch_related("pictures", )
     context_object_name = 'device'
     object = None
-    permission_required = 'devices.read_device'
+    permission_required = 'devices.view_device'
 
     def get_object(self, queryset=None):
         if self.object is not None:
@@ -435,7 +435,7 @@ class DeviceIpAddressPurpose(PermissionRequiredMixin, FormView):
 class DeviceLendingList(PermissionRequiredMixin, PaginationMixin, ListView):
     context_object_name = 'lending_list'
     template_name = 'devices/device_lending_list.html'
-    permission_required = 'devices.read_device'
+    permission_required = 'devices.view_device'
 
     def get_queryset(self):
         deviceid = self.kwargs["pk"]
@@ -1003,7 +1003,7 @@ class DeviceStorage(PermissionRequiredMixin, SingleObjectMixin, FormView):
 
 class DeviceBookmark(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, BaseDetailView):
     model = Device
-    permission_required = 'devices.read_device'
+    permission_required = 'devices.view_device'
 
     def get_permission_object(self):
         return self.get_object()
@@ -1024,7 +1024,7 @@ class DeviceBookmark(PermissionRequiredMixin, SingleObjectTemplateResponseMixin,
 class TemplateList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Template
     context_object_name = 'template_list'
-    permission_required = 'devices.read_template'
+    permission_required = 'devices.view_template'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -1085,7 +1085,7 @@ class TemplateDelete(PermissionRequiredMixin, DeleteView):
 class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Room
     context_object_name = 'room_list'
-    permission_required = 'devices.read_room'
+    permission_required = 'devices.view_room'
 
     def get_queryset(self):
         rooms = Room.objects.select_related("building").all()
@@ -1114,7 +1114,7 @@ class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
 class RoomDetail(PermissionRequiredMixin, DetailView):
     model = Room
     context_object_name = 'room'
-    permission_required = 'devices.read_room'
+    permission_required = 'devices.view_room'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1225,7 +1225,7 @@ class RoomMerge(PermissionRequiredMixin, View):
 class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Building
     context_object_name = 'building_list'
-    permission_required = 'devices.read_building'
+    permission_required = 'devices.view_building'
 
     def get_queryset(self):
         buildings = Building.objects.all()
@@ -1252,7 +1252,7 @@ class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
 class BuildingDetail(PermissionRequiredMixin, DetailView):
     model = Building
     context_object_name = 'building'
-    permission_required = 'devices.read_building'
+    permission_required = 'devices.view_building'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1362,7 +1362,7 @@ class BuildingMerge(PermissionRequiredMixin, View):
 class ManufacturerList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Manufacturer
     context_object_name = 'manufacturer_list'
-    permission_required = 'devices.read_manufacturer'
+    permission_required = 'devices.view_manufacturer'
 
     def get_queryset(self):
         manufacturers = Manufacturer.objects.all()
@@ -1392,7 +1392,7 @@ class ManufacturerDetail(PermissionRequiredMixin, DetailView):
     model = Manufacturer
     context_object_name = 'object'
     template_name = "devices/manufacturer_detail.html"
-    permission_required = 'devices.read_manufacturer'
+    permission_required = 'devices.view_manufacturer'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -1617,7 +1617,7 @@ class PictureDelete(DeleteView):
 class Search(PermissionRequiredMixin, ListView):
     model = Device
     template_name = 'devices/search.html'
-    permission_required = "devices.read_device"
+    permission_required = "devices.view_device"
 
     STRING_FIELDS = {
         'name': 'name',

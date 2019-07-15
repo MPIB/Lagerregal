@@ -153,7 +153,7 @@
     {% has_perm 'devices.add_device' user device as can_add_device %}
     {% has_perm 'devices.delete_device' user device as can_delete_device %}
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
-    {% has_perm 'devices.read_puppetdetails' user device as can_read_puppetdetails %}
+    {% has_perm 'devices.view_puppetdetails' user device as can_view_puppetdetails %}
 
     <div class="row">
         <div class="col-xs-12 col-md-4">
@@ -402,7 +402,7 @@
                 {% if can_lend_device %}
                     <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endif %}
                 {% if USE_PUPPET %}
-                {% if can_read_puppetdetails %}
+                {% if can_view_puppetdetails %}
                     <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
                     <li><a href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
                 {% endif %}
@@ -550,7 +550,7 @@
                 {% endif %}
 
                 {% if USE_PUPPET %}
-                {% if can_read_puppetdetails %}
+                {% if can_view_puppetdetails %}
                     <div class="tab-pane" id="puppet">
                         <h4>{% trans "Puppet facts from puppetdb" %}</h4>
                         <div id="puppetdetails">

@@ -45,65 +45,65 @@
                     {% trans "Devices" %} <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                    {% if perms.devices.read_device %}
+                    {% if perms.devices.view_device %}
                         <li><a href="{% url 'device-list' %}">{% trans "Devices" %}</a></li>
                     {% endif %}
-                    {% if perms.devicetypes.read_type %}
+                    {% if perms.devicetypes.view_type %}
                         <li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>
                     {% endif %}
-                    {% if perms.devices.read_manufacturer %}
+                    {% if perms.devices.view_manufacturer %}
                         <li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>
                     {% endif %}
-                    {% if perms.devicegroups.read_devicegroup %}
+                    {% if perms.devicegroups.view_devicegroup %}
                         <li><a href="{% url 'devicegroup-list' %}">{% trans "Devicegroups" %}</a></li>
                     {% endif %}
                     <li><a href="{% url 'public-device-list' %}">{% trans "Public Devices" %}</a></li>
                 </ul>
             </li>
-            {% if perms.devices.read_room or perms.devices.read_building or perms.locations.read_section %}
+            {% if perms.devices.view_room or perms.devices.view_building or perms.locations.view_section %}
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     {% trans "Locations" %} <b class="caret"></b></a>
 
                     <ul class="dropdown-menu">
-                        {% if perms.devices.read_room %}
+                        {% if perms.devices.view_room %}
                             <li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>
                         {% endif %}
-                        {% if perms.devices.read_building %}
+                        {% if perms.devices.view_building %}
                             <li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>
                         {% endif %}
-                        {% if perms.locations.read_section %}
+                        {% if perms.locations.view_section %}
                             <li><a href="{% url 'section-list' %}">{% trans "Sections" %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
             {% endif %}
-            {% if perms.mail.read_mailtemplate or perms.users.read_user or perms.network.read_ipaddress or perms.users.read_department or perms.devicetags.read_devicetags %}
+            {% if perms.mail.view_mailtemplate or perms.users.view_user or perms.network.view_ipaddress or perms.users.view_department or perms.devicetags.view_devicetags %}
                 <li class="dropdown">
                     <a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">
                         {% trans "Manage" %} <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                        {% if perms.network.read_ipaddress %}
+                        {% if perms.network.view_ipaddress %}
                             <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>{% endif %}
-                        {% if perms.mail.read_mailtemplate %}
+                        {% if perms.mail.view_mailtemplate %}
                             <li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>{% endif %}
-                        {% if perms.users.read_user %}
+                        {% if perms.users.view_user %}
                             <li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>{% endif %}
-                        {% if perms.users.read_department %}
+                        {% if perms.users.view_department %}
                             <li><a href="{% url 'department-list' %}">{% trans "Departments" %}</a></li>{% endif %}
-                        {% if perms.devicetags.read_devicetag %}
+                        {% if perms.devicetags.view_devicetag %}
                             <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>{% endif %}
                     </ul>
                 </li>
             {% endif %}
-            {% if perms.network.read_ipaddress and not perms.mail.read_mailtemplate and not users.read_user %}
+            {% if perms.network.view_ipaddress and not perms.mail.view_mailtemplate and not users.view_lageruser %}
                 <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>
             {% endif %}
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
-                {% if perms.devices.read_device %}
+                {% if perms.devices.view_device %}
                     <li class="visible-lg visible-md">
                         <form method="post" action="{% url 'device-list' %}" class="navbar-form">{% csrf_token %}
                             <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">

@@ -31,9 +31,6 @@ class Building(models.Model):
     class Meta:
         verbose_name = _('Building')
         verbose_name_plural = _('Buildings')
-        permissions = (
-            ("read_building", _("Can read Building")),
-        )
 
     def get_absolute_url(self):
         return reverse('building-detail', kwargs={'pk': self.pk})
@@ -57,9 +54,6 @@ class Room(models.Model):
     class Meta:
         verbose_name = _('Room')
         verbose_name_plural = _('Rooms')
-        permissions = (
-            ("read_room", _("Can read Room")),
-        )
 
     def get_absolute_url(self):
         return reverse('room-detail', kwargs={'pk': self.pk})
@@ -78,9 +72,6 @@ class Manufacturer(models.Model):
     class Meta:
         verbose_name = _('Manufacturer')
         verbose_name_plural = _('Manufacturers')
-        permissions = (
-            ("read_manufacturer", _("Can read Manufacturer")),
-        )
 
     def get_absolute_url(self):
         return reverse('manufacturer-detail', kwargs={'pk': self.pk})
@@ -139,9 +130,8 @@ class Device(models.Model):
             ("boss_mails", _("Emails for bosses")),
             ("managment_mails", _("Emails for managment")),
             ("support_mails", _("Emails for support")),
-            ("read_device", _("Can read Device")),
             ("lend_device", _("Can lend Device")),
-            ("read_puppetdetails", _("Read Puppet Details"))
+            ("view_puppetdetails", _("View Puppet Details"))
         )
 
     def get_absolute_url(self):
@@ -230,9 +220,6 @@ class Template(models.Model):
         ordering = ['name']
         verbose_name = _('Template')
         verbose_name_plural = _('Templates')
-        permissions = (
-            ("read_template", _("Can read Template")),
-        )
 
     def get_absolute_url(self):
         return reverse('device-list')

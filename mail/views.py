@@ -20,7 +20,7 @@ from users.models import Lageruser
 class MailList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = MailTemplate
     context_object_name = 'mail_list'
-    permission_required = 'mail.read_mailtemplate'
+    permission_required = 'mail.view_mailtemplate'
 
     def get_queryset(self):
         return MailTemplate.objects.all()
@@ -40,7 +40,7 @@ class MailDetail(PermissionRequiredMixin, DetailView):
     model = MailTemplate
     context_object_name = 'mailtemplate'
     template_name = "mail/mailtemplate_detail.html"
-    permission_required = 'mail.read_mailtemplate'
+    permission_required = 'mail.view_mailtemplate'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

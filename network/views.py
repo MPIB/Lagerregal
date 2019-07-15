@@ -26,7 +26,7 @@ from users.models import Lageruser
 
 class IpAddressList(PermissionRequiredMixin, PaginationMixin, ListView):
     context_object_name = 'ipaddress_list'
-    permission_required = 'network.read_ipaddress'
+    permission_required = 'network.view_ipaddress'
 
     def get_queryset(self):
         self.viewfilter = self.kwargs.get("filter", "all")
@@ -77,7 +77,7 @@ class IpAddressList(PermissionRequiredMixin, PaginationMixin, ListView):
 class IpAddressDetail(PermissionRequiredMixin, DetailView):
     model = IpAddress
     context_object_name = 'ipaddress'
-    permission_required = 'network.read_ipaddress'
+    permission_required = 'network.view_ipaddress'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

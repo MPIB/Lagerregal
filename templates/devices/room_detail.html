@@ -43,7 +43,7 @@
             </dl>
         </div>
         <div class="col-xs-12 col-md-7">
-            {% if perms.devices.read_device %}
+            {% if perms.devices.view_device %}
                 <h4>{% trans "Device" %}</h4>
                 {% if device_list %}
                     <table width="100%" id="devicetable" class="table table-bordered table-striped">

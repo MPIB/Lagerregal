@@ -42,9 +42,6 @@ class Lageruser(AbstractUser):
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
-        permissions = (
-            ("read_user", _("Can read User")),
-        )
         ordering = ['username']
 
     def get_absolute_url(self):
@@ -116,7 +113,6 @@ class Department(models.Model):
         verbose_name = _('Department')
         verbose_name_plural = _('Departments')
         permissions = (
-            ("read_department", _("Can read Departments")),
             ("add_department_user", _("Can add a User to a Department")),
             ("delete_department_user", _("Can remove a User from a Department")),)
 
