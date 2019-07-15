@@ -42,63 +42,63 @@
         <ul class="nav navbar-nav" role="navigation">
             <li class="dropdown">
                 <a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">
-                    {% trans "Devices" %} <b class="caret"></b>
+                    {% trans "Devices" %}
                 </a>
-                <ul class="dropdown-menu">
+                <div class="dropdown-menu">
                     {% if perms.devices.view_device %}
-                        <li><a href="{% url 'device-list' %}">{% trans "Devices" %}</a></li>
+                        <a href="{% url 'device-list' %}" class="dropdown-item">{% trans "Devices" %}</a>
                     {% endif %}
                     {% if perms.devicetypes.view_type %}
-                        <li><a href="{% url 'type-list' %}">{% trans "Devicetypes" %}</a></li>
+                        <a href="{% url 'type-list' %}" class="dropdown-item">{% trans "Devicetypes" %}</a>
                     {% endif %}
                     {% if perms.devices.view_manufacturer %}
-                        <li><a href="{% url 'manufacturer-list' %}">{% trans "Manufacturers" %}</a></li>
+                        <a href="{% url 'manufacturer-list' %}" class="dropdown-item">{% trans "Manufacturers" %}</a>
                     {% endif %}
                     {% if perms.devicegroups.view_devicegroup %}
-                        <li><a href="{% url 'devicegroup-list' %}">{% trans "Devicegroups" %}</a></li>
+                        <a href="{% url 'devicegroup-list' %}" class="dropdown-item">{% trans "Devicegroups" %}</a>
                     {% endif %}
-                    <li><a href="{% url 'public-device-list' %}">{% trans "Public Devices" %}</a></li>
-                </ul>
+                    <a href="{% url 'public-device-list' %}" class="dropdown-item">{% trans "Public Devices" %}</a>
+                </div>
             </li>
             {% if perms.devices.view_room or perms.devices.view_building or perms.locations.view_section %}
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {% trans "Locations" %} <b class="caret"></b></a>
+                    {% trans "Locations" %}
 
-                    <ul class="dropdown-menu">
+                    <div class="dropdown-menu">
                         {% if perms.devices.view_room %}
-                            <li><a href="{% url 'room-list' %}">{% trans "Rooms" %}</a></li>
+                            <a href="{% url 'room-list' %}" class="dropdown-item">{% trans "Rooms" %}</a>
                         {% endif %}
                         {% if perms.devices.view_building %}
-                            <li><a href="{% url 'building-list' %}">{% trans "Buildings" %}</a></li>
+                            <a href="{% url 'building-list' %}" class="dropdown-item">{% trans "Buildings" %}</a>
                         {% endif %}
                         {% if perms.locations.view_section %}
-                            <li><a href="{% url 'section-list' %}">{% trans "Sections" %}</a></li>
+                            <a href="{% url 'section-list' %}" class="dropdown-item">{% trans "Sections" %}</a>
                         {% endif %}
-                    </ul>
+                    </div>
                 </li>
             {% endif %}
             {% if perms.mail.view_mailtemplate or perms.users.view_user or perms.network.view_ipaddress or perms.users.view_department or perms.devicetags.view_devicetags %}
                 <li class="dropdown">
                     <a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">
-                        {% trans "Manage" %} <b class="caret"></b>
+                        {% trans "Manage" %}
                     </a>
-                    <ul class="dropdown-menu">
+                    <div class="dropdown-menu">
                         {% if perms.network.view_ipaddress %}
-                            <li><a href="{% url 'ipaddress-list' %}">{% trans "IP-Addresses" %}</a></li>
+                            <a href="{% url 'ipaddress-list' %}" class="dropdown-item">{% trans "IP-Addresses" %}</a>
                         {% endif %}
                         {% if perms.mail.view_mailtemplate %}
-                            <li><a href="{% url 'mail-list' %}">{% trans "Mailtemplates" %}</a></li>
+                            <a href="{% url 'mail-list' %}" class="dropdown-item">{% trans "Mailtemplates" %}</a>
                         {% endif %}
                         {% if perms.users.view_user %}
-                            <li><a href="{% url 'user-list' %}">{% trans "Users" %}</a></li>
+                            <a href="{% url 'user-list' %}" class="dropdown-item">{% trans "Users" %}</a>
                         {% endif %}
                         {% if perms.users.view_department %}
-                            <li><a href="{% url 'department-list' %}">{% trans "Departments" %}</a></li>
+                            <a href="{% url 'department-list' %}" class="dropdown-item">{% trans "Departments" %}</a>
                         {% endif %}
                         {% if perms.devicetags.view_devicetag %}
-                            <li><a href="{% url 'devicetag-list' %}">{% trans "Devicetags" %}</a></li>
+                            <a href="{% url 'devicetag-list' %}" class="dropdown-item">{% trans "Devicetags" %}</a>
                         {% endif %}
-                    </ul>
+                    </div>
                 </li>
             {% endif %}
             {% if perms.network.view_ipaddress and not perms.mail.view_mailtemplate and not users.view_lageruser %}
@@ -146,16 +146,15 @@
                             <img class="navbar-avatar img-rounded" src="{{ user.avatar.url }}">
                         {% endif %}
                         {{ user }}
-                        <b class="caret"></b>
                     </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="{% url 'userprofile' %}"><i class="fa fa-user"></i> {% trans "Profile" %}</a></li>
-                        <li><a href="{% url 'usersettings' %}"><i class="fa fa-cog"></i> {% trans "Settings" %}</a></li>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="{% url 'userprofile' %}" class="dropdown-item"><i class="fa fa-user"></i> {% trans "Profile" %}</a>
+                        <a href="{% url 'usersettings' %}" class="dropdown-item"><i class="fa fa-cog"></i> {% trans "Settings" %}</a>
                         {% if user.is_staff %}
-                            <li><a href="{% url 'admin:index' %}"><i class="fa fa-lock"></i> {% trans "Admin" %}</a></li>
+                            <a href="{% url 'admin:index' %}" class="dropdown-item"><i class="fa fa-lock"></i> {% trans "Admin" %}</a>
                         {% endif %}
-                        <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a></li>
-                    </ul>
+                        <a href="{% url 'logout' %}" class="dropdown-item"><i class="fa fa-sign-out"></i> {% trans "Logout" %}</a>
+                    </div>
                 </li>
             {% else %}
                 <li id="loginbutton">

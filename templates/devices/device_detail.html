@@ -60,47 +60,47 @@
 
         <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-                {% trans "Manage" %} <span class="caret"></span>
+                {% trans "Manage" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% if display_printbutton %}
                     <li>
-                        <a href="#" data-target="#printDymoModal" data-toggle="modal">
+                        <a class="dropdown-item" href="#" data-target="#printDymoModal" data-toggle="modal">
                             <i class="fa fa-print"></i> {% trans "Print Label" %}
                         </a>
                     </li>
                 {% endif %}
                 <li>
-                    <a href="#" data-target="#pictureModal" data-toggle="modal">
+                    <a class="dropdown-item" href="#" data-target="#pictureModal" data-toggle="modal">
                         <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
                     </a>
                 </li>
                 {% if can_change_device %}
                     <li>
-                        <a href="{% url "device-inventoried" device.id %}">
+                        <a class="dropdown-item" href="{% url "device-inventoried" device.id %}">
                             <i class="fa fa-check"></i> {% trans "Inventoried" %}
                         </a>
                     </li>
                 {% endif %}
                 {% if can_add_device %}
                     <li>
-                        <a href="{% url 'device-add-copy' device.id %}">
+                        <a class="dropdown-item" href="{% url 'device-add-copy' device.id %}">
                             <i class="fa fa-copy"></i> {% trans "Create Copy" %}
                         </a>
                     </li>
                 {% endif %}
                 {% if can_change_device or can_delete_device %}
-                    <li class="divider"></li>
+                    <li class="dropdown-divider"></li>
                 {% endif %}
                 {% if can_change_device %}
-                    <li><a href="#" id="storagebutton"
+                    <li class="dropdown-item"><a href="#" id="storagebutton"
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
                            data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-storage" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<div class="form-group dropdown-cancel"><label for="id_send_mail" class="col-sm-10 control-label">Send room-changed email</label><div class="col-sm-"><input id="id_send_mail" name="send_mail" type="checkbox" class="form-control dropdown-cancel"></div></div><button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);">{% trans "Cancel" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
                            class="dropdown-cancel"><i class="fa fa-folder"></i> {% trans "Move to storage" %}</a></li>
-                    <li><a href="#"
+                    <li class="dropdown-item"><a href="#"
                            id="archivebutton"
                            data-toggle="popover"
                            data-html="true"
@@ -108,7 +108,7 @@
                            data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
                            class="dropdown-cancel"><i class="fa fa-folder"></i> {% trans "Archive" %}</a></li>
-                    <li><a href="#"
+                    <li class="dropdown-item"><a href="#"
                            id="trashbutton"
                            data-toggle="popover"
                            data-html="true"
@@ -118,7 +118,7 @@
                            class="dropdown-cancel"><i class="fa fa-trash-o"></i> {% trans "Trash" %}</a></li>
                 {% endif %}
                 {% if can_change_device %}
-                    <li>
+                    <li class="dropdown-item">
                         <a href="#"
                            id="deletebutton"
                            data-toggle="popover"
