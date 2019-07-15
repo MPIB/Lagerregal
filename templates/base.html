@@ -40,8 +40,8 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav" role="navigation">
-            <li class="dropdown">
-                <a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">
+            <li class="nav-item dropdown">
+                <a href="{% url 'device-list' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">
                     {% trans "Devices" %}
                 </a>
                 <div class="dropdown-menu">
@@ -61,8 +61,8 @@
                 </div>
             </li>
             {% if perms.devices.view_room or perms.devices.view_building or perms.locations.view_section %}
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    {% trans "Locations" %}
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">{% trans "Locations" %}</a>
 
                     <div class="dropdown-menu">
                         {% if perms.devices.view_room %}
@@ -78,8 +78,8 @@
                 </li>
             {% endif %}
             {% if perms.mail.view_mailtemplate or perms.users.view_user or perms.network.view_ipaddress or perms.users.view_department or perms.devicetags.view_devicetags %}
-                <li class="dropdown">
-                    <a href="{% url 'device-list' %}" class="dropdown-toggle" data-toggle="dropdown">
+                <li class="nav-item dropdown">
+                    <a href="{% url 'device-list' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">
                         {% trans "Manage" %}
                     </a>
                     <div class="dropdown-menu">
@@ -110,7 +110,7 @@
             {% if user.is_authenticated %}
                 {% if perms.devices.view_device %}
                     <li class="visible-lg visible-md">
-                        <form method="post" action="{% url 'device-list' %}" class="navbar-form">
+                        <form method="post" action="{% url 'device-list' %}" class="form-inline">
                             {% csrf_token %}
                             <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
                             <div class="form-group">
@@ -140,8 +140,8 @@
                         </form>
                     </li>
                 {% endif %}
-                <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                <li class="nav-item dropdown">
+                    <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">
                         {% if user.avatar %}
                             <img class="navbar-avatar img-rounded" src="{{ user.avatar.url }}">
                         {% endif %}

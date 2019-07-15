@@ -458,21 +458,21 @@
 
     <ul class="nav nav-tabs">
         {% if can_change_device %}
-            <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>
         {% endif %}
         {% if can_lend_device %}
-            <li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>
         {% endif %}
         {% if can_change_device %}
-            <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>
         {% endif %}
         {% if can_lend_device %}
-            <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>
         {% endif %}
         {% if USE_PUPPET %}
             {% if can_view_puppetdetails %}
-                <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
-                <li><a href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
+                <li class="nav-item"><a class="nav-link" href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
             {% endif %}
         {% endif %}
     </ul>
