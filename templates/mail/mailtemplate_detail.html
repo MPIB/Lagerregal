@@ -2,25 +2,28 @@
 {% load devicetags %}
 {% load i18n %}
 {% load staticfiles %}
+
 {% block title %}{{ mailtemplate.name }}{% endblock %}
 
 {% block header %}
     {% trans "Mailtemplate" %}: {{ mailtemplate.name }}
 {% endblock %}
+
 {% block pullright %}
     {% if perms.mail.delete_mailtemplate %}
         {% deletebutton "mail-delete" object.id %}
     {% endif %}
     {% if perms.mail.change_mailtemplate %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-md-5 col-xs-12">
+        <div class="col-md-5">
             <table class="table table-bordered table-striped">
-                <tbody>
                 <tr>
                     <td>{% trans "Subject" %}</td>
                     <td>{{ mailtemplate.subject }}</td>
@@ -41,13 +44,12 @@
                         {% endfor %}
                     </td>
                 </tr>
-                </tbody>
             </table>
         </div>
-        <div class="col-md-5 col-xs-12">
-            <h4>{% trans "Preview" %}
-                <table class="table table-bordered table-striped">
-                    <tbody id="mailpreview">
+        <div class="col-md-5">
+            <h4>{% trans "Preview" %}</h4>
+            <table class="table table-bordered table-striped">
+                <tbody id="mailpreview">
                     <tr>
                         <td>{% trans "Subject" %}</td>
                         <td>{{ mailtemplate.subject }}</td>
@@ -56,8 +58,8 @@
                         <td>{% trans "Body" %}</td>
                         <td>{{ mailtemplate.body|linebreaks }}</td>
                     </tr>
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
         </div>
     </div>
 {% endblock %}

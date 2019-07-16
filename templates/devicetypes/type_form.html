@@ -2,12 +2,13 @@
 {% load devicetags %}
 {% load i18n %}
 
-{% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block title %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
-{% block header %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block header %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
+
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-6 col-md-offset-3 well well-lg">
+        <div class="col-md-6 col-md-offset-3 well well-lg">
             <form action="" method="post" class="form-horizontal" id="forms">{% csrf_token %}
                 {% for field in form %}
                     {% if field.html_name == "extra_fieldcount" %}
@@ -15,18 +16,17 @@
                     {% else %}
                         <div class="form-group {{ field.css_classes }}">
                             <label for="{{ field.html_name }}" class="col-lg-4 control-label">
-                                {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+                                {{ field.label }}{% if field.field.required %}*{% endif %}
+                            </label>
 
                             <div class="col-lg-8">
                                 {{ field|add_class:'form-control' }}
-                                <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{ error }},
-                                {% endfor %}{% endif %}</p>
+                                <p class="help-block">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
                             </div>
                         </div>
                     {% endif %}
                 {% endfor %}
                 <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
-                <a href="#" id="newattribute" class="btn btn-default">add new Attribute</a>
             </form>
         </div>
     </div>
@@ -47,7 +47,7 @@
                         $("input:text[name=name]").after("\
                             <div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean
                                 one of those?\
-                                <ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul>
+                                <ul id='alternatives' class='list-unstyled'></ul>
                                 \
                             </div>");
                     }
@@ -61,54 +61,6 @@
             });
         }
     });
-
-    function display_alternatives(data){
-        if ($("#alternatives").length == 0){
-            $( "input:text[name=name]" ).after("\
-                <div class='alert-danger alert' id='alternativebox' style='margin-top:10px;'>There seem to be objects with similar
-                    name. Do you maybe mean one of those?\
-                    <ul id='alternatives' style='margin-top:5px;' class='list-unstyled'></ul>
-                    \
-                </div>")
-        }
-        $("#alternatives").empty()
-        for (var i=0; i < data.length; i++) {
-            $("#alternatives").append(data[i])
-        };
-    }
-
-    form_count = $("[name=extra_fieldcount]").val();
-    // get extra form count so we know what index to use for the next item.
-    $('body').on('click', ".deleteattribute", function() {
-        $(this).parents(".form-group:first").remove()
-
-        form_count --;
-        $("[name=extra_field_count]").val(form_count);
-    })
-
-    $("#newattribute").click(function() {
-        element =$('
-            <div class="form-group"><label class="col-lg-4 control-label">Extra Attribute</label>
-                <div class="col-lg-7"><input class="extra_attribute form-control" type="text">
-                    <p class="help-block">
-                        {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}
-                    </p>
-                </div>
-                <div class="col-lg-1"><a href="#" class="deleteattribute"><i class="fa fa-times"></i></a></div>
-            </div>');
-        element.find(".extra_attribute").attr('name', 'extra_field_' + form_count);
-        if($(".extra_attribute")[0]) {
-            $(".extra_attribute:last").parents(".form-group:first").after(element);
-        } else {
-            $("#id_name").parents(".form-group:first").after(element);
-        }
-        // build element and append it to our forms container
-
-        form_count ++;
-        $("[name=extra_fieldcount]").val(form_count);
-        // increment form count so our view knows to populate
-        // that many fields for validatio
-    })
 
     {% autoescape off %}{{ form_scripts }}{% endautoescape %}
 {% endblock %}

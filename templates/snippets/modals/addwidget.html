@@ -1,11 +1,13 @@
 {% extends "snippets/modals/base.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
+
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Add a widget" %}</h4>
 {% endblock %}
 
 {% block modalBody %}
-    <ul style="list-style-type: none;" id="widgetlist">
+    <ul id="widgetlist">
         {% for widgetname, widgetvalue in widgets_list.items %}
             <li><a data-name="{{ widgetname }}" class="addWidget">{{ widgetvalue }}</a></li>
         {% endfor %}

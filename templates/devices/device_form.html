@@ -2,12 +2,14 @@
 {% load i18n %}
 {% load devicetags %}
 {% load staticfiles %}
-{% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
 
-{% block header %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block title %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
+
+{% block header %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
+
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-8 col-md-offset-2 well well-lg">
+        <div class="col-md-8 col-md-offset-2 well well-lg">
             <form action="" method="post" class="form-horizontal" id="form" enctype="multipart/form-data">{% csrf_token %}
                 {% for field in form %}
                     {% if field.html_name == "creator" %}
@@ -16,36 +18,34 @@
                         <div class="form-group" id="div_{{ field.html_name }}">
                             <div class="col-lg-offset-3 col-lg-9">
                                 <div class="checkbox">
-                                    <label>
-                                        {{ field }} {{ field.label }}
-                                    </label>
+                                    <label>{{ field }} {{ field.label }}</label>
                                 </div>
                             </div>
                         </div>
                     {% else %}
-                        <div class="form-group {{ field.css_classes }}"
-                                {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}
-                             style="display:none;"
-                                {% endif %} id="div_{{ field.html_name }}">
+                        <div class="form-group {{ field.css_classes }}" {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}hidden{% endif %} id="div_{{ field.html_name }}">
                             <label for="{{ field.html_name }}" class="col-lg-3 control-label">
-                                {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+                                {{ field.label }}{% if field.field.required %}*{% endif %}
+                            </label>
 
                             <div class="col-lg-{% if field|is_select %}{% if field.html_name == "emailtemplate" %}7{% else %}8{% endif %}{% else %}9{% endif %}">
-                                {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
-                                    {{ field|add_class:'form-control input-sm' }}{% endif %}
-                                <p class="help-block">{% if field.errors %}{% for error in field.errors %}{{ error }},
-                                {% endfor %}{% endif %}</p>
+                                {% if field|is_select or field|is_selectmultiple %}
+                                    {{ field }}
+                                {% else %}
+                                    {{ field|add_class:'form-control input-sm' }}
+                                {% endif %}
+                                <p class="help-block">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
                             </div>
                             {% if field|is_select %}
                                 {% if field.html_name == "emailtemplate" %}
-                                    <div class="col-lg-2" style="padding-left:0"><a
-                                            class="previewbutton btn btn-default btn-xs pull-right"
-                                            data-name="{{ field.label }}"><i
-                                            class="fa fa-eye"></i> {% trans "Preview" %}</a></div>
+                                    <div class="col-lg-2 text-right">
+                                        <a class="previewbutton btn btn-default btn-xs" data-name="{{ field.label }}">
+                                            <i class="fa fa-eye"></i> {% trans "Preview" %}
+                                        </a>
+                                    </div>
                                 {% else %}
-                                    <div class="col-lg-1" style="padding-left:0">
-                                        <a class="modalbutton btn btn-default btn-xs pull-right{% if not user.is_staff %} disabled{% endif %}"
-                                           data-classname="{{ field.html_name }}" data-name="{{ field.label }}">
+                                    <div class="col-lg-1 text-right">
+                                        <a class="modalbutton btn btn-default btn-xs{% if not user.is_staff %} disabled{% endif %}" data-classname="{{ field.html_name }}" data-name="{{ field.label }}">
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </div>
@@ -53,24 +53,27 @@
                             {% endif %}
                         </div>
                     {% endif %}
+
                     {% if field.html_name == "comment" %}
                         <h3 class="col-lg-9 col-lg-offset-3">{% trans "Extra Attributes" %}</h3>
-                        <div id="extra_attributes">{% endif %}
+                        <div id="extra_attributes">
+                    {% endif %}
 
-                        {% if forloop.last %}</div>{% endif %}
+                    {% if forloop.last %}
+                        </div>
+                    {% endif %}
                 {% endfor %}
-                <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm pull-right"/>
-                </form>
 
+                <div class="text-right">
+                    <input type="submit" value="{% trans "Submit" %}" class="btn btn-success btn-sm"/>
                 </div>
+            </form>
+        </div>
     </div>
 
     {% include "snippets/modals/addmodal.html" with modalname="addModal" %}
-
     {% include "snippets/modals/mailpreview.html" with modalname="previewModal" %}
-
     {% include "snippets/modals/mailsendconfirm.html" with modalname="mailSendConfirm" %}
-
 {% endblock %}
 
 {% block scriptend %}

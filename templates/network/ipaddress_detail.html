@@ -10,32 +10,34 @@
 {% endblock %}
 
 {% block pullright %}
-    {% has_perm 'network.delete_ipaddress' user ipaddress as can_delete_ipaddress %}
+    {% if "ipaddress" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
+    {% endif %}
     {% has_perm 'network.change_ipaddress' user ipaddress as can_change_ipaddress %}
+    {% if can_change_ipaddress %}
+        <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
+    {% has_perm 'network.delete_ipaddress' user ipaddress as can_delete_ipaddress %}
     {% if can_delete_ipaddress %}
         {% deletebutton "ipaddress-delete" object.id %}
-    {% endif %}
-    {% if can_change_ipaddress %}
-        <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
-    {% if "ipaddress" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
     {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-md-4 col-xs-12">
+        <div class="col-md-4">
             <table class="table table-bordered table-striped">
-                <tbody>
                 <tr>
                     <td>{% trans "Address" %}</td>
                     <td>{{ ipaddress.address }}</td>
                 </tr>
                 <tr>
                     <td>{%  trans "Department" %}</td>
-                    <td>{{ ipaddress.department|default:"None" }}</td>
+                    <td>{{ ipaddress.department|default:_("None") }}</td>
                 </tr>
                 {% if ipaddress.device.pk %}
                     <tr>
@@ -54,14 +56,13 @@
                     </tr>
                 {% endif %}
                 <tr>
-                    <td>{%  trans "Purpose" %}</td>
-                    <td>{{ ipaddress.purpose|default:"None" }}</td>
+                    <td>{% trans "Purpose" %}</td>
+                    <td>{{ ipaddress.purpose|default:_("None") }}</td>
                 </tr>
                 <tr>
-                    <td>{%  trans "Last seen" %}</td>
-                    <td>{{ ipaddress.last_seen|default:"never" }}</td>
+                    <td>{% trans "Last seen" %}</td>
+                    <td>{{ ipaddress.last_seen|default:_("never") }}</td>
                 </tr>
-                </tbody>
             </table>
         </div>
     </div>

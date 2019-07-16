@@ -1,45 +1,58 @@
 {% extends "base.html" %}
-{% load i18n %}{% load staticfiles %}
-{% block title %}IP-Addresses{% endblock %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{% trans "IP-Addresses" %}{% endblock %}
 
 {% block header %}
-    IP-Addresses
+    {% trans "IP-Addresses" %}
 {% endblock %}
 
 {% block pullright %}
     {{ filterform.filterstring }}
     {{ viewform.viewfilter }}
     {{ viewform.departmentfilter }}
-    {% if perms.network.add_ipaddress %}<a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add IP-Address" %}</a>{% endif %}
+    {% if perms.network.add_ipaddress %}
+        <a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> {% trans "Add IP-Address" %}
+        </a>
+    {% endif %}
 {% endblock %}
-{% block content %}
 
+{% block content %}
     {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
-    <table width="100%" id="adresstable" class="table table-bordered table-striped">
+    <table id="adresstable" class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>{% trans "IP Address" %}</th>
-            <th>{% trans "Used by" %}</th>
-        </tr>
+            <tr>
+                <th>{% trans "IP Address" %}</th>
+                <th>{% trans "Used by" %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for ipaddress in ipaddress_list %}
-            <tr>
-                <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
-                {% if ipaddress.device__pk %}
-                    <td>{% trans "Device" %}: <a
-                            href="{% url 'device-detail' ipaddress.device__pk %}">{{ ipaddress.device__name }}</a></td>
-                {% elif ipaddress.user__pk %}
-                    <td>{% trans "User" %}: <a href="{% url 'userprofile' ipaddress.user__pk %}">
-                        {% if ipaddress.user__first_name and ipaddress.user__last_name %}
-                            {{ ipaddress.user__first_name }} {{ ipaddress.user__last_name }}{% else %}
-                            {{ ipaddress.user__username }}{% endif %}</a></td>
-                {% else %}
-                    <td>Not assigned</td>
-                {% endif %}
-            </tr>
-        {% endfor %}
+            {% for ipaddress in ipaddress_list %}
+                <tr>
+                    <td><a href="{% url 'ipaddress-detail' ipaddress.id %}">{{ ipaddress.address }}</a></td>
+                    {% if ipaddress.device__pk %}
+                        <td>
+                            {% trans "Device" %}:
+                            <a href="{% url 'device-detail' ipaddress.device__pk %}">{{ ipaddress.device__name }}</a>
+                        </td>
+                    {% elif ipaddress.user__pk %}
+                        <td>
+                            {% trans "User" %}:
+                            <a href="{% url 'userprofile' ipaddress.user__pk %}">
+                                {% if ipaddress.user__first_name and ipaddress.user__last_name %}
+                                    {{ ipaddress.user__first_name }} {{ ipaddress.user__last_name }}
+                                {% else %}
+                                    {{ ipaddress.user__username }}
+                                {% endif %}
+                            </a>
+                        </td>
+                    {% else %}
+                        <td>{% trans "Not assigned" %}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}

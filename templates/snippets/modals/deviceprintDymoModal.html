@@ -1,9 +1,9 @@
 {% extends "snippets/modals/base.html" %}
 {% load i18n %}{% load devicetags %}{% load staticfiles %}
+
 {% block modalHeader %}
     {% trans "Print Dymo Label" %}
-    <script src="{% static "js/DYMO.Label.Framework.3.0.js" %}"
-            type="text/javascript" charset="UTF-8"></script>
+    <script src="{% static "js/DYMO.Label.Framework.3.0.js" %}"></script>
     <script>
         $('#printDymoModal').on('show.bs.modal', function (e) {
             loadPrinters();
@@ -25,7 +25,6 @@
         })
     </script>
 {% endblock %}
-
 
 {% block modalBody %}
     <script>
@@ -65,14 +64,13 @@
     </script>
 
     <div id="printersDiv">
-        <label for="printersSelect">Printers:</label>
+        <label for="printersSelect">{% trans "Printers" %}</label>
         <select id="printersSelect"></select>
     </div>
 
     <div id="labelImageDiv">
         <img id="labelImage" src=""/>
     </div>
-
 {% endblock %}
 
 

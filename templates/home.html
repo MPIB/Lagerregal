@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load devicetags %}
 {% load staticfiles %}
+
 {% block title %}{% trans "Main" %}{% endblock %}
 
 {% block header %}
@@ -9,15 +10,13 @@
 {% endblock %}
 
 {% block pullright %}
-    {% if user.is_staff %}
-        {% if perms.devices.lend_device %}
-            <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
-               style="margin-left:10px"><i class="fa fa-share" style="margin-right:7px"></i>{% trans "Lend Device" %}
-            </a>
-            <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
-               style="margin-left:10px"><i class="fa fa-reply" style="margin-right:7px"></i>{% trans "Return Device" %}
-            </a>
-        {% endif %}
+    {% if user.is_staff and perms.devices.lend_device %}
+        <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success btn-sm">
+            <i class="fa fa-reply"></i> {% trans "Return Device" %}
+        </a>
+        <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success btn-sm">
+            <i class="fa fa-share"></i> {% trans "Lend Device" %}
+        </a>
     {% endif %}
 {% endblock %}
 
@@ -27,7 +26,7 @@
             <div class="col-md-5 dashboard dashboard-left">
                 {% for widget in widgets_left %}
                     {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
-                        {% include template with usestable=True %}
+                        {% include template %}
                     {% endwith %}
                 {% endfor %}
             </div>
@@ -35,13 +34,11 @@
             <div class="col-md-7 dashboard dashboard-right">
                 {% for widget in widgets_right %}
                     {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
-                        {% include template with usestable=True %}
+                        {% include template %}
                     {% endwith %}
                 {% endfor %}
             </div>
         {% endif %}
-
-
     </div>
 {% endblock %}
 
@@ -127,8 +124,9 @@
     {% if user.is_staff %}
         <script type="text/javascript" language="javascript" src="{% static "datatables/media/js/jquery.dataTables.min.js" %}"></script>
         <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
-        <a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success"><i
-                class="fa fa-plus"></i></a>
+        <a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success">
+            <i class="fa fa-plus"></i>
+        </a>
 
         {% include "snippets/modals/addwidget.html" with modalname="addWidgetModal" %}
         {% if perms.devices.lend_device %}

@@ -1,4 +1,6 @@
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
+
 <div class="modal fade" id="{{ modalname }}" role="dialog" aria-labelledby="{{ modalname }}Label" aria-hidden="true">
     <div class="modal-dialog {% block cssClasses %}{% endblock %}">
         <div class="modal-content">
@@ -16,7 +18,5 @@
                 </div>
             </form>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-</div><!-- /.modal -->
+</div>

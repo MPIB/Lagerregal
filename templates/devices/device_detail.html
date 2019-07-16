@@ -17,53 +17,105 @@
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
 
     {% if device.archived == None and device.trashed == None %}
-        <div class="btn-group pull-right" style="margin-left:10px">
+        {% if can_lend_device %}
+            {% if device.currentlending != None %}
+                <a href="{% url "device-lend" device.pk %}" class="btn btn-success btn-sm">
+                    {% trans "Edit lending information" %}
+                </a>
+                <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success btn-sm">
+                    <i class="fa fa-check"></i> {% trans "returned" %}
+                </a>
+            {% else %}
+                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success btn-sm">
+                    <i class="fa fa-check"></i> {% trans "Lend" %}
+                </a>
+            {% endif %}
+        {% endif %}
+
+        {% if can_lend_device %}
+            <a href="#" class="btn btn-primary btn-sm" data-target="#mailModal" data-toggle="modal">
+                <i class="fa fa-envelope"></i> {% trans "Send Mail" %}
+            </a>
+        {% endif %}
+
+        {% if can_change_device %}
+            <a href="{% url 'device-edit' device.id %}" class="btn btn-primary btn-sm">
+                <i class="fa fa-pencil"></i> {% trans "Edit" %}
+            </a>
+            <form action="{% url "device-bookmark" object.id %}" method="post" class="d-inline-block">
+                {% csrf_token %}
+                {% with is_bookmarked=device|check_bookmark:user %}
+                    {% if is_bookmarked %}
+                        <button type='submit' class='btn btn-success btn-sm'>
+                            <i class="fa fa-bookmark"></i> {% trans "Remove Bookmark" %}
+                        </button>
+                    {% else %}
+                        <button type='submit' class='btn btn-success btn-sm'>
+                            <i class="fa fa-bookmark-o"></i> {% trans "Bookmark" %}
+                        </button>
+                    {% endif %}
+                {% endwith %}
+            </form>
+        {% endif %}
+
+        <div class="btn-group">
             <button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
                 {% trans "Manage" %} <span class="caret"></span>
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% if display_printbutton %}
-                    <li><a href="#" data-target="#printDymoModal" data-toggle="modal"><i class="fa fa-print"
-                                                                                         style="margin-right:7px"></i>{% trans "Print Label" %}
-                    </a></li>
+                    <li>
+                        <a href="#" data-target="#printDymoModal" data-toggle="modal">
+                            <i class="fa fa-print"></i> {% trans "Print Label" %}
+                        </a>
+                    </li>
                 {% endif %}
-                    <li><a href="#" data-target="#pictureModal" data-toggle="modal"><i class="fa fa-picture-o"
-                                                                                         style="margin-right:7px"></i>{% trans "Manage Pictures" %}
-                    </a></li>
+                <li>
+                    <a href="#" data-target="#pictureModal" data-toggle="modal">
+                        <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
+                    </a>
+                </li>
                 {% if can_change_device %}
-                    <li><a href="{% url "device-inventoried" device.id %}"><i class="fa fa-check"
-                                                                              style="margin-right:7px"></i>{% trans "Inventoried" %}
-                </a></li>{% endif %}
+                    <li>
+                        <a href="{% url "device-inventoried" device.id %}">
+                            <i class="fa fa-check"></i> {% trans "Inventoried" %}
+                        </a>
+                    </li>
+                {% endif %}
                 {% if can_add_device %}
-                    <li><a href="{% url 'device-add-copy' device.id %}"><i class="fa fa-copy"
-                                                                           style="margin-right:7px"></i>{% trans "Create Copy" %}
-                </a></li>{% endif %}
+                    <li>
+                        <a href="{% url 'device-add-copy' device.id %}">
+                            <i class="fa fa-copy"></i> {% trans "Create Copy" %}
+                        </a>
+                    </li>
+                {% endif %}
                 {% if can_change_device or can_delete_device %}
-                    <li class="divider"></li>{% endif %}
+                    <li class="divider"></li>
+                {% endif %}
                 {% if can_change_device %}
                     <li><a href="#" id="storagebutton"
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
-                           data-content='<form action="{% url "device-storage" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<div class="form-group dropdown-cancel"><label for="id_send_mail" class="col-sm-10 control-label">Send room-changed email</label><div class="col-sm-"><input id="id_send_mail" name="send_mail" type="checkbox" class="form-control dropdown-cancel"></div></div><button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);">{% trans "Cancel" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"style="margin-left:10px;"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Move to storage" %}</a></li>
+                           data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
+                           data-content='<form action="{% url "device-storage" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<div class="form-group dropdown-cancel"><label for="id_send_mail" class="col-sm-10 control-label">Send room-changed email</label><div class="col-sm-"><input id="id_send_mail" name="send_mail" type="checkbox" class="form-control dropdown-cancel"></div></div><button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#storagebutton&quot;).popover(&quot;hide&quot;);">{% trans "Cancel" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+                           class="dropdown-cancel"><i class="fa fa-folder"></i> {% trans "Move to storage" %}</a></li>
                     <li><a href="#"
                            id="archivebutton"
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
-                           data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-folder" style="margin-right:7px"></i>{% trans "Archive" %}</a></li>
+                           data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
+                           data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+                           class="dropdown-cancel"><i class="fa fa-folder"></i> {% trans "Archive" %}</a></li>
                     <li><a href="#"
                            id="trashbutton"
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
-                           data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Trash" %}</a></li>
+                           data-title="<span class='text-info'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
+                           data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+                           class="dropdown-cancel"><i class="fa fa-trash-o"></i> {% trans "Trash" %}</a></li>
                 {% endif %}
                 {% if can_change_device %}
                     <li>
@@ -72,62 +124,24 @@
                            data-toggle="popover"
                            data-html="true"
                            data-placement="left"
-                           data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "are you sure?" %}</strong></span>"
+                           data-title="<span class='text-info'><strong>{% trans "are you sure?" %}</strong></span>"
                            data-content='<form action="{% url "device-delete" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default" onclick="$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
-                           class="dropdown-cancel"><i class="fa fa-times" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+                           class="dropdown-cancel"><i class="fa fa-times"></i> {% trans "Delete" %}</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
-
-
-        {% if can_change_device %}
-            <form action='{% url "device-bookmark" object.id %}' method='post'
-                  class='form-inline pull-right'>{% csrf_token %}
-                {% with is_bookmarked=device|check_bookmark:user %}
-                    {% if is_bookmarked %}
-                        <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;'><i
-                                class="fa fa-bookmark" style="margin-right:7px"></i>{% trans "Remove Bookmark" %}
-                        </button>
-                    {% else %}
-                        <button type='submit' class='btn btn-success btn-sm' style='margin-left:10px;'><i
-                                class="fa fa-bookmark-o" style="margin-right:7px"></i>{% trans "Bookmark" %}</button>
-                    {% endif %}
-                {% endwith %}
-            </form>
-            <a href="{% url 'device-edit' device.id %}" class="btn btn-primary pull-right btn-sm"
-               style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        {% endif %}
-        {% if can_lend_device %}
-            <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#mailModal"
-               data-toggle="modal"><i class="fa fa-envelope" style="margin-right:7px"></i>{% trans "Send Mail" %}</a>
-        {% endif %}
-
-        {% if can_lend_device %}
-            {% if device.currentlending != None %}
-                <a href="{% url "device-lend" device.pk %}" class="btn btn-success pull-right btn-sm"
-                   style="margin-left:10px">{% trans "Edit lending information" %}</a>
-                <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
-                   style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "returned" %}
-                </a>
-            {% else %}
-                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success pull-right btn-sm"
-                   style="margin-left:10px"><i class="fa fa-check" style="margin-right:7px"></i>{% trans "Lend" %}</a>
-            {% endif %}
-        {% endif %}
     {% else %}
-
-
         {% if can_change_device and device.archived != None %}
             <a href="#"
                id="archivebutton"
                data-toggle="popover"
                data-html="true"
-               data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "Are you sure?" %}</strong></span>"
-               data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
-               class="btn btn-success pull-right btn-sm"
-               style="margin-left:10px">
-                <i class="fa fa-folder-open" style="margin-right:7px"></i>
+               data-title="<span class='text-info'><strong>{% trans "Are you sure?" %}</strong></span>"
+               data-content='<form action="{% url "device-archive" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel" onclick="$(&quot;#archivebutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+               class="btn btn-success btn-sm"
+              >
+                <i class="fa fa-folder-open"></i>
                 {% trans "Unarchive" %}
             </a>
         {% endif %}
@@ -137,11 +151,11 @@
                id="trashbutton"
                data-toggle="popover"
                data-html="true"
-               data-title="<span class='text-info' style='margin-right:10px'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
-               data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel"onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right" style="margin-left:10px;"/></form>'
-               class="btn btn-success btn-sm pull-right"
-               style="margin-left:10px">
-                <i class="fa fa-folder-open" style="margin-right:7px"></i>
+               data-title="<span class='text-info'><strong>  Are you sure? {%if object.used_in%} This object is still used in <a href='{% url 'device-detail' object.used_in.pk %}'>{{object.used_in}}</a>. {% elif usedset%} This object still uses {% for element in usedset %} <a href='{% url 'device-detail' element.pk %}'> {{element}} </a>{% endfor %} .{% endif %} </strong></span>"
+               data-content='<form action="{% url "device-trash" object.id %}" method="post" class="form-horizontal">{% csrf_token %}<button type="button" class="btn btn-default dropdown-cancel"onclick="$(&quot;#trashbutton&quot;).popover(&quot;hide&quot;);">{% trans "No" %}</button><input type="submit" value="{% trans "Yes" %}" class="btn btn-danger pull-right"/></form>'
+               class="btn btn-success btn-sm"
+              >
+                <i class="fa fa-folder-open"></i>
                 {% trans "Remove from Trash" %}
             </a>
         {% endif %}
@@ -156,156 +170,196 @@
     {% has_perm 'devices.view_puppetdetails' user device as can_view_puppetdetails %}
 
     <div class="row">
-        <div class="col-xs-12 col-md-4">
+        <div class="col-md-4">
             <table class="table table-bordered table-striped">
                 <tbody>
-                  <tr>
-                      <td>{% trans "Lagerregal ID" %}</td>
-                      <td>{{ device.pk }}</td>
-                  </tr>
-                <tr>
-                    <td>{% trans "Inventorynumber" %}</td>
-                    <td>{{ device.inventorynumber }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Serialnumber" %}</td>
-                    <td>{{ device.serialnumber }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Hostname" %}</td>
-                    <td>{{ device.hostname }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Devicetype" %}</td>
-                    <td>{% if device.devicetype %}<a href="{% url 'type-detail' device.devicetype.pk %}">
-                        {{ device.devicetype }}</a>{% else %}-{% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Manufacturer" %}</td>
-                    <td>{% if device.manufacturer %}<a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">
-                        {{ device.manufacturer }}</a>{% else %}-{% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Room" %}</td>
-                    <td>{% if device.room %}<a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}
-                        </a>{% else %}-{% endif %}</td>
-                </tr>
-                {%if device.used_in%}
-                <tr>
-                    <td>{% trans "Used in" %}</td>
-                    <td><a href="{% url "device-detail" device.used_in.pk%}">{{device.used_in}}</a></td>
-                </tr>
-                {% endif %}
-                {% if usedset %}
-                <tr>
-                    <td>{% trans "Uses" %}</td>
-                    <td>{% for element in usedset%}<a href="{% url "device-detail" element.pk%}">
-                        {{element}}</a> <br/>{%endfor%}</td>
-                </tr>
-                {% endif %}
-                {% for attributevalue in attributevalue_list %}
                     <tr>
-                        <td>{{ attributevalue.typeattribute.name }}</td>
-                        <td>{{ attributevalue }}</td>
+                        <td>{% trans "Lagerregal ID" %}</td>
+                        <td>{{ device.pk }}</td>
                     </tr>
-                {% endfor %}
-                <tr>
-                    <td>{% trans "Devicegroup" %}</td>
-                    <td>{% if device.group %}<a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}
-                        </a>{% else %}-{% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Department" %}</td>
-                    <td>{% if device.department %}{{ device.department }}{% else %}-{% endif %}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Short term device" %}</td>
-                    <td>{% if device.templending %}<i class="fa fa-check-circle text-success" style="font-size:1.3em">
-                        </i>{% else %}<i class="fa fa-times-circle text-danger" style="font-size:1.3em"></i>{% endif %}
-                    </td>
-                </tr>
-                {% if device.manual %}
                     <tr>
-                    <td>{% trans "Manual" %}</td>
-                    <td><a href="{{ device.manual.url }}">
-                      {%with filename=device.manual|filename|splitstr:'.'|last %}
-                      {{device.name|add:'.'|add:filename}}
-                      {%endwith%}
-                      </a></td></tr>
-                {% endif %}
-                {% if device.contact %}
-                    <tr>
-                    <td>{% trans "Contact" %}</td>
-                    <td><a href="{% url 'userprofile' device.contact.pk %}">{{ device.contact }}</a></td>
-                {% endif %}
-                {% if device.creator %}
-                    <tr>
-                        <td>{% trans "Created by" %}</td>
-                        <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                        <td>{% trans "Inventorynumber" %}</td>
+                        <td>{{ device.inventorynumber }}</td>
                     </tr>
-                {% endif %}
-                <tr>
-                    <td>{% trans "Last edited" %}</td>
-                    <td>{% if lastedit != None %}<a href="{% url 'history-detail' lastedit.pk %}">
-                        {{ lastedit.revision.date_created }}</a> by {{ lastedit.revision.user }}{% else %}
-                        {% trans "Not edited yet" %}{% endif %}</td>
-                </tr>
-                {% if device.trashed %}
                     <tr>
-                    <td>{% trans "Trashed on" %}</td>
-                    <td>{{ device.trashed }}</td></tr>{% endif %}
-                {% if device.inventoried %}
+                        <td>{% trans "Serialnumber" %}</td>
+                        <td>{{ device.serialnumber }}</td>
+                    </tr>
                     <tr>
-                    <td>{% trans "Last inventoried on" %}</td>
-                    <td>{{ device.inventoried }}</td></tr>{% endif %}
+                        <td>{% trans "Hostname" %}</td>
+                        <td>{{ device.hostname }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Devicetype" %}</td>
+                        <td>
+                            {% if device.devicetype %}
+                                <a href="{% url 'type-detail' device.devicetype.pk %}">{{ device.devicetype }}</a>
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Manufacturer" %}</td>
+                        <td>
+                            {% if device.manufacturer %}
+                                <a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">{{ device.manufacturer }}</a>
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                    </tr>
+                    <tr>
+                        <td>{% trans "Room" %}</td>
+                        <td>
+                            {% if device.room %}
+                                <a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}</a>
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if device.used_in %}
+                        <tr>
+                            <td>{% trans "Used in" %}</td>
+                            <td><a href="{% url "device-detail" device.used_in.pk%}">{{device.used_in}}</a></td>
+                        </tr>
+                    {% endif %}
+                    {% if usedset %}
+                        <tr>
+                            <td>{% trans "Uses" %}</td>
+                            <td>
+                                {% for element in usedset%}
+                                    <a href="{% url "device-detail" element.pk%}">{{element}}</a><br/>
+                                {% endfor %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% for attributevalue in attributevalue_list %}
+                        <tr>
+                            <td>{{ attributevalue.typeattribute.name }}</td>
+                            <td>{{ attributevalue }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td>{% trans "Devicegroup" %}</td>
+                        <td>
+                            {% if device.group %}
+                                <a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}</a>
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Department" %}</td>
+                        <td>
+                            {% if device.department %}
+                                {{ device.department }}
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Short term device" %}</td>
+                        <td>
+                            <i class="fa fa-check-circle text-{{ device.templending|yesno:'success,danger' }}"></i>
+                        </td>
+                    </tr>
+                    {% if device.manual %}
+                        <tr>
+                            <td>{% trans "Manual" %}</td>
+                            <td>
+                                <a href="{{ device.manual.url }}">
+                                    {% with filename=device.manual|filename|splitstr:'.'|last %}
+                                        {{ device.name|add:'.'|add:filename }}
+                                    {% endwith %}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    {% if device.contact %}
+                        <tr>
+                            <td>{% trans "Contact" %}</td>
+                            <td><a href="{% url 'userprofile' device.contact.pk %}">{{ device.contact }}</a></td>
+                        </tr>
+                    {% endif %}
+                    {% if device.creator %}
+                        <tr>
+                            <td>{% trans "Created by" %}</td>
+                            <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td>{% trans "Last edited" %}</td>
+                        <td>
+                            {% if lastedit != None %}
+                                <a href="{% url 'history-detail' lastedit.pk %}">{{ lastedit.revision.date_created }}</a> by {{ lastedit.revision.user }}
+                            {% else %}
+                                {% trans "Not edited yet" %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% if device.trashed %}
+                        <tr>
+                            <td>{% trans "Trashed on" %}</td>
+                            <td>{{ device.trashed }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if device.inventoried %}
+                        <tr>
+                            <td>{% trans "Last inventoried on" %}</td>
+                            <td>{{ device.inventoried }}</td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
 
-            {% if device.webinterface != "" %}<a href="{{ device.webinterface }}" target="_blank">
-                {% trans "Go to webinterface" %}</a>{% endif %}
+            {% if device.webinterface != "" %}
+                <a href="{{ device.webinterface }}" target="_blank">{% trans "Go to webinterface" %}</a>
+            {% endif %}
 
             {% if device.description %}
                 <h4>{% trans "Description" %}</h4>
                 {{ device.description|linebreaks }}
             {% endif %}
         </div>
-        <div class="col-xs-12 col-md-5">
+        <div class="col-md-5">
             {% if device.pictures.count > 0 %}
-                    <div id="device-carousel" class="carousel slide" data-ride="carousel" data-interval=false>
-                      <ol class="carousel-indicators">
+                <div id="device-carousel" class="carousel slide" data-ride="carousel" data-interval=false>
+                    <ol class="carousel-indicators">
                         {% for picture in device.pictures.all %}
-                        <li data-target="#device-carousel" data-slide-to="{{ forloop.counter }}" class="{% if forloop.first %}active{% endif %}"></li>
+                            <li data-target="#device-carousel" data-slide-to="{{ forloop.counter }}" class="{% if forloop.first %}active{% endif %}"></li>
                         {% endfor %}
-                      </ol>
+                    </ol>
 
-                  <div class="carousel-inner" role="listbox">
-                {% for picture in device.pictures.all %}
-                    <div class="item {% if forloop.first %}active{% endif %}">
-                      <img src="{{ picture.image.url }}" alt="{{ picture.caption }}">
-                      {% if picture.caption %}
-                      <div class="carousel-caption">
-                        {{ picture.caption }}
-                      </div>
-                      {% endif %}
+                    <div class="carousel-inner" role="listbox">
+                        {% for picture in device.pictures.all %}
+                            <div class="item {% if forloop.first %}active{% endif %}">
+                                <img src="{{ picture.image.url }}" alt="{{ picture.caption }}">
+                                {% if picture.caption %}
+                                    <div class="carousel-caption">
+                                        {{ picture.caption }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
                     </div>
 
-                {% endfor %}
-                  </div>
-
-                  <a class="left carousel-control" href="#device-carousel" role="button" data-slide="prev">
-                    <span class="icon-prev fa fa-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="right carousel-control" href="#device-carousel" role="button" data-slide="next">
-                    <span class="icon-next fa fa-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                  </a>
+                    <a class="left carousel-control" href="#device-carousel" role="button" data-slide="prev">
+                        <span class="icon-prev fa fa-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#device-carousel" role="button" data-slide="next">
+                        <span class="icon-next fa fa-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
             {% endif %}
+
             <h4>{% trans "Current Lending information" %}</h4>
             {% if device.currentlending != None %}
                 <table class="table table-bordered table-striped">
-                    <tbody>
                     <tr>
                         <td>{% trans "Lent to" %}</td>
                         <td>
@@ -318,49 +372,55 @@
                     </tr>
                     <tr>
                         <td>{% trans "Due to" %}</td>
-                        <td>{{ device.currentlending.duedate }}
-                            {% if device.currentlending.duedate < weekago %}<span class="error-icon">
-                                <i class="fa fa-exclamation-circle"></i></span>
-                                {% elif device.currentlending.duedate < today %}<span class="warning-icon"><i
-                                        class="fa fa-exclamation-circle"></i></span>
+                        <td>
+                            {{ device.currentlending.duedate }}
+                            {% if device.currentlending.duedate < weekago %}
+                                <span class="error-icon">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                </span>
+                            {% elif device.currentlending.duedate < today %}
+                                <span class="warning-icon">
+                                    <i class="fa fa-exclamation-circle"></i>
+                                </span>
                             {% endif %}
                         </td>
                     </tr>
                     <tr>
                         <td>{% trans "Overdue notification" %}</td>
-                        <td>{{ device.currentlending.duedate_email|default_if_none:"Not sent" }}</td>
+                        <td>{{ device.currentlending.duedate_email|default_if_none:_("Not sent") }}</td>
                     </tr>
-                    </tbody>
                 </table>
             {% else %}
                 <p>{% trans "Currently not lent" %}</p>
             {% endif %}
         </div>
-        <div class="col-xs-12 col-md-3">
+        <div class="col-md-3">
             <div class="panel panel-primary">
                 <div class="panel-heading">{% trans "IP-Addresses" %}</div>
                 <ul class="list-group">
                     {% for address in device.ipaddress_set.all %}
                         <li class="list-group-item ipaddress-list">
-                            <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a> <a
-                                href="{% url 'device-ipaddress-remove' device.pk address.pk %}"
-                                class="close delete right"><i class="fa fa-times"></i></a> <a
-                                href="{% url 'device-ipaddress-purpose' device.pk address.pk %}"
-                                class="close delete right" style="margin-right:5px"><i class="fa fa-pencil"></i></a>
+                            <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a>
+                            <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">
+                                <i class="fa fa-times"></i>
+                            </a>
+                            <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right">
+                                <i class="fa fa-pencil"></i>
+                            </a>
                             <br/>
-                            <small style="margin-top:0;color:#999">{{ address.purpose|default:"" }}</small>
+                            <small>{{ address.purpose|default:"" }}</small>
                         </li>
                     {% endfor %}
                 </ul>
 
                 {% if can_change_device and device.archived == None%}
                     <div class="panel-footer">
-                        <form method="post" action="{% url 'device-ipaddress' device.pk %}"
-                              style="margin:0;">{% csrf_token %}
-                            {{ ipaddressform.ipaddresses }}
-                            <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
-                                <button type="submit" class="btn btn-success btn-sm pull-right disabled"
-                                        id="submitipaddress"><i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
+                        <form method="post" action="{% url 'device-ipaddress' device.pk %}">
+                            {% csrf_token %}
+                            <div class="form-group">{{ ipaddressform.ipaddresses }}</div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
+                                    <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
                                 </button>
                             </div>
                         </form>
@@ -368,23 +428,27 @@
                 {% endif %}
             </div>
 
-
             <div class="panel panel-primary">
                 <div class="panel-heading">{% trans "Tags" %}</div>
                 <ul class="list-group">
                     {% for tag in device.tags.all %}
-                        <li class="list-group-item tag-list">{{ tag.name }} <a
-                                href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right"><i
-                                class="fa fa-times"></i></a></li>
+                        <li class="list-group-item tag-list">
+                            {{ tag.name }}
+                            <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </li>
                     {% endfor %}
                 </ul>
 
                 <div class="panel-footer">
-                    <form method="post" action="{% url 'device-tags' device.pk %}" style="margin:0;">{% csrf_token %}
-                        {{ tagform.tags }}
-                        <div class="row" style="margin-top:10px; margin-left:0; margin-right:0;">
-                            <button type="submit" class="btn btn-success btn-sm pull-right disabled" id="submittags"><i
-                                    class="fa fa-plus"></i> {% trans "Assign Tags" %}</button>
+                    <form method="post" action="{% url 'device-tags' device.pk %}">
+                        {% csrf_token %}
+                        <div class="form-group">{{ tagform.tags }}</div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success btn-sm disabled" id="submittags">
+                                <i class="fa fa-plus"></i> {% trans "Assign Tags" %}
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -392,185 +456,186 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <ul class="nav nav-tabs" style="margin-top:20px">
-                {% if can_change_device %}
-                    <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>{% endif %}
-                {% if can_lend_device %}
-                    <li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>{% endif %}
-                {% if can_change_device %}
-                    <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>{% endif %}
-                {% if can_lend_device %}
-                    <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>{% endif %}
-                {% if USE_PUPPET %}
-                {% if can_view_puppetdetails %}
-                    <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
-                    <li><a href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
-                {% endif %}
-                {% endif %}
-            </ul>
+    <ul class="nav nav-tabs">
+        {% if can_change_device %}
+            <li class="active"><a href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>
+        {% endif %}
+        {% if can_lend_device %}
+            <li><a href="#lending" data-toggle="tab">{% trans "Lending history" %}</a></li>
+        {% endif %}
+        {% if can_change_device %}
+            <li><a href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>
+        {% endif %}
+        {% if can_lend_device %}
+            <li><a href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>
+        {% endif %}
+        {% if USE_PUPPET %}
+            {% if can_view_puppetdetails %}
+                <li><a href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
+                <li><a href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
+            {% endif %}
+        {% endif %}
+    </ul>
 
-            <div class="tab-content">
-                {% if can_change_device %}
-                    <div class="tab-pane active" id="notes">
-                        <ul class="list-unstyled" style="padding-top:20px;">
-                            {% for note in device.notes.all %}
-                                <li style="border-bottom:1px #dbdfe0 solid;padding-top:15px;padding-bottom:15px">
-                                    <div class="row">
-                                        <div class="col-xs-2 col-md-2">
-                                            {% if note.creator.avatar %}
-                                                <img src="{{ note.creator.avatar.url }}"
-                                                     class="img-rounded img-responsive" alt=""/>
-                                            {% endif %}
-                                            <p style="padding-top:5px;margin-bottom:0">{{ note.creator }}</p>
-                                            <small style="color:darkgray">{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
-                                        </div>
-                                        <div class="col-xs-10 col-md-10">
-                                            <div class="comment-text">
-                                                {{ note.note|linebreaks }}
-                                            </div>
-                                            {% if note.creator == user %}
-                                                <div class="action">
-                                                    <button type="button" class="btn btn-primary btn-xs pull-left"
-                                                            title="Edit">
-                                                        <i class="fa fa-edit"></i>
-                                                    </button>
-                                                    <form action='{% url "device-note-delete" device.id note.id %}'
-                                                          method='post' class='form-inline pull-left'
-                                                          style="margin-left:10px">{% csrf_token %}
-                                                        <button class="btn btn-danger btn-xs" title="Delete"
-                                                                type="submit">
-                                                            <i class="fa fa-trash-o"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            {% endif %}
-                                        </div>
+    <div class="tab-content">
+        {% if can_change_device %}
+            <div class="tab-pane active" id="notes">
+                <ul class="list-unstyled">
+                    {% for note in device.notes.all %}
+                        <li>
+                            <div class="row">
+                                <div class="col-xs-2 col-md-2">
+                                    {% if note.creator.avatar %}
+                                        <img src="{{ note.creator.avatar.url }}" class="img-rounded img-responsive" alt=""/>
+                                    {% endif %}
+                                    <p>{{ note.creator }}</p>
+                                    <small>{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
+                                </div>
+                                <div class="col-xs-10 col-md-10">
+                                    <div class="comment-text">
+                                        {{ note.note|linebreaks }}
                                     </div>
-                                </li>
-                            {% endfor %}
-                        </ul>
+                                    {% if note.creator == user %}
+                                        <div class="action">
+                                            <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <form action="{% url "device-note-delete" device.id note.id %}" method="post" class="form-inline pull-left">
+                                                {% csrf_token %}
+                                                <button class="btn btn-danger btn-xs" title="Delete" type="submit">
+                                                    <i class="fa fa-trash-o"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
 
-                        <form action='{% url "device-note-create" device.pk %}' method='post'
-                              class='form-horizontal col-md-6 col-md-offset-1' style="padding-left:0">
-                            {% csrf_token %}
+                <div class="row">
+                    <form action='{% url "device-note-create" device.pk %}' method='post' class="col-md-6">
+                        {% csrf_token %}
+                        <div class="form-group">
                             <textarea class="form-control" name="note" id="id_note"></textarea>
-                            <input type="hidden" name="device" value="{{ device.pk }}"/>
-                            <input type="hidden" name="creator" value="{{ user.pk }}"/>
-                            <button type="submit" class="btn btn-success btn-sm pull-right" style="margin-top:10px">
+                        </div>
+                        <input type="hidden" name="device" value="{{ device.pk }}"/>
+                        <input type="hidden" name="creator" value="{{ user.pk }}"/>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success btn-sm">
                                 <i class="fa fa-pencil"></i> {% trans "Add note" %}
                             </button>
-                        </form>
-                    </div>
-                {% endif %}
-                {% if can_change_device %}
-                    <div class="tab-pane" id="lending">
-                        <h4>{% trans "10 last lendings" %}</h4>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th>{% trans "User" %}</th>
-                                <th>{% trans "Since" %}</th>
-                                <th>{% trans "Duedate" %}</th>
-                                <th>{% trans "Returned" %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for lending in lending_list %}
-                                <tr>
-                                    <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
-                                    <td>{{ lending.lenddate }}</td>
-                                    <td>{{ lending.duedate|default_if_none:"never" }}</td>
-                                    <td>{{ lending.returndate|default_if_none:"not returned" }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        <a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default"><i
-                                class="fa fa-book" style="margin-right:7px"></i>{% trans "View lending history" %}</a>
-                    </div>
-                {% endif %}
-
-                {% if can_change_device %}
-                    <div class="tab-pane" id="edit">
-                        <h4>{% trans "10 last edits" %}</h4>
-                        <table id="change-history" class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th scope="col">{% trans 'Date/time' %}</th>
-                                <th scope="col">{% trans 'User' %}</th>
-                                <th scope="col">{% trans 'Comment' %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for action in version_list %}
-                                <tr>
-                                    <th scope="row"><a href="{% url 'history-detail' action.pk %}"
-                                                       title="{{ action.revision.date_created|date:'c' }}"
-                                                       data-timeago
-                                                       class="edit-date">{{ action.revision.date_created }}</a></th>
-                                    <td>
-                                        <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
-                                    </td>
-                                    <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        <a href="{% url 'history-list' content_type device.pk %}" class="btn btn-default"><i
-                                class="fa fa-book" style="margin-right:7px"></i>{% trans "View edit history" %}</a>
-                    </div>
-                {% endif %}
-
-                {% if can_lend_device %}
-                    <div class="tab-pane" id="mail">
-                        <h4>{% trans "10 last sent mails" %}</h4>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                            <tr>
-                                <th>{% trans "Mailtemplate" %}</th>
-                                <th>{% trans "Subject" %}</th>
-                                <th>{% trans "Sent by" %}</th>
-                                <th>{% trans "Sent at" %}</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for mail in mail_list %}
-                                <tr>
-                                    <td>{{ mail.mailtemplate.name }}</td>
-                                    <td>{{ mail.subject }}</td>
-                                    <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{ mail.sent_by }}</a></td>
-                                    <td><span title="{{ mail.sent_at|date:'c' }}"
-                                              data-timeago
-                                              class="mail-date">{{ mail.sent_at }}</span></td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% endif %}
-
-                {% if USE_PUPPET %}
-                {% if can_view_puppetdetails %}
-                    <div class="tab-pane" id="puppet">
-                        <h4>{% trans "Puppet facts from puppetdb" %}</h4>
-                        <div id="puppetdetails">
-                            <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Puppet Facts..." %}
                         </div>
-                    </div>
-                    <div class="tab-pane" id="software">
-                        <h4>{% trans "Installed software from puppetdb" %}</h4>
-                        <div id="softwaredetails">
-                            <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
-                        </div>
-                    </div>
-                {% endif %}
-                {% endif %}
+                    </form>
+                </div>
             </div>
-        </div>
-    </div>
+        {% endif %}
+        {% if can_change_device %}
+            <div class="tab-pane" id="lending">
+                <h4>{% trans "10 last lendings" %}</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>{% trans "User" %}</th>
+                            <th>{% trans "Since" %}</th>
+                            <th>{% trans "Duedate" %}</th>
+                            <th>{% trans "Returned" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lending in lending_list %}
+                            <tr>
+                                <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
+                                <td>{{ lending.lenddate }}</td>
+                                <td>{{ lending.duedate|default_if_none:_("never") }}</td>
+                                <td>{{ lending.returndate|default_if_none:_("not returned") }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'device-lending-list' device.pk %}" class="btn btn-default">
+                    <i class="fa fa-book"></i> {% trans "View lending history" %}
+                </a>
+            </div>
+        {% endif %}
 
+        {% if can_change_device %}
+            <div class="tab-pane" id="edit">
+                <h4>{% trans "10 last edits" %}</h4>
+                <table id="change-history" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">{% trans 'Date/time' %}</th>
+                            <th scope="col">{% trans 'User' %}</th>
+                            <th scope="col">{% trans 'Comment' %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for action in version_list %}
+                            <tr>
+                                <th scope="row">
+                                    <a href="{% url 'history-detail' action.pk %}" title="{{ action.revision.date_created|date:'c' }}" data-timeago class="edit-date">
+                                        {{ action.revision.date_created }}
+                                    </a>
+                                </th>
+                                <td>
+                                    <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                                </td>
+                                <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <a href="{% url 'history-list' content_type device.pk %}" class="btn btn-default">
+                    <i class="fa fa-book"></i> {% trans "View edit history" %}
+                </a>
+            </div>
+        {% endif %}
+
+        {% if can_lend_device %}
+            <div class="tab-pane" id="mail">
+                <h4>{% trans "10 last sent mails" %}</h4>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>{% trans "Mailtemplate" %}</th>
+                            <th>{% trans "Subject" %}</th>
+                            <th>{% trans "Sent by" %}</th>
+                            <th>{% trans "Sent at" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mail in mail_list %}
+                            <tr>
+                                <td>{{ mail.mailtemplate.name }}</td>
+                                <td>{{ mail.subject }}</td>
+                                <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{ mail.sent_by }}</a></td>
+                                <td><span title="{{ mail.sent_at|date:'c' }}" data-timeago class="mail-date">{{ mail.sent_at }}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+
+        {% if USE_PUPPET %}
+            {% if can_view_puppetdetails %}
+                <div class="tab-pane" id="puppet">
+                    <h4>{% trans "Puppet facts from puppetdb" %}</h4>
+                    <div id="puppetdetails">
+                        <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Puppet Facts..." %}
+                    </div>
+                </div>
+                <div class="tab-pane" id="software">
+                    <h4>{% trans "Installed software from puppetdb" %}</h4>
+                    <div id="softwaredetails">
+                        <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block htmlend %}

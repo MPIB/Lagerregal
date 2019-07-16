@@ -1,36 +1,36 @@
 {% load i18n %}
+
 <h5>{% trans "available variables" %}:</h5>
 <dl>
     <dt>{% trans "Device" %}</dt>
     {% verbatim %}
-    <dd>{{device.archived}}</dd>
-    <dd>{{device.created_at}}</dd>
-    <dd>{{device.creator}}</dd>
-    <dd>{{device.currentlending}}</dd>
-    <dd>{{device.description}}</dd>
-    <dd>{{device.devicetype}}</dd>
-    <dd>{{device.department}}</dd>
-    <dd>{{device.group}}</dd>
-    <dd>{{device.hostname}}</dd>
-    <dd>{{device.id}}</dd>
-    <dd>{{device.inventoried}}</dd>
-    <dd>{{device.inventorynumber}}</dd>
-    <dd>{{device.manufacturer}}</dd>
-    <dd>{{device.name}}</dd>
-    <dd>{{device.room}}</dd>
-    <dd>{{device.serialnumber}}</dd>
-    <dd>{{device.templending}}</dd>
-    <dd>{{device.trashed}}</dd>
-    <dd>{{device.webinterface}}</dd>
+        <dd>{{device.archived}}</dd>
+        <dd>{{device.created_at}}</dd>
+        <dd>{{device.creator}}</dd>
+        <dd>{{device.currentlending}}</dd>
+        <dd>{{device.description}}</dd>
+        <dd>{{device.devicetype}}</dd>
+        <dd>{{device.department}}</dd>
+        <dd>{{device.group}}</dd>
+        <dd>{{device.hostname}}</dd>
+        <dd>{{device.id}}</dd>
+        <dd>{{device.inventoried}}</dd>
+        <dd>{{device.inventorynumber}}</dd>
+        <dd>{{device.manufacturer}}</dd>
+        <dd>{{device.name}}</dd>
+        <dd>{{device.room}}</dd>
+        <dd>{{device.serialnumber}}</dd>
+        <dd>{{device.templending}}</dd>
+        <dd>{{device.trashed}}</dd>
+        <dd>{{device.webinterface}}</dd>
     {% endverbatim %}
     <dt>{% trans "User (current logged in)" %}</dt>
     {% verbatim %}
-    <dd>{{user.first_name}}</dd>
-    <dd>{{user.last_name}}</dd>
-    <dd>{{user.username}}</dd>
-    <dd>{{user.main_department}}</dd>
+        <dd>{{user.first_name}}</dd>
+        <dd>{{user.last_name}}</dd>
+        <dd>{{user.username}}</dd>
+        <dd>{{user.main_department}}</dd>
     {% endverbatim %}
 </dl>
 
-<span>Further information can be found at the <a href="https://docs.djangoproject.com/en/1.5/topics/templates/">Django
-    template documentation</a></span>
+<span>Further information can be found at the <a href="https://docs.djangoproject.com/en/1.5/topics/templates/">Django template documentation</a></span>

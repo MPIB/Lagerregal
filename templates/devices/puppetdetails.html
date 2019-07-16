@@ -3,20 +3,21 @@
 
 <table id="puppetdetails_table" class="table table-bordered table-striped table-wrapped">
     <thead>
-    <tr>
-        <th>{% trans "Fact" %}</th>
-        <th>{% trans "Value" %}</th>
-    </tr>
+        <tr>
+            <th>{% trans "Fact" %}</th>
+            <th>{% trans "Value" %}</th>
+        </tr>
     </thead>
     <tbody>
-      {% for fact in puppetdetails %}
-      <tr>
-        <td id="puppetdetails_name">{{ fact.name }}</td>
-        <td id="puppetdetails_value">{% as_nested_list fact.value %}</td>
-      </tr>
-      {% endfor %}
+        {% for fact in puppetdetails %}
+            <tr>
+                <td id="puppetdetails_name">{{ fact.name }}</td>
+                <td id="puppetdetails_value">{% as_nested_list fact.value %}</td>
+            </tr>
+        {% endfor %}
     </tbody>
 </table>
+
 <script>
     $('#puppetdetails_table').dataTable( {
         "bFilter": false,
