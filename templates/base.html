@@ -25,21 +25,15 @@
 </head>
 <body>
 {% if not nochrome %}
-<header class="navbar navbar-default navbar-fixed-top">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-            <span class="sr-only">{% trans "Toggle navigation" %}</span>
-            <span class="fa fa-bar"></span>
-            <span class="fa fa-bar"></span>
-            <span class="fa fa-bar"></span>
-        </button>
-        <a class="navbar-brand" href="/"><i class="fa fa-archive"></i> {{ SITE_NAME }}</a>
-    </div>
+<header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mb-3">
+    <a class="navbar-brand" href="/"><i class="fa fa-archive"></i> {{ SITE_NAME }}</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="{% trans 'Toggle navigation' %}">
+        <i class="navbar-toggler-icon"></i>
+    </button>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse navbar-ex1-collapse">
-        <ul class="nav navbar-nav" role="navigation">
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="nav navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <a href="{% url 'device-list' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">
                     {% trans "Devices" %}
@@ -106,40 +100,33 @@
             {% endif %}
         </ul>
 
-        <ul class="nav navbar-nav navbar-right">
+        {% if perms.devices.view_device %}
+            <form method="post" action="{% url 'device-list' %}" class="form-inline my-2 my-lg-0 mx-lg-1">
+                {% csrf_token %}
+                <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input id="id_deviceid" name="deviceid" placeholder="{% trans 'Jump to ID' %}" type="text" class="form-control input-sm">
+                        <button type="submit" class="input-group-append btn btn-secondary btn-sm">
+                            <i class="fa fa-rocket"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <form method="get" action="{% url 'search' %}" class="form-inline my-2 my-lg-0 mx-lg-1">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}" type="text" class="form-control input-sm">
+                        <button type="submit" class="input-group-append btn btn-secondary btn-sm">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+        <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
-                {% if perms.devices.view_device %}
-                    <li class="visible-lg visible-md">
-                        <form method="post" action="{% url 'device-list' %}" class="form-inline">
-                            {% csrf_token %}
-                            <input id="id_namemodifier" name="namemodifier" type="hidden" value="icontains">
-                            <div class="form-group">
-                                <div class="input-group input-group-sm">
-                                    <input id="id_deviceid" name="deviceid" placeholder="{% trans 'Jump to ID' %}" type="text" class="form-control">
-                                    <span class="input-group-btn">
-                                        <button type="submit" class="btn btn-default btn-sm">
-                                            <i class="fa fa-rocket"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                    <li class="visible-lg visible-md visible-sm">
-                        <form method="get" action="{% url 'search' %}" class="navbar-form">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <input id="id_searchname" name="searchstring" placeholder="{% trans 'Search for device' %}" type="text" class="form-control input-sm">
-                                    <span class="input-group-btn">
-                                        <button type="submit" class="btn btn-default btn-sm">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </form>
-                    </li>
-                {% endif %}
                 <li class="nav-item dropdown">
                     <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">
                         {% if user.avatar %}
