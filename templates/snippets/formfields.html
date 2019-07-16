@@ -4,21 +4,21 @@
     {% if field.html_name == "classname" %}
         {{ field }}
     {% else %}
-        <div class="form-group {{ field.css_classes }}">
-            <label for="{{ field.html_name }}" class="col-lg-4 control-label">
+        <div class="form-group {% if horizontal %}row{% endif %} {{ field.css_classes }}">
+            <label for="{{ field.html_name }}" class="{% if horizontal %}col-lg-4{% endif %}">
                 {{ field.label }}{% if field.field.required %}*{% endif %}
             </label>
 
-            <div class="col-lg-8">
+            <div class="{% if horizontal %}col-lg-8{% endif %}">
                 {{ field|add_class:'form-control' }}
                 {% if field.errors or field.help_text != "" %}
-                    <p class="help-block">
+                    <small class="form-text">
                         {% if field.errors %}
-                            {% for error in field.errors %}{{ error }}, {% endfor %}
+                            <span class="text-danger">{% for error in field.errors %}{{ error }}, {% endfor %}</span>
                         {% else %}
-                            {{ field.help_text }}
+                            <span class="text-muted">{{ field.help_text }}</span>
                         {% endif %}
-                    </p>
+                    </small>
                 {% endif %}
             </div>
         </div>
