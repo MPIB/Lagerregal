@@ -8,7 +8,7 @@
 {% block widgetname %}bookmarks{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized %}hidden{% endif %}>
+    <table class="table" {% if widget.minimized %}hidden{% endif %}>
         <thead>
             <tr>
                 <th scope="col">{% trans 'Name' %}</th>
@@ -23,7 +23,7 @@
         </tbody>
     </table>
 
-    <div class="panel-footer text-right">
+    <div class="card-footer text-right">
         {% with dep=user.main_department|default:"all" %}
             <a href="{% url 'device-list' department=dep filter='bookmark' sorting='name' %}">{% trans "More…" %}</a>
         {% endwith %}

@@ -395,8 +395,8 @@
             {% endif %}
         </div>
         <div class="col-md-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">{% trans "IP-Addresses" %}</div>
+            <div class="card border-primary mb-3">
+                <div class="card-header bg-primary text-white">{% trans "IP-Addresses" %}</div>
                 <ul class="list-group">
                     {% for address in device.ipaddress_set.all %}
                         <li class="list-group-item ipaddress-list">
@@ -414,7 +414,7 @@
                 </ul>
 
                 {% if can_change_device and device.archived == None%}
-                    <div class="panel-footer">
+                    <div class="card-footer">
                         <form method="post" action="{% url 'device-ipaddress' device.pk %}">
                             {% csrf_token %}
                             <div class="form-group">{{ ipaddressform.ipaddresses }}</div>
@@ -428,8 +428,8 @@
                 {% endif %}
             </div>
 
-            <div class="panel panel-primary">
-                <div class="panel-heading">{% trans "Tags" %}</div>
+            <div class="card border-primary mb-3">
+                <div class="card-header bg-primary text-white">{% trans "Tags" %}</div>
                 <ul class="list-group">
                     {% for tag in device.tags.all %}
                         <li class="list-group-item tag-list">
@@ -441,7 +441,7 @@
                     {% endfor %}
                 </ul>
 
-                <div class="panel-footer">
+                <div class="card-footer">
                     <form method="post" action="{% url 'device-tags' device.pk %}">
                         {% csrf_token %}
                         <div class="form-group">{{ tagform.tags }}</div>
