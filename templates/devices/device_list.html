@@ -20,18 +20,18 @@
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu">
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
                 <li class="dropdown-header">{% trans "From Template" %}</li>
-                <li><a href="{% url 'template-list' %}" class="right">{% trans "Edit Templates" %}</a></li>
+                <li><a class="dropdown-item" href="{% url 'template-list' %}" class="right">{% trans "Edit Templates" %}</a></li>
                 {% if template_list %}
-                    <li class="divider"></li>
+                    <li class="dropdown-divider"></li>
                     {% for template in template_list %}
-                        <li><a href="{% url 'device-add' template.pk %}">{{ template.templatename }}</a></li>
+                        <li><a class="dropdown-item" href="{% url 'device-add' template.pk %}">{{ template.templatename }}</a></li>
                     {% endfor %}
                 {% endif %}
-                <li class="divider"></li>
+                <li class="dropdown-divider"></li>
                 {% if perms.devices.create_template %}
-                    <li><a href="{% url 'template-add' %}">{% trans "New Template" %}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'template-add' %}">{% trans "New Template" %}</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -44,7 +44,7 @@
         <input type="hidden" name="viewfilter"  value = "{{viewfilter}}"/>
         <input type="hidden" name="departmentfilter" />
         <input type="hidden" name="format" value="csv" />
-        <button class="btn btn-default btn-sm" id="exportbutton"><i class="fa fa-download"></i> {% trans "Export as CSV" %}</button>
+        <button class="btn btn-secondary btn-sm" id="exportbutton"><i class="fa fa-download"></i> {% trans "Export as CSV" %}</button>
     </form>
     <table id="devicetable" class="table table-bordered table-striped">
         <thead>

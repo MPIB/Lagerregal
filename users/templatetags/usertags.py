@@ -7,7 +7,7 @@ register = Library()
 @register.filter('theme_path')
 def theme_path(user):
     theme = getattr(user, 'theme', None) or settings.THEMES[0]
-    return 'bootswatch/%s/bootstrap.min.css' % theme
+    return 'bootswatch/dist/%s/bootstrap.min.css' % theme
 
 
 @register.simple_tag

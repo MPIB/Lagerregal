@@ -8,7 +8,7 @@
 {% block widgetname %}edithistory{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized %}hidden{% endif %}>
+    <table class="table" {% if widget.minimized %}hidden{% endif %}>
         <thead>
             <tr>
                 <th scope="col">{% trans 'Device' %}</th>
@@ -40,7 +40,7 @@
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
                                     {% for version in revision.version_set.all %}
                                         <li>{{ version.content_type }}:
-                                            <a href="{%  url "history-detail" version.pk %}">
+                                            <a class="dropdown-item" href="{%  url "history-detail" version.pk %}">
                                                 {% if version.content_type.model == "ipaddress" %}
                                                     {{ version.field_dict.address }}
                                                 {% elif version.content_type.model == "lending" %}
@@ -65,7 +65,7 @@
         </tbody>
     </table>
 
-    <div class="panel-footer text-right">
+    <div class="card-footer text-right">
         <a href="{% url 'globalhistory' %}">{% trans "More…" %}</a>
     </div>
 {% endblock %}

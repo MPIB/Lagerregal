@@ -11,11 +11,11 @@
     {% if perms.devices.change_building %}
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share"></i> {% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>

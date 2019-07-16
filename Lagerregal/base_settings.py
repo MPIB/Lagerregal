@@ -185,7 +185,6 @@ THEMES = [
     'simplex',
     'superhero',
     'united',
-    'paper',
 ]
 
 NPM_ROOT_PATH = os.getcwd()
@@ -194,7 +193,7 @@ NPM_FILE_PATTERNS = {
     'bootstrap': [
         'dist/js/bootstrap.min.js',
     ],
-    'bootswatch': ['{}/bootstrap.min.css'.format(t) for t in THEMES],
+    'bootswatch': ['dist/{}/bootstrap.min.css'.format(t) for t in THEMES],
     'font-awesome': [
         'css/font-awesome.min.css',
         'fonts/*',
@@ -215,6 +214,9 @@ NPM_FILE_PATTERNS = {
         'js/noty/jquery.noty.js',
         'js/noty/layouts/*.js',
         'js/noty/themes/*.js',
+    ],
+    'popper.js': [
+        'dist/umd/popper.min.js',
     ],
     'select2': [
         'dist/js/select2.min.js',

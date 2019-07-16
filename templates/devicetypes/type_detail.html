@@ -11,11 +11,11 @@
     {% if perms.devicetypes.change_type %}
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share"></i> {% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
@@ -52,7 +52,7 @@
             </ul>
 
             {% if perms.devicetypes.change_type %}
-                <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm">
+                <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-secondary btn-sm">
                     <i class="fa fa-plus"></i> {% trans "Add new Attribute" %}
                 </a>
             {% endif %}

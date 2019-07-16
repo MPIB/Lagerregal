@@ -11,16 +11,16 @@
 {% endblock %}
 
 {% block content %}
-    <ul class="nav nav-tabs" id="myTab">
+    <ul class="nav nav-tabs mb-3" id="myTab">
         {% if perms.users.view_user %}
-            <li class="active"><a href="#about" data-toggle="tab" data-tab="about">About</a></li>
-            <li><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#about" data-toggle="tab" data-tab="about">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
         {% else %}
-            <li class="active"><a href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
         {% endif %}
-        <li><a href="#ipaddresses" data-toggle="tab" data-tab="edits">IP-Addresses</a></li>
+        <li class="nav-item"><a class="nav-link" href="#ipaddresses" data-toggle="tab" data-tab="edits">IP-Addresses</a></li>
         {% if perms.users.view_user %}
-            <li><a href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
+            <li class="nav-item"><a class="nav-link" href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
         {% endif %}
     </ul>
 

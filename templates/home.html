@@ -65,7 +65,7 @@
                 }
             });
 
-            $('body').on('click', '.panel-title .w-minimize', function() {
+            $('body').on('click', '.card-title .w-minimize', function() {
                 $.ajax({
                     type: "POST",
                     url: "{% url "widget_toggle" %}",
@@ -73,11 +73,11 @@
                     data: {"widgetname":$( this ).parents( ".widget:first" ).attr("id")}
                 }).done(function(data) {
                     $(this).find( ".w-minimize" ).toggleClass( "fa-minus" ).toggleClass( "fa-plus" );
-                    $(this).find(".panel-heading").next().slideToggle("fast");
+                    $(this).find(".card-header").next().slideToggle("fast");
                 });
             });
 
-            $('body').on('click', '.panel-title .w-close', function() {
+            $('body').on('click', '.card-title .w-close', function() {
                 $.ajax({
                     type: "POST",
                     url: "{% url "widget_remove" %}",
@@ -87,7 +87,7 @@
                     $(this).slideUp("fast", function() {
                     $(this).remove()});
                     $("#widgetlist").append('<li><a href="#" data-name="' + $(this).attr("id") + '" class="addWidget">' +
-                        $(this).find(".panel-title").html() + '</a></li>')
+                        $(this).find(".card-title").html() + '</a></li>')
                 });
             });
 
@@ -104,7 +104,7 @@
                 });
             });
 
-            $(".panel-title .pull-right").hide();
+            $(".card-title .pull-right").hide();
 
             $('body').on({
                 mouseenter: function () {
@@ -113,7 +113,7 @@
                 mouseleave: function () {
                     $(this).find(".pull-right").fadeOut();
                 }
-            }, '.panel-heading');
+            }, '.card-header');
 
             $( ".dashboard" ).disableSelection();
         });

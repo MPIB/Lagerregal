@@ -2,39 +2,32 @@
 {% load devicetags %}
 
 {% if is_paginated %}
-    <ul class="pager">
-        {% if page_obj.has_previous %}
-            {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
-                <li class="previous">
-                    <a href="{% url 'device-list' 1 %}">
+    <nav class="d-flex justify-content-between mb-3">
+        <div>
+            {% if page_obj.has_previous %}
+                {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
+                    <a class="btn btn-success" href="{% url 'device-list' 1 %}">
                         <i class="fa fa-double-angle-left"></i> {% trans "First" %}
                     </a>
-                </li>
-                <li class="previous">
-                    <a href="{% url 'device-list' page_obj.previous_page_number %}">
+                    <a class="btn btn-success" href="{% url 'device-list' page_obj.previous_page_number %}">
                         <i class="fa fa-angle-left"></i> {% trans "Previous" %}
                     </a>
-                </li>
+                {% else %}
+                    <a class="btn btn-success" href="{% url 'device-list'  1 viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
+                        <i class="fa fa-double-angle-left"></i> {% trans "First" %}
+                    </a>
+                    <a class="btn btn-success" href="{% url 'device-list' page_obj.previous_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
+                        <i class="fa fa-angle-left"></i> {% trans "Previous" %}
+                    </a>
+                {% endif %}
             {% else %}
-                <li class="previous">
-                    <a href="{% url 'device-list'  1 viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
-                        <i class="fa fa-double-angle-left"></i> {% trans "First" %}
-                    </a>
-                </li>
-                <li class="previous">
-                    <a href="{% url 'device-list' page_obj.previous_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
-                        <i class="fa fa-angle-left"></i> {% trans "Previous" %}
-                    </a>
-                </li>
-            {% endif %}
-        {% else %}
-            <li class="previous disabled">
-                <a href="#">
+                <a class="btn btn-success disabled" href="#">
                     <i class="fa fa-angle-left"></i> {% trans "Previous" %}
                 </a>
-            </li>
-        {% endif %}
-        <li class="current">{% trans "Page" %}
+            {% endif %}
+        </div>
+        <div>
+            {% trans "Page" %}
             <select class="pageselect">
                 {% for pagenumber in  page_obj.paginator.num_pages|get_range %}
                     {% if pagenumber|add:"1" == page_obj.number %}
@@ -45,37 +38,29 @@
                 {% endfor %}
             </select>
             {% trans "of" %} {{ page_obj.paginator.num_pages }}
-        </li>
-        {% if page_obj.has_next %}
-            {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
-                <li class="next">
-                    <a href="{% url 'device-list' page_obj.paginator.num_pages %}">
-                        {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
-                    </a>
-                </li>
-                <li class="next">
-                    <a href="{% url 'device-list' page_obj.next_page_number %}">
+        </div>
+        <div>
+            {% if page_obj.has_next %}
+                {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
+                    <a class="btn btn-success" href="{% url 'device-list' page_obj.next_page_number %}">
                         {% trans "Next" %} <i class="fa fa-angle-right"></i>
                     </a>
-                </li>
-            {% else %}
-                <li class="next">
-                    <a href="{% url 'device-list' page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
+                    <a class="btn btn-success" href="{% url 'device-list' page_obj.paginator.num_pages %}">
                         {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
                     </a>
-                </li>
-                <li class="next">
-                    <a href="{% url 'device-list' page_obj.next_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">{% trans "Next" %}
-                        <i class="fa fa-angle-right"></i>
+                {% else %}
+                    <a class="btn btn-success" href="{% url 'device-list' page_obj.next_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
+                        {% trans "Next" %} <i class="fa fa-angle-right"></i>
                     </a>
-                </li>
-            {% endif %}
-        {% else %}
-            <li class="next disabled">
-                <a href="">
+                    <a class="btn btn-success" href="{% url 'device-list' page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
+                        {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
+                    </a>
+                {% endif %}
+            {% else %}
+                <a class="btn btn-success disabled" href="">
                     {% trans "Next" %} <i class="fa fa-angle-right"></i>
                 </a>
-            </li>
-        {% endif %}
-    </ul>
+            {% endif %}
+        </div>
+    </nav>
 {% endif %}
