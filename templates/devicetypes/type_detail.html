@@ -96,13 +96,13 @@
 {% block scriptend %}
     {% if perms.devicetypes.change_type %}
         $('.attribute').click(function() {
-            var editurl = $("#attribute_editform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"))
-            $("#attribute_editform").attr("action", editurl)
-            var deleteurl = $("#attribute_deleteform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"))
-            $("#attribute_deleteform").attr("action", deleteurl)
+            var editurl = $("#attribute_editform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"));
+            $("#attribute_editform").attr("action", editurl);
+            var deleteurl = $("#attribute_deleteform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"));
+            $("#attribute_deleteform").attr("action", deleteurl);
             $("#attributeModal").find("#id_name").val($(this).data("name"));
             $("#attributeModal").find("#id_regex").val($(this).data("regex"));
-            $('#attributeModal').modal('show')
-        })
+            $('#attributeModal').modal('show');
+        });
     {% endif %}
 {% endblock %}

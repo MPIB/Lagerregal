@@ -233,7 +233,7 @@
     {% block scriptend %}{% endblock %}
 
     {% if messages %}
-        $(document).ready(function () {
+        $(function () {
             {% for message in messages %}
                 noty({
                     text: '{{message|safe }}',
