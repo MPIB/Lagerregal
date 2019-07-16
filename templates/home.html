@@ -26,7 +26,7 @@
             <div class="col-md-5 dashboard dashboard-left">
                 {% for widget in widgets_left %}
                     {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
-                        {% include template with usestable=True %}
+                        {% include template %}
                     {% endwith %}
                 {% endfor %}
             </div>
@@ -34,7 +34,7 @@
             <div class="col-md-7 dashboard dashboard-right">
                 {% for widget in widgets_right %}
                     {% with "snippets/widgets/"|add:widget.widgetname|add:".html" as template %}
-                        {% include template with usestable=True %}
+                        {% include template %}
                     {% endwith %}
                 {% endfor %}
             </div>

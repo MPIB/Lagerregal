@@ -11,11 +11,5 @@
             </a>
         </h3>
     </div>
-    {% if not usestable %}
-        <div class="panel-body" {% if widget.minimized %}hidden{% endif %}>
-    {% endif %}
-    {% block  content %}{% endblock %}
-    {% if not usestable %}
-        </div>
-    {% endif %}
+    {% block content %}{% endblock %}
 </div>
