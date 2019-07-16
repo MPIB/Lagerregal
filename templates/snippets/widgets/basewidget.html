@@ -3,16 +3,16 @@
 <div class="panel {% block paneltype %}panel-primary{% endblock %} widget" id="{% block widgetname %}{% endblock %}">
     <div class="panel-heading">
         <h3 class="panel-title">{% block title %}{% endblock %}
-            <a class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}>
+            <a class="pull-right" {% if hidecontrols %}hidden{% endif %}>
                 <i class="fa fa-times w-close"></i>
             </a>
-            <a class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}>
+            <a class="pull-right" {% if hidecontrols %}hidden{% endif %}>
                 <i class="fa fa-{{ widget.minimized|yesno:'plus,minus' }} w-minimize"></i>
             </a>
         </h3>
     </div>
     {% if not usestable %}
-        <div class="panel-body" {% if widget.minimized %}style="display: none;"{% endif %}>
+        <div class="panel-body" {% if widget.minimized %}hidden{% endif %}>
     {% endif %}
     {% block  content %}{% endblock %}
     {% if not usestable %}

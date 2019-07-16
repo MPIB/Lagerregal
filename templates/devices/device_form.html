@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="form-group {{ field.css_classes }}" {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}style="display:none;"{% endif %} id="div_{{ field.html_name }}">
+                        <div class="form-group {{ field.css_classes }}" {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}hidden{% endif %} id="div_{{ field.html_name }}">
                             <label for="{{ field.html_name }}" class="col-lg-3 control-label">
                                 {{ field.label }}{% if field.field.required %}*{% endif %}
                             </label>
