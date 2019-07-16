@@ -31,28 +31,28 @@ class IpAddressTests(TestCase):
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
         # testing the successful loading of second page of ipadresses-list (statuscode 2xx)
-        response = self.client.get('/ipaddresses/page/2')
+        response = self.client.get('/ipaddresses/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
-        response = self.client.get('/ipaddresses/add')
+        response = self.client.get('/ipaddresses/add/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
         address = mommy.make(IpAddress)
-        response = self.client.get('/ipaddresses/view/%i' % address.pk)
+        response = self.client.get('/ipaddresses/%i/' % address.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         address = mommy.make(IpAddress)
-        response = self.client.get('/ipaddresses/edit/%i' % address.pk)
+        response = self.client.get('/ipaddresses/%i/edit/' % address.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         address = mommy.make(IpAddress)
-        response = self.client.get('/ipaddresses/delete/%i' % address.pk)
+        response = self.client.get('/ipaddresses/%i/delete/' % address.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_user_view(self):
-        response = self.client.get('/users/view/%i/ipaddress/' % self.admin.pk)
+        response = self.client.get('/users/%i/ipaddress/' % self.admin.pk)
         self.assertEqual(response.status_code, 200)

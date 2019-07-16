@@ -59,7 +59,7 @@ class DeviceTests(TestCase):
         self.assertEqual(len(response.context["device_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/devices/page/2')
+        response = self.client.get('/devices/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
@@ -70,14 +70,14 @@ class DeviceTests(TestCase):
     def test_create_view(self):
         device = mommy.make(Device, name="used")
 
-        response = self.client.get('/devices/add')
+        response = self.client.get('/devices/add/')
         self.assertEqual(response.status_code, 200)
 
         form = response.context['form']
         data = form.initial
         data['uses'] = device.id
         data['name'] = "uses"
-        response = self.client.post('/devices/add', data)
+        response = self.client.post('/devices/add/', data)
         device.refresh_from_db()
         self.assertEqual(device.used_in.name, 'uses')
 
@@ -187,7 +187,7 @@ class DeviceTests(TestCase):
         device.refresh_from_db()
         self.assertEqual(device.ipaddress_set.count(), 1)
 
-        response = self.client.post('/devices/%i/ipaddress/%i/remove' % (device.pk, ip.pk))
+        response = self.client.post('/devices/%i/ipaddress/%i/remove/' % (device.pk, ip.pk))
         self.assertEqual(response.status_code, 302)
         device.refresh_from_db()
         self.assertEqual(device.ipaddress_set.count(), 0)
@@ -195,13 +195,13 @@ class DeviceTests(TestCase):
     def test_ipaddress_remove_view(self):
         device = mommy.make(Device)
         ip = mommy.make(IpAddress, device=device)
-        response = self.client.get('/devices/%i/ipaddress/%i/remove' % (device.pk, ip.pk))
+        response = self.client.get('/devices/%i/ipaddress/%i/remove/' % (device.pk, ip.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_ipaddress_purpose_view(self):
         device = mommy.make(Device)
         ip = mommy.make(IpAddress, device=device)
-        response = self.client.get('/devices/%i/ipaddress/%i/purpose' % (device.pk, ip.pk))
+        response = self.client.get('/devices/%i/ipaddress/%i/purpose/' % (device.pk, ip.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_lending_list_view(self):
@@ -218,16 +218,16 @@ class DeviceTests(TestCase):
         device = mommy.make(Device)
         lending = mommy.make(Lending, device=device)
 
-        response = self.client.get('/devices/return/%i' % lending.pk)
+        response = self.client.get('/devices/return/%i/' % lending.pk)
         self.assertEqual(response.status_code, 200)
 
-        response = self.client.post('/devices/return/%i' % lending.pk)
+        response = self.client.post('/devices/return/%i/' % lending.pk)
         self.assertEqual(response.status_code, 302)
 
     def test_return_view_user(self):
         user = mommy.make(Lageruser)
         lending = mommy.make(Lending, owner=user)
-        response = self.client.post('/devices/return/%i' % lending.pk)
+        response = self.client.post('/devices/return/%i/' % lending.pk)
         self.assertEqual(response.status_code, 302)
 
     def test_public_list_view(self):
@@ -262,32 +262,32 @@ class BuildingTests(TestCase):
         self.assertEqual(len(response.context["building_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/buildings/2')
+        response = self.client.get('/buildings/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/view/%i' % building.pk)
+        response = self.client.get('/buildings/%i/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
-        response = self.client.get('/buildings/add')
+        response = self.client.get('/buildings/add/')
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/edit/%i' % building.pk)
+        response = self.client.get('/buildings/%i/edit/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         building = mommy.make(Building)
-        response = self.client.get('/buildings/delete/%i' % building.pk)
+        response = self.client.get('/buildings/%i/delete/' % building.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         building1 = mommy.make(Building)
         building2 = mommy.make(Building)
-        response = self.client.get('/buildings/merge/%i/%i' % (building1.pk, building2.pk))
+        response = self.client.get('/buildings/%i/merge/%i/' % (building1.pk, building2.pk))
         self.assertEqual(response.status_code, 200)
 
 
@@ -316,32 +316,32 @@ class RoomTests(TestCase):
         self.assertEqual(len(response.context["room_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/rooms/2')
+        response = self.client.get('/rooms/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/view/%i' % room.pk)
+        response = self.client.get('/rooms/%i/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
-        response = self.client.get('/rooms/add')
+        response = self.client.get('/rooms/add/')
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/edit/%i' % room.pk)
+        response = self.client.get('/rooms/%i/edit/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         room = mommy.make(Room)
-        response = self.client.get('/rooms/delete/%i' % room.pk)
+        response = self.client.get('/rooms/%i/delete/' % room.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         room1 = mommy.make(Room)
         room2 = mommy.make(Room)
-        response = self.client.get('/rooms/merge/%i/%i' % (room1.pk, room2.pk))
+        response = self.client.get('/rooms/%i/merge/%i/' % (room1.pk, room2.pk))
         self.assertEqual(response.status_code, 200)
 
 
@@ -367,32 +367,32 @@ class ManufacturerTests(TestCase):
         self.assertEqual(len(response.context["manufacturer_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/manufacturers/page/2')
+        response = self.client.get('/manufacturers/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/view/%i' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
-        response = self.client.get('/manufacturers/add')
+        response = self.client.get('/manufacturers/add/')
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/edit/%i' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/edit/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_delete_view(self):
         manufacturer = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/delete/%i' % manufacturer.pk)
+        response = self.client.get('/manufacturers/%i/delete/' % manufacturer.pk)
         self.assertEqual(response.status_code, 200)
 
     def test_merge_view(self):
         manufacturer1 = mommy.make(Manufacturer)
         manufacturer2 = mommy.make(Manufacturer)
-        response = self.client.get('/manufacturers/merge/%i/%i' % (manufacturer1.pk, manufacturer2.pk))
+        response = self.client.get('/manufacturers/%i/merge/%i/' % (manufacturer1.pk, manufacturer2.pk))
         self.assertEqual(response.status_code, 200)
 
 
@@ -422,11 +422,11 @@ class TemplateTests(TestCase):
         self.assertEqual(len(response.context["template_list"]), 30)
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
-        response = self.client.get('/devices/templates/2')
+        response = self.client.get('/devices/templates/page/2/')
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
-        response = self.client.get('/devices/templates/add')
+        response = self.client.get('/devices/templates/add/')
         self.assertEqual(response.status_code, 200)
 
     def test_update_view(self):
