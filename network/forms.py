@@ -30,10 +30,10 @@ class IpAddressForm(forms.ModelForm):
 class ViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right input-sm form-control"}))
+                                                              "class": "pull-right form-control-sm form-control"}))
     departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+                                                               "class": "pull-right form-control form-control-sm"}))
 
 
 class UserIpAddressForm(forms.Form):

@@ -121,12 +121,12 @@ class LendForm(forms.Form):
                                    label=_("Lent to"))
     device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(attrs={"style": "width:100%;"}),
                                     label=_("Device"), required=False)
-    smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control input-sm"}), required=False)
+    smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}), required=False)
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
                                                              '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
                                                              '%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y',
                                                              '%d.%m.%y'),
-                              widget=forms.TextInput(attrs={"class": "form-control input-sm"}))
+                              widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
                                   widget=Select2Widget(attrs={"style": "width:100%;"}))
 
@@ -165,47 +165,47 @@ class ReturnForm(forms.Form):
 class DeviceViewForm(forms.Form):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                              "class": "pull-right form-control input-sm"}))
+                                                              "class": "pull-right form-control form-control-sm"}))
     viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+                                                               "class": "pull-right form-control form-control-sm"}))
     departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+                                                               "class": "pull-right form-control form-control-sm"}))
 
 
 class ViewForm(forms.Form):
     viewsorting = forms.ChoiceField(choices=VIEWSORTING,
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+                                                               "class": "pull-right form-control form-control-sm"}))
 
 
 class DepartmentViewForm(ViewForm):
     viewfilter = forms.ChoiceField(choices=VIEWFILTER,
                                    widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right input-sm form-control"}))
+                                                              "class": "pull-right form-control-sm form-control"}))
     departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+                                                               "class": "pull-right form-control form-control-sm"}))
 
 
 class FilterForm(forms.Form):
     filterstring = forms.CharField(max_length=100,
                                    widget=forms.TextInput(attrs={"style": "width:150px;margin-left:10px;",
-                                                                 "class": "pull-right form-control input-sm",
+                                                                 "class": "pull-right form-control form-control-sm",
                                                                  "placeholder": "Filter"}))
 
 
 class DepartmentFilterForm(FilterForm):
     departmentfilter = forms.ChoiceField(choices=get_department_options(),
                                     widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+                                                               "class": "pull-right form-control form-control-sm"}))
 
 
 class DeviceGroupFilterForm(FilterForm):
     groupfilter = forms.ChoiceField(choices=get_devicegroup_options(),
                                          widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                                        "class": "pull-right form-control input-sm"}))
+                                                                        "class": "pull-right form-control form-control-sm"}))
 
 
 class DeviceForm(forms.ModelForm):
