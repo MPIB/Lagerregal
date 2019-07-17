@@ -71,7 +71,7 @@ class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
         # adds "Users" to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("user-list"), _("Users")), ]
-        context["filterform"] = DepartmentFilterForm(initial={"filterstring": self.filterstring, "departmentfilter": self.departmentfilter})
+        context["filterform"] = DepartmentFilterForm(initial={"filter": self.filterstring, "department": self.departmentfilter})
 
         # add page number to breadcrumbs if there are multiple pages
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -226,9 +226,9 @@ class DepartmentList(PermissionRequiredMixin, PaginationMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments"))]
-        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
+        context["viewform"] = ViewForm(initial={"sorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:

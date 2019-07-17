@@ -67,12 +67,12 @@ class DevicegroupList(PermissionRequiredMixin, PaginationMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups"))]
-        context["viewform"] = DepartmentViewForm(initial={"viewsorting": self.viewsorting,
-            "departmentfilter": self.departmentfilter})
+        context["viewform"] = DepartmentViewForm(initial={"sorting": self.viewsorting,
+            "department": self.departmentfilter})
 
         # filtering
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
 
