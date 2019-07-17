@@ -12,19 +12,27 @@
                 <button name="page" disabled class="btn btn-success"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</button>
             {% endif %}
         </div>
-        <label>
-            {% trans "Page" %}
-            <select class="pageselect">
-                {% for pagenumber in  page_obj.paginator.num_pages|get_range %}
-                    {% if pagenumber|add:"1" == page_obj.number %}
-                        <option selected>{{ pagenumber|add:"1" }}</option>
-                    {% else %}
-                        <option>{{ pagenumber|add:"1" }}</option>
-                    {% endif %}
-                {% endfor %}
-            </select>
-            {% trans "of" %} {{ page_obj.paginator.num_pages }}
-        </label>
+        <form class="d-flex justify-content-between mb-3" method="get" data-autosubmit="change">
+            {% for name, value in request.GET.items %}
+                {% if name != 'page' %}
+                    <input type="hidden" name="{{ name }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
+
+            <label>
+                {% trans "Page" %}
+                <select class="pageselect" name="page">
+                    {% for pagenumber in page_obj.paginator.num_pages|get_range %}
+                        {% if pagenumber|add:"1" == page_obj.number %}
+                            <option selected>{{ pagenumber|add:"1" }}</option>
+                        {% else %}
+                            <option>{{ pagenumber|add:"1" }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </label>
+        </form>
         <div>
             {% if page_obj.has_next %}
                 <a href="{% current_url page=page_obj.next_page_number %}" class="btn btn-success">{% trans "Next" %} <i class="fa fa-angle-right"></i></a>

@@ -12,7 +12,7 @@
             <i class="fa fa-plus"></i> {% trans "Add Devicegroup" %}
         </a>
     {% endif %}
-    <form class="form-inline d-inline-block">
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
         {{ viewform.department }}
         {{ viewform.sorting }}
         {{ filterform.filter }}

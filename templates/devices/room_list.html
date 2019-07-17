@@ -11,7 +11,7 @@
     {% if perms.devices.add_room %}<a href="{% url 'room-add' %}" class="btn btn-success btn-sm">
         <i class="fa fa-plus"></i> {% trans "Add Room" %}</a>
     {% endif %}
-    <form class="form-inline d-inline-block">
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
         {{ viewform.sorting }}
         {{ filterform.filter }}
     </form>

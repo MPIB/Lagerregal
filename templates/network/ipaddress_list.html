@@ -14,7 +14,7 @@
             <i class="fa fa-plus"></i> {% trans "Add IP-Address" %}
         </a>
     {% endif %}
-    <form class="form-inline d-inline-block">
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
         {{ viewform.department }}
         {{ viewform.category }}
         {{ filterform.filter }}
