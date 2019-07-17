@@ -30,12 +30,12 @@ class DevicetagList(PermissionRequiredMixin, PaginationMixin, ListView):
         devicetags = Devicetag.objects.all()
 
         # filtering devicetags
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
         if self.filterstring:
             devicetags = devicetags.filter(name__icontains=self.filterstring)
 
         # sort view of devicetags by name or ID
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devicetags = devicetags.order_by(self.viewsorting)
 

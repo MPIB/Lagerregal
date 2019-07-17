@@ -45,13 +45,13 @@ class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
 
     def get_queryset(self):
         users = Lageruser.objects.all()
-        self.filterstring = self.kwargs.pop("filter", "")
+        self.filterstring = self.request.GET.get("filter", "")
 
         # filtering by department
         if self.request.user.departments.count() > 0:
-            self.departmentfilter = self.kwargs.get("department", "my")
+            self.departmentfilter = self.request.GET.get("department", "my")
         else:
-            self.departmentfilter = self.kwargs.get("department", "all")
+            self.departmentfilter = self.request.GET.get("department", "all")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
             users = users.filter(departments__id=self.departmentfilter).distinct()
