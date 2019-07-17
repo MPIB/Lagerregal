@@ -25,7 +25,7 @@
 
     <div class="card-footer text-right">
         {% with dep=user.main_department|default:"all" %}
-            <a href="{% url 'device-list' department=dep filter='bookmark' sorting='name' %}">{% trans "More…" %}</a>
+            <a href="{% url 'device-list' %}?department={{ dep|iriencode }}&filter=bookmark&sorting=name">{% trans "More…" %}</a>
         {% endwith %}
     </div>
 {% endblock %}

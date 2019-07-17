@@ -32,7 +32,7 @@ class TypeTests(TestCase):
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
         # testing the successful loading of second page of devicetype-list (statuscode 2xx)
-        response = self.client.get('/types/page/2/')
+        response = self.client.get('/types/?page=2')
         self.assertEqual(response.status_code, 200)
 
     def test_detail_view(self):

@@ -31,7 +31,7 @@ class IpAddressTests(TestCase):
         self.assertEqual(response.context["paginator"].num_pages, 2)
 
         # testing the successful loading of second page of ipadresses-list (statuscode 2xx)
-        response = self.client.get('/ipaddresses/page/2/')
+        response = self.client.get('/ipaddresses/?page=2')
         self.assertEqual(response.status_code, 200)
 
     def test_create_view(self):
