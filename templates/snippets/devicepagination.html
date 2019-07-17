@@ -5,28 +5,14 @@
     <nav class="d-flex justify-content-between mb-3">
         <div>
             {% if page_obj.has_previous %}
-                {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
-                    <a class="btn btn-success" href="{% url 'device-list' 1 %}">
-                        <i class="fa fa-double-angle-left"></i> {% trans "First" %}
-                    </a>
-                    <a class="btn btn-success" href="{% url 'device-list' page_obj.previous_page_number %}">
-                        <i class="fa fa-angle-left"></i> {% trans "Previous" %}
-                    </a>
-                {% else %}
-                    <a class="btn btn-success" href="{% url 'device-list'  1 viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
-                        <i class="fa fa-double-angle-left"></i> {% trans "First" %}
-                    </a>
-                    <a class="btn btn-success" href="{% url 'device-list' page_obj.previous_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
-                        <i class="fa fa-angle-left"></i> {% trans "Previous" %}
-                    </a>
-                {% endif %}
+                <a href="{% current_url page=1 %}" class="btn btn-success"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a>
+                <a href="{% current_url page=page_obj.previous_page_number %}" class="btn btn-success"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a>
             {% else %}
-                <a class="btn btn-success disabled" href="#">
-                    <i class="fa fa-angle-left"></i> {% trans "Previous" %}
-                </a>
+                <button name="page" disabled class="btn btn-success"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</button>
+                <button name="page" disabled class="btn btn-success"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</button>
             {% endif %}
         </div>
-        <div>
+        <label>
             {% trans "Page" %}
             <select class="pageselect">
                 {% for pagenumber in  page_obj.paginator.num_pages|get_range %}
@@ -38,28 +24,14 @@
                 {% endfor %}
             </select>
             {% trans "of" %} {{ page_obj.paginator.num_pages }}
-        </div>
+        </label>
         <div>
             {% if page_obj.has_next %}
-                {% if viewform.viewfilter.value == "active" and viewform.viewsorting.value == "name" and viewform.departmentfilter.value == "all" %}
-                    <a class="btn btn-success" href="{% url 'device-list' page_obj.next_page_number %}">
-                        {% trans "Next" %} <i class="fa fa-angle-right"></i>
-                    </a>
-                    <a class="btn btn-success" href="{% url 'device-list' page_obj.paginator.num_pages %}">
-                        {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
-                    </a>
-                {% else %}
-                    <a class="btn btn-success" href="{% url 'device-list' page_obj.next_page_number viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
-                        {% trans "Next" %} <i class="fa fa-angle-right"></i>
-                    </a>
-                    <a class="btn btn-success" href="{% url 'device-list' page_obj.paginator.num_pages viewform.departmentfilter.value viewform.viewsorting.value viewform.viewfilter.value %}">
-                        {% trans "Last" %} <i class="fa fa-double-angle-right"></i>
-                    </a>
-                {% endif %}
+                <a href="{% current_url page=page_obj.next_page_number %}" class="btn btn-success">{% trans "Next" %} <i class="fa fa-angle-right"></i></a>
+                <a href="{% current_url page=page_obj.paginator.num_pages %}" class="btn btn-success">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a>
             {% else %}
-                <a class="btn btn-success disabled" href="">
-                    {% trans "Next" %} <i class="fa fa-angle-right"></i>
-                </a>
+                <button name="page" disabled class="btn btn-success">{% trans "Next" %} <i class="fa fa-angle-right"></i></button>
+                <button name="page" disabled class="btn btn-success">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></button>
             {% endif %}
         </div>
     </nav>
