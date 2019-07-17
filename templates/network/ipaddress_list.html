@@ -9,14 +9,16 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewfilter }}
-    {{ viewform.departmentfilter }}
     {% if perms.network.add_ipaddress %}
         <a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add IP-Address" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block">
+        {{ viewform.departmentfilter }}
+        {{ viewform.viewfilter }}
+        {{ filterform.filterstring }}
+    </form>
 {% endblock %}
 
 {% block content %}

@@ -8,13 +8,15 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.devicetypes.add_type %}
         <a href="{% url 'type-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Devicetype" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block">
+        {{ viewform.viewsorting }}
+        {{ filterform.filterstring }}
+    </form>
 {% endblock %}
 
 {% block content %}

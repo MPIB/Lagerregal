@@ -8,8 +8,10 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ filterform.departmentfilter }}
+    <form class="form-inline d-inline-block">
+        {{ filterform.departmentfilter }}
+        {{ filterform.filterstring }}
+    </form>
 {% endblock %}
 
 {% block content %}

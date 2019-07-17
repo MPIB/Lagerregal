@@ -8,9 +8,11 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {{ groupfilterform.groupfilter }}
+    <form class="form-inline d-inline-block">
+        {{ groupfilterform.groupfilter }}
+        {{ viewform.viewsorting }}
+        {{ filterform.filterstring }}
+    </form>
 {% endblock %}
 
 {% block content %}

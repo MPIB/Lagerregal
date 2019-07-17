@@ -8,13 +8,15 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.users.add_department %}
         <a href="{% url 'department-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Department" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block">
+        {{ viewform.viewsorting }}
+        {{ filterform.filterstring }}
+    </form>
 {% endblock %}
 
 {% block content %}

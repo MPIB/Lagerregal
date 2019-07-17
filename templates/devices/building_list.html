@@ -7,13 +7,15 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.devices.add_building %}
         <a href="{% url 'building-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Building" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block">
+        {{ viewform.viewsorting }}
+        {{ filterform.filterstring }}
+    </form>
 {% endblock %}
 
 {% block content %}
