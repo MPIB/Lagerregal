@@ -38,8 +38,8 @@
         }
     });
 
-    var helper;
-    $(document).ready(function() {
+    $(function() {
+        var helper;
         $("#id_searchname").focusin( function() {
             window.setTimeout( function() {
                 if ($("#id_searchname").is(":focus")) {
