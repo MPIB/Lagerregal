@@ -58,7 +58,6 @@ jobs:
 #install:
 #  - "pip install -r requirements.txt"
 #  - "pip install flake8"
-#  - npm install -g casperjs
 #  # create the database
 #  - "cp Lagerregal/template_development.py Lagerregal/settings.py"
 #  - "./manage.py migrate"

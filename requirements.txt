@@ -7,7 +7,6 @@ django-oauth-toolkit
 pytz
 pystache
 model_mommy
-django-casper
 django_auth_ldap
 django-favicon
 django-npm
