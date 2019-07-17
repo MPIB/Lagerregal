@@ -185,6 +185,7 @@ class DepartmentViewForm(ViewForm):
 
 class FilterForm(forms.Form):
     filterstring = forms.CharField(max_length=100,
+                                   required=False,
                                    widget=forms.TextInput(attrs={"class": "form-control form-control-sm",
                                                                  "placeholder": "Filter"}))
 
