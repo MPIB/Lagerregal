@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -33,5 +33,5 @@
             </tr>
         {% endfor %}
     </table>
-    {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

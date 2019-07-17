@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+    {% include "snippets/pagination.html" %}
     <table id="adresstable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -55,7 +55,7 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}
 
 {% block htmlend %}

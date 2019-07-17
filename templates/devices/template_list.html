@@ -15,7 +15,7 @@
     {% endif %}
 {% endblock %}
 
-{% include "snippets/pagination_simple.html" with listurl='template-list' %}
+{% include "snippets/pagination.html" %}
 {% block content %}
     <ul>
         {% for template in template_list %}
@@ -27,5 +27,5 @@
             </li>
         {% endfor %}
     </ul>
-    {% include "snippets/pagination_simple.html" with listurl='template-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

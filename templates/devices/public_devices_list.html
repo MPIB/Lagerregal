@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicepagination.html" %}
+    {% include "snippets/pagination.html" %}
     <table id="devicetable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -44,5 +44,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/pagination_simple.html" %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

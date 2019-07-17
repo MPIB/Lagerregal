@@ -39,7 +39,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicepagination.html" %}
+    {% include "snippets/pagination.html" %}
     <form method="POST" action="{%  url "export-csv" %}" id="exportform" class="text-right">{% csrf_token %}
         <input type="hidden" name="viewfilter"  value = "{{viewfilter}}"/>
         <input type="hidden" name="departmentfilter" />
@@ -110,5 +110,5 @@
             {% endif %}
         </tbody>
     </table>
-    {% include "snippets/devicepagination.html" %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

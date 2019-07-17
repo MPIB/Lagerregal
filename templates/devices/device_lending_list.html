@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/subpagination.html" with parent=device.pk listurl='device-lending-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -29,5 +29,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/subpagination.html" with parent=device.pk listurl='device-lending-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/userpagination.html" with listurl='user-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -48,5 +48,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/userpagination.html" with listurl='user-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

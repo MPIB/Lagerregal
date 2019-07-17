@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/pagination.html" with listurl='section-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -31,6 +31,5 @@
             </tr>
         {% endfor %}
     </table>
-
-    {% include "snippets/pagination.html" with listurl='section-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}
