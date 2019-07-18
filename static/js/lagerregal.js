@@ -56,56 +56,8 @@
             }, 60000 );
         });
 
-        var getFilterBasePath = function() {
-            var index = window.location.pathname.length;
-            ['department', 'sorting', 'group', 'filter', 'page'].forEach(function(key) {
-                var i = window.location.pathname.indexOf(key)
-                if (i !== -1 && i < index) {
-                    index = i;
-                }
-            });
-            return window.location.pathname.substr(0, index - 1);
-        };
-
-        var getFilterPath = function() {
-            var ids = {
-                department: ["#id_departmentfilter"],
-                sorting: ["#id_viewsorting"],
-                group: ["#id_groupfilter"],
-                filter: ["#id_viewfilter", "#id_filterstring"],
-            };
-            var defaults = {
-                department: "all",
-                filter: "",
-            };
-
-            var path = '';
-            var index = window.location.pathname.length;
-            ['department', 'sorting', 'group', 'filter'].forEach(function(key) {
-                ids[key].forEach(function(id) {
-                    var element = $(id);
-                    if (element.length) {
-                        var value = element.val() || defaults[key];
-                        path += "/" + key + "/" + value;
-                    }
-                });
-            });
-
-            return path;
-        };
-
-        var setFilters = function() {
-            window.location.pathname = getFilterBasePath() + getFilterPath();
-        };
-
-        $('#id_departmentfilter').change(setFilters);
-        $('#id_viewsorting').change(setFilters);
-        $('#id_groupfilter').change(setFilters);
-        $('#id_viewfilter').change(setFilters);
-        $('#id_filterstring').change(setFilters);
-        $(".pageselect").change(function() {
-            var s = "/page/" + $(this).val();
-            window.location.pathname = getFilterBasePath() + s + getFilterPath();
+        $(document).on('change', '[data-autosubmit="change"] select', function(event) {
+            this.form.submit();
         });
 
         $('[data-timeago]').timeago();

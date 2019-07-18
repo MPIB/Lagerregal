@@ -6,7 +6,7 @@ from django_select2.forms import Select2MultipleWidget
 from devices.forms import get_department_options
 from network.models import IpAddress
 
-VIEWFILTER = (
+CATEGORIES = (
     ('all', _('All IP-Addresses')),
     ('free', _('Free IP-Addresses')),
     ('used', _('Used IP-Addresses')),
@@ -28,12 +28,14 @@ class IpAddressForm(forms.ModelForm):
 
 
 class ViewForm(forms.Form):
-    viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right form-control-sm form-control"}))
-    departmentfilter = forms.ChoiceField(choices=get_department_options(),
-                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control form-control-sm"}))
+    category = forms.ChoiceField(
+        choices=CATEGORIES,
+        widget=forms.Select(attrs={"class": "form-control-sm form-control"}),
+    )
+    department = forms.ChoiceField(
+        choices=get_department_options(),
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
 
 
 class UserIpAddressForm(forms.Form):

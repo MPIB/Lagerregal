@@ -1824,7 +1824,7 @@ msgstr "Erste"
 #: templates/snippets/userpagination.html:11
 #: templates/snippets/userpagination.html:13
 msgid "Previous"
-msgstr "Nächste"
+msgstr "Vorherige"
 
 #: templates/snippets/devicegrouppagination.html:16
 #: templates/snippets/devicepagination.html:23

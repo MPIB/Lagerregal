@@ -9,18 +9,20 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewfilter }}
-    {{ viewform.departmentfilter }}
     {% if perms.network.add_ipaddress %}
         <a href="{% url 'ipaddress-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add IP-Address" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.department }}
+        {{ viewform.category }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+    {% include "snippets/pagination.html" %}
     <table id="adresstable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -55,7 +57,7 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/ipaddresspagination.html" with listurl='ipaddress-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}
 
 {% block htmlend %}

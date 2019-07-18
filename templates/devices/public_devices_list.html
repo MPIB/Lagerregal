@@ -8,13 +8,15 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {{ groupfilterform.groupfilter }}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ groupfilterform.group }}
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicepagination.html" %}
+    {% include "snippets/pagination.html" %}
     <table id="devicetable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -44,5 +46,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/pagination_simple.html" %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

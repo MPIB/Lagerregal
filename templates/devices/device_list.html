@@ -8,10 +8,6 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ viewform.viewsorting }}
-    {{ viewform.viewfilter }}
-    {{ viewform.departmentfilter }}
-
     {% if perms.devices.add_device %}
         <div class="btn-group">
             <a href="{% url 'device-add' %}" class="btn btn-success btn-sm">
@@ -36,10 +32,16 @@
             </ul>
         </div>
     {% endif %}
+
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.department }}
+        {{ viewform.category }}
+        {{ viewform.sorting }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicepagination.html" %}
+    {% include "snippets/pagination.html" %}
     <form method="POST" action="{%  url "export-csv" %}" id="exportform" class="text-right">{% csrf_token %}
         <input type="hidden" name="viewfilter"  value = "{{viewfilter}}"/>
         <input type="hidden" name="departmentfilter" />
@@ -110,5 +112,5 @@
             {% endif %}
         </tbody>
     </table>
-    {% include "snippets/devicepagination.html" %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

@@ -8,17 +8,19 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.devicetypes.add_type %}
         <a href="{% url 'type-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Devicetype" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/pagination.html" with listurl='type-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -33,5 +35,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/pagination.html" with listurl='type-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

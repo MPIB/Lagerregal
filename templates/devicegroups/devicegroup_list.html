@@ -7,18 +7,20 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {{ viewform.departmentfilter }}
     {% if perms.devicegroups.add_devicegroup %}
         <a href="{% url 'devicegroup-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Devicegroup" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.department }}
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -33,5 +35,5 @@
             </tr>
         {% endfor %}
     </table>
-    {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

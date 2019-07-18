@@ -8,12 +8,14 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ filterform.departmentfilter }}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ filterform.department }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/userpagination.html" with listurl='user-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -48,5 +50,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/userpagination.html" with listurl='user-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

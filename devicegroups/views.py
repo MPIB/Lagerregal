@@ -27,7 +27,7 @@ class DevicegroupList(PermissionRequiredMixin, PaginationMixin, ListView):
     def get_queryset(self):
         '''method to query all devicegroups and filter and sort it'''
         devicegroups = Devicegroup.objects.all()
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
 
         # if there is a filterstring, select the matching results
         if self.filterstring == "None":
@@ -36,14 +36,14 @@ class DevicegroupList(PermissionRequiredMixin, PaginationMixin, ListView):
             devicegroups = devicegroups.filter(name__icontains=self.filterstring)
 
         # sort list of devices by name or ID
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devicegroups = devicegroups.order_by(self.viewsorting)
 
         if self.request.user.departments.count() > 0:
-            self.departmentfilter = self.kwargs.get("department", "my")
+            self.departmentfilter = self.request.GET.get("department", "my")
         else:
-            self.departmentfilter = self.kwargs.get("department", "all")
+            self.departmentfilter = self.request.GET.get("department", "all")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
             try:
@@ -67,12 +67,12 @@ class DevicegroupList(PermissionRequiredMixin, PaginationMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups"))]
-        context["viewform"] = DepartmentViewForm(initial={"viewsorting": self.viewsorting,
-            "departmentfilter": self.departmentfilter})
+        context["viewform"] = DepartmentViewForm(initial={"sorting": self.viewsorting,
+            "department": self.departmentfilter})
 
         # filtering
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
 

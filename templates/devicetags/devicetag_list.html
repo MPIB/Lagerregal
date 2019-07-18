@@ -8,17 +8,19 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.devicetags.add_devicetag %}
         <a href="{% url 'devicetag-add' %}" class="btn btn-success btn-sm">
             <i class="fa fa-plus"></i> {% trans "Add Devicetag" %}
         </a>
     {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/pagination.html" with listurl='devicetag-list' %}
+    {% include "snippets/pagination.html" %}
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -34,5 +36,5 @@
         {% endfor %}
     </table>
 
-    {% include "snippets/pagination.html" with listurl='devicetag-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

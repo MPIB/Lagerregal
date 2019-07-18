@@ -8,15 +8,17 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.devices.add_room %}<a href="{% url 'room-add' %}" class="btn btn-success btn-sm">
         <i class="fa fa-plus"></i> {% trans "Add Room" %}</a>
     {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/pagination.html" with listurl='room-list' %}
+    {% include "snippets/pagination.html" %}
     <table id="roomtable" class="table table-bordered table-striped">
         <thead>
             <tr>
@@ -33,5 +35,5 @@
             {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/pagination.html" with listurl='room-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

@@ -88,7 +88,7 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
 
     def get_queryset(self):
         '''method for query results and display it depending on existing filters (viewfilter, department)'''
-        self.viewfilter = self.kwargs.get("filter", "active")
+        self.viewfilter = self.request.GET.get("category", "active")
         devices = None
         lendings = None
 
@@ -119,11 +119,11 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
         else:
             devices = Device.active()
 
-        self.departmentfilter = self.kwargs.get("department", "all")
+        self.departmentfilter = self.request.GET.get("department", "all")
         # if user has departments: set departments as filter
         if hasattr(self.request.user, 'departments'):
             if self.request.user.departments.count() > 0:
-                self.departmentfilter = self.kwargs.get("department", "my")
+                self.departmentfilter = self.request.GET.get("department", "my")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
             try:
@@ -158,7 +158,7 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
                 self.departmentfilter = self.departmentfilter.id
             if hasattr(self.request.user, 'departments'):
                 devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
-            self.viewsorting = self.kwargs.get("sorting", "name")
+            self.viewsorting = self.request.GET.get("sorting", "name")
             if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
                 devices = devices.order_by(self.viewsorting)
 
@@ -172,9 +172,9 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
 
         # getting filters
         context["viewform"] = DeviceViewForm(initial={
-            'viewfilter': self.viewfilter,
-            "viewsorting": self.viewsorting,
-            "departmentfilter": self.departmentfilter
+            'category': self.viewfilter,
+            "sorting": self.viewsorting,
+            "department": self.departmentfilter
         })
 
         context["today"] = datetime.datetime.today()
@@ -200,35 +200,35 @@ class ExportCsv(PermissionRequiredMixin, View):
                 devices = None
                 searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
 
-                if request.POST['viewfilter'] == "active":
+                if request.POST['category'] == "active":
                     devices = Device.active()
-                elif request.POST['viewfilter'] == "all":
+                elif request.POST['category'] == "all":
                     devices = Device.objects.all()
-                elif request.POST['viewfilter'] == "available":
+                elif request.POST['category'] == "available":
                     devices = Device.active().filter(currentlending=None)
-                elif request.POST['viewfilter'] == "lent":
+                elif request.POST['category'] == "lent":
                     devices = Lending.objects.filter(returndate=None)
-                elif request.POST['viewfilter'] == "archived":
+                elif request.POST['category'] == "archived":
                     devices = Device.objects.exclude(archived=None)
-                elif request.POST['viewfilter'] == "trashed":
+                elif request.POST['category'] == "trashed":
                     devices = Device.objects.exclude(trashed=None)
-                elif request.POST['viewfilter'] == "overdue":
+                elif request.POST['category'] == "overdue":
                     devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
-                elif request.POST['viewfilter'] == "returnsoon":
+                elif request.POST['category'] == "returnsoon":
                     soon = datetime.date.today() + datetime.timedelta(days=10)
                     devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
                                                           duedate__gt=datetime.date.today())
-                elif request.POST['viewfilter'] == "temporary":
+                elif request.POST['category'] == "temporary":
                     devices = Device.active().filter(templending=True)
-                elif request.POST['viewfilter'] == "bookmark":
+                elif request.POST['category'] == "bookmark":
                     if self.request.user.is_authenticated:
                         devices = self.request.user.bookmarks.all()
 
-                if request.POST["departmentfilter"] == "my":
+                if request.POST["department"] == "my":
                     devices = devices.filter(department__in=request.user.departments.all())  # does this work?
-                elif request.POST["departmentfilter"].isdigit():
+                elif request.POST["department"].isdigit():
                     devices = devices.filter(department__in=Department.objects.filter(id=int(request.POST["departmentfilter"])))
-                elif request.POST["departmentfilter"] == "all":
+                elif request.POST["department"] == "all":
                     pass
 
                 writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
@@ -1089,10 +1089,10 @@ class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
 
     def get_queryset(self):
         rooms = Room.objects.select_related("building").all()
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
         if self.filterstring:
             rooms = rooms.filter(name__icontains=self.filterstring)
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             rooms = rooms.order_by(self.viewsorting)
         return rooms
@@ -1103,7 +1103,7 @@ class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
         context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -1229,10 +1229,10 @@ class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
 
     def get_queryset(self):
         buildings = Building.objects.all()
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
         if self.filterstring:
             buildings = buildings.filter(name__icontains=self.filterstring)
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             buildings = buildings.order_by(self.viewsorting)
         return buildings
@@ -1243,7 +1243,7 @@ class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
         context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         return context
@@ -1366,10 +1366,10 @@ class ManufacturerList(PermissionRequiredMixin, PaginationMixin, ListView):
 
     def get_queryset(self):
         manufacturers = Manufacturer.objects.all()
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
         if self.filterstring:
             manufacturers = manufacturers.filter(name__icontains=self.filterstring)
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             manufacturers = manufacturers.order_by(self.viewsorting)
         return manufacturers
@@ -1380,7 +1380,7 @@ class ManufacturerList(PermissionRequiredMixin, PaginationMixin, ListView):
         context["breadcrumbs"] = [(reverse("manufacturer-list"), _("Manufacturers"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
         if context["is_paginated"] and context["page_obj"].number > 1:
@@ -1746,13 +1746,13 @@ class PublicDeviceListView(ListView):
             raise ImproperlyConfigured
 
         devices = Device.objects.filter(**query_dict)
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
         if self.filterstring:
             devices = devices.filter(name__icontains=self.filterstring)
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devices = devices.order_by(self.viewsorting)
-        self.groupfilter = self.kwargs.pop("group", "all")
+        self.groupfilter = self.request.GET.get("group", "all")
         if self.groupfilter != "all":
             devices = devices.filter(group__id=self.groupfilter)
         return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
@@ -1767,7 +1767,7 @@ class PublicDeviceListView(ListView):
             context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
         else:
             context["filterform"] = FilterForm()
-        context["groupfilterform"] = DeviceGroupFilterForm(initial={"groupfilter": self.groupfilter})
+        context["groupfilterform"] = DeviceGroupFilterForm(initial={"group": self.groupfilter})
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
         context["nochrome"] = self.request.GET.get("nochrome", False)
