@@ -12,8 +12,10 @@
             <div class="alert-danger alert">{% blocktrans %}Do you really want to delete {{ object }}?{% endblocktrans %}</div>
             <form action="" method="post" class="form-horizontal">
                 {% csrf_token %}
-                <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm pull-right"/>
-                <a href="{{ object.get_absolute_url }}" class="btn btn-secondary btn-sm pull-right">{% trans "No" %}</a>
+                <div class="text-right">
+                    <a href="{{ object.get_absolute_url }}" class="btn btn-secondary btn-sm">{% trans "No" %}</a>
+                    <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm"/>
+                </div>
             </form>
         </div>
     </div>
