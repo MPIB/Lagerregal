@@ -15,4 +15,4 @@ class DeviceTagForm(forms.Form):
     error_css_class = 'has-error'
     tags = forms.ModelMultipleChoiceField(
         Devicetag.objects.all(),
-        widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
+        widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))
