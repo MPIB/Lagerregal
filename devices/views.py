@@ -192,52 +192,49 @@ class ExportCsv(PermissionRequiredMixin, View):
     permission_required = 'devices.view_device'
 
     def post(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
+        devices = None
+        searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
 
-        if "format" in request.POST:
-            if request.POST["format"] == "csv":
-                response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
-                devices = None
-                searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
+        if request.POST['category'] == "active":
+            devices = Device.active()
+        elif request.POST['category'] == "all":
+            devices = Device.objects.all()
+        elif request.POST['category'] == "available":
+            devices = Device.active().filter(currentlending=None)
+        elif request.POST['category'] == "lent":
+            devices = Lending.objects.filter(returndate=None)
+        elif request.POST['category'] == "archived":
+            devices = Device.objects.exclude(archived=None)
+        elif request.POST['category'] == "trashed":
+            devices = Device.objects.exclude(trashed=None)
+        elif request.POST['category'] == "overdue":
+            devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
+        elif request.POST['category'] == "returnsoon":
+            soon = datetime.date.today() + datetime.timedelta(days=10)
+            devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
+                                                  duedate__gt=datetime.date.today())
+        elif request.POST['category'] == "temporary":
+            devices = Device.active().filter(templending=True)
+        elif request.POST['category'] == "bookmark":
+            if self.request.user.is_authenticated:
+                devices = self.request.user.bookmarks.all()
 
-                if request.POST['category'] == "active":
-                    devices = Device.active()
-                elif request.POST['category'] == "all":
-                    devices = Device.objects.all()
-                elif request.POST['category'] == "available":
-                    devices = Device.active().filter(currentlending=None)
-                elif request.POST['category'] == "lent":
-                    devices = Lending.objects.filter(returndate=None)
-                elif request.POST['category'] == "archived":
-                    devices = Device.objects.exclude(archived=None)
-                elif request.POST['category'] == "trashed":
-                    devices = Device.objects.exclude(trashed=None)
-                elif request.POST['category'] == "overdue":
-                    devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
-                elif request.POST['category'] == "returnsoon":
-                    soon = datetime.date.today() + datetime.timedelta(days=10)
-                    devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
-                                                          duedate__gt=datetime.date.today())
-                elif request.POST['category'] == "temporary":
-                    devices = Device.active().filter(templending=True)
-                elif request.POST['category'] == "bookmark":
-                    if self.request.user.is_authenticated:
-                        devices = self.request.user.bookmarks.all()
+        if request.POST["department"] == "my":
+            devices = devices.filter(department__in=request.user.departments.all())  # does this work?
+        elif request.POST["department"].isdigit():
+            devices = devices.filter(department__in=Department.objects.filter(id=int(request.POST["departmentfilter"])))
+        elif request.POST["department"] == "all":
+            pass
 
-                if request.POST["department"] == "my":
-                    devices = devices.filter(department__in=request.user.departments.all())  # does this work?
-                elif request.POST["department"].isdigit():
-                    devices = devices.filter(department__in=Department.objects.filter(id=int(request.POST["departmentfilter"])))
-                elif request.POST["department"] == "all":
-                    pass
-
-                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
-                headers = [_("ID"), _("Device"), _("Inventorynumber"),
-                                    _("Devicetype"), _("Room"), _("Devicegroup")]
-                writer.writerow(headers)
-                for device in devices.values_list(*searchvalues):
-                    writer.writerow(device)
-                return response
+        writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
+        headers = [_("ID"), _("Device"), _("Inventorynumber"),
+                            _("Devicetype"), _("Room"), _("Devicegroup")]
+        writer.writerow(headers)
+        for device in devices.values_list(*searchvalues):
+            writer.writerow(device)
+        return response
 
 
 class DeviceDetail(PermissionRequiredMixin, DetailView):
