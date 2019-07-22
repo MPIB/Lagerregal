@@ -400,14 +400,17 @@
                 <ul class="list-group">
                     {% for address in device.ipaddress_set.all %}
                         <li class="list-group-item ipaddress-list">
-                            <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a>
-                            <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">
-                                <i class="fa fa-times"></i>
-                            </a>
-                            <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                            <br/>
+                            <div>
+                                <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a>
+                                <div class="pull-right">
+                                    <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="text-secondary">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="text-secondary">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
                             <small>{{ address.purpose|default:"" }}</small>
                         </li>
                     {% endfor %}
@@ -434,7 +437,7 @@
                     {% for tag in device.tags.all %}
                         <li class="list-group-item tag-list">
                             {{ tag.name }}
-                            <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right">
+                            <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="pull-right text-secondary">
                                 <i class="fa fa-times"></i>
                             </a>
                         </li>

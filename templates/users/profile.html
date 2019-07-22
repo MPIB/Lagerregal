@@ -218,7 +218,7 @@
                                 <tr>
                                     <td>
                                         <a href="{% url 'ipaddress-detail' ipaddress.pk %}">{{ ipaddress.address }}</a>
-                                        <a href="{% url 'user-ipaddress-remove' profileuser.pk ipaddress.pk %}" class="close delete right"><i class="fa fa-times"></i></a>
+                                        <a href="{% url 'user-ipaddress-remove' profileuser.pk ipaddress.pk %}" class="text-secondary pull-right"><i class="fa fa-times"></i></a>
                                     </td>
                                 </tr>
                             {% endfor %}

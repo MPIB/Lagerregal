@@ -1,13 +1,3 @@
-.delete {
-    color:#444;
-    font-weight: bold;
-    font-size: 1.1em;
-}
-
-.delete:hover {
-    color:#c60f13;
-}
-
 #loginbutton {
     margin-right:15px;
 }
