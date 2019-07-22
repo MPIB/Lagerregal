@@ -158,9 +158,9 @@
                                     <td>
                                         {{ lending.duedate }}
                                         {% if lending.duedate < weekago %}
-                                            <span class="error-icon">!</span>
+                                            <i class="fa fa-exclamation-circle text-danger"></i>
                                         {% elif lending.duedate < today %}
-                                            <span class="warning-icon">!</span>
+                                            <i class="fa fa-exclamation-circle text-warning"></i>
                                         {% endif %}
                                     </td>
                                     <td>{{ lending.device.room }}</td>

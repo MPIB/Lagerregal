@@ -8,26 +8,6 @@
     color:#c60f13;
 }
 
-.warning-icon {
-    margin-left:5px;
-    background-color:#2ba6cb;
-    padding:2px 5px;
-    font-weight:bold;
-    color:#fff;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-
-.error-icon {
-    margin-left:5px;
-    background-color:#c60f13;
-    padding:2px 5px;
-    font-weight:bold;
-    color:#fff;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-
 #loginbutton {
     margin-right:15px;
 }
