@@ -43,8 +43,8 @@
 {% block content %}
     {% include "snippets/pagination.html" %}
     <form method="POST" action="{%  url "export-csv" %}" id="exportform" class="text-right">{% csrf_token %}
-        <input type="hidden" name="viewfilter"  value = "{{viewfilter}}"/>
-        <input type="hidden" name="departmentfilter" />
+        {{ viewform.department.as_hidden }}
+        {{ viewform.category.as_hidden }}
         <button class="btn btn-secondary btn-sm" id="exportbutton"><i class="fa fa-download"></i> {% trans "Export as CSV" %}</button>
     </form>
     <table id="devicetable" class="table table-bordered table-striped">
