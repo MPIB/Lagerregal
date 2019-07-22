@@ -10,7 +10,7 @@
 
 {% block modalBody %}
     {% for field in mailform %}
-        <div class="form-group {{ field.css_classes }}">
+        <div class="form-group row {{ field.css_classes }}">
             <label for="{{ field.html_name }}" class="col-lg-4 control-label">
                 {{ field.label }}{% if field.field.required %}*{% endif %}
             </label>

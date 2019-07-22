@@ -33,7 +33,7 @@
             <hr>
 
             <h3>{% trans "Avatar" %}</h3>
-            <form enctype="multipart/form-data" action="{% url 'usersettings' %}" method="post" class="form-horizontal">
+            <form enctype="multipart/form-data" action="{% url 'usersettings' %}" method="post">
                 {% csrf_token %}
                 {% if user.avatar %}
                     <div class="row">
@@ -49,7 +49,7 @@
                     </div>
                     <div class="clearfix"></div>
                 {% endif %}
-                <div class="form-group {{ avatarform.avatar.css_classes }}">
+                <div class="form-group row {{ avatarform.avatar.css_classes }}">
                     <div class="col-lg-8 col-lg-offset-4">
                         {{ avatarform.avatar|add_class:'form-control' }}
                         {% if avatarform.avatar.errors or avatarform.avatar.help_text != "" %}

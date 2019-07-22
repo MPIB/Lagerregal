@@ -9,12 +9,12 @@
 {% block content %}
     <div class="row">
         <div class="col-md-6 col-md-offset-3 well well-lg">
-            <form action="" method="post" class="form-horizontal" id="forms">{% csrf_token %}
+            <form action="" method="post" id="forms">{% csrf_token %}
                 {% for field in form %}
                     {% if field.html_name == "extra_fieldcount" %}
                         {{ field }}
                     {% else %}
-                        <div class="form-group {{ field.css_classes }}">
+                        <div class="form-group row {{ field.css_classes }}">
                             <label for="{{ field.html_name }}" class="col-lg-4 control-label">
                                 {{ field.label }}{% if field.field.required %}*{% endif %}
                             </label>

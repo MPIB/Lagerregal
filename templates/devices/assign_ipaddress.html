@@ -11,9 +11,9 @@
 {% block content %}
     <div class="row">
         <div class="col-md-6 col-md-offset-3 well well-lg">
-            <form method="post" class="form-horizontal">{% csrf_token %}
+            <form method="post">{% csrf_token %}
                 {% for field in form %}
-                    <div class="form-group {{ field.css_classes }}">
+                    <div class="form-group row {{ field.css_classes }}">
                         <label class="col-lg-4 control-label">
                             {{ field.label }}{% if field.field.required %}*{% endif %}
                         </label>

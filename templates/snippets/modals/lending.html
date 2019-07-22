@@ -13,7 +13,7 @@
 {% block modalUrl %}{% url "device-lend" %}{% endblock %}
 
 {% block modalBody %}
-    <div class="form-group {{ form.owner.css_classes }}">
+    <div class="form-group row {{ form.owner.css_classes }}">
         <label for="owner" class="col-lg-4 control-label">{% trans "Lent to" %}*</label>
 
         <div class="col-lg-8">
@@ -21,7 +21,7 @@
             <p class="help-block">{% for error in form.owner.errors %}{{ error }}, {% endfor %}</p>
         </div>
     </div>
-    <div class="form-group {{ form.duedate.css_classes }}">
+    <div class="form-group row {{ form.duedate.css_classes }}">
         <label for="duedate" class="col-lg-4 control-label">{% trans "Duedate" %}</label>
 
         <div class="col-lg-8">
@@ -29,7 +29,7 @@
             <p class="help-block">{% for error in form.duedate.errors %}{{ error }}, {% endfor %}</p>
         </div>
     </div>
-    <div class="form-group {{ form.room.css_classes }}">
+    <div class="form-group row {{ form.room.css_classes }}">
         <label for="room" class="col-lg-4 control-label">{% trans "Room" %}</label>
 
         <div class="col-lg-8">

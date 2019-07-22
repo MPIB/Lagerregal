@@ -9,7 +9,7 @@
 {% block modalUrl %}{% url "device-return" device.currentlending.id %}{% endblock %}
 
 {% block modalBody %}
-    <div class="form-group {{ form.room.css_classes }}">
+    <div class="form-group row {{ form.room.css_classes }}">
         <label for="room" class="col-lg-4 control-label">{% trans "Room" %}</label>
 
         <div class="col-lg-8">

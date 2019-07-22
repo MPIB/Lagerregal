@@ -8,13 +8,13 @@
         {% if form.non_field_errors %}
             <div class="alert alert-danger">{{ form.non_field_errors }}</div>
         {% endif %}
-        <form action="" method="post" class="form-horizontal" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">
+        <form action="" method="post" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">
             {% csrf_token %}
             {% for field in form.visible_fields %}
                 {% if field.name == 'device' %}
                     {{ field.as_hidden }}
                 {% elif field.name != 'smalldevice' %}
-                    <div class="form-group {{ field.css_classes }}">
+                    <div class="form-group row {{ field.css_classes }}">
                         <label for="{{ field.html_name }}" class="col-lg-3 control-label">
                             {{ field.label }}{% if field.field.required %}*{% endif %}
                         </label>
