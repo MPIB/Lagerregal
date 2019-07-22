@@ -4,12 +4,11 @@
 
 
 .w-close, .w-minimize {
-    color:#fff;
-    margin-left:8px;
+    color: rgba(255,255,255,0.75);
 }
 
 .w-close:hover, .w-minimize:hover  {
-    color:#000;
+    color: #fff;
     text-decoration: none;
 }
 
