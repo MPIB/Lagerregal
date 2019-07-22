@@ -194,7 +194,7 @@ class ExportCsv(PermissionRequiredMixin, View):
     def post(self, request):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
-        devices = None
+        devices = Device.objects.none()
         searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
 
         if request.POST['category'] == "active":
@@ -204,17 +204,20 @@ class ExportCsv(PermissionRequiredMixin, View):
         elif request.POST['category'] == "available":
             devices = Device.active().filter(currentlending=None)
         elif request.POST['category'] == "lent":
-            devices = Lending.objects.filter(returndate=None)
+            lendings = Lending.objects.filter(returndate=None)
+            devices = Device.objects.filter(lending__in=lendings)
         elif request.POST['category'] == "archived":
             devices = Device.objects.exclude(archived=None)
         elif request.POST['category'] == "trashed":
             devices = Device.objects.exclude(trashed=None)
         elif request.POST['category'] == "overdue":
-            devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
+            lendings = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
+            devices = Device.objects.filter(lending__in=lendings)
         elif request.POST['category'] == "returnsoon":
             soon = datetime.date.today() + datetime.timedelta(days=10)
-            devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
+            lendings = Lending.objects.filter(returndate=None, duedate__lte=soon,
                                                   duedate__gt=datetime.date.today())
+            devices = Device.objects.filter(lending__in=lendings)
         elif request.POST['category'] == "temporary":
             devices = Device.active().filter(templending=True)
         elif request.POST['category'] == "bookmark":
