@@ -11,7 +11,7 @@
     {% for picture in device.pictures.all %}
         <div class="row">
             <div class="col-sm-2">
-                <img src="{{ picture.image.url }}" class="img-responsive">
+                <img src="{{ picture.image.url }}" class="img-fluid">
             </div>
             <div class="col-sm-6">
                 <a href="{% url "device-picture-edit" device.pk picture.pk %}">{{ picture.caption }}</a>
