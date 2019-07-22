@@ -227,7 +227,7 @@ class ExportCsv(PermissionRequiredMixin, View):
         if request.POST["department"] == "my":
             devices = devices.filter(department__in=request.user.departments.all())  # does this work?
         elif request.POST["department"].isdigit():
-            devices = devices.filter(department__in=Department.objects.filter(id=int(request.POST["departmentfilter"])))
+            devices = devices.filter(department_id=int(request.POST["department"]))
         elif request.POST["department"] == "all":
             pass
 
