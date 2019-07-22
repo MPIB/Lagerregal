@@ -1957,7 +1957,7 @@ msgstr "Oder"
 #: templates/snippets/modals/lendingReturn.html:5
 #: templates/snippets/modals/lendingReturnHome.html:5
 msgid "Mark device as returned"
-msgstr "Gerät als zurückgegeben amrkieren"
+msgstr "Gerät als zurückgegeben markieren"
 
 #: templates/snippets/modals/mailpreview.html:4
 msgid "Preview for mailtemplate '<span id='previewmodal_header'></span>'"
