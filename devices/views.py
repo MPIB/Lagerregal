@@ -289,7 +289,7 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
         context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
                                    .select_related("sent_by").order_by("-pk")[:10]
 
-        context["today"] = datetime.datetime.utcnow().replace(tzinfo=utc)
+        context["today"] = datetime.date.today()
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
         context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
