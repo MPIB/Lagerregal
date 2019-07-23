@@ -62,7 +62,6 @@
 
 {% block htmlend %}
     <script type="text/javascript" language="javascript" src="{% static "datatables/media/js/jquery.dataTables.min.js" %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.plugin.ipaddress.js" %}"></script>
     <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
 {% endblock %}
 
@@ -71,9 +70,6 @@
         $('#adresstable').dataTable( {
             "bFilter": false,
             "paging": false,
-            columnDefs: [
-                { type: 'ip-address', targets: 0 }
-            ]
         });
     });
 {% endblock %}
