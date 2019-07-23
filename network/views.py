@@ -29,8 +29,8 @@ class IpAddressList(PermissionRequiredMixin, PaginationMixin, ListView):
     permission_required = 'network.view_ipaddress'
 
     def get_queryset(self):
-        self.viewfilter = self.request.GET.get("filter", "all")
-        self.filterstring = self.request.GET.get("search", "")
+        self.viewfilter = self.request.GET.get("category", "all")
+        self.filterstring = self.request.GET.get("filter", "")
         if self.viewfilter == "all":
             addresses = IpAddress.objects.all()
         elif self.viewfilter == "free":
@@ -45,9 +45,9 @@ class IpAddressList(PermissionRequiredMixin, PaginationMixin, ListView):
             addresses = IpAddress.objects.all()
 
         if self.request.user.departments.count() > 0:
-            self.departmentfilter = self.kwargs.get("department", "my")
+            self.departmentfilter = self.request.GET.get("department", "my")
         else:
-            self.departmentfilter = self.kwargs.get("department", "all")
+            self.departmentfilter = self.request.GET.get("department", "all")
 
         if self.departmentfilter != "all" and self.departmentfilter != "my":
             addresses = addresses.filter(department__id=self.departmentfilter)
