@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from devices.models import Device
 from network.models import IpAddress
 from users.models import Department
@@ -16,12 +18,11 @@ class LagerregalBackend:
     def has_perm(self, user_obj, perm, obj=None):
         if obj is None:
             return False
-        if (
-            perm == 'devices.view_device'
-            and isinstance(obj, Device)
-            and not obj.is_private
-        ):
-            return True
+
+        if perm == 'devices.view_device' and isinstance(obj, Device):
+            public_devices = Device.objects.filter(**settings.PUBLIC_DEVICES_FILTER)
+            if public_devices.filter(pk=obj.pk).exists():
+                return True
 
         if user_obj.is_active and user_obj.has_perm(perm):
             if isinstance(obj, Department):
@@ -37,5 +38,7 @@ class LagerregalBackend:
                     return obj.department in user_obj.departments.all()
 
             elif isinstance(obj, Device):
-                if user_obj.is_active and user_obj.has_perm(perm):
-                    return obj.department in user_obj.departments.all()
+                return (
+                    obj.department in user_obj.departments.all()
+                    or (perm == 'devices.view_device' and not obj.is_private)
+                )
