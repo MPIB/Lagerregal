@@ -144,7 +144,8 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
 
         self.viewsorting = self.request.GET.get("sorting", "name")
 
-        return get_devices(self.request.user, self.viewfilter, self.departmentfilter, self.viewsorting)
+        devices = get_devices(self.request.user, self.viewfilter, self.departmentfilter, self.viewsorting)
+        return devices.select_related('devicetype', 'room__building', 'group', 'currentlending__owner')
 
     def get_context_data(self, **kwargs):
         '''method for getting context data (filter, time, templates, breadcrumbs)'''
