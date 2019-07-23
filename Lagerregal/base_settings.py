@@ -204,10 +204,12 @@ NPM_FILE_PATTERNS = {
         'jquery-ui.min.css',
         'images/*.png',
     ],
-    'datatables': [
-        'media/css/jquery.dataTables.min.css',
-        'media/images/*.png',
-        'media/js/jquery.dataTables.min.js',
+    'datatables.net': [
+        'js/jquery.dataTables.min.js',
+    ],
+    'datatables.net-bs4': [
+        'css/dataTables.bootstrap4.min.css',
+        'js/dataTables.bootstrap4.min.js',
     ],
     'mustache': ['mustache.min.js'],
     'noty': [
