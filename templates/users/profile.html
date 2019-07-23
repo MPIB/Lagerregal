@@ -9,14 +9,14 @@
 {% block content %}
     <ul class="nav nav-tabs mb-3" id="myTab">
         {% if perms.users.view_user %}
-            <li class="nav-item"><a class="nav-link active" href="#about" data-toggle="tab" data-tab="about">About</a></li>
-            <li class="nav-item"><a class="nav-link" href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#about" data-toggle="tab" data-tab="about">{% trans 'About' %}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#devices" data-toggle="tab" data-tab="devices">{% trans 'Devices' %}</a></li>
         {% else %}
-            <li class="nav-item"><a class="nav-link active" href="#devices" data-toggle="tab" data-tab="devices">Devices</a></li>
+            <li class="nav-item"><a class="nav-link active" href="#devices" data-toggle="tab" data-tab="devices">{% trans 'Devices' %}</a></li>
         {% endif %}
-        <li class="nav-item"><a class="nav-link" href="#ipaddresses" data-toggle="tab" data-tab="edits">IP-Addresses</a></li>
+        <li class="nav-item"><a class="nav-link" href="#ipaddresses" data-toggle="tab" data-tab="edits">{% trans 'IP-Addresses' %}</a></li>
         {% if perms.users.view_user %}
-            <li class="nav-item"><a class="nav-link" href="#edits" data-toggle="tab" data-tab="edits">Edits</a></li>
+            <li class="nav-item"><a class="nav-link" href="#edits" data-toggle="tab" data-tab="edits">{% trans 'Edits' %}</a></li>
         {% endif %}
     </ul>
 
@@ -28,7 +28,7 @@
                         {% if profileuser.avatar %}
                             <div class="col-sm-12 col-md-2">
                                 <a data-toggle="modal" data-target="#avatarModal" class="thumbnail">
-                                    <img src="{{ profileuser.avatar.url }}" alt="Avatar" class="img-fluid">
+                                    <img src="{{ profileuser.avatar.url }}" alt="{% trans 'Avatar' %}" class="img-fluid">
                                 </a>
                             </div>
                         {% endif %}
