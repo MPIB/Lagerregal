@@ -283,11 +283,6 @@
     {% endif %}
 {% endblock %}
 
-{% block htmlend %}
-    <script type="text/javascript" language="javascript" src="{% static "datatables.net/js/jquery.dataTables.min.js" %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static "datatables.net-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
-{% endblock %}
-
 {% block scriptend %}
     $("#id_ipaddresses").on("change", function(e) {
         if ($(this).val()) {

@@ -122,9 +122,6 @@
 
 {% block htmlend %}
     {% if user.is_staff %}
-        <script type="text/javascript" language="javascript" src="{% static "datatables.net/js/jquery.dataTables.min.js" %}"></script>
-        <script type="text/javascript" language="javascript" src="{% static "datatables.net-bs4/js/dataTables.bootstrap4.min.js" %}"></script>
-
         <a data-toggle="modal" data-target="#addWidgetModal" id="addWidgetButton" href="#" class="btn btn-success">
             <i class="fa fa-plus"></i>
         </a>
