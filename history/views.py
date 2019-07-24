@@ -84,9 +84,13 @@ class HistoryDetail(PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        model = apps.get_model(
+            context["this_version"].content_type.app_label,
+            context["this_version"].content_type.model,
+        )
         context["current_version"] = get_object_or_404(
-            apps.get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
-                                                       id=context["this_version"].object_id)
+            model, id=context["this_version"].object_id
+        )
 
         context["this_version"] = cleanup_fielddict(context["this_version"])
 
