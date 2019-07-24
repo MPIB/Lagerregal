@@ -52,13 +52,14 @@
                 <div class="form-group row {{ avatarform.avatar.css_classes }}">
                     <div class="col-lg-8 col-lg-offset-4">
                         {{ avatarform.avatar|add_class:'form-control' }}
-                        {% if avatarform.avatar.errors or avatarform.avatar.help_text != "" %}
-                            <p class="help-block">
-                                {% if avatarform.avatar.errors %}
-                                    {% for error in avatarform.avatar.errors %}{{ error }}, {% endfor %}
-                                {% else %}
-                                    {{ avatarform.avatar.help_text }}
-                                {% endif %}
+                        {% if avatarform.avatar.errors %}
+                            <p class="text-danger">
+                                {% for error in avatarform.avatar.errors %}{{ error }}, {% endfor %}
+                            </p>
+                        {% endif %}
+                        {% if avatarform.avatar.help_text %}
+                            <p class="text-muted">
+                                {{ avatarform.avatar.help_text }}
                             </p>
                         {% endif %}
                     </div>

@@ -14,7 +14,7 @@
 
         <div class="col-lg-8">
             {{ lendform.room }}
-            <p class="help-block">
+            <p class="text-danger">
                 {% for error in form.room.errors %}{{ error }}, {% endfor %}
             </p>
         </div>

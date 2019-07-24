@@ -16,7 +16,7 @@
 
         <div class="col-lg-8">
             {{ lendform.owner }}
-            <p class="help-block">
+            <p class="text-danger">
                 {% for error in form.owner.errors %}{{ error }}, {% endfor %}
             </p>
         </div>
@@ -29,14 +29,14 @@
         <div class="row">
             <div class="col-lg-5">
                 {{ lendform.device }}
-                <p class="help-block"></p>
+                <p class="text-danger"></p>
             </div>
             <div class="col-lg-2 text-center">
                 <strong>{% trans "or" %}</strong>
             </div>
             <div class="col-lg-5">
                 {{ lendform.smalldevice }}
-                <p class="help-block"></p>
+                <p class="text-danger"></p>
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
 
         <div class="col-lg-8">
             {{ lendform.duedate }}
-            <p class="help-block">
+            <p class="text-danger">
                 {% for error in form.duedate.errors %}{{ error }}, {% endfor %}
             </p>
         </div>
@@ -55,7 +55,7 @@
 
         <div class="col-lg-8">
             {{ lendform.room }}
-            <p class="help-block">
+            <p class="text-danger">
                 {% for error in form.room.errors %}{{ error }}, {% endfor %}
             </p>
         </div>
