@@ -19,7 +19,7 @@
     <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
 
     {% if searchstring %}
-        <table id="devicetable" class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped" data-table data-b-filter="false">
             <thead>
                 <tr>
                     <th>{% trans "Name" %}</th>
@@ -44,12 +44,4 @@
             </tbody>
         </table>
     {% endif %}
-{% endblock %}
-
-{% block scriptend %}
-    $(function() {
-        var table = $("#devicetable").dataTable({
-            "bFilter": false
-        });
-    });
 {% endblock %}

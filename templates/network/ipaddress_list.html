@@ -23,7 +23,7 @@
 
 {% block content %}
     {% include "snippets/pagination.html" %}
-    <table id="adresstable" class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped" data-table data-b-filter="false" data-paging="false">
         <thead>
             <tr>
                 <th>{% trans "IP Address" %}</th>
@@ -58,13 +58,4 @@
         </tbody>
     </table>
     {% include "snippets/pagination.html" %}
-{% endblock %}
-
-{% block scriptend %}
-    $(function() {
-        $('#adresstable').dataTable( {
-            "bFilter": false,
-            "paging": false,
-        });
-    });
 {% endblock %}

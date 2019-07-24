@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<table id="puppetsoftware_table" class="table table-bordered table-striped table-wrapped">
+<table class="table table-bordered table-striped table-wrapped" data-table data-b-filter="false">
     <thead>
         <tr>
             <th>{% trans "Name" %}</th>
@@ -16,11 +16,3 @@
         {% endfor %}
     </tbody>
 </table>
-
-<script>
-    $('#puppetsoftware_table').dataTable( {
-        "bFilter": false,
-        "paging": true,
-        "searching": true,
-    } );
-</script>
