@@ -1,5 +1,8 @@
 import datetime
+from collections import defaultdict
 
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -63,9 +66,24 @@ class Room(models.Model):
         return reverse('room-edit', kwargs={'pk': self.pk})
 
 
+def validate_manufacturer_url_pattern(pattern):
+    try:
+        url = pattern.format_map(defaultdict(lambda: 'example'))
+    except ValueError as e:
+        raise ValidationError(e)
+    validator = URLValidator()
+    return validator(url)
+
+
 @reversion.register()
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
+    url_pattern = models.CharField(
+        _('URL Pattern'),
+        max_length=200,
+        validators=[validate_manufacturer_url_pattern],
+        blank=True,
+    )
 
     def __str__(self):
         return self.name
