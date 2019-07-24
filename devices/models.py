@@ -180,6 +180,19 @@ class Device(models.Model):
         qs = self.typeattributevalue_set
         return list(qs.values_list('typeattribute__name', 'value'))
 
+    @property
+    def manufacturer_url(self):
+        if self.manufacturer and self.manufacturer.url_pattern:
+            context = dict(self.typeattributes)
+            context['name'] = self.name
+            context['serialnumber'] = self.serialnumber
+
+            try:
+                return self.manufacturer.url_pattern.format(**context)
+            except KeyError:
+                # treat as missing if required tyeattributes are not set
+                pass
+
     @staticmethod
     def active():
         return Device.objects.filter(archived=None, trashed=None)

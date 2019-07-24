@@ -186,6 +186,15 @@
                             {% endif %}
                     </tr>
                     <tr>
+                        <td>{% trans "Manufacturer URL" %}</td>
+                        <td>
+                            {% if device.manufacturer_url %}
+                                <a href="{{ device.manufacturer_url }}">{{ device.manufacturer_url }}</a>
+                            {% else %}
+                                &mdash;
+                            {% endif %}
+                    </tr>
+                    <tr>
                         <td>{% trans "Room" %}</td>
                         <td>
                             {% if device.room %}
