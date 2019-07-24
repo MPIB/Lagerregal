@@ -75,9 +75,11 @@ class AutocompleteName(View):
         else:
             return HttpResponse("")
         if len(objects) > 0:
-            retobjects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
-                reverse(urlname, kwargs={"pk": obj[0]}), obj[1])
-                          for obj in objects.values_list("pk", "name")]
+            retobjects = [
+                "<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
+                    reverse(urlname, kwargs={"pk": obj[0]}), obj[1]
+                ) for obj in objects.values_list("pk", "name")
+            ]
             return HttpResponse(json.dumps(retobjects), content_type='application/json')
         else:
             return HttpResponse("")
@@ -216,13 +218,19 @@ class UserLendings(View):
             return HttpResponse("")
         user = get_object_or_404(Lageruser, pk=user)
         data = {}
-        data["devices"] = [[device["device__name"] if device["device__name"] else device["smalldevice"],
-                            device["device__inventorynumber"], device["device__serialnumber"],
-                            device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "", device["pk"]]
-                           for device in user.lending_set.filter(returndate=None).values("pk", "device__name",
-                                                                                         "device__inventorynumber",
-                                                                                         "device__serialnumber",
-                                                                                         "smalldevice", "duedate")]
+        data["devices"] = [
+            [
+                device["device__name"] if device["device__name"] else device["smalldevice"],
+                device["device__inventorynumber"],
+                device["device__serialnumber"],
+                device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "",
+                device["pk"],
+            ]
+            for device in user.lending_set.filter(returndate=None).values(
+                "pk", "device__name", "device__inventorynumber",
+                "device__serialnumber", "smalldevice", "duedate",
+            )
+        ]
 
         return HttpResponse(json.dumps(data), content_type='application/json')
 
@@ -230,16 +238,22 @@ class UserLendings(View):
 class PuppetDetails(View):
 
     def get(self, request, device):
-        params = urllib.parse.urlencode({'query': '["in", "certname",["extract", "certname",'
-                                            + '["select_facts",["and",["=", "name","'
-                                            + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
-                                            + '["=","value","' + str(device) + '"]]]]]'})
+        query = (
+            '["in", "certname", ["extract", "certname", ["select_facts", '
+            '["and", ["=", "name", "{}"], ["=", "value", "{}"]]]]]'
+        ).format(settings.PUPPETDB_SETTINGS['query_fact'], str(device))
+        params = urllib.parse.urlencode({'query': query})
+
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
-        context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
-                                keyfile=settings.PUPPETDB_SETTINGS['key'])
-        conn = http.client.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
-                                       settings.PUPPETDB_SETTINGS['port'],
-                                       context=context)
+        context.load_cert_chain(
+            certfile=settings.PUPPETDB_SETTINGS['cert'],
+            keyfile=settings.PUPPETDB_SETTINGS['key'],
+        )
+        conn = http.client.HTTPSConnection(
+            settings.PUPPETDB_SETTINGS['host'],
+            settings.PUPPETDB_SETTINGS['port'],
+            context=context,
+        )
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != http.client.OK:
@@ -257,16 +271,23 @@ class PuppetSoftware(View):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 
-        params = urllib.parse.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
-                                            + '["in", "certname",["extract", "certname",'
-                                            + '["select_facts",["and",["=", "name","' + query_fact + '"],'
-                                            + '["=","value","' + str(device) + '"]]]]]]'})
+        query = (
+            '["and", ["=", "name", "{}"], ["in", "certname", '
+            '["extract", "certname", ["select_facts", ["and", '
+            '["=", "name", "{}"], ["=", "value", "{}"]]]]]]'
+        ).format(software_fact, query_fact, str(device))
+        params = urllib.parse.urlencode({'query': query})
+
         context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
-        context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
-                                keyfile=settings.PUPPETDB_SETTINGS['key'])
-        conn = http.client.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
-                                       settings.PUPPETDB_SETTINGS['port'],
-                                       context=context)
+        context.load_cert_chain(
+            certfile=settings.PUPPETDB_SETTINGS['cert'],
+            keyfile=settings.PUPPETDB_SETTINGS['key'],
+        )
+        conn = http.client.HTTPSConnection(
+            settings.PUPPETDB_SETTINGS['host'],
+            settings.PUPPETDB_SETTINGS['port'],
+            context=context,
+        )
         conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
         res = conn.getresponse()
         if res.status != http.client.OK:

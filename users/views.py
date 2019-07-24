@@ -89,9 +89,12 @@ class ProfileBaseView(DetailView):
         context = super().get_context_data(**kwargs)
 
         # shows list of edits made by user
-        context['edits'] = Version.objects.select_related("revision", "revision__user"
-        ).filter(content_type_id=ContentType.objects.get(model='device').id,
-                 revision__user=context["profileuser"]).order_by("-pk")
+        context['edits'] = Version.objects\
+            .select_related("revision", "revision__user")\
+            .filter(
+                content_type_id=ContentType.objects.get(model='device').id,
+                revision__user=context["profileuser"])\
+            .order_by("-pk")
 
         # shows list of user lendings
         context['lendings'] = Lending.objects.select_related("device", "device__room", "device__room__building",
@@ -347,8 +350,11 @@ class DepartmentAddUser(FormView):
     def form_valid(self, form):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
         if self.department not in form.cleaned_data["user"].departments.all():
-            department_user = DepartmentUser(user=form.cleaned_data["user"], department=form.cleaned_data["department"],
-                                            role=form.cleaned_data["role"])
+            department_user = DepartmentUser(
+                user=form.cleaned_data["user"],
+                department=form.cleaned_data["department"],
+                role=form.cleaned_data["role"],
+            )
             department_user.save()
             if form.cleaned_data["user"].main_department is None:
                 form.cleaned_data["user"].main_department = form.cleaned_data["department"]
