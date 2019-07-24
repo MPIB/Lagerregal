@@ -45,3 +45,11 @@
         </table>
     {% endif %}
 {% endblock %}
+
+{% block scriptend %}
+    $(function() {
+        var table = $("#devicetable").dataTable({
+            "bFilter": false
+        });
+    });
+{% endblock %}
