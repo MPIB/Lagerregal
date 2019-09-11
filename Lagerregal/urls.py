@@ -64,6 +64,7 @@ urlpatterns = [
     path('devices/export/csv/', devices_views.ExportCsv.as_view(), name='export-csv'),
     path('devices/return/<int:lending>/', devices_views.DeviceReturn.as_view(), name="device-return"),
     path('devices/public/', xframe_options_exempt(devices_views.PublicDeviceListView.as_view()), name="public-device-list"),
+    path('devices/public/<int:pk>/', xframe_options_exempt(devices_views.PublicDeviceDetailView.as_view()), name="public-device-detail"),
     path('devices/templates/', devices_views.TemplateList.as_view(), name="template-list"),
     path('devices/templates/add/', devices_views.TemplateCreate.as_view(), name="template-add"),
     path('devices/templates/<int:pk>/edit/', devices_views.TemplateUpdate.as_view(), name="template-edit"),
