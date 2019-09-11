@@ -71,7 +71,7 @@
                     </div>
                 </li>
             {% endif %}
-            {% if perms.mail.view_mailtemplate or perms.users.view_user or perms.network.view_ipaddress or perms.users.view_department or perms.devicetags.view_devicetags %}
+            {% if perms.mail.view_mailtemplate or perms.users.view_lageruser or perms.network.view_ipaddress or perms.users.view_department or perms.devicetags.view_devicetags %}
                 <li class="nav-item dropdown">
                     <a href="{% url 'device-list' %}" class="nav-link dropdown-toggle" data-toggle="dropdown">
                         {% trans "Manage" %}
@@ -83,7 +83,7 @@
                         {% if perms.mail.view_mailtemplate %}
                             <a href="{% url 'mail-list' %}" class="dropdown-item">{% trans "Mailtemplates" %}</a>
                         {% endif %}
-                        {% if perms.users.view_user %}
+                        {% if perms.users.view_lageruser %}
                             <a href="{% url 'user-list' %}" class="dropdown-item">{% trans "Users" %}</a>
                         {% endif %}
                         {% if perms.users.view_department %}

@@ -41,7 +41,7 @@ class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Lageruser
     context_object_name = 'user_list'
     template_name = "users/user_list.html"
-    permission_required = "users.view_user"
+    permission_required = "users.view_lageruser"
 
     def get_queryset(self):
         users = Lageruser.objects.all()
@@ -116,7 +116,7 @@ class ProfileBaseView(DetailView):
 
 
 class ProfileView(PermissionRequiredMixin, ProfileBaseView):
-    permission_required = "users.view_user"
+    permission_required = "users.view_lageruser"
 
 
 class UserprofileView(ProfileBaseView):

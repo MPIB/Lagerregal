@@ -8,20 +8,20 @@
 
 {% block content %}
     <ul class="nav nav-tabs mb-3" id="myTab">
-        {% if perms.users.view_user %}
+        {% if perms.users.view_lageruser %}
             <li class="nav-item"><a class="nav-link active" href="#about" data-toggle="tab" data-tab="about">{% trans 'About' %}</a></li>
             <li class="nav-item"><a class="nav-link" href="#devices" data-toggle="tab" data-tab="devices">{% trans 'Devices' %}</a></li>
         {% else %}
             <li class="nav-item"><a class="nav-link active" href="#devices" data-toggle="tab" data-tab="devices">{% trans 'Devices' %}</a></li>
         {% endif %}
         <li class="nav-item"><a class="nav-link" href="#ipaddresses" data-toggle="tab" data-tab="edits">{% trans 'IP-Addresses' %}</a></li>
-        {% if perms.users.view_user %}
+        {% if perms.users.view_lageruser %}
             <li class="nav-item"><a class="nav-link" href="#edits" data-toggle="tab" data-tab="edits">{% trans 'Edits' %}</a></li>
         {% endif %}
     </ul>
 
     <div class="tab-content">
-        {% if perms.users.view_user %}
+        {% if perms.users.view_lageruser %}
             <div class="tab-pane active" id="about">
                 <div class="row">
                     <div class="col-md-6">
@@ -130,7 +130,7 @@
             </div>
         {% endif %}
 
-        <div class="tab-pane {% if not perms.users.view_user %}active{% endif %}" id="devices">
+        <div class="tab-pane {% if not perms.users.view_lageruser %}active{% endif %}" id="devices">
             <div class="col-md-12">
                 <h4>{% trans "Owned devices" %}</h4>
                 {% if lendings %}
@@ -244,7 +244,7 @@
             {% endif %}
         </div>
 
-        {% if perms.users.view_user %}
+        {% if perms.users.view_lageruser %}
             <div class="tab-pane" id="edits">
                 <div class="col-md-12">
                     <h4>{% trans "Edits" %}</h4>
@@ -278,7 +278,7 @@
             </div>
         {% endif %}
     </div>
-    {% if perms.users.view_user and profileuser.avatar %}
+    {% if perms.users.view_lageruser and profileuser.avatar %}
         {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
     {% endif %}
 {% endblock %}
