@@ -12,7 +12,7 @@
             <div class="alert-danger alert">
                 {% blocktrans %}Do you really want to unassign the IP-Address {{ ipaddress }} from {{ user }}?{% endblocktrans %}
             </div>
-            <form action="" method="post" class="form-horizontal">
+            <form action="" method="post">
                 {% csrf_token %}
                 <div class="text-right">
                     <a href="{{ user.get_absolute_url }}" class="btn btn-secondary btn-sm">{% trans "No" %}</a>

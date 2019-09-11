@@ -15,7 +15,7 @@
                 {% get_verbose_name oldobject as verbose_name %}
                 {% blocktrans %}Do you really want to merge the {{ verbose_name }}: {{ oldobject }} into {{ newobject }}?{% endblocktrans %}
             </div>
-            <form action="" method="post" class="form-horizontal">
+            <form action="" method="post">
                 {% csrf_token %}
                 <a href="{{ oldobject.get_absolute_url }}" class="btn btn-secondary">{% trans "No" %}</a>
                 <input type="submit" value="Yes" class="btn btn-success"/>

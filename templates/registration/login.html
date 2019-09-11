@@ -6,71 +6,22 @@
 {% block extracss %}
     <style>
         body {
-            padding-top: 40px;
-            padding-bottom: 40px;
             background-color: #eee;
         }
 
         h1 {
-            text-align: center;
-            font-size: 40px;
-            font-weight: bold;
             color: #1abc9c;
-            margin-bottom: 20px;
         }
 
-        .alert {
-            max-width: 500px;
-            margin: auto;
-            margin-bottom: 15px;
-        }
-
-        .form-signin {
+        main {
             max-width: 330px;
-            padding: 15px;
-            padding-top: 0px;
-            margin: 0 auto;
-        }
-
-        .form-signin .form-signin-heading,
-        .form-signin .checkbox {
-            margin-bottom: 10px;
-        }
-
-        .form-signin .checkbox {
-            font-weight: normal;
-        }
-
-        .form-signin .form-control {
-            position: relative;
-            font-size: 16px;
-            height: auto;
-            padding: 10px;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-        }
-
-        .form-signin .form-control:focus {
-            z-index: 2;
-        }
-
-        .form-signin input[type="text"] {
-            margin-bottom: -2px;
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        .form-signin input[type="password"] {
-            margin-bottom: 10px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
+            margin: 40px auto;
         }
     </style>
 {% endblock %}
 
 {% block content %}
-    <h1><i class="fa fa-archive"></i> {{ SITE_NAME }}</h1>
+    <h1 class="mb-5 text-center"><i class="fa fa-archive"></i> {{ SITE_NAME }}</h1>
     {% if form.errors %}
         <div data-alert class="alert-danger alert">
             {% trans "Your username and password didn't match. Please try again." %}
@@ -79,9 +30,15 @@
     <form method="post" action="{% url 'login' %}" class="form-signin" role="form">
         {% csrf_token %}
         <h2 class="form-signin-heading">{% trans "Please log in" %}</h2>
-        <input id="id_username" maxlength="254" name="username" type="text" class="form-control" placeholder="{% trans "username" %}">
-        <input id="id_password" name="password" type="password" class="form-control" placeholder="{% trans "Password" %}">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Log in" %}</button>
+        <div class="form-group mb-1">
+            <label for="{{ form.username.id_for_label }}" class="sr-only">{{ form.username.label }}</label>
+            <input id="{{ form.username.id_for_label }}" maxlength="254" name="username" type="text" class="form-control" placeholder="{% trans "username" %}">
+        </div>
+        <div class="form-group mb-1">
+            <label for="{{ form.password.id_for_label }}" class="sr-only">{{ form.password.label }}</label>
+            <input id="{{ form.password.id_for_label }}" name="password" type="password" class="form-control" placeholder="{% trans "Password" %}">
+        </div>
+        <button class="btn btn-lg btn-primary btn-block mb-4" type="submit">{% trans "Log in" %}</button>
         {% if next %}
             <input type="hidden" name="next" value="{{ next }}"/>
         {% else %}

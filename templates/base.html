@@ -130,7 +130,7 @@
                 <li class="nav-item dropdown">
                     <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">
                         {% if user.avatar %}
-                            <img class="navbar-avatar img-rounded" src="{{ user.avatar.url }}">
+                            <img class="navbar-avatar rounded" src="{{ user.avatar.url }}">
                         {% endif %}
                         {{ user }}
                     </a>
@@ -158,7 +158,7 @@
 <div class="container">
     <main>
         <header class="bg-light d-flex justify-content-between align-items-center p-3 mb-3 flex-md-row flex-column">
-            <h1 class="m-0 flex-shrink-0">
+            <h1 class="h3 m-0 flex-shrink-0">
                 <ol class="breadcrumb p-0 m-0">
                     {% for crumb in breadcrumbs %}
                         {% if forloop.last %}
@@ -177,7 +177,7 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer id="footer" class="text-right">
+    <footer id="footer" class="py-3 mt-5 mb-3 border-top text-right">
         {% trans "powered by" %} <a href="https://github.com/MPIB/Lagerregal">Lagerregal</a>
     </footer>
 </div>

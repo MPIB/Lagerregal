@@ -107,7 +107,7 @@ class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
-        widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
+        widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))
 
 
 class IpAddressPurposeForm(forms.Form):
@@ -117,9 +117,9 @@ class IpAddressPurposeForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has-error'
-    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=Select2Widget(attrs={"style": "width:100%;"}),
+    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=Select2Widget(),
                                    label=_("Lent to"))
-    device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(attrs={"style": "width:100%;"}),
+    device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(),
                                     label=_("Device"), required=False)
     smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}), required=False)
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
@@ -128,7 +128,7 @@ class LendForm(forms.Form):
                                                              '%d.%m.%y'),
                               widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
-                                  widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                  widget=Select2Widget())
 
     def clean(self):
         cleaned_data = super().clean()
@@ -223,11 +223,11 @@ class DeviceGroupFilterForm(FilterForm):
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
     uses = forms.MultipleChoiceField(choices=Device.objects.none(), required=False,
-                                     widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
+                                     widget=Select2MultipleWidget())
     emailrecipients = forms.MultipleChoiceField(required=False,
-                                                widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
+                                                widget=Select2MultipleWidget())
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
-                                           widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                           widget=Select2Widget())
     emailedit = forms.BooleanField(required=False, label=_("Edit template"))
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
@@ -238,11 +238,11 @@ class DeviceForm(forms.ModelForm):
     creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
     devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')).order_by('-size'), required=False,
-                                        widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                        widget=Select2Widget())
     manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False,
-                                          widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                          widget=Select2Widget())
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
-                                  widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                  widget=Select2Widget())
 
     class Meta:
         model = Device
@@ -349,7 +349,7 @@ class DeviceMailForm(forms.Form):
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
     error_css_class = 'has-error'
-    emailrecipients = forms.MultipleChoiceField(widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
+    emailrecipients = forms.MultipleChoiceField(widget=Select2MultipleWidget())
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))

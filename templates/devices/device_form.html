@@ -10,12 +10,12 @@
 {% block content %}
     <div class="row">
         <div class="col-md-8 col-md-offset-2 well well-lg">
-            <form action="" method="post" class="form-horizontal" id="form" enctype="multipart/form-data">{% csrf_token %}
+            <form action="" method="post" id="form" enctype="multipart/form-data">{% csrf_token %}
                 {% for field in form %}
                     {% if field.html_name == "creator" %}
                         {{ field }}
                     {% elif field|is_checkbox %}
-                        <div class="form-group" id="div_{{ field.html_name }}">
+                        <div class="form-group row" id="div_{{ field.html_name }}">
                             <div class="col-lg-offset-3 col-lg-9">
                                 <div class="checkbox">
                                     <label>{{ field }} {{ field.label }}</label>
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                     {% else %}
-                        <div class="form-group {{ field.css_classes }}" {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}hidden{% endif %} id="div_{{ field.html_name }}">
+                        <div class="form-group row {{ field.css_classes }}" {% if field.html_name == "emailsubject" or field.html_name == "emailbody" %}hidden{% endif %} id="div_{{ field.html_name }}">
                             <label for="{{ field.html_name }}" class="col-lg-3 control-label">
                                 {{ field.label }}{% if field.field.required %}*{% endif %}
                             </label>
@@ -34,7 +34,7 @@
                                 {% else %}
                                     {{ field|add_class:'form-control form-control-sm' }}
                                 {% endif %}
-                                <p class="help-block">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
+                                <p class="text-danger">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
                             </div>
                             {% if field|is_select %}
                                 {% if field.html_name == "emailtemplate" %}
@@ -55,7 +55,7 @@
                     {% endif %}
 
                     {% if field.html_name == "comment" %}
-                        <h3 class="col-lg-9 col-lg-offset-3">{% trans "Extra Attributes" %}</h3>
+                        <h3>{% trans "Extra Attributes" %}</h3>
                         <div id="extra_attributes">
                     {% endif %}
 
@@ -95,7 +95,7 @@
             $("#extra_attributes").empty();
             if (data !== "") {
                 $.each(data, function(index, value) {
-                    $("#extra_attributes").append('<div class="form-group"><label for="id_attribute_' + value.id + '" class="col-lg-3 control-label">' + value.name +
+                    $("#extra_attributes").append('<div class="form-group row"><label for="id_attribute_' + value.id + '" class="col-lg-3 control-label">' + value.name +
                         '</label><div class="col-lg-9"><input type="text" id="id_attribute_' + value.id + '" name="attribute_' + value.id + '" class="form-control"/></div></div>');
                 });
             }

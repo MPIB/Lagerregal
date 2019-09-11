@@ -13,8 +13,8 @@
                 {% blocktrans %}Do you really want to move the device to storage: {{ object }}?{% endblocktrans %}
             </div>
 
-            <form action="" method="post" class="form-horizontal">{% csrf_token %}
-                <div class="form-group">
+            <form action="" method="post">{% csrf_token %}
+                <div class="form-group row">
                     <label for="inputPassword3" class="col-sm-2 control-label">
                         {% trans "Send room-changed email" %}
                     </label>

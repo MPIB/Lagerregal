@@ -263,7 +263,11 @@
                     <tr>
                         <td>{% trans "Short term device" %}</td>
                         <td>
-                            <i class="fa fa-check-circle text-{{ device.templending|yesno:'success,danger' }}"></i>
+                            {% if device.templending %}
+                                <i class="fa fa-check-circle text-success"></i>
+                            {% else %}
+                                <i class="fa fa-exclamation-circle text-danger"></i>
+                            {% endif %}
                         </td>
                     </tr>
                     {% if device.manual %}
@@ -375,13 +379,9 @@
                         <td>
                             {{ device.currentlending.duedate }}
                             {% if device.currentlending.duedate < weekago %}
-                                <span class="error-icon">
-                                    <i class="fa fa-exclamation-circle"></i>
-                                </span>
+                                <i class="fa fa-exclamation-circle text-danger"></i>
                             {% elif device.currentlending.duedate < today %}
-                                <span class="warning-icon">
-                                    <i class="fa fa-exclamation-circle"></i>
-                                </span>
+                                <i class="fa fa-exclamation-circle text-warning"></i>
                             {% endif %}
                         </td>
                     </tr>
@@ -400,14 +400,17 @@
                 <ul class="list-group">
                     {% for address in device.ipaddress_set.all %}
                         <li class="list-group-item ipaddress-list">
-                            <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a>
-                            <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="close delete right">
-                                <i class="fa fa-times"></i>
-                            </a>
-                            <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="close delete right">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                            <br/>
+                            <div>
+                                <a href="{% url "ipaddress-detail" address.pk %}">{{ address.address }}</a>
+                                <div class="pull-right">
+                                    <a href="{% url 'device-ipaddress-purpose' device.pk address.pk %}" class="text-secondary">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'device-ipaddress-remove' device.pk address.pk %}" class="text-secondary">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </div>
+                            </div>
                             <small>{{ address.purpose|default:"" }}</small>
                         </li>
                     {% endfor %}
@@ -434,7 +437,7 @@
                     {% for tag in device.tags.all %}
                         <li class="list-group-item tag-list">
                             {{ tag.name }}
-                            <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="close delete right">
+                            <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="pull-right text-secondary">
                                 <i class="fa fa-times"></i>
                             </a>
                         </li>
@@ -486,7 +489,7 @@
                             <div class="row">
                                 <div class="col-xs-2 col-md-2">
                                     {% if note.creator.avatar %}
-                                        <img src="{{ note.creator.avatar.url }}" class="img-rounded img-responsive" alt=""/>
+                                        <img src="{{ note.creator.avatar.url }}" class="rounded img-fluid" alt=""/>
                                     {% endif %}
                                     <p>{{ note.creator }}</p>
                                     <small>{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>

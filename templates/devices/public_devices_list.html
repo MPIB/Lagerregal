@@ -41,7 +41,13 @@
                     <td>{{ device.devicetype__name|default:"--" }}</td>
                     <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>
                     <td>{{ device.group__name|default:"--" }}</td>
-                    <td><i class="fa fa-check-circle text-{{ device.currentlending__owner|yesno:'success,danger' }}"></i></td>
+                    <td>
+                        {% if device.currentlending__owner %}
+                            <i class="fa fa-check-circle text-success"></i>
+                        {% else %}
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block modalBody %}
-    <form method="post" class="form-horizontal" id="addform">{% csrf_token %}
+    <form method="post" id="addform">{% csrf_token %}
         <div id="modal-form"></div>
         <input type="hidden" name="classname" id="addmodal_classname">
     </form>

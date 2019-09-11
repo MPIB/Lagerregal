@@ -42,4 +42,4 @@ class UserIpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
-        widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
+        widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))

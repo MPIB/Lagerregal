@@ -16,7 +16,7 @@
                     {% blocktrans %}Do you really want to trash the device: {{ object }}?{% endblocktrans %}
                 {% endif %}
             </div>
-            <form action="" method="post" class="form-horizontal">
+            <form action="" method="post">
                 {% csrf_token %}
                 <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger">{% trans "No" %}</a>
                 <input type="submit" value="{% trans "Yes" %}" class="btn btn-sm btn-success"/>
