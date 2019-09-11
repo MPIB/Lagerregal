@@ -10,7 +10,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models import Q
-from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.http import Http404
 from django.http import HttpResponse
@@ -68,8 +67,56 @@ from mail.models import MailHistory
 from mail.models import MailTemplate
 from network.models import IpAddress
 from users.mixins import PermissionRequiredMixin
-from users.models import Department
 from users.models import Lageruser
+
+
+def get_devices(user, category, department, sorting):
+    if category == "all":
+        devices = Device.objects.all()
+    elif category == "available":
+        devices = Device.active().filter(currentlending=None)
+    elif category == "lent":
+        lendings = Lending.objects.filter(returndate=None)
+        devices = Device.objects.filter(lending__in=lendings)
+    elif category == "archived":
+        devices = Device.objects.exclude(archived=None)
+    elif category == "trashed":
+        devices = Device.objects.exclude(trashed=None)
+    elif category == "overdue":
+        lendings = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
+        devices = Device.objects.filter(lending__in=lendings)
+    elif category == "returnsoon":
+        soon = datetime.date.today() + datetime.timedelta(days=10)
+        lendings = Lending.objects.filter(returndate=None, duedate__lte=soon,
+                                          duedate__gt=datetime.date.today())
+        devices = Device.objects.filter(lending__in=lendings)
+    elif category == "temporary":
+        devices = Device.active().filter(templending=True)
+    elif category == "bookmark" and user.is_authenticated:
+        devices = user.bookmarks.all()
+    elif category == "active":
+        devices = Device.active()
+    else:
+        raise ValueError
+
+    if department == "all":
+        pass
+    elif department == "my":
+        devices = devices.filter(department__in=user.departments.all())
+    elif department.isdigit():
+        devices = devices.filter(department_id=int(department))
+    else:
+        raise ValueError
+
+    if sorting not in [s[0] for s in VIEWSORTING_DEVICES]:
+        raise ValueError
+
+    if hasattr(user, 'departments'):
+        devices = devices.exclude(~Q(department__in=user.departments.all()), is_private=True)
+    else:
+        devices = devices.exclude(is_private=True)
+
+    return devices.order_by(sorting)
 
 
 class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
@@ -89,82 +136,16 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
     def get_queryset(self):
         '''method for query results and display it depending on existing filters (viewfilter, department)'''
         self.viewfilter = self.request.GET.get("category", "active")
-        devices = None
-        lendings = None
 
-        # filtering devices by status
-        # possible status: all, active, lent, archived, trash, overdue,
-        # return soon, short term, bookmarked
-        if self.viewfilter == "all":
-            devices = Device.objects.all()
-        elif self.viewfilter == "available":
-            devices = Device.active().filter(currentlending=None)
-        elif self.viewfilter == "lent":
-            lendings = Lending.objects.filter(returndate=None)
-        elif self.viewfilter == "archived":
-            devices = Device.objects.exclude(archived=None)
-        elif self.viewfilter == "trashed":
-            devices = Device.objects.exclude(trashed=None)
-        elif self.viewfilter == "overdue":
-            lendings = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
-        elif self.viewfilter == "returnsoon":
-            soon = datetime.date.today() + datetime.timedelta(days=10)
-            lendings = Lending.objects.filter(returndate=None, duedate__lte=soon,
-                                              duedate__gt=datetime.date.today())
-        elif self.viewfilter == "temporary":
-            devices = Device.active().filter(templending=True)
-        elif self.viewfilter == "bookmark":
-            if self.request.user.is_authenticated:
-                devices = self.request.user.bookmarks.all()
+        if hasattr(self.request.user, 'departments') and self.request.user.departments.count() > 0:
+            self.departmentfilter = self.request.GET.get("department", "my")
         else:
-            devices = Device.active()
+            self.departmentfilter = self.request.GET.get("department", "all")
 
-        self.departmentfilter = self.request.GET.get("department", "all")
-        # if user has departments: set departments as filter
-        if hasattr(self.request.user, 'departments'):
-            if self.request.user.departments.count() > 0:
-                self.departmentfilter = self.request.GET.get("department", "my")
+        self.viewsorting = self.request.GET.get("sorting", "name")
 
-        if self.departmentfilter != "all" and self.departmentfilter != "my":
-            try:
-                departmentid = int(self.departmentfilter)
-                self.departmentfilter = Department.objects.get(id=departmentid)
-            except:
-                self.departmentfilter = Department.objects.get(name=self.departmentfilter)
-
-        if self.departmentfilter == "my":
-            self.departmentfilter = self.request.user.departments.all()
-
-        # filtering lent or overdue devices
-        if self.viewfilter == "lent" or self.viewfilter == "overdue" or self.viewfilter == "returnsoon":
-            if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
-                lendings = lendings.filter(owner__departments__in=self.departmentfilter)
-                self.departmentfilter = "my"
-            elif self.departmentfilter != "all":
-                lendings = lendings.filter(owner__departments=self.departmentfilter)
-                self.departmentfilter = self.departmentfilter.id
-            lendings = lendings.exclude(~Q(device__department__in=self.request.user.departments.all())
-                                        & ~Q(device=None), device__is_private=True)
-            return lendings.values("device__id", "device__name", "device__inventorynumber",
-                                   "device__devicetype__name", "device__room__name", "device__group",
-                                   "device__room__building__name", "owner__username", "owner__id",
-                                   "duedate", "smalldevice")
-        else:
-            if isinstance(self.departmentfilter, (list, tuple, QuerySet)):
-                devices = devices.filter(department__in=self.departmentfilter)
-                self.departmentfilter = "my"
-            elif self.departmentfilter != "all":
-                devices = devices.filter(department=self.departmentfilter)
-                self.departmentfilter = self.departmentfilter.id
-            if hasattr(self.request.user, 'departments'):
-                devices = devices.exclude(~Q(department__in=self.request.user.departments.all()), is_private=True)
-            self.viewsorting = self.request.GET.get("sorting", "name")
-            if self.viewsorting in [s[0] for s in VIEWSORTING_DEVICES]:
-                devices = devices.order_by(self.viewsorting)
-
-            return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
-                                  "room__building__name",
-                                  "group__name", "currentlending__owner__username", "currentlending__duedate")
+        devices = get_devices(self.request.user, self.viewfilter, self.departmentfilter, self.viewsorting)
+        return devices.select_related('devicetype', 'room__building', 'group', 'currentlending__owner')
 
     def get_context_data(self, **kwargs):
         '''method for getting context data (filter, time, templates, breadcrumbs)'''
@@ -190,54 +171,20 @@ class DeviceList(PermissionRequiredMixin, PaginationMixin, ListView):
 
 class ExportCsv(PermissionRequiredMixin, View):
     permission_required = 'devices.view_device'
+    keys = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
+    headers = [_("ID"), _("Device"), _("Inventorynumber"), _("Devicetype"), _("Room"), _("Devicegroup")]
 
     def post(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
 
-        if "format" in request.POST:
-            if request.POST["format"] == "csv":
-                response = HttpResponse(content_type='text/csv')
-                response['Content-Disposition'] = 'attachment; filename="' + str(int(time.time())) + '_searchresult.csv"'
-                devices = None
-                searchvalues = ["id", "name", "inventorynumber", "devicetype__name", "room__name", "group__name"]
+        devices = get_devices(request.user, request.POST['category'], request.POST['department'], request.POST['sorting'])
 
-                if request.POST['category'] == "active":
-                    devices = Device.active()
-                elif request.POST['category'] == "all":
-                    devices = Device.objects.all()
-                elif request.POST['category'] == "available":
-                    devices = Device.active().filter(currentlending=None)
-                elif request.POST['category'] == "lent":
-                    devices = Lending.objects.filter(returndate=None)
-                elif request.POST['category'] == "archived":
-                    devices = Device.objects.exclude(archived=None)
-                elif request.POST['category'] == "trashed":
-                    devices = Device.objects.exclude(trashed=None)
-                elif request.POST['category'] == "overdue":
-                    devices = Lending.objects.filter(returndate=None, duedate__lt=datetime.date.today())
-                elif request.POST['category'] == "returnsoon":
-                    soon = datetime.date.today() + datetime.timedelta(days=10)
-                    devices = Lending.objects.filter(returndate=None, duedate__lte=soon,
-                                                          duedate__gt=datetime.date.today())
-                elif request.POST['category'] == "temporary":
-                    devices = Device.active().filter(templending=True)
-                elif request.POST['category'] == "bookmark":
-                    if self.request.user.is_authenticated:
-                        devices = self.request.user.bookmarks.all()
-
-                if request.POST["department"] == "my":
-                    devices = devices.filter(department__in=request.user.departments.all())  # does this work?
-                elif request.POST["department"].isdigit():
-                    devices = devices.filter(department__in=Department.objects.filter(id=int(request.POST["departmentfilter"])))
-                elif request.POST["department"] == "all":
-                    pass
-
-                writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
-                headers = [_("ID"), _("Device"), _("Inventorynumber"),
-                                    _("Devicetype"), _("Room"), _("Devicegroup")]
-                writer.writerow(headers)
-                for device in devices.values_list(*searchvalues):
-                    writer.writerow(device)
-                return response
+        writer = csv.writer(response, delimiter=",", quotechar='"', quoting=csv.QUOTE_ALL)
+        writer.writerow(self.headers)
+        for device in devices.values_list(*self.keys):
+            writer.writerow(device)
+        return response
 
 
 class DeviceDetail(PermissionRequiredMixin, DetailView):

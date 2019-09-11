@@ -43,9 +43,9 @@
 {% block content %}
     {% include "snippets/pagination.html" %}
     <form method="POST" action="{%  url "export-csv" %}" id="exportform" class="text-right">{% csrf_token %}
-        <input type="hidden" name="viewfilter"  value = "{{viewfilter}}"/>
-        <input type="hidden" name="departmentfilter" />
-        <input type="hidden" name="format" value="csv" />
+        {{ viewform.department.as_hidden }}
+        {{ viewform.category.as_hidden }}
+        {{ viewform.sorting.as_hidden }}
         <button class="btn btn-secondary btn-sm" id="exportbutton"><i class="fa fa-download"></i> {% trans "Export as CSV" %}</button>
     </form>
     <table id="devicetable" class="table table-bordered table-striped">
@@ -65,51 +65,29 @@
             </tr>
         </thead>
         <tbody>
-            {% if viewfilter == "lent" or viewfilter == "overdue" or viewfilter == "returnsoon" %}
-                {% for lending in device_list %}
-                <tr {% if lending.duedate < today.date %}class="text-danger"{% endif %}>
-                    <td>
-                        {% if lending.smalldevice %}
-                            <a href="{% url "userprofile" lending.owner__id %}#devices">
-                                {{ lending.smalldevice }}
-                            </a>
-                        {% else %}
-                            <a href="{% url 'device-detail' lending.device__id %}">
-                                {{ lending.device__name|default:_("(None)") }}
-                            </a>
-                        {% endif %}
-                    </td>
-                    <td>{{ lending.device__inventorynumber }}</td>
-                    <td>{{ lending.device__devicetype__name }}</td>
-                    <td>{{ lending.device__room__name }} ({{ lending.device__room__building__name }})</td>
-                    <td>{{ lending.device__group__name }}</td>
-                    <td>
-                        {% if lending.owner__id %}
-                            <a href="{% url "userprofile" lending.owner__id %}#devices">{{ lending.owner__username }}</a>
-                        {% else %}
-                            {{ lending.owner__username }}
-                        {% endif %}
-                    </td>
-                    <td>{{ lending.duedate }}</td>
-                {% endfor %}
-            {% else %}
-                {% for device in device_list %}
-                    <tr {% if device.currentlending__duedate < today.date %}class="text-danger"{% endif %}>
-                        <td><a href="{% url 'device-detail' device.id %}">{{ device.name|default:_("(None)") }}</a></td>
-                        <td>{{ device.inventorynumber }}</td>
-                        <td>{{ device.devicetype__name }}</td>
-                        <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
-                        <td>{{ device.group__name }}</td>
+            {% for device in device_list %}
+                <tr {% if device.currentlending.duedate < today.date %}class="text-danger"{% endif %}>
+                    <td><a href="{% url 'device-detail' device.id %}">{{ device.name|default:_("(None)") }}</a></td>
+                    <td>{{ device.inventorynumber }}</td>
+                    <td>{{ device.devicetype.name }}</td>
+                    <td>{{ device.room.name }} ({{ device.room.building.name }})</td>
+                    <td>{{ device.group.name }}</td>
+                    {% if viewfilter == "lent" or viewfilter == "overdue" %}
                         <td>
-                            {% if device.currentlending__owner__username == None %}
+                            <a href="{% url "userprofile" device.currentlending.owner.id %}#devices">{{ device.currentlending.owner.username }}</a>
+                        </td>
+                        <td>{{ device.currentlending.duedate }}</td>
+                    {% else %}
+                        <td>
+                            {% if device.currentlending.owner.username == None %}
                                 <i class="fa fa-check-circle text-success"></i>
                             {% else %}
                                 <i class="fa fa-exclamation-circle text-danger"></i>
                             {% endif %}
                         </td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
+                    {% endif %}
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     {% include "snippets/pagination.html" %}
