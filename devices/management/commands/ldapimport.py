@@ -67,6 +67,8 @@ class Command(BaseCommand):
         updated_users = 0
         skipped_users = 0
         page_count, users = l.paged_search_ext_s(*settings.LDAP_USER_SEARCH)
+        attr_map = settings.AUTH_LDAP_USER_ATTR_MAP
+        attr_map.update({'main_department': settings.AUTH_LDAP_DEPARTMENT_FIELD})
 
         for dn, userdata in users:
             saveuser = False
@@ -80,7 +82,7 @@ class Command(BaseCommand):
                 saveuser = True
                 created = True
                 user = Lageruser(username=userdata["sAMAccountName"][0])
-            for field, attr in settings.AUTH_LDAP_USER_ATTR_MAP.items():
+            for field, attr in attr_map.items():
                 try:
                     old_value = getattr(user, field)
                     new_value = userdata[attr][0].decode('unicode_escape').encode('iso8859-1').decode('utf8')
