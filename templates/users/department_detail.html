@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
-{% load permissionif %}
+{% load usertags %}
 {% block title %}{{ department.name }}{% endblock %}
 
 {% block pullright %}
-    {% if perms.users.delete_department %}
+    {% if can_delete %}
         {% deletebutton "department-delete" object.id %}
     {% endif %}
     {% if "section" in LABEL_TEMPLATES %}
@@ -17,10 +17,11 @@
            style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
         <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
     {% endif %}
-    {% permission user has 'users.add_department_user' of department %}
+    {% has_perm 'users.add_department_user' user department as can_add_department_user %}
+    {% if can_add_department_user %}
         <a href="{% url "department-add-user" department.id %}" id="adduserbutton" data-toggle="popover" class="btn btn-success btn-sm pull-right"
            style="margin-left:10px"><i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add User" %}</a>
-    {%  endpermission %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -37,9 +38,10 @@
                 <td><a href="{% url 'userprofile' member.user.id %}">{{member.user}}</a></td>
                 <td>{{ member.get_role_display }}
                 {% if user != member.user %}
-                    {% permission user has 'users.add_department_user' of department %}
+                    {% has_perm 'users.add_department_user' user department as can_add_department_user %}
+                    {% if can_add_department_user %}
                     <a href="{% url "department-remove-user" member.id %}" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Remove from Department</span></a>
-                    {%  endpermission %}</td>
+                    {% endif %}</td>
                 {% endif %}
             </tr>
         {% endfor %}

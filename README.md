@@ -47,7 +47,8 @@ Manual Quickstart
 Install necessary requirements (either globally or with virtualenv)
 
 ```
-$ pip install -U -r dependencies.txt
+$ pip install -U -r requirements.txt
+$ npm install
 ```
 
 Generate settings.py
@@ -61,6 +62,11 @@ $ cp Lagerregal/template_development.py Lagerregal/settings.py
 For production (edit first):
 ```
 $ cp Lagerregal/template_production.py Lagerregal/settings.py
+```
+
+Compile translations:
+```
+$ python manage.py compilemessages -l de
 ```
 
 Run:

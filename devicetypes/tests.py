@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
-
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
 
-import six
 from model_mommy import mommy
 
 from devicetypes.models import Type
@@ -14,83 +11,51 @@ from users.models import Lageruser
 class TypeTests(TestCase):
 
     def setUp(self):
-        '''method for setting up a client for testing'''
         self.client = Client()
         Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
     def test_type_creation(self):
-        '''method for testing the functionality of creating a new devicetype'''
-        # creating an instance of Type and testing if created instance is instance of Type
         devicetype = mommy.make(Type)
         self.assertTrue(isinstance(devicetype, Type))
-
-        # testing naming
-        self.assertEqual(six.text_type(devicetype), devicetype.name)
-
-        # testing creation of absolute and relative url
+        self.assertEqual(str(devicetype), devicetype.name)
         self.assertEqual(devicetype.get_absolute_url(), reverse('type-detail', kwargs={'pk': devicetype.pk}))
         self.assertEqual(devicetype.get_edit_url(), reverse('type-edit', kwargs={'pk': devicetype.pk}))
 
-    def test_type_list(self):
-        '''method for testing the presentation and reachability of the list of devicestypes over several pages'''
+    def test_list_view(self):
         mommy.make(Type, _quantity=40)
-
-        # testing if loading of devicetype-list-page was successful (statuscode 2xx)
-        url = reverse("type-list")
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
+        response = self.client.get('/types/')
+        self.assertEqual(response.status_code, 200)
 
         # testing the presentation of only 30 results of query on one page
-        self.assertEqual(len(resp.context["type_list"]), 30)
-        self.assertEqual(resp.context["paginator"].num_pages, 2)
+        self.assertEqual(len(response.context["type_list"]), 30)
+        self.assertEqual(response.context["paginator"].num_pages, 2)
 
         # testing the successful loading of second page of devicetype-list (statuscode 2xx)
-        url = reverse("type-list", kwargs={"page": 2})
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
+        response = self.client.get('/types/2')
+        self.assertEqual(response.status_code, 200)
 
-    def test_type_detail(self):
-        '''method for testing the reachability of existing devicetypes'''
-        # querying all devices and choose first one to test
+    def test_detail_view(self):
         devicetype = mommy.make(Type)
-        devicetypes = Type.objects.all()
-        devicetype = devicetypes[0]
+        response = self.client.get('/types/view/%i' % devicetype.pk)
+        self.assertEqual(response.status_code, 200)
 
-        # test successful loading of detail-view of chossen devicetype (first one, statuscode 2xx)
-        url = reverse("type-detail", kwargs={"pk": devicetype.pk})
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
+    def test_create_view(self):
+        response = self.client.get('/types/add')
+        self.assertEqual(response.status_code, 200)
 
-    def test_type_add(self):
-        '''method for testing adding a devicetype'''
-        # testing successful loading of devicetype-page of added device (statuscode 2xx)
-        url = reverse("type-add")
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_type_edit(self):
-        '''method for testing the functionality of editing a devicetype'''
+    def test_update_view(self):
         devicetype = mommy.make(Type)
+        response = self.client.get('/types/edit/%i' % devicetype.pk)
+        self.assertEqual(response.status_code, 200)
 
-        # querying all devicetypes and choose first one
-        devicetypes = Type.objects.all()
-        devicetype = devicetypes[0]
-
-        # testing successful loading of edited devicetype-detail-page (statuscode 2xx)
-        url = reverse("type-edit", kwargs={"pk": devicetype.pk})
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
-
-    def test_type_delete(self):
-        '''method for testing the functionality of deleting a devicetype'''
+    def test_delete_view(self):
         devicetype = mommy.make(Type)
+        response = self.client.get('/types/delete/%i' % devicetype.pk)
+        self.assertEqual(response.status_code, 200)
 
-        # querying all devices and choose first one
-        devicetypes = Type.objects.all()
-        devicetype = devicetypes[0]
-
-        # testing successful loading of devicetype-page after deletion (statuscode 2xx)
-        url = reverse("type-edit", kwargs={"pk": devicetype.pk})
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
+    def test_merge_view(self):
+        devicetype1 = mommy.make(Type)
+        devicetype2 = mommy.make(Type)
+        response = self.client.get('/types/merge/%i/%i' % (devicetype1.pk, devicetype2.pk))
+        self.assertEqual(response.status_code, 200)

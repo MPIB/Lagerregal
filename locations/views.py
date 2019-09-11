@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -13,11 +12,13 @@ from locations.models import Section
 from devices.models import Device, Room
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 
 
-class SectionList(PaginationMixin, ListView):
+class SectionList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Section
     context_object_name = 'section_list'
+    permission_required = 'locations.read_section'
 
     def get_queryset(self):
         sections = Section.objects.all()
@@ -31,7 +32,7 @@ class SectionList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -44,15 +45,16 @@ class SectionList(PaginationMixin, ListView):
         return context
 
 
-class SectionCreate(CreateView):
+class SectionCreate(PermissionRequiredMixin, CreateView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'locations.add_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "section"
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Section")),
@@ -60,14 +62,15 @@ class SectionCreate(CreateView):
         return context
 
 
-class SectionDetail(DetailView):
+class SectionDetail(PermissionRequiredMixin, DetailView):
     model = Section
     context_object_name = 'section'
     template_name = "locations/section_detail.html"
+    permission_required = 'locations.read_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["merge_list"] = Section.objects.exclude(pk=context["object"].pk).order_by("name")
         context['device_list'] = Device.objects.filter(room__section=context["object"], archived=None,
@@ -89,37 +92,40 @@ class SectionDetail(DetailView):
         return context
 
 
-class SectionUpdate(UpdateView):
+class SectionUpdate(PermissionRequiredMixin, UpdateView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'locations.change_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Section")),
             (reverse("section-edit", kwargs={"pk": self.object.pk}), self.object)]
         return context
 
 
-class SectionDelete(DeleteView):
+class SectionDelete(PermissionRequiredMixin, DeleteView):
     model = Section
     success_url = reverse_lazy('section-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'locations.delete_section'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SectionDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Sections")),
             (reverse("section-delete", kwargs={"pk": self.object.pk}), self.object)]
         return context
 
 
-class SectionMerge(View):
+class SectionMerge(PermissionRequiredMixin, View):
     model = Section
+    permission_required = 'locations.change_section'
 
     def get(self, request, *args, **kwargs):
         context = {}

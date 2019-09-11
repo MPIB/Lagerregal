@@ -1,7 +1,5 @@
-from __future__ import unicode_literals
-
+from django.contrib.contenttypes.models import ContentType
 from django.test.client import Client
-from django.urls import reverse
 from django.test import TestCase
 
 from model_mommy import mommy
@@ -16,14 +14,22 @@ class HistoryTests(TestCase):
         self.admin = Lageruser.objects.create_superuser('test', 'test@test.com', "test")
         self.client.login(username="test", password="test")
 
-    def test_history_detail(self):
-        mommy.make(Device)
-        devices = Device.objects.all()
-        device = devices[0]
-        url = reverse("device-edit", kwargs={"pk": device.pk})
-        resp = self.client.post(url, data={"name": "test", "creator": self.admin.pk})
-        self.assertEqual(resp.status_code, 302)
+    def test_global_view(self):
+        response = self.client.get('/history/global/')
+        self.assertEqual(response.status_code, 200)
 
-        url = reverse("history-detail", kwargs={"pk": 1})
-        resp = self.client.get(url)
-        self.assertEqual(resp.status_code, 200)
+    def test_list_view(self):
+        content_type = ContentType.objects.get(model='device')
+        device = mommy.make(Device)
+        response = self.client.get('/history/%i/%i' % (content_type.pk, device.pk))
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_view(self):
+        device = mommy.make(Device)
+        response = self.client.post('/devices/%i/edit/' % device.pk, data={
+            'name': 'test',
+            'creator': self.admin.pk,
+        })
+        self.assertEqual(response.status_code, 302)
+        response = self.client.get('/history/version/1')
+        self.assertEqual(response.status_code, 200)

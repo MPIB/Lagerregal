@@ -1,16 +1,13 @@
-from __future__ import unicode_literals
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 
-import six
 from reversion import revisions as reversion
 
 from users.models import Department
 
 
-@six.python_2_unicode_compatible
+@reversion.register()
 class Devicegroup(models.Model):
     name = models.CharField(max_length=200)
     department = models.ForeignKey(Department, null=True, on_delete=models.CASCADE)
@@ -30,6 +27,3 @@ class Devicegroup(models.Model):
 
     def get_edit_url(self):
         return reverse('devicegroup-edit', kwargs={'pk': self.pk})
-
-
-reversion.register(Devicegroup)

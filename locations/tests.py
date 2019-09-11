@@ -1,10 +1,7 @@
-from __future__ import unicode_literals
-
 from django.test.client import Client
 from django.test import TestCase
 from django.urls import reverse
 
-import six
 from model_mommy import mommy
 
 from locations.models import Section
@@ -19,6 +16,35 @@ class SectionTests(TestCase):
 
     def test_section_creation(self):
         section = mommy.make(Section)
-        self.assertEqual(six.text_type(section), section.name)
+        self.assertEqual(str(section), section.name)
         self.assertEqual(section.get_absolute_url(), reverse('section-detail', kwargs={'pk': section.pk}))
         self.assertEqual(section.get_edit_url(), reverse('section-edit', kwargs={'pk': section.pk}))
+
+    def test_list_view(self):
+        response = self.client.get('/sections/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_view(self):
+        response = self.client.get('/sections/add')
+        self.assertEqual(response.status_code, 200)
+
+    def test_detail_view(self):
+        section = mommy.make(Section)
+        response = self.client.get('/sections/view/%i' % section.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_update_view(self):
+        section = mommy.make(Section)
+        response = self.client.get('/sections/edit/%i' % section.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_delete_view(self):
+        section = mommy.make(Section)
+        response = self.client.get('/sections/delete/%i' % section.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_merge_view(self):
+        section1 = mommy.make(Section)
+        section2 = mommy.make(Section)
+        response = self.client.get('/sections/merge/%i/%i' % (section1.pk, section2.pk))
+        self.assertEqual(response.status_code, 200)

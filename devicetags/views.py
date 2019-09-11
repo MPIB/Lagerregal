@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext_lazy as _
@@ -12,11 +10,13 @@ from devices.models import Device
 from devices.forms import ViewForm, VIEWSORTING, FilterForm
 from devicetags.forms import TagForm, DeviceTagForm
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 
 
-class DevicetagList(PaginationMixin, ListView):
+class DevicetagList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Devicetag
     context_object_name = 'devicetag_list'
+    permission_required = 'devicetags.read_devicetag'
 
     def get_queryset(self):
         devicetags = Devicetag.objects.all()
@@ -35,7 +35,7 @@ class DevicetagList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("devicetag-list"), _("Devicetags"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -53,15 +53,16 @@ class DevicetagList(PaginationMixin, ListView):
         return context
 
 
-class DevicetagCreate(CreateView):
+class DevicetagCreate(PermissionRequiredMixin, CreateView):
     model = Devicetag
     success_url = reverse_lazy('devicetag-list')
     template_name = 'devices/base_form.html'
     form_class = TagForm
+    permission_required = 'devicetags.add_devicetag'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "devicetag"
 
         # add "create new devicetag" to breadcrumbs
@@ -72,15 +73,16 @@ class DevicetagCreate(CreateView):
         return context
 
 
-class DevicetagUpdate(UpdateView):
+class DevicetagUpdate(PermissionRequiredMixin, UpdateView):
     model = Devicetag
     success_url = reverse_lazy('devicetag-list')
     template_name = 'devices/base_form.html'
     form_class = TagForm
+    permission_required = 'devicetags.change_devicetag'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # adds "Devicetag" to breadcrumbs
         context["breadcrumbs"] = [
@@ -90,14 +92,15 @@ class DevicetagUpdate(UpdateView):
         return context
 
 
-class DevicetagDelete(DeleteView):
+class DevicetagDelete(PermissionRequiredMixin, DeleteView):
     model = Devicetag
     success_url = reverse_lazy('devicetag-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devicetags.delete_devicetag'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DevicetagDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # adds "Devicetag" to breadcrumbs
         context["breadcrumbs"] = [
@@ -113,7 +116,7 @@ class DeviceTags(FormView):
     success_url = "/devices"
 
     def get_context_data(self, **kwargs):
-        context = super(DeviceTags, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         device = context["form"].cleaned_data["device"]
 
         # adds "Devices" to breadcrumbs
@@ -132,9 +135,10 @@ class DeviceTags(FormView):
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
-class DeviceTagRemove(DeleteView):
+class DeviceTagRemove(PermissionRequiredMixin, DeleteView):
     template_name = 'devicetags/remove_tag.html'
     model = Devicetag
+    permission_required = 'devicetags.delete_devicetag'
 
     def get(self, request, *args, **kwargs):
         context = {}

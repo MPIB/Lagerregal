@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from rest_framework import serializers
 from django.contrib.auth.models import Group, Permission
 
@@ -143,14 +141,14 @@ class LendingSerializer(serializers.ModelSerializer):
         if self.context["request"].POST:
             del attrs["room"]
             del self.fields["room"]
-        obj = super(LendingSerializer, self).restore_object(attrs, instance=instance)
+        obj = super().restore_object(attrs, instance=instance)
         return obj
 
     def to_native(self, obj):
         if self.context["request"].POST:
             if "room" in self.fields:
                 del self.fields["room"]
-        return super(LendingSerializer, self).to_native(obj)
+        return super().to_native(obj)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

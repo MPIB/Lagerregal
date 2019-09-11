@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import os
 import re
 
@@ -7,8 +5,6 @@ from django.template import Library
 from django.urls import reverse
 from django.utils.html import mark_safe, format_html
 from django.forms import CheckboxInput
-
-import six
 
 from devices.models import Bookmark
 
@@ -18,11 +14,6 @@ register = Library()
 @register.simple_tag
 def get_verbose_name(object):
     return object._meta.verbose_name
-
-
-@register.simple_tag
-def get_verbose_name_lowercase(object):
-    return object._meta.verbose_name.lower()
 
 
 @register.simple_tag
@@ -58,7 +49,7 @@ class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
 
 @register.filter
 def add_class(value, css_class):
-    string = six.text_type(value)
+    string = str(value)
     match = class_re.search(string)
     if match:
         m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class,
@@ -92,12 +83,6 @@ def get_attribute(object, attribute):
 
 
 @register.filter
-def get_attribute_from_list(device, attribute):
-    print(device, attribute)
-    return device[attribute]
-
-
-@register.filter
 def filename(value):
     return os.path.basename(value.file.name)
 
@@ -122,7 +107,7 @@ def as_nested_list(factvalue):
             res += "<li>{}</li>".format(item)
         res += "</ul>"
     else:
-        res += six.text_type(factvalue)
+        res += str(factvalue)
 
     return mark_safe(res)
 

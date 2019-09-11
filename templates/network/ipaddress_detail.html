@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
-{% load permissionif %}
+{% load usertags %}
 
 {% block title %}{{ ipaddress.address }}{% endblock %}
 
@@ -10,12 +10,14 @@
 {% endblock %}
 
 {% block pullright %}
-    {% permission user has 'network.delete_ipaddress' of ipaddress %}
+    {% has_perm 'network.delete_ipaddress' user ipaddress as can_delete_ipaddress %}
+    {% has_perm 'network.change_ipaddress' user ipaddress as can_change_ipaddress %}
+    {% if can_delete_ipaddress %}
         {% deletebutton "ipaddress-delete" object.id %}
-    {% endpermission %}
-    {% permission user has 'network.change_ipaddress' of ipaddress %}
+    {% endif %}
+    {% if can_change_ipaddress %}
         <a href="{% url 'ipaddress-edit' ipaddress.id %}" class="btn btn-primary btn-sm pull-right">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endpermission %}
+        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
     {% if "ipaddress" in LABEL_TEMPLATES %}
         <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
            data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>

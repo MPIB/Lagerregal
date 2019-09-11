@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, UpdateView
@@ -9,23 +7,24 @@ from django.shortcuts import get_object_or_404
 from django.contrib.contenttypes.models import ContentType
 from django.apps import apps
 
-import six
 from reversion.models import Version, Revision
 from reversion import revisions as reversion
 
 from Lagerregal.utils import PaginationMixin
 from devices.models import Device, Room, Manufacturer
 from devicetypes.models import Type, TypeAttributeValue
+from users.mixins import PermissionRequiredMixin
 
 
-class Globalhistory(PaginationMixin, ListView):
+class Globalhistory(PermissionRequiredMixin, PaginationMixin, ListView):
     queryset = Revision.objects.select_related("user").prefetch_related("version_set", "version_set__content_type"
         ).filter().order_by("-date_created")
     context_object_name = "revision_list"
     template_name = 'history/globalhistory.html'
+    permission_required = 'devices.change_device'
 
     def get_context_data(self, **kwargs):
-        context = super(Globalhistory, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [(reverse("globalhistory"), _("Global edit history"))]
         if context["is_paginated"] and context["page_obj"].number > 1:
             context["breadcrumbs"].append(["", context["page_obj"].number])
@@ -71,14 +70,15 @@ def cleanup_fielddict(version):
     return version
 
 
-class HistoryDetail(UpdateView):
+class HistoryDetail(PermissionRequiredMixin, UpdateView):
     model = Version
     template_name = 'history/history_detail.html'
     context_object_name = "this_version"
     fields = "__all__"
+    permission_required = 'devices.change_device'
 
     def get_context_data(self, **kwargs):
-        context = super(HistoryDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["current_version"] = get_object_or_404(
             apps.get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
                                                        id=context["this_version"].object_id)
@@ -105,7 +105,7 @@ class HistoryDetail(UpdateView):
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(context["this_version"].content_type.model)),
                 _(context["this_version"].content_type.name)),
-            (context["current_version"].get_absolute_url(), six.text_type(context["current_version"])),
+            (context["current_version"].get_absolute_url(), str(context["current_version"])),
             (reverse("history-list", kwargs={"content_type_id": context["this_version"].content_type.id,
                                              "object_id": context["this_version"].object_id}), _("History")),
             ("", _("Version {0}".format(context["this_version"].pk)))
@@ -136,9 +136,10 @@ class HistoryDetail(UpdateView):
         return HttpResponseRedirect(object.get_absolute_url())
 
 
-class HistoryList(ListView):
+class HistoryList(PermissionRequiredMixin, ListView):
     context_object_name = 'version_list'
     template_name = 'history/history_list.html'
+    permission_required = 'devices.change_device'
 
     def get_queryset(self):
         object_id = self.kwargs["object_id"]
@@ -149,11 +150,11 @@ class HistoryList(ListView):
                                       content_type_id=self.content_type.id).order_by("-pk")
 
     def get_context_data(self, **kwargs):
-        context = super(HistoryList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("{0}-list".format(self.content_type.model)),
                 _(self.content_type.name)),
-            (self.object.get_absolute_url(), six.text_type(self.object)),
+            (self.object.get_absolute_url(), str(self.object)),
             (reverse("history-list", kwargs={"content_type_id": self.content_type.id,
                                              "object_id": self.object.id}), _("History"))
         ]

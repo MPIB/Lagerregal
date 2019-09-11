@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
@@ -33,7 +30,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=200, verbose_name='Name')),
                 ('subject', models.CharField(max_length=500, verbose_name='Subject')),
                 ('body', models.CharField(max_length=10000, verbose_name='Body')),
-                ('usage', models.CharField(blank=True, max_length=200, null=True, verbose_name='Usage', choices=[(b'room', 'Room is changed'), (b'owner', 'person currently lending is changed'), (b'new', 'New Device is created'), (b'reminder', 'Reminder that device is still owned'), (b'trashed', 'Device is trashed'), (b'overdue', 'Reminder that device is overdue')])),
+                ('usage', models.CharField(blank=True, max_length=200, null=True, verbose_name='Usage', choices=[('room', 'Room is changed'), ('owner', 'person currently lending is changed'), ('new', 'New Device is created'), ('reminder', 'Reminder that device is still owned'), ('trashed', 'Device is trashed'), ('overdue', 'Reminder that device is overdue')])),
                 ('department', models.ForeignKey(to='users.Department', null=True, on_delete=models.CASCADE)),
             ],
             options={

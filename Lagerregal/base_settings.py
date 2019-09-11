@@ -1,5 +1,4 @@
 # Django settings for Lagerregal project.
-from __future__ import unicode_literals
 import os
 
 
@@ -50,6 +49,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'npm.finders.NpmFinder',
 )
 
 MIDDLEWARE = (
@@ -63,7 +63,8 @@ MIDDLEWARE = (
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'users.middleware.TimezoneMiddleware'
+    'users.middleware.TimezoneMiddleware',
+    'users.middleware.LanguageMiddleware',
 )
 
 ROOT_URLCONF = 'Lagerregal.urls'
@@ -92,7 +93,6 @@ TEMPLATES = [
                 'django.template.loaders.filesystem.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
-            'builtins': ['permission.templatetags.permissionif']
         },
     },
 ]
@@ -119,7 +119,6 @@ INSTALLED_APPS = (
     'history',
     'reversion',
     'rest_framework',
-    'permission',
     'debug_toolbar',
     'oauth2_provider',
     'django_select2',
@@ -147,7 +146,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     # 'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'permission.backends.PermissionBackend',
+    'main.backends.LagerregalBackend',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -179,13 +178,50 @@ LOGGING = {
     }
 }
 
+NPM_ROOT_PATH = os.getcwd()
+
+NPM_FILE_PATTERNS = {
+    'bootstrap': [
+        'dist/js/bootstrap.min.js',
+    ],
+    'bootswatch': ['*/bootstrap.min.css'],
+    'font-awesome': [
+        'css/font-awesome.min.css',
+        'fonts/*',
+    ],
+    'jquery': ['dist/jquery.min.js'],
+    'jquery-ui-dist': [
+        'jquery-ui.min.js',
+        'jquery-ui.min.css',
+        'images/*.png',
+    ],
+    'datatables': [
+        'media/css/jquery.dataTables.min.css',
+        'media/images/*.png',
+        'media/js/jquery.dataTables.min.js',
+    ],
+    'mustache': ['mustache.min.js'],
+    'noty': [
+        'js/noty/jquery.noty.js',
+        'js/noty/layouts/*.js',
+        'js/noty/themes/*.js',
+    ],
+    'select2': [
+        'dist/js/select2.min.js',
+        'dist/css/select2.min.css',
+    ],
+    'timeago': [
+        'jquery.timeago.js',
+        'locales/jquery.timeago.de.js',
+    ],
+}
 
 PUBLIC_DEVICES_FILTER = {"tags__id__in": ["3", "17"]}
 
 # get more themes from https://bootswatch.com/ and download them to:
 #   static/css/themes/<name>.min.css
 THEMES = [
-    'default',
+    'flatly',
     'darkly',
     'simplex',
     'superhero',

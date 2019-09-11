@@ -1,29 +1,18 @@
-from __future__ import unicode_literals
 from django.views.generic import DetailView, TemplateView, ListView, CreateView, UpdateView, DeleteView, FormView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-from django.utils import translation
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
 from django.contrib.auth.models import Permission
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.decorators.cache import never_cache
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.http import is_safe_url
-from django.shortcuts import resolve_url
-from django.template.response import TemplateResponse
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from permission.decorators import permission_required
 from reversion.models import Version
 
+from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser, Department, DepartmentUser
 from devices.models import Lending
 from users.forms import SettingsForm, AvatarForm, DepartmentAddUserForm
@@ -34,10 +23,11 @@ from network.forms import UserIpAddressForm
 from devices.forms import ViewForm, VIEWSORTING, DepartmentFilterForm, FilterForm
 
 
-class UserList(PaginationMixin, ListView):
+class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Lageruser
     context_object_name = 'user_list'
     template_name = "users/user_list.html"
+    permission_required = "users.read_user"
 
     def get_queryset(self):
         users = Lageruser.objects.all()
@@ -62,7 +52,7 @@ class UserList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(UserList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         # adds "Users" to breadcrumbs
         context["breadcrumbs"] = [
@@ -76,15 +66,16 @@ class UserList(PaginationMixin, ListView):
         return context
 
 
-class ProfileView(DetailView):
+class ProfileView(PermissionRequiredMixin, DetailView):
     model = Lageruser
     context_object_name = 'profileuser'
+    permission_required = "users.read_user"
 
     template_name = 'users/profile.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ProfileView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         # shows list of edits made by user
         context['edits'] = Version.objects.select_related("revision", "revision__user"
@@ -117,7 +108,7 @@ class UserprofileView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(UserprofileView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context["profileuser"] = self.request.user
 
@@ -153,7 +144,7 @@ class UsersettingsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(UsersettingsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         if self.request.method != "POST":
             context['settingsform'] = SettingsForm(instance=self.request.user)
@@ -179,8 +170,6 @@ class UsersettingsView(TemplateView):
         if "language" in request.POST:
             request.user.language = request.POST["language"]
             request.user.save()
-            translation.activate(request.POST["language"])
-            request.session[translation.LANGUAGE_SESSION_KEY] = request.POST["language"]
             return HttpResponseRedirect(reverse("usersettings"))
 
         # handle pagelength/ timezone/ theme settings and use saved settings of user as default
@@ -239,57 +228,10 @@ class UsersettingsView(TemplateView):
         return render(request, self.template_name, context)
 
 
-#######################################################################################################################
-#                                                       Login                                                         #
-#######################################################################################################################
-@sensitive_post_parameters()
-@csrf_protect
-@never_cache
-def login(request, template_name='registration/login.html', redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=AuthenticationForm, extra_context=None):
-    """
-    Displays the login form and handles the login action.
-    """
-    if request.method == "POST":
-        redirect_to = request.GET.get(redirect_field_name, '')
-        form = authentication_form(data=request.POST)
-        if form.is_valid():
-
-            # Ensure the user-originating redirection url is safe.
-            if not is_safe_url(url=redirect_to, host=request.get_host()):
-                redirect_to = resolve_url("/")
-
-            # Okay, security check complete. Log the user in.
-            auth_login(request, form.get_user())
-
-            if request.session.test_cookie_worked():
-                request.session.delete_test_cookie()
-            request.session['django_language'] = request.user.language
-            return HttpResponseRedirect(redirect_to)
-    else:
-        redirect_to = request.POST.get(redirect_field_name, '')
-        form = authentication_form(request)
-
-    request.session.set_test_cookie()
-
-    current_site = get_current_site(request)
-
-    context = {
-        'form': form,
-        redirect_field_name: redirect_to,
-        'site': current_site,
-        'site_name': current_site.name,
-    }
-
-    if extra_context is not None:
-        context.update(extra_context)
-
-    return TemplateResponse(request, template_name, context)
-
-
-class DepartmentList(PaginationMixin, ListView):
+class DepartmentList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Department
     context_object_name = 'department_list'
+    permission_required = "users.read_department"
 
     def get_queryset(self):
         sections = Department.objects.all()
@@ -303,7 +245,7 @@ class DepartmentList(PaginationMixin, ListView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments"))]
         context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
@@ -316,15 +258,16 @@ class DepartmentList(PaginationMixin, ListView):
         return context
 
 
-class DepartmentCreate(CreateView):
+class DepartmentCreate(PermissionRequiredMixin, CreateView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_form.html'
     fields = "__all__"
+    permission_required = "users.add_department"
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['type'] = "section"
         context["breadcrumbs"] = [
             (reverse("section-list"), _("Departments")),
@@ -332,19 +275,20 @@ class DepartmentCreate(CreateView):
         return context
 
     def form_valid(self, form):
-        response = super(DepartmentCreate, self).form_valid(form)
+        response = super().form_valid(form)
         department_user = DepartmentUser(user=self.request.user, department=self.object, role="a")
         department_user.save()
         return response
 
 
-class DepartmentDetail(DetailView):
+class DepartmentDetail(PermissionRequiredMixin, DetailView):
     model = Department
     context_object_name = 'department'
     template_name = "users/department_detail.html"
+    permission_required = "users.read_department"
 
     def get_context_data(self, **kwargs):
-        context = super(DepartmentDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context['department_users'] = DepartmentUser.objects.select_related("user").filter(department=self.object)
 
         if "department" in settings.LABEL_TEMPLATES:
@@ -362,15 +306,18 @@ class DepartmentDetail(DetailView):
         return context
 
 
-@permission_required('users.change_department', raise_exception=True)
-class DepartmentUpdate(UpdateView):
+class DepartmentUpdate(PermissionRequiredMixin, UpdateView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_form.html'
+    permission_required = 'users.change_department'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
             (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
@@ -378,15 +325,18 @@ class DepartmentUpdate(UpdateView):
         return context
 
 
-@permission_required('users.delete_department', raise_exception=True)
-class DepartmentDelete(DeleteView):
+class DepartmentDelete(PermissionRequiredMixin, DeleteView):
     model = Department
     success_url = reverse_lazy('department-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'users.delete_department'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentDelete, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
             (reverse("department-detail", kwargs={"pk": self.object.pk}), self.object),
@@ -405,7 +355,7 @@ class DepartmentAddUser(FormView):
         self.department = get_object_or_404(Department, id=self.kwargs.get("pk", ""))
         if not self.request.user.has_perm("users.add_department_user", self.department):
             raise PermissionDenied
-        context = super(DepartmentAddUser, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["form"].fields["department"].initial = self.department
         context["form"].fields["user"].queryset = Lageruser.objects.exclude(departments__id=self.department.id)
 
@@ -427,17 +377,20 @@ class DepartmentAddUser(FormView):
         return HttpResponseRedirect(reverse("department-detail", kwargs={"pk": self.department.pk}))
 
 
-@permission_required('users.delete_department_user', raise_exception=True)
-class DepartmentDeleteUser(DeleteView):
+class DepartmentDeleteUser(PermissionRequiredMixin, DeleteView):
     model = DepartmentUser
     template_name = 'devices/base_delete.html'
+    permission_required = 'users.delete_department_user'
+
+    def get_permission_object(self):
+        return self.get_object()
 
     def get_success_url(self):
         return reverse("department-detail", kwargs={"pk": self.object.department.pk})
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(DepartmentDeleteUser, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("department-list"), _("Departments")),
             (reverse("department-detail", kwargs={"pk": self.object.department.pk}), self.object.department),

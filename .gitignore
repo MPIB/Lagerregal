@@ -1,4 +1,5 @@
 *.pyc
+*.mo
 database.db
 mails/
 .spyderproject
@@ -17,3 +18,4 @@ media/
 scripts/
 exports/
 backup/
+node_modules/

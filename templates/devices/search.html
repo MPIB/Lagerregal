@@ -18,35 +18,35 @@
     </form>
     <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
 
-    {% include "snippets/pagination_simple.html" with listurl='search' %}
-    <table id="devicetable" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Inventorynumber" %}</th>
-                <th>{% trans "Serialnumber" %}</th>
-                <th>{% trans "Devicetype" %}</th>
-                <th>{% trans "Room" %}</th>
-                <th>{% trans "User" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for device in object_list %}
+    {% if searchstring %}
+        <table id="devicetable" class="table table-bordered table-striped">
+            <thead>
                 <tr>
-                    <td><a href="{{ device.get_absolute_url }}">{{ device.name }}</a></td>
-                    <td>{{ device.inventorynumber }}</td>
-                    <td>{{ device.serialnumber }}</td>
-                    <td>{{ device.devicetype }}</td>
-                    <td>{{ device.room }}</td>
-                    <td>{{ device.currentlending.owner }}</td>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Inventorynumber" %}</th>
+                    <th>{% trans "Serialnumber" %}</th>
+                    <th>{% trans "Devicetype" %}</th>
+                    <th>{% trans "Room" %}</th>
+                    <th>{% trans "User" %}</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% include "snippets/pagination_simple.html" with listurl='search' %}
+            </thead>
+            <tbody>
+                {% for device in object_list %}
+                    <tr>
+                        <td><a href="{{ device.get_absolute_url }}">{{ device.name }}</a></td>
+                        <td>{{ device.inventorynumber }}</td>
+                        <td>{{ device.serialnumber }}</td>
+                        <td>{{ device.devicetype }}</td>
+                        <td>{{ device.room }}</td>
+                        <td>{{ device.currentlending.owner }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}
 
 {% block htmlend %}
-    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
+    <script type="text/javascript" language="javascript" src="{% static "datatables/media/js/jquery.dataTables.min.js" %}"></script>
     <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
 {% endblock %}
