@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load devicetags %}
 
-<table id="puppetdetails_table" class="table table-bordered table-striped table-wrapped">
+<table class="table table-bordered table-striped table-wrapped" data-table data-bfilter="false">
     <thead>
         <tr>
             <th>{% trans "Fact" %}</th>
@@ -17,11 +17,3 @@
         {% endfor %}
     </tbody>
 </table>
-
-<script>
-    $('#puppetdetails_table').dataTable( {
-        "bFilter": false,
-        "paging": true,
-        "searching": true,
-    } );
-</script>

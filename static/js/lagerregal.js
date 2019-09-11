@@ -60,6 +60,7 @@
             this.form.submit();
         });
 
+        $('[data-table]').dataTable();
         $('[data-timeago]').timeago();
         $('[data-toggle="popover"]').popover({
             sanitize: false,

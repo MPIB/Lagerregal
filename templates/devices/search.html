@@ -19,7 +19,7 @@
     <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
 
     {% if searchstring %}
-        <table id="devicetable" class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped" data-table data-b-filter="false">
             <thead>
                 <tr>
                     <th>{% trans "Name" %}</th>
@@ -44,9 +44,4 @@
             </tbody>
         </table>
     {% endif %}
-{% endblock %}
-
-{% block htmlend %}
-    <script type="text/javascript" language="javascript" src="{% static "datatables/media/js/jquery.dataTables.min.js" %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
 {% endblock %}
