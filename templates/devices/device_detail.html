@@ -560,7 +560,11 @@
                                     </a>
                                 </th>
                                 <td>
-                                    <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                                    {% if action.revision.user %}
+                                        <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                                    {% else %}
+                                        Unknown
+                                    {% endif %}
                                 </td>
                                 <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
                             </tr>
