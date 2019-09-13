@@ -211,10 +211,10 @@
                             </td>
                         </tr>
                     {% endif %}
-                    {% for attributevalue in attributevalue_list %}
+                    {% for name, value in device.typeattributes %}
                         <tr>
-                            <td>{{ attributevalue.typeattribute.name }}</td>
-                            <td>{{ attributevalue }}</td>
+                            <td>{{ name }}</td>
+                            <td>{{ value }}</td>
                         </tr>
                     {% endfor %}
                     <tr>

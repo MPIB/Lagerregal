@@ -245,7 +245,6 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
 
         context["today"] = datetime.date.today()
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
-        context["attributevalue_list"] = TypeAttributeValue.objects.filter(device=context["device"])
         context["lendform"] = LendForm()
         mailinitial = {}
 

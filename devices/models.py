@@ -3,6 +3,7 @@ import datetime
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 
 import reversion
@@ -155,6 +156,11 @@ class Device(models.Model):
         if self.currentlending.duedate < datetime.date.today():
             return True
         return False
+
+    @cached_property
+    def typeattributes(self):
+        qs = self.typeattributevalue_set
+        return list(qs.values_list('typeattribute__name', 'value'))
 
     @staticmethod
     def active():
