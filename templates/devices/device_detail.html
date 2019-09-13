@@ -563,7 +563,7 @@
                                     {% if action.revision.user %}
                                         <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
                                     {% else %}
-                                        Unknown
+                                        {% trans 'Unknown' %}
                                     {% endif %}
                                 </td>
                                 <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
