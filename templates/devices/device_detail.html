@@ -560,7 +560,11 @@
                                     </a>
                                 </th>
                                 <td>
-                                    <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                                    {% if action.revision.user %}
+                                        <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                                    {% else %}
+                                        {% trans 'Unknown' %}
+                                    {% endif %}
                                 </td>
                                 <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
                             </tr>
@@ -687,21 +691,21 @@
         });
 
         $(document).on('click', '.rotate-picture-right', function(e) {
-            rotate_and_reload(e, "right");
+            rotate_and_reload(this, "right");
         });
         $(document).on('click', '.rotate-picture-left', function(e) {
-            rotate_and_reload(e, "left");
+            rotate_and_reload(this, "left");
         });
 
-        function rotate_and_reload(e, direction){
-            var picture_id = e.target.id.replace("picture", "")
+        function rotate_and_reload(target, direction){
+            var picture_id = target.id.replace("picture", "")
             var url = "{% url "device-api-picture-rotate" device.pk 0 "placeholder" %}".replace("pictures/0", "pictures/"+picture_id).replace("placeholder", direction);
             $.ajax({
                 url: url,
                 type: 'PATCH',
                 success: function(data) {
                     var d = new Date();
-                    img = e.target.parentElement.parentElement.getElementsByTagName('img')[0];
+                    img = target.parentElement.parentElement.getElementsByTagName('img')[0];
                     if (data.new_source.length) {
                         // image was converted to png
                         img.src = img.src.replace(data.old_source, data.new_source);

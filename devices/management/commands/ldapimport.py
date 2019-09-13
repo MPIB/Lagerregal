@@ -67,23 +67,28 @@ class Command(BaseCommand):
         updated_users = 0
         skipped_users = 0
         page_count, users = search.paged_search_ext_s(*settings.LDAP_USER_SEARCH)
+        attr_map = settings.AUTH_LDAP_USER_ATTR_MAP
+        attr_map.update({'main_department': settings.AUTH_LDAP_DEPARTMENT_FIELD})
 
         for dn, userdata in users:
+            # paged results contains weird ldap references..
+            if not isinstance(userdata, dict):
+                print(userdata)
+                continue
+            username = userdata['sAMAccountName'][0].decode('utf-8')
             saveuser = False
             created = False
             changes = {}
             try:
-                user = Lageruser.objects.get(username=userdata["sAMAccountName"][0])
-            except TypeError:
-                continue
+                user = Lageruser.objects.get(username=username)
             except:
                 saveuser = True
                 created = True
-                user = Lageruser(username=userdata["sAMAccountName"][0])
-            for field, attr in settings.AUTH_LDAP_USER_ATTR_MAP.items():
+                user = Lageruser(username=username)
+            for field, attr in attr_map.items():
                 try:
                     old_value = getattr(user, field)
-                    new_value = userdata[attr][0].decode('unicode_escape').encode('iso8859-1').decode('utf8')
+                    new_value = userdata[attr][0].decode('utf-8')
                     if attr == settings.AUTH_LDAP_DEPARTMENT_FIELD:
                         try:
                             department_name = re.findall(settings.AUTH_LDAP_DEPARTMENT_REGEX, new_value)[-1]
@@ -97,7 +102,7 @@ class Command(BaseCommand):
                             break
                     elif attr == "accountExpires":
                         expired = False
-                        if userdata['accountExpires'][0] == '0':
+                        if int(userdata['accountExpires'][0].decode('utf-8')) == 0:
                             new_value = None
                         else:
                             new_value = utils.convert_ad_accountexpires(int(userdata['accountExpires'][0]))
@@ -126,9 +131,9 @@ class Command(BaseCommand):
                         break
                     if attr == "sn":
                         old_value = getattr(user, field)
-                        if old_value != userdata["sAMAccountName"][0]:
+                        if old_value != username:
                             saveuser = True
-                            setattr(user, field, userdata["sAMAccountName"][0])
+                            setattr(user, field, username)
                             continue
                     if attr == "mail":
                         # userPrincipalName *might* contain non-ascii
