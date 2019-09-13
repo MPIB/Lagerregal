@@ -62,8 +62,9 @@ class IpAddressList(PermissionRequiredMixin, PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["viewform"] = ViewForm(initial={
-                                                'category': self.viewfilter,
-                                                "department": self.departmentfilter})
+            'category': self.viewfilter,
+            "department": self.departmentfilter,
+        })
         context["filterform"] = FilterForm(initial={
             "filter": self.filterstring
         })
