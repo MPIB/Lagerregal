@@ -88,3 +88,27 @@ table tr th, table tr td {
 #puppetdetails_value {
     width: 70%;
 }
+
+.hal-eye {
+    display: inline-block;
+    width: 6em;
+    height: 6em;
+    line-height: 6em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.hal-eye::after {
+    content: "";
+    display: inline-block;
+    width: 0.3em;
+    height: 0.3em;
+    border-radius: 50%;
+    background-color: #fae966;
+    box-shadow:
+        0 0 0.7em 0.1em #fae966,
+        0 0 0 1em #e74c3c,
+        0 0 0.7em 0.9em #b94a48,
+        0 0 0 2.1em #212529,
+        0 0 0 2.6em #95a5a6;
+}
