@@ -22,8 +22,10 @@ from users.mixins import PermissionRequiredMixin
 
 
 class Globalhistory(PermissionRequiredMixin, PaginationMixin, ListView):
-    queryset = Revision.objects.select_related("user").prefetch_related("version_set", "version_set__content_type"
-        ).filter().order_by("-date_created")
+    queryset = Revision.objects\
+        .select_related("user")\
+        .prefetch_related("version_set", "version_set__content_type")\
+        .order_by("-date_created")
     context_object_name = "revision_list"
     template_name = 'history/globalhistory.html'
     permission_required = 'devices.change_device'
@@ -84,9 +86,13 @@ class HistoryDetail(PermissionRequiredMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        model = apps.get_model(
+            context["this_version"].content_type.app_label,
+            context["this_version"].content_type.model,
+        )
         context["current_version"] = get_object_or_404(
-            apps.get_model(context["this_version"].content_type.app_label, context["this_version"].content_type.model),
-                                                       id=context["this_version"].object_id)
+            model, id=context["this_version"].object_id
+        )
 
         context["this_version"] = cleanup_fielddict(context["this_version"])
 
@@ -135,8 +141,12 @@ class HistoryDetail(PermissionRequiredMixin, UpdateView):
             TypeAttributeValue.objects.filter(device=version.object_id).delete()
         reversion.set_comment("Reverted to version from {0}".format(version.revision.date_created))
 
-        messages.success(self.request,
-                        _('Successfully reverted Device to revision {0}').format(version.revision.id))
+        messages.success(
+            self.request,
+            _('Successfully reverted Device to revision {0}').format(
+                version.revision.id
+            ),
+        )
 
         return HttpResponseRedirect(object.get_absolute_url())
 

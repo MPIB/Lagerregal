@@ -190,9 +190,11 @@ class ExportCsv(PermissionRequiredMixin, View):
 class DeviceDetail(PermissionRequiredMixin, DetailView):
     # get related data to chosen device
     queryset = Device.objects \
-        .select_related("manufacturer", "devicetype", "currentlending", "currentlending__owner", "department",
-                        "room", "room__building") \
-        .prefetch_related("pictures", )
+        .select_related(
+            "manufacturer", "devicetype", "currentlending",
+            "currentlending__owner", "department", "room", "room__building",
+        )\
+        .prefetch_related("pictures")
     context_object_name = 'device'
     object = None
     permission_required = 'devices.view_device'
@@ -226,15 +228,20 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
         context['tagform'].fields["tags"].queryset = Devicetag.objects.exclude(devices=context["device"])
 
         # lending history, eidt history, mail history
-        context["lending_list"] = Lending.objects.filter(device=context["device"])\
-                                      .select_related("owner").order_by("-pk")[:10]
-        context["version_list"] = Version.objects.filter(object_id=context["device"].id,
-                                                         content_type_id=ContentType.objects.get(
-                                                             model='device').id) \
-                                      .select_related("revision", "revision__user").order_by("-pk")[:10]
+        context["lending_list"] = Lending.objects\
+            .filter(device=context["device"])\
+            .select_related("owner")\
+            .order_by("-pk")[:10]
+        context["version_list"] = Version.objects\
+            .filter(object_id=context["device"].id,
+                    content_type_id=ContentType.objects.get(model='device').id) \
+            .select_related("revision", "revision__user")\
+            .order_by("-pk")[:10]
         context['content_type'] = ContentType.objects.get(model='device').id
-        context["mail_list"] = MailHistory.objects.filter(device=context["device"])\
-                                   .select_related("sent_by").order_by("-pk")[:10]
+        context["mail_list"] = MailHistory.objects\
+            .filter(device=context["device"])\
+            .select_related("sent_by")\
+            .order_by("-pk")[:10]
 
         context["today"] = datetime.date.today()
         context["weekago"] = context["today"] - datetime.timedelta(days=7)
@@ -1677,7 +1684,7 @@ class Search(PermissionRequiredMixin, ListView):
         context["breadcrumbs"] = [("", _("Search"))]
         context["searchstring"] = self.get_searchstring()
         context["keys"] = sorted(list(self.STRING_FIELDS.keys())
-                                + list(self.DATE_FIELDS.keys()))
+                                 + list(self.DATE_FIELDS.keys()))
         return context
 
 
@@ -1703,8 +1710,8 @@ class PublicDeviceListView(ListView):
         if self.groupfilter != "all":
             devices = devices.filter(group__id=self.groupfilter)
         return devices.values("id", "name", "inventorynumber", "devicetype__name", "room__name",
-                                  "room__building__name",
-                                  "group__name", "currentlending__owner__username", "currentlending__duedate")
+                              "room__building__name",
+                              "group__name", "currentlending__owner__username", "currentlending__duedate")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

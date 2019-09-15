@@ -58,8 +58,10 @@ class MailTemplate(models.Model):
             "inventorynumber": data["device"].inventorynumber,
             "manufacturer": data["device"].manufacturer,
             "name": str(data["device"]),
-            "room": (data["device"].room.name + " (" + data["device"].room.building.name + ")" if data[
-                                                                                                      "device"].room is not None else ""),
+            "room": '' if data["device"].room is None else '{} ({})'.format(
+                data["device"].room.name,
+                data["device"].room.building.name,
+            ),
             "serialnumber": data["device"].serialnumber,
             "templending": data["device"].templending,
             "trashed": data["device"].trashed,

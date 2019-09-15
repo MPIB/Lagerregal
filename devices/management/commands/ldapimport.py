@@ -61,12 +61,12 @@ class Command(BaseCommand):
             print("You have to enable the USE_LDAP setting to use the ldap import.")
             return
         # ldap.set_option(ldap.OPT_DEBUG_LEVEL, 4095)
-        l = PagedResultsSearchObject(settings.AUTH_LDAP_SERVER_URI)
-        l.simple_bind_s(settings.AUTH_LDAP_BIND_DN, settings.AUTH_LDAP_BIND_PASSWORD)
+        search = PagedResultsSearchObject(settings.AUTH_LDAP_SERVER_URI)
+        search.simple_bind_s(settings.AUTH_LDAP_BIND_DN, settings.AUTH_LDAP_BIND_PASSWORD)
         created_users = 0
         updated_users = 0
         skipped_users = 0
-        page_count, users = l.paged_search_ext_s(*settings.LDAP_USER_SEARCH)
+        page_count, users = search.paged_search_ext_s(*settings.LDAP_USER_SEARCH)
         attr_map = settings.AUTH_LDAP_USER_ATTR_MAP
         attr_map.update({'main_department': settings.AUTH_LDAP_DEPARTMENT_FIELD})
 
