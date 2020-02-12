@@ -1,0 +1,6 @@
+.dockerignore
+.env
+.venv
+.git
+node_modules
+media/*

@@ -14,6 +14,7 @@ jobs:
     # we test outside of docker, because it is just so much faster
     # Docker-related errors will pop up in develop branch and can be fixed then
     - stage: test
+      if: type == pull_request
       script:
         - |
           pip install flake8
