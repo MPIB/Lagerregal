@@ -107,7 +107,7 @@ class DevicegroupDetail(PermissionRequiredMixin, DetailView):
         context["breadcrumbs"] = [
             (reverse("devicegroup-list"), _("Devicegroups")),
             (reverse("devicegroup-detail", kwargs={"pk": self.object.pk}), self.object)]
-        context['device_list'] = Device.objects.filter(group=context["devicegroup"], archived=None)
+        context['device_list'] = Device.objects.filter(group=context["devicegroup"], archived=None).order_by("inventorynumber")
 
         return context
 

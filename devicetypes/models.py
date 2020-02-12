@@ -15,6 +15,7 @@ class Type(models.Model):
     class Meta:
         verbose_name = _('Type')
         verbose_name_plural = _('Types')
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('type-detail', kwargs={'pk': self.pk})
