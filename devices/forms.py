@@ -117,7 +117,7 @@ class IpAddressPurposeForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has-error'
-    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=Select2Widget(),
+    owner = forms.ModelChoiceField(Lageruser.objects.all().order_by("last_name"), widget=Select2Widget(),
                                    label=_("Lent to"))
     device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(),
                                     label=_("Device"), required=False)
@@ -237,7 +237,7 @@ class DeviceForm(forms.ModelForm):
     webinterface = forms.URLField(max_length=60, required=False)
     creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
-    devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')).order_by('-size'), required=False,
+    devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')), required=False,
                                         widget=Select2Widget())
     manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False,
                                           widget=Select2Widget())
@@ -271,14 +271,14 @@ class DeviceForm(forms.ModelForm):
 
         # if edit
         if kwargs["instance"]:
-            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]")))for x in Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]")))for x in Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id).order_by("name")]
             self.fields['uses'].choices = CHOICES
             self.initial['uses'] = [x.id for x in Device.objects.filter(used_in=kwargs["instance"].id)]
             self.fields['used_in'].queryset = Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)
 
         # if create
         else:
-            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in Device.objects.filter(used_in=None, trashed=None)]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in Device.objects.filter(used_in=None, trashed=None).order_by("name")]
             self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed=None)
 
@@ -292,7 +292,7 @@ class DeviceForm(forms.ModelForm):
                 return
 
         elif kwargs["instance"] is not None:
-            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
+            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk).order_by("name")
             if kwargs["instance"].devicetype is not None:
                 attributes = TypeAttribute.objects.filter(devicetype=kwargs["instance"].devicetype.pk)
             else:

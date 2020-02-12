@@ -31,6 +31,7 @@ class Building(models.Model):
     class Meta:
         verbose_name = _('Building')
         verbose_name_plural = _('Buildings')
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('building-detail', kwargs={'pk': self.pk})
@@ -54,6 +55,7 @@ class Room(models.Model):
     class Meta:
         verbose_name = _('Room')
         verbose_name_plural = _('Rooms')
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('room-detail', kwargs={'pk': self.pk})
@@ -72,6 +74,7 @@ class Manufacturer(models.Model):
     class Meta:
         verbose_name = _('Manufacturer')
         verbose_name_plural = _('Manufacturers')
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('manufacturer-detail', kwargs={'pk': self.pk})

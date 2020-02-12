@@ -112,6 +112,7 @@ class Department(models.Model):
     class Meta:
         verbose_name = _('Department')
         verbose_name_plural = _('Departments')
+        ordering = ["name"]
         permissions = (
             ("add_department_user", _("Can add a User to a Department")),
             ("delete_department_user", _("Can remove a User from a Department")),)

@@ -18,6 +18,7 @@ class Devicegroup(models.Model):
     class Meta:
         verbose_name = _('Devicegroup')
         verbose_name_plural = _('Devicegroups')
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('devicegroup-detail', kwargs={'pk': self.pk})
