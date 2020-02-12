@@ -1,4 +1,4 @@
-FROM python:3.6-slim
+FROM python:3.8-slim
 
 LABEL description="Development container for Lagerregal"
 EXPOSE 8000/tcp
