@@ -8,74 +8,40 @@ sudo: required
 services:
   - docker
 
-install: echo skipping install
+install:
 jobs:
   include:
-    - stage: build
-      if: fork == false # docker build only works for within-repo PRs
+    # we test outside of docker, because it is just so much faster
+    # Docker-related errors will pop up in develop branch and can be fixed then
+    - stage: test
+      script:
+        - |
+          pip install flake8
+          flake8 --config=setup.cfg
+          pip install -r requirements.txt
+          cp Lagerregal/template_development.py Lagerregal/settings.py
+          python manage.py test
+    - stage: release_develop
+      if: branch = develop AND type != pull_request
       script:
         - |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker build -t mpib/lagerregal:"$TRAVIS_COMMIT" .
-          docker push mpib/lagerregal:"$TRAVIS_COMMIT"
-    - stage: test_own
-      if: fork == false
-      script:
-        - |
-          docker run --rm -it mpib/lagerregal:"$TRAVIS_COMMIT" flake8 --config=setup.cfg
-          docker run --rm -it mpib/lagerregal:"$TRAVIS_COMMIT" ./manage.py test
-    - stage: test_fork
-      if: fork == true
-      script:
-        - |
-          pip install -r requirements.txt
-          pip install flake8
-          cp Lagerregal/template_development.py Lagerregal/settings.py
-          ./manage.py migrate
-          flake8 --config=setup.cfg
-          ./manage.py test
-    # release a docker image every time develop or master gets changed
-    # there is no reason to keep an image for every branch just yet
+          docker build -t mpib/lagerregal:develop .
+          docker run --rm mpib/lagerregal:develop ./manage.py test
+          docker push mpib/lagerregal:develop
     - stage: release_master
       if: branch = master AND type != pull_request
       script:
         - |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker tag mpib/lagerregal:"$TRAVIS_COMMIT" mpib/lagerregal:latest
-    - stage: release_develop
-      if: branch = develop AND type != pull_request
-      script: 
-        - |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker tag mpib/lagerregal:"$TRAVIS_COMMIT" mpib/lagerregal:develop
-    # the demo tag will only be tested and published with master changes (aka a release)
-    - stage: build_demo
-      if: branch = master and fork == false
-      script:
-        - |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker build -t mpib/lagerregal:demo_"$TRAVIS_COMMIT" -f demo/Dockerfile .
-          docker push mpib/lagerregal:demo_"$TRAVIS_COMMIT"
-    - stage: test_demo
-      if: branch = master and fork == false
-      script:
-        - |
-          docker run --rm mpib/lagerregal:demo_"$TRAVIS_COMMIT" ./manage.py test
+          docker build -t mpib/lagerregal:latest .
+          docker run --rm mpib/lagerregal:latest ./manage.py test
+          docker push mpib/lagerregal:latest
     - stage: release_demo
-      if: branch = master AND type != pull_request AND fork == false
+      if: branch = master AND type != pull_request
       script:
         - |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker tag mpib/lagerregal:demo_"$TRAVIS_COMMIT" mpib/lagerregal:demo
-
-## command to install dependencies
-#install:
-#  - "pip install -r requirements.txt"
-#  - "pip install flake8"
-#  # create the database
-#  - "cp Lagerregal/template_development.py Lagerregal/settings.py"
-#  - "./manage.py migrate"
-## command to run tests
-#script:
-#  - flake8 --config=setup.cfg
-#  - "./manage.py test"
+          docker build -t mpib/lagerregal:demo -f demo/Dockerfile .
+          docker run --rm mpib/lagerregal:demo   ./manage.py test
+          docker push mpib/lagerregal:demo
