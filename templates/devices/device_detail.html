@@ -144,7 +144,7 @@
     {% has_perm 'devices.add_device' user device as can_add_device %}
     {% has_perm 'devices.delete_device' user device as can_delete_device %}
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
-    {% has_perm 'devices.view_puppetdetails' user device as can_view_puppetdetails %}
+    {% has_perm 'devices.view_devicedetails' user device as can_view_devicedetails %}
 
     <div class="row">
         <div class="col-md-4">
@@ -449,12 +449,10 @@
         {% if can_lend_device %}
             <li class="nav-item"><a class="nav-link" href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>
         {% endif %}
-        {% if USE_PUPPET %}
-            {% if can_view_puppetdetails %}
-                <li class="nav-item"><a class="nav-link" href="#puppet" data-toggle="tab">{% trans "Puppet Stats" %}</a></li>
-                <li class="nav-item"><a class="nav-link" href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
+            {% if can_view_devicedetails %}
+                <li class="nav-item"><a class="nav-link" href="#devicedetails" data-toggle="tab">{% trans "Device Stats" %}</a></li>
+        <li class="nav-item"><a class="nav-link" href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
             {% endif %}
-        {% endif %}
     </ul>
 
     <div class="tab-content">
@@ -603,22 +601,20 @@
             </div>
         {% endif %}
 
-        {% if USE_PUPPET %}
-            {% if can_view_puppetdetails %}
-                <div class="tab-pane" id="puppet">
-                    <h4>{% trans "Puppet facts from puppetdb" %}</h4>
-                    <div id="puppetdetails">
-                        <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Puppet Facts..." %}
-                    </div>
+            {% if can_view_devicedetails %}
+            <div class="tab-pane" id="devicedetails">
+                <h4>{% trans "Device data from backend providers" %}</h4>
+                <div id="devicedetailsentry">
+                    <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Device Details..." %}
                 </div>
-                <div class="tab-pane" id="software">
-                    <h4>{% trans "Installed software from puppetdb" %}</h4>
-                    <div id="softwaredetails">
-                        <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
-                    </div>
+            </div>
+            <div class="tab-pane" id="software">
+                <h4>{% trans "Installed software from backend providers" %}</h4>
+                <div id="softwaredetails">
+                    <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
                 </div>
+            </div>
             {% endif %}
-        {% endif %}
     </div>
 {% endblock %}
 
@@ -717,7 +713,7 @@
             });
         }
 
-        $("#puppetdetails").load("{% url "puppet-details" device.pk %}");
-        $("#softwaredetails").load("{% url "puppet-software" device.pk %}");
+        $("#devicedetailsentry").load("{% url "device-details" device.pk %}");
+        $("#softwaredetails").load("{% url "device-software" device.pk %}");
     });
 {% endblock %}

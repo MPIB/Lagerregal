@@ -8,10 +8,10 @@
         </tr>
     </thead>
     <tbody>
-        {% for e in puppetsoftware %}
+        {% for entry in software_info %}
             <tr>
-                <td>{{ e.name }}</td>
-                <td>{{ e.version }}</td>
+                <td>{{ entry.name }}</td>
+                <td>{{ entry.version }}</td>
             </tr>
         {% endfor %}
     </tbody>

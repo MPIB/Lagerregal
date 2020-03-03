@@ -38,6 +38,7 @@ LABEL_TEMPLATES = {
 }
 
 USE_PUPPET = False
+USE_OPSI = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"

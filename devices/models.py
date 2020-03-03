@@ -119,6 +119,8 @@ class Device(models.Model):
     inventoried = models.DateTimeField(null=True, blank=True)
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
+    data_provider = models.CharField(max_length=20, blank=True)
+
     department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,)

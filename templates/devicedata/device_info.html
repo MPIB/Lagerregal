@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load devicetags %}
+
+<table class="table table-bordered table-striped table-wrapped" data-table data-bfilter="false">
+    <thead>
+        <tr>
+            <th>{% trans "Type" %}</th>
+            {% if device_info.0.name != None %}
+            <th>{% trans "Name" %}</th>
+            {%  endif %}
+            <th>{% trans "Data" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in device_info %}
+            <tr>
+                <td class="devicedetails_type">{{ entry.type }}</td>
+                {% if entry.name != None %}
+                <td class="devicedetails_name">{{ entry.name }}</td>
+                {% endif %}
+                <td class="devicedetails_value">{% as_nested_list entry.raw_value %}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

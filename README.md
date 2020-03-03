@@ -23,7 +23,7 @@ Features
 + Generates and prints Dymo labels from templates for inventory stickers
 + Manage static IP addresses for legacy network environments
 + Semi-Automatic e-mail delivery (on lending, trashing etc)
-+ Optional query and listing for puppet facts of a device
++ Optional query and listing for puppet facts or opsi details of a device
 + Permission system for users and public device lists
 + Themable with bootswatch
 
