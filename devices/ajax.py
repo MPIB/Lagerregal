@@ -26,7 +26,6 @@ from devicetypes.models import Type
 from mail.models import MailTemplate
 from users.models import Lageruser
 
-
 class AutocompleteDevice(View):
     def get(self, request):
         name = request.GET["name"]
@@ -235,72 +234,3 @@ class UserLendings(View):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
-class PuppetDetails(View):
-
-    def get(self, request, device):
-        query = (
-            '["in", "certname", ["extract", "certname", ["select_facts", '
-            '["and", ["=", "name", "{}"], ["=", "value", "{}"]]]]]'
-        ).format(settings.PUPPETDB_SETTINGS['query_fact'], str(device))
-        params = urllib.parse.urlencode({'query': query})
-
-        context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
-        context.load_cert_chain(
-            certfile=settings.PUPPETDB_SETTINGS['cert'],
-            keyfile=settings.PUPPETDB_SETTINGS['key'],
-        )
-        conn = http.client.HTTPSConnection(
-            settings.PUPPETDB_SETTINGS['host'],
-            settings.PUPPETDB_SETTINGS['port'],
-            context=context,
-        )
-        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
-        res = conn.getresponse()
-        if res.status != http.client.OK:
-            return HttpResponse('Failed to fetch puppet details from '
-                                + settings.PUPPETDB_SETTINGS['host'])
-        context = {
-            'puppetdetails': json.loads(res.read().decode())
-        }
-        return render(request, 'devices/puppetdetails.html', context)
-
-
-class PuppetSoftware(View):
-
-    def get(self, request, device):
-        software_fact = settings.PUPPETDB_SETTINGS['software_fact']
-        query_fact = settings.PUPPETDB_SETTINGS['query_fact']
-
-        query = (
-            '["and", ["=", "name", "{}"], ["in", "certname", '
-            '["extract", "certname", ["select_facts", ["and", '
-            '["=", "name", "{}"], ["=", "value", "{}"]]]]]]'
-        ).format(software_fact, query_fact, str(device))
-        params = urllib.parse.urlencode({'query': query})
-
-        context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
-        context.load_cert_chain(
-            certfile=settings.PUPPETDB_SETTINGS['cert'],
-            keyfile=settings.PUPPETDB_SETTINGS['key'],
-        )
-        conn = http.client.HTTPSConnection(
-            settings.PUPPETDB_SETTINGS['host'],
-            settings.PUPPETDB_SETTINGS['port'],
-            context=context,
-        )
-        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
-        res = conn.getresponse()
-        if res.status != http.client.OK:
-            return HttpResponse('Failed to fetch puppet details from '
-                                + settings.PUPPETDB_SETTINGS['host'])
-
-        try:
-            res = json.loads(res.read().decode())[0]
-            software = res['value']
-            context = {
-                'puppetsoftware': list(software.values())
-            }
-        except:
-            return HttpResponse('Malformed puppet software fact.')
-
-        return render(request, 'devices/puppetsoftware.html', context)

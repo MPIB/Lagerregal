@@ -81,12 +81,16 @@ table tr th, table tr td {
     word-break:break-all;
 }
 
-#puppetdetails_name {
-    width: 30%;
+.devicedetails_type {
+    width: 15% !important;
 }
 
-#puppetdetails_value {
-    width: 70%;
+.devicedetails_name {
+    width: 25% !important;
+}
+
+.devicedetails_value {
+    width: 60% !important;
 }
 
 .hal-eye {

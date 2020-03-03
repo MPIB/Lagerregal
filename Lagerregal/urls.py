@@ -23,6 +23,7 @@ from main import ajax as main_ajax
 from main import views as main_views
 from network import views as network_views
 from users import views as users_views
+from devicedata import ajax as devicedata_ajax
 
 from . import settings
 
@@ -173,8 +174,8 @@ urlpatterns = [
     path('devices_ajax/add_device_field/', login_required(devices_ajax.AddDeviceField.as_view()), name="add-device-field"),
     path('devices_ajax/get_attributes/', login_required(devicetypes_ajax.GetTypeAttributes.as_view()), name="get-attributes"),
     path('devices_ajax/user_lendings/', login_required(devices_ajax.UserLendings.as_view()), name="get-user-lendings"),
-    path('devices_ajax/puppetdetails/<int:device>/', login_required(devices_ajax.PuppetDetails.as_view()), name="puppet-details"),
-    path('devices_ajax/puppetsoftware/<int:device>/', login_required(devices_ajax.PuppetSoftware.as_view()), name="puppet-software"),
+    path('devices_ajax/devicedetails/<int:device>/', login_required(devicedata_ajax.DeviceDetails.as_view()), name="device-details"),
+    path('devices_ajax/devicesoftware/<int:device>/', login_required(devicedata_ajax.DeviceSoftware.as_view()), name="device-software"),
 ]
 
 urlpatterns += format_suffix_patterns([

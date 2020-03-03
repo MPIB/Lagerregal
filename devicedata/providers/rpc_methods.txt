@@ -1,0 +1,6 @@
+product_getObjects
+host_getObjects
+getPossibleMethods_listOfHashes
+productOnClient_getObjects
+auditHardwareOnHost_getObjects
+auditSoftwareOnClient_getObjects

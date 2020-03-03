@@ -116,7 +116,11 @@ PUPPETDB_SETTINGS = {
         'software_fact' : 'software',
     }
 
-
+USE_OPSI = True
+OPSI_SETTINGS = {
+    "host": "https://opsi.mpib-berlin.mpg.de",
+    "port": "4447"
+}
 # sample logger
 # import logging, logging.handlers
 # logger = logging.getLogger('django_auth_ldap')

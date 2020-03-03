@@ -1,0 +1,41 @@
+from devices.models import Device
+from abc import ABC, abstractmethod
+
+
+class DeviceInfo:
+    pass
+
+
+class DeviceInfoEntry:
+    type = ""
+    name = ""
+    raw_value = {}
+
+    def __init__(self, type, name, raw_value):
+        self.type = type
+        self.name = name
+        self.raw_value = raw_value
+
+
+class SoftwareEntry:
+    name = ""
+    version = ""
+
+    def __init__(self, name, version):
+        self.name = name
+        self.version = version
+
+
+class BaseProvider(ABC):
+
+    @abstractmethod
+    def get_device_info(self, device):
+        pass
+
+    @abstractmethod
+    def get_software_info(self, device):
+        pass
+
+    @abstractmethod
+    def has_device(self, device):
+        pass
