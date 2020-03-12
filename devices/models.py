@@ -136,7 +136,7 @@ class Device(models.Model):
             ("managment_mails", _("Emails for managment")),
             ("support_mails", _("Emails for support")),
             ("lend_device", _("Can lend Device")),
-            ("view_puppetdetails", _("View Puppet Details"))
+            ("view_devicedetails", _("View Device Details"))
         )
 
     def get_absolute_url(self):

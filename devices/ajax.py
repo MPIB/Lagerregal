@@ -1,7 +1,6 @@
 import http.client
 import json
 import urllib
-from http.client import ssl
 
 from django.conf import settings
 from django.forms.models import modelform_factory
@@ -25,6 +24,7 @@ from devices.models import Room
 from devicetypes.models import Type
 from mail.models import MailTemplate
 from users.models import Lageruser
+
 
 class AutocompleteDevice(View):
     def get(self, request):
