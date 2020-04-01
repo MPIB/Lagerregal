@@ -1,0 +1,25 @@
+{% load i18n %}
+<h4>{% trans "10 last lendings" %}</h4>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>{% trans "User" %}</th>
+        <th>{% trans "Since" %}</th>
+        <th>{% trans "Duedate" %}</th>
+        <th>{% trans "Returned" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for lending in lending_list %}
+        <tr>
+            <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
+            <td>{{ lending.lenddate }}</td>
+            <td>{{ lending.duedate|default_if_none:_("never") }}</td>
+            <td>{{ lending.returndate|default_if_none:_("not returned") }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'device-lending-list' device.pk %}" class="btn btn-secondary">
+    <i class="fa fa-book"></i> {% trans "View lending history" %}
+</a>

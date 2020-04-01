@@ -175,6 +175,7 @@ urlpatterns = [
     path('devices_ajax/get_attributes/', login_required(devicetypes_ajax.GetTypeAttributes.as_view()), name="get-attributes"),
     path('devices_ajax/user_lendings/', login_required(devices_ajax.UserLendings.as_view()), name="get-user-lendings"),
     path('devices_ajax/devicedetails/<int:device>/', login_required(devicedata_ajax.DeviceDetails.as_view()), name="device-details"),
+    path('devices_ajax/devicedetails/<int:device>/json', login_required(devicedata_ajax.DeviceDetailsJson.as_view()), name="device-details-json"),
     path('devices_ajax/devicesoftware/<int:device>/', login_required(devicedata_ajax.DeviceSoftware.as_view()), name="device-software"),
 ]
 

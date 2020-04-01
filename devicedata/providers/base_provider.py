@@ -2,8 +2,30 @@ from devices.models import Device
 from abc import ABC, abstractmethod
 
 
-class DeviceInfo:
-    pass
+class BaseDeviceInfo(ABC):
+    formatted_entries = []
+    raw_entries = []
+
+    def find_entries(self, entry_type):
+        return [entry for entry in self.raw_entries if entry.type == entry_type]
+
+    def __init__(self, raw_entries):
+        self.formatted_entries = []
+        self.raw_entries = raw_entries
+        self.format_entries()
+
+    @abstractmethod
+    def format_entries(self):
+        pass
+
+
+class FormattedDeviceInfoEntry:
+    name = ""
+    value = ""
+
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
 
 
 class DeviceInfoEntry:

@@ -1,0 +1,51 @@
+{% load i18n %}
+<ul class="list-unstyled">
+    {% for note in device.notes.all %}
+        <li>
+            <div class="row">
+                <div class="col-xs-2 col-md-2">
+                    {% if note.creator.avatar %}
+                        <img src="{{ note.creator.avatar.url }}" class="rounded img-fluid" alt=""/>
+                    {% endif %}
+                    <p>{{ note.creator }}</p>
+                    <small>{{ note.created_at|date:"SHORT_DATETIME_FORMAT" }}</small>
+                </div>
+                <div class="col-xs-10 col-md-10">
+                    <div class="comment-text">
+                        {{ note.note|linebreaks }}
+                    </div>
+                    {% if note.creator == user %}
+                        <div class="action">
+                            <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <form action="{% url "device-note-delete" device.id note.id %}" method="post"
+                                  class="form-inline pull-left">
+                                {% csrf_token %}
+                                <button class="btn btn-danger btn-xs" title="Delete" type="submit">
+                                    <i class="fa fa-trash-o"></i>
+                                </button>
+                            </form>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+<div class="row">
+    <form action='{% url "device-note-create" device.pk %}' method='post' class="col-md-6">
+        {% csrf_token %}
+        <div class="form-group">
+            <textarea class="form-control" name="note" id="id_note"></textarea>
+        </div>
+        <input type="hidden" name="device" value="{{ device.pk }}"/>
+        <input type="hidden" name="creator" value="{{ user.pk }}"/>
+        <div class="text-right">
+            <button type="submit" class="btn btn-success btn-sm">
+                <i class="fa fa-pencil"></i> {% trans "Add note" %}
+            </button>
+        </div>
+    </form>
+</div>

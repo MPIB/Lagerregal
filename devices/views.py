@@ -198,6 +198,7 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
     context_object_name = 'device'
     object = None
     permission_required = 'devices.view_device'
+    template_name = "devices/detail/device_detail.html"
 
     def get_object(self, queryset=None):
         if self.object is not None:
@@ -1729,7 +1730,7 @@ class PublicDeviceListView(ListView):
 
 
 class PublicDeviceDetailView(DetailView):
-    template_name = "devices/device_detail.html"
+    template_name = "devices/detail/device_detail.html"
     context_object_name = "device"
 
     def get_queryset(self):

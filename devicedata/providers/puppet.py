@@ -5,11 +5,95 @@ import urllib
 import requests
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
-from django.http import HttpResponse
-from urllib3.exceptions import SubjectAltNameWarning
-
 from Lagerregal import settings
-from devicedata.providers.base_provider import BaseProvider, DeviceInfoEntry, SoftwareEntry
+from devicedata.providers.base_provider import BaseProvider, BaseDeviceInfo, DeviceInfoEntry, SoftwareEntry, \
+    FormattedDeviceInfoEntry
+from django.utils.translation import ugettext_lazy as _
+
+from devicedata.providers.helpers import format_bytes
+
+
+class PuppetDeviceInfo(BaseDeviceInfo):
+
+    def format_serialnumber(self):
+        entries = self.find_entries("sp_serial_number")
+        entries.extend(self.find_entries("serialnumber"))
+        if len(entries) > 0:
+            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Serial Number"), entries[0].raw_value))
+
+    def format_type(self):
+        entries = self.find_entries("sp_machine_name")
+        if len(entries) > 0:
+            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Type"), entries[0].raw_value))
+
+    def format_hostname(self):
+        entries = self.find_entries("fqdn")
+        if len(entries) > 0:
+            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value))
+
+    def format_lastseen(self):
+        entries = self.find_entries("timestamp")
+        if len(entries) > 0:
+            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Last Seen"), entries[0].raw_value))
+
+    def format_processor(self):
+        entries = self.find_entries("processors")
+        if len(entries) > 0:
+            processors = {processor for processor in entries[0].raw_value["models"]}
+            self.formatted_entries.append(
+                FormattedDeviceInfoEntry(_("Processor"), "<br />".join(processors)))
+
+    def format_memory(self):
+        entries = self.find_entries("memory")
+        if len(entries) > 0:
+            system = entries[0].raw_value["system"]
+            self.formatted_entries.append(
+                FormattedDeviceInfoEntry(_("Memory"), format_bytes(system["total_bytes"])))
+
+    def format_storage(self):
+        entries = self.find_entries("disks")
+        drives = []
+        for entry in entries:
+            for disk_identifier in entry.raw_value:
+                disk = entry.raw_value[disk_identifier]
+                if "size_bytes" in disk and disk["size_bytes"] < 1000000000:
+                    # Smaller than 10gb. This most likely is not a hard drive.
+                    continue
+                if "model" in disk and "USB" not in disk["model"]:
+                    disk["identifier"] = disk_identifier
+                    drives.append(disk)
+        formatted_capacities = "<br />".join(
+            ["{0} ({1}): {2}".format(drive["model"], drive["identifier"], format_bytes(drive["size_bytes"])) for drive in drives])
+        self.formatted_entries.append(FormattedDeviceInfoEntry(_("Storage"), formatted_capacities))
+
+    def format_network(self):
+        entries = self.find_entries("networking")
+        controllers = []
+        for entry in entries:
+            interfaces = entry.raw_value["interfaces"]
+            for interface in interfaces:
+                if "mac" in interfaces[interface] and interfaces[interface]["mac"] is not None:
+                    interfaces[interface]["identifier"] = interface
+                    controllers.append(interfaces[interface])
+        formatted_controllers = "<br />".join(
+            ["{0}: {1}".format(controller["identifier"], controller["ip"]) for controller in controllers])
+        self.formatted_entries.append(FormattedDeviceInfoEntry(_("Network"), formatted_controllers))
+
+    def format_graphics(self):
+        entries = self.find_entries("VIDEO_CONTROLLER")
+        if len(entries) > 0:
+            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Graphics"), entries[0].name))
+
+    def format_entries(self):
+        self.format_serialnumber()
+        self.format_type()
+        self.format_hostname()
+        self.format_lastseen()
+        self.format_processor()
+        self.format_memory()
+        self.format_storage()
+        self.format_network()
+        self.format_graphics()
 
 
 class PuppetProvider(BaseProvider):
@@ -56,7 +140,7 @@ class PuppetProvider(BaseProvider):
         device_entries = []
         for entry in res:
             device_entries.append(DeviceInfoEntry(entry["name"], None, entry["value"]))
-        return device_entries
+        return PuppetDeviceInfo(device_entries)
 
     def get_software_info(self, device):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
