@@ -258,7 +258,7 @@ class DeviceForm(forms.ModelForm):
             if key.startswith("attribute_") and attribute != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
-                if re.match(typeattribute.regex, attribute) is None:
+                if typeattribute.regex is not None and re.match(typeattribute.regex, attribute) is None:
                     self._errors[key] = self.error_class(
                         [_("Doesn't match the given regex \"{0}\".".format(typeattribute.regex))])
                     unclean_data.append(key)

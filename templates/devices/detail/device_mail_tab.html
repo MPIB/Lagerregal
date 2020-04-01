@@ -1,0 +1,23 @@
+{% load i18n %}
+<h4>{% trans "10 last sent mails" %}</h4>
+<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th>{% trans "Mailtemplate" %}</th>
+        <th>{% trans "Subject" %}</th>
+        <th>{% trans "Sent by" %}</th>
+        <th>{% trans "Sent at" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for mail in mail_list %}
+        <tr>
+            <td>{{ mail.mailtemplate.name }}</td>
+            <td>{{ mail.subject }}</td>
+            <td><a href="{% url 'userprofile' mail.sent_by.pk %}">{{ mail.sent_by }}</a></td>
+            <td><span title="{{ mail.sent_at|date:'c' }}" data-timeago
+                      class="mail-date">{{ mail.sent_at }}</span></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
