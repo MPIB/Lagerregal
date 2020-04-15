@@ -158,6 +158,7 @@
 
     <div class="row">
         <div class="col-md-4">
+            <h5 id="details_header">{% trans "Manual Data" %}</h5>
             <table class="table table-bordered table-striped">
                 <tbody>
                 <tr>
@@ -301,7 +302,10 @@
                 </tbody>
             </table>
 
-            <h5 id="details_header">{% trans "Details" %}</h5>
+            {% include "devices/detail/device_lending_info.html" %}
+        </div>
+        <div class="col-md-5">
+            <h5 id="details_header">{% trans "Automatic Data" %}</h5>
             <table id="details_table" class="table table-bordered table-striped">
                 <tbody>
                 {% for attributevalue in attributevalue_list %}
@@ -312,6 +316,10 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {% if device.pictures.count > 0 %}
+                {% include "devices/detail/device_pictures.html" %}
+            {% endif %}
+
 
             {% if device.webinterface != "" %}
                 <a href="{{ device.webinterface }}" target="_blank">{% trans "Go to webinterface" %}</a>
@@ -322,13 +330,6 @@
                 {{ device.description|linebreaks }}
             {% endif %}
         </div>
-        <div class="col-md-5">
-            {% if device.pictures.count > 0 %}
-                {% include "devices/detail/device_pictures.html" %}
-            {% endif %}
-
-            {% include "devices/detail/device_lending_info.html" %}
-        </div>
         <div class="col-md-3">
             {% include "devices/detail/device_ipaddress_card.html" %}
 
@@ -336,7 +337,7 @@
         </div>
     </div>
 
-    <ul class="nav nav-tabs mb-3">
+    <ul class="nav nav-tabs mb-3" style="margin-top: 20px;">
         {% if can_change_device %}
             <li class="nav-item"><a class="nav-link active" href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>
         {% endif %}
