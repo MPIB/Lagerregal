@@ -359,36 +359,36 @@
 
     <div class="tab-content">
         {% if can_change_device %}
-            <div class="tab-pane" id="notes">
+            <div class="tab-pane fade show active" id="notes">
                 {% include "devices/detail/device_notes_tab.html" %}
             </div>
         {% endif %}
         {% if can_change_device %}
-            <div class="tab-pane" id="lending">
+            <div class="tab-pane fade" id="lending">
                 {% include "devices/detail/device_lending_tab.html" %}
             </div>
         {% endif %}
 
         {% if can_change_device %}
-            <div class="tab-pane" id="edit">
+            <div class="tab-pane fade" id="edit">
                 {% include "devices/detail/device_history_tab.html" %}
             </div>
         {% endif %}
 
         {% if can_lend_device %}
-            <div class="tab-pane" id="mail">
+            <div class="tab-pane fade" id="mail">
                 {% include "devices/detail/device_mail_tab.html" %}
             </div>
         {% endif %}
 
         {% if can_view_devicedetails %}
-            <div class="tab-pane" id="devicedetails">
+            <div class="tab-pane fade" id="devicedetails">
                 <h4>{% trans "Device data from backend providers" %}</h4>
                 <div id="devicedetailsentry">
                     <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Device Details..." %}
                 </div>
             </div>
-            <div class="tab-pane" id="software">
+            <div class="tab-pane fade" id="software">
                 <h4>{% trans "Installed software from backend providers" %}</h4>
                 <div id="softwaredetails">
                     <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
