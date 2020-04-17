@@ -84,9 +84,6 @@ class OpsiProvider(BaseProvider):
         host = None
         for ip in device.ipaddress_set.all():
             response = self.__connection.host_getObjects(ipAddress=ip.address)
-            if len(response) == 0:
-                raise ObjectDoesNotExist()
-            host = response[0]
             for h in response:
                 if str(device.id) in h['id']:
                     host = response[0]
