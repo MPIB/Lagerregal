@@ -299,6 +299,12 @@
                         <td>{{ device.inventoried }}</td>
                     </tr>
                 {% endif %}
+                {% for attributevalue in attributevalue_list %}
+                    <tr>
+                        <td>{{ attributevalue.typeattribute.name }}</td>
+                        <td>{{ attributevalue }}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
 
@@ -308,12 +314,6 @@
             <h5 id="details_header">{% trans "Automatic Data" %}</h5>
             <table id="details_table" class="table table-bordered table-striped">
                 <tbody>
-                {% for attributevalue in attributevalue_list %}
-                    <tr>
-                        <td>{{ attributevalue.typeattribute.name }}</td>
-                        <td>{{ attributevalue }}</td>
-                    </tr>
-                {% endfor %}
                 </tbody>
             </table>
             {% if device.pictures.count > 0 %}
