@@ -1,15 +1,18 @@
+from Lagerregal import settings
 from devices.models import Device
 from abc import ABC, abstractmethod
 
 
 class BaseDeviceInfo(ABC):
+    device = None
     formatted_entries = []
     raw_entries = []
 
     def find_entries(self, entry_type):
         return [entry for entry in self.raw_entries if entry.type == entry_type]
 
-    def __init__(self, raw_entries):
+    def __init__(self, device, raw_entries):
+        self.device = device
         self.formatted_entries = []
         self.raw_entries = raw_entries
         self.format_entries()
@@ -61,3 +64,12 @@ class BaseProvider(ABC):
     @abstractmethod
     def has_device(self, device):
         pass
+
+
+def build_full_hostname(device):
+    hostname = device.hostname.lower()
+    if len(hostname) > 0:
+        if hasattr(settings, "HOST_BASE_DOMAIN") and not hostname.endswith(
+                settings.HOST_BASE_DOMAIN):
+            hostname += "." + settings.HOST_BASE_DOMAIN
+    return hostname

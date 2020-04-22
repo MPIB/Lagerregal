@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from Lagerregal import settings
 from devicedata.providers.base_provider import BaseProvider, SoftwareEntry, DeviceInfoEntry, BaseDeviceInfo, \
-    FormattedDeviceInfoEntry
+    FormattedDeviceInfoEntry, build_full_hostname
 from devicedata.providers.helpers import format_bytes
 from devicedata.providers.opsirpc import OpsiConnection
 from django.utils.translation import ugettext_lazy as _
@@ -21,7 +21,12 @@ class OpsiDeviceInfo(BaseDeviceInfo):
         entries = self.find_entries("COMPUTER_SYSTEM")
         if len(entries) > 0:
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Manufacturer"), entries[0].raw_value["vendor"]))
-            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value["hostId"]))
+            hostname = build_full_hostname(self.device)
+            if entries[0].raw_value["hostId"] != hostname:
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>" +
+                                                                       entries[0].raw_value["hostId"] + "</span>"))
+            else:
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value["hostId"]))
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Last Seen"), entries[0].raw_value["lastseen"]))
 
     def format_processor(self):
@@ -55,9 +60,16 @@ class OpsiDeviceInfo(BaseDeviceInfo):
         for entry in entries:
             if entry.raw_value["ipAddress"] is not None:
                 controllers.append(entry.raw_value)
-        formatted_controllers = "<br />".join(
-            ["{0} {1}".format(controller["description"], controller["ipAddress"]) for controller in controllers])
-        self.formatted_entries.append(FormattedDeviceInfoEntry(_("Network"), formatted_controllers))
+        formatted_controllers = []
+        device_addresses = self.device.ipaddress_set.all()
+        for controller in controllers:
+            if any(elem.address in controller["ipAddress"] for elem in device_addresses):
+                formatted_controllers.append("{0} {1}".format(controller["description"], controller["ipAddress"]))
+            else:
+                formatted_controllers.append(
+                    "{0} <span class='text-warning'>{1}<span>".format(controller["description"],
+                                                                      controller["ipAddress"]))
+        self.formatted_entries.append(FormattedDeviceInfoEntry(_("Network"), "<br />".join(formatted_controllers)))
 
     def format_graphics(self):
         entries = self.find_entries("VIDEO_CONTROLLER")
@@ -82,13 +94,16 @@ class OpsiProvider(BaseProvider):
 
     def __get_host(self, device):
         host = None
+        hostname = build_full_hostname(device)
+        if len(hostname) > 0:
+            response = self.__connection.host_getObjects(id=hostname)
+            if len(response) == 1:
+                return response[0]
         for ip in device.ipaddress_set.all():
             response = self.__connection.host_getObjects(ipAddress=ip.address)
             for h in response:
-                if str(device.id) in h['id']:
-                    host = response[0]
-                    break
-
+                host = h
+                break
         if host is None:
             raise ObjectDoesNotExist()
         return host
@@ -99,7 +114,7 @@ class OpsiProvider(BaseProvider):
         device_entries = []
         for entry in hardware:
             device_entries.append(DeviceInfoEntry(entry["hardwareClass"], entry["name"], entry))
-        return OpsiDeviceInfo(device_entries)
+        return OpsiDeviceInfo(device, device_entries)
 
     def get_software_info(self, device):
         host = self.__get_host(device)
