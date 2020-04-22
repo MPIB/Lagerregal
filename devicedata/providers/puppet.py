@@ -72,7 +72,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
         for entry in entries:
             interfaces = entry.raw_value["interfaces"]
             for interface in interfaces:
-                if "mac" in interfaces[interface] and interfaces[interface]["mac"] is not None:
+                if "mac" in interfaces[interface] and "ip" in interfaces[interface] and interfaces[interface]["mac"] is not None:
                     interfaces[interface]["identifier"] = interface
                     controllers.append(interfaces[interface])
         formatted_controllers = "<br />".join(

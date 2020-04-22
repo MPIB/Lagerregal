@@ -158,7 +158,7 @@
 
     <div class="row">
         <div class="col-md-4">
-            <h5 id="details_header">{% trans "Manual Data" %}</h5>
+            <h5 id="manual_details_header">{% trans "Manual Data" %}</h5>
             <table class="table table-bordered table-striped">
                 <tbody>
                 <tr>
@@ -311,7 +311,7 @@
             {% include "devices/detail/device_lending_info.html" %}
         </div>
         <div class="col-md-5">
-            <h5 id="details_header">{% trans "Automatic Data" %}</h5>
+            <h5 id="automatic_details_header">{% trans "Automatic Data" %}</h5>
             <table id="details_table" class="table table-bordered table-striped">
                 <tbody>
                 </tbody>
@@ -507,7 +507,7 @@
             var rowCount = $('#details_table tr').length;
             console.log(rowCount);
             if (rowCount == 0) {
-                $('#details_header').remove();
+                $('#automatic_details_header').remove();
                 $('#details_table').remove();
             }
         }

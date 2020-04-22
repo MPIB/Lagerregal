@@ -82,13 +82,19 @@ class OpsiProvider(BaseProvider):
 
     def __get_host(self, device):
         host = None
+        hostname = device.hostname.lower()
+        if len(hostname) > 0:
+            if "host_base_domain" in settings.OPSI_SETTINGS and not hostname.endswith(
+                    settings.OPSI_SETTINGS["host_base_domain"]):
+                hostname += "." + settings.OPSI_SETTINGS["host_base_domain"]
+            response = self.__connection.host_getObjects(id=hostname)
+        if len(response) == 1:
+            return response[0]
         for ip in device.ipaddress_set.all():
             response = self.__connection.host_getObjects(ipAddress=ip.address)
             for h in response:
-                if str(device.id) in h['id']:
-                    host = response[0]
-                    break
-
+                host = h
+                break
         if host is None:
             raise ObjectDoesNotExist()
         return host

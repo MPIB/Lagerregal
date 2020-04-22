@@ -119,7 +119,8 @@ PUPPETDB_SETTINGS = {
 USE_OPSI = True
 OPSI_SETTINGS = {
     "host": "https://opsi.mpib-berlin.mpg.de",
-    "port": "4447"
+    "port": "4447",
+    "host_base_domain": "mpib-berlin.mpg.de"
 }
 # sample logger
 # import logging, logging.handlers
