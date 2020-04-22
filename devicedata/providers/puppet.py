@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 from Lagerregal import settings
 from devicedata.providers.base_provider import BaseProvider, BaseDeviceInfo, DeviceInfoEntry, SoftwareEntry, \
-    FormattedDeviceInfoEntry
+    FormattedDeviceInfoEntry, build_full_hostname
 from django.utils.translation import ugettext_lazy as _
 
 from devicedata.providers.helpers import format_bytes
@@ -29,7 +29,12 @@ class PuppetDeviceInfo(BaseDeviceInfo):
     def format_hostname(self):
         entries = self.find_entries("fqdn")
         if len(entries) > 0:
-            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value))
+            hostname = build_full_hostname(self.device)
+            if entries[0].raw_value["hostId"] != hostname:
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>" +
+                                                                       entries[0].raw_value + "</span>"))
+            else:
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value))
 
     def format_lastseen(self):
         entries = self.find_entries("timestamp")
@@ -75,8 +80,14 @@ class PuppetDeviceInfo(BaseDeviceInfo):
                 if "mac" in interfaces[interface] and "ip" in interfaces[interface] and interfaces[interface]["mac"] is not None:
                     interfaces[interface]["identifier"] = interface
                     controllers.append(interfaces[interface])
-        formatted_controllers = "<br />".join(
-            ["{0}: {1}".format(controller["identifier"], controller["ip"]) for controller in controllers])
+        formatted_controllers = []
+        device_addresses = self.device.ipaddress_set.all()
+        for controller in controllers:
+            if any(elem.address in controller["ipAddress"] for elem in device_addresses):
+                formatted_controllers.append("{0} {1}".format(controller["identifier"], controller["ip"]))
+            else:
+                formatted_controllers.append(
+                    "{0} <span class='text-warning'>{1}<span>".format(controller["identifier"], controller["ip"]))
         self.formatted_entries.append(FormattedDeviceInfoEntry(_("Network"), formatted_controllers))
 
     def format_graphics(self):
@@ -140,7 +151,7 @@ class PuppetProvider(BaseProvider):
         device_entries = []
         for entry in res:
             device_entries.append(DeviceInfoEntry(entry["name"], None, entry["value"]))
-        return PuppetDeviceInfo(device_entries)
+        return PuppetDeviceInfo(device, device_entries)
 
     def get_software_info(self, device):
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']

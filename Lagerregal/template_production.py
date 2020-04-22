@@ -120,8 +120,10 @@ USE_OPSI = True
 OPSI_SETTINGS = {
     "host": "https://opsi.mpib-berlin.mpg.de",
     "port": "4447",
-    "host_base_domain": "mpib-berlin.mpg.de"
 }
+
+HOST_BASE_DOMAIN = "mpib-berlin.mpg.de"
+
 # sample logger
 # import logging, logging.handlers
 # logger = logging.getLogger('django_auth_ldap')
