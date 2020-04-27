@@ -20,8 +20,11 @@
             </ul>
         </div>
     {% endif %}
-    {% if perms.users.delete_user %}
-        {% deletebutton "user-deactivate" object.id %}
+    {% if perms.users.delete_user and profileuser.is_active %}
+        <form action="{% url 'user-deactivate' profileuser.pk %}" method="post" data-confirm="{% trans "Are you sure?" %}" class="d-inline-block">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm"><i class="fa fa-lock"></i> {% trans "Deactivate" %}</button>
+        </form>
     {% endif %}
 {% endblock %}
 
@@ -41,6 +44,11 @@
 
     <div class="tab-content">
         {% if perms.users.view_lageruser %}
+            {% if not profileuser.is_active %}
+                <div class="alert alert-danger" role="alert">
+                <h1 class="alert-heading">{% trans "User is deactivated" %}</h1>
+                </div>
+            {% endif %}
             <div class="tab-pane active" id="about">
                 <div class="row">
                     <div class="col-md-6">

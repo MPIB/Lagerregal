@@ -55,8 +55,8 @@ class Lageruser(AbstractUser):
     @staticmethod
     def users_from_departments(departments=[]):
         if len(departments) == 0:
-            return Lageruser.objects.all()
-        return Lageruser.objects.filter(departments__in=departments)
+            return Lageruser.objects.filter(is_active=True)
+        return Lageruser.objects.filter(departments__in=departments, is_active=True)
 
 
 @receiver(populate_user)

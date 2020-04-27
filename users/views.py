@@ -46,7 +46,7 @@ class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
     permission_required = "users.view_lageruser"
 
     def get_queryset(self):
-        users = Lageruser.objects.all()
+        users = Lageruser.objects.filter(is_active=True)
         self.filterstring = self.request.GET.get("filter", "")
 
         # filtering by department
@@ -176,6 +176,12 @@ class TransferOwnershipView(PermissionRequiredMixin, View):
 class DeactivateUserView(PermissionRequiredMixin, View):
     model = Lageruser
     permission_required = 'users.delete_lageruser'
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(self.model, pk=kwargs["pk"])
+        user.is_active = False
+        user.save()
+        return HttpResponseRedirect(user.get_absolute_url())
 
 
 class UsersettingsView(TemplateView):

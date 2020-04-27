@@ -137,7 +137,7 @@ class Home(TemplateView):
                 )
             ]
             context["lendform"].fields["device"].choices.insert(0, ["", "---------"])
-            context["userlist"] = Lageruser.objects.all().values(
+            context["userlist"] = Lageruser.objects.filter(is_active=True).values(
                 "pk", "username", "first_name", "last_name")
             context["breadcrumbs"] = [("", _("Dashboard"))]
         else:
