@@ -146,6 +146,8 @@ urlpatterns = [
     path('users/<int:pk>/', users_views.ProfileView.as_view(), name="userprofile"),
     path('users/<int:pk>/ipaddress/', network_views.UserIpAddress.as_view(), name="user-ipaddress"),
     path('users/<int:pk>/ipaddress/<int:ipaddress>/', network_views.UserIpAddressRemove.as_view(), name="user-ipaddress-remove"),
+    path('users/<int:oldpk>/merge/<int:newpk>/', users_views.TransferOwnershipView.as_view(), name="user-merge"),
+    path('users/<int:oldpk>/deactivate', users_views.DeactivateUserView.as_view(), name="user-deactivate"),
     path('profile/', login_required(users_views.UserprofileView.as_view()), name="userprofile"),
     path('settings/', login_required(users_views.UsersettingsView.as_view()), name="usersettings"),
 

@@ -1,9 +1,28 @@
 {% extends "base.html" %}
 {% load i18n %}{% load staticfiles %}
 {% block title %}{{ profileuser }}{% endblock %}
+{% load devicetags %}
 
 {% block header %}
     {{ profileuser }}
+{% endblock %}
+
+{% block pullright %}
+    {% if perms.users.change_user %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-share"></i> {% trans "Transfer Ownerships" %}
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% for merge in merge_list %}
+                    <li><a class="dropdown-item" href="{% url 'user-merge' profileuser.pk merge.id %}">{{ merge }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if perms.users.delete_user %}
+        {% deletebutton "user-deactivate" object.id %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
