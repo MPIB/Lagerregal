@@ -98,7 +98,7 @@ def get_emailrecipientlist(special=None):
         (_("Groups"), [("g" + str(group.id), group.name) for group in Group.objects.all().order_by("name")])
     )
     objects.append(
-        (_("People"), [("u" + str(user.id), user) for user in Lageruser.objects.all().order_by("last_name")])
+        (_("People"), [("u" + str(user.id), user) for user in Lageruser.objects.filter(is_active=True).order_by("last_name")])
     )
     return objects
 
@@ -117,7 +117,7 @@ class IpAddressPurposeForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has-error'
-    owner = forms.ModelChoiceField(Lageruser.objects.all().order_by("last_name"), widget=Select2Widget(),
+    owner = forms.ModelChoiceField(Lageruser.objects.filter(is_active=True).order_by("last_name"), widget=Select2Widget(),
                                    label=_("Lent to"))
     device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(),
                                     label=_("Device"), required=False)
@@ -235,7 +235,7 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style': "height:80px"}), max_length=1000,
                                   required=False)
     webinterface = forms.URLField(max_length=60, required=False)
-    creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
+    creator = forms.ModelChoiceField(queryset=Lageruser.objects.filter(is_active=True), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
     devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')), required=False,
                                         widget=Select2Widget())

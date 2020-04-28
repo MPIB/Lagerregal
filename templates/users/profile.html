@@ -1,9 +1,31 @@
 {% extends "base.html" %}
 {% load i18n %}{% load staticfiles %}
 {% block title %}{{ profileuser }}{% endblock %}
+{% load devicetags %}
 
 {% block header %}
     {{ profileuser }}
+{% endblock %}
+
+{% block pullright %}
+    {% if perms.users.change_user %}
+        <div class="btn-group">
+            <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-share"></i> {% trans "Transfer Ownerships" %}
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% for merge in merge_list %}
+                    <li><a class="dropdown-item" href="{% url 'user-merge' profileuser.pk merge.id %}">{{ merge }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% if perms.users.delete_user and profileuser.is_active %}
+        <form action="{% url 'user-deactivate' profileuser.pk %}" method="post" data-confirm="{% trans "Are you sure?" %}" class="d-inline-block">
+            {% csrf_token %}
+            <button class="btn btn-danger btn-sm"><i class="fa fa-lock"></i> {% trans "Deactivate" %}</button>
+        </form>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -22,6 +44,11 @@
 
     <div class="tab-content">
         {% if perms.users.view_lageruser %}
+            {% if not profileuser.is_active %}
+                <div class="alert alert-danger" role="alert">
+                <h1 class="alert-heading">{% trans "User is deactivated" %}</h1>
+                </div>
+            {% endif %}
             <div class="tab-pane active" id="about">
                 <div class="row">
                     <div class="col-md-6">

@@ -395,7 +395,7 @@ class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
     model = Lageruser
     serializer_class = UserAvatarSerializer
-    queryset = Lageruser.objects.all()
+    queryset = Lageruser.objects.filter(is_active=True)
 
     def get_object(self, kwargs=None):
         queryset = self.get_queryset()

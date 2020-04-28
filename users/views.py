@@ -1,3 +1,4 @@
+import reversion
 from django.contrib import messages
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -16,6 +17,7 @@ from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
+from django.views.generic import View
 
 from reversion.models import Version
 
@@ -23,7 +25,7 @@ from devices.forms import VIEWSORTING
 from devices.forms import DepartmentFilterForm
 from devices.forms import FilterForm
 from devices.forms import ViewForm
-from devices.models import Lending
+from devices.models import Lending, Device
 from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.forms import UserIpAddressForm
@@ -44,7 +46,7 @@ class UserList(PermissionRequiredMixin, PaginationMixin, ListView):
     permission_required = "users.view_lageruser"
 
     def get_queryset(self):
-        users = Lageruser.objects.all()
+        users = Lageruser.objects.filter(is_active=True)
         self.filterstring = self.request.GET.get("filter", "")
 
         # filtering by department
@@ -112,6 +114,8 @@ class ProfileBaseView(DetailView):
         context["userperms"] = [x[0] for x in self.object.user_permissions.values_list("codename")]
         context["groupperms"] = [x.split(".")[1] for x in self.object.get_group_permissions()]
 
+        context["merge_list"] = Lageruser.objects.exclude(pk=context["object"].pk, is_active=True).order_by("last_name")
+
         # adds user name to breadcrumbs
         context["breadcrumbs"] = [(reverse("user-list"), _("Users")), ("", self.object)]
 
@@ -123,8 +127,61 @@ class ProfileView(PermissionRequiredMixin, ProfileBaseView):
 
 
 class UserprofileView(ProfileBaseView):
-    def get_object(self):
+
+    def get_object(self, queryset=None):
         return self.request.user
+
+
+class TransferOwnershipView(PermissionRequiredMixin, View):
+    model = Lageruser
+    permission_required = 'users.change_lageruser'
+
+    def get(self, request, *args, **kwargs):
+        context = {"old_user": get_object_or_404(self.model, pk=kwargs["oldpk"]),
+                   "new_user": get_object_or_404(self.model, pk=kwargs["newpk"])}
+
+        # adds "Merge with devicetype name" to breadcrumbs
+        context["breadcrumbs"] = [
+            (reverse("user-list"), _("Users")),
+            (reverse("userprofile", kwargs={"pk": context["old_user"].pk}), context["old_user"]),
+            ("", _("Transfer Ownerships to {0}".format(context["new_user"])))]
+
+        return render(request, 'users/transfer_ownershop.html', context)
+
+    def post(self, request, *args, **kwargs):
+        old_user = get_object_or_404(self.model, pk=kwargs["oldpk"])
+        new_user = get_object_or_404(self.model, pk=kwargs["newpk"])
+
+        for device in Device.objects.filter(Q(creator=old_user) | Q(contact=old_user)):
+            if device.creator is old_user:
+                device.creator = new_user
+            if device.contact is old_user:
+                device.contact = new_user
+            reversion.set_comment(_("Transferred Ownerships from {0} to {1}".format(old_user, new_user)))
+            device.save()
+
+        for address in IpAddress.objects.filter(user=old_user):
+            address.user = new_user
+            reversion.set_comment(_("Transferred Ownership from {0} to {1}".format(old_user, new_user)))
+            address.save()
+
+        for lending in Lending.objects.filter(owner=old_user):
+            lending.owner = new_user
+            reversion.set_comment(_("Transferred Ownership from {0} to {1}".format(old_user, new_user)))
+            lending.save()
+
+        return HttpResponseRedirect(new_user.get_absolute_url())
+
+
+class DeactivateUserView(PermissionRequiredMixin, View):
+    model = Lageruser
+    permission_required = 'users.delete_lageruser'
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(self.model, pk=kwargs["pk"])
+        user.is_active = False
+        user.save()
+        return HttpResponseRedirect(user.get_absolute_url())
 
 
 class UsersettingsView(TemplateView):
