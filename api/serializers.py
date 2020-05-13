@@ -106,6 +106,14 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ("bookmarkers", )
 
 
+class DeviceIDSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="pk", read_only=True)
+
+    class Meta:
+        model = Device
+        exclude = ("bookmarkers", )
+
+
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)

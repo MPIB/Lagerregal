@@ -8,6 +8,7 @@ from reversion import revisions as reversion
 @reversion.register()
 class Type(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
+    automatic_data = models.BooleanField(_("Automatic Data"), default=False)
 
     def __str__(self):
         return self.name

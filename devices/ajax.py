@@ -3,7 +3,7 @@ import json
 import urllib
 
 from django.conf import settings
-from django.forms.models import modelform_factory
+from django.forms.models import modelform_factory, model_to_dict
 from django.http import HttpResponse
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404
@@ -234,3 +234,21 @@ class UserLendings(View):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
+class InitializeAutomaticDevice(View):
+
+    def post(self, request):
+        print(request.POST)
+        device = Device()
+        device.name = request.POST["name"]
+        device.department_id = request.POST["department"]
+        device.devicetype_id = request.POST["device_type"]
+        device.operating_system = request.POST["operating_system"]
+        device.creator = self.request.user
+        device.save()
+        device.hostname = "{0}-{1}-{2}".format(device.department.short_name, request.POST["operating_system"], device.pk)
+        device.save()
+
+        return HttpResponse(json.dumps({
+            "id": device.id,
+            "hostname": device.hostname
+        }), content_type='application/json')
