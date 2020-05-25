@@ -105,7 +105,7 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
 
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
-    short_name = models.CharField(max_length=6, null=True)
+    short_name = models.CharField(max_length=6, null=True, blank=True)
 
     def __str__(self):
         return self.name
