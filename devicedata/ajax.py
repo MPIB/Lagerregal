@@ -1,12 +1,15 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.utils.timesince import timesince
 from django.views.generic.base import View
 from django.utils.translation import ugettext_lazy as _
 
-from devicedata.generic import _get_provider
+from devicedata.generic import _get_provider, _update_provided_data
 from devices.models import Device
 import logging
+
+from devices.templatetags.devicetags import as_nested_list
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +27,7 @@ class DeviceDetails(View):
         context = {
             'device_info': device_info.raw_entries
         }
+        _update_provided_data(device, device_info)
         return render(request, 'devicedata/device_info.html', context)
 
 
@@ -38,9 +42,12 @@ class DeviceDetailsJson(View):
         device_info = provider.get_device_info(device)
         raw_entries = [{"name": entry.name,
                         "type": entry.type,
-                        "raw_value": entry.raw_value} for entry in device_info.raw_entries]
+                        "raw_value": as_nested_list(entry.raw_value)} for entry in device_info.raw_entries]
+        new_entries = _update_provided_data(device, device_info)
         formatted_entries = [{"name": entry.name,
-                              "value": entry.value} for entry in device_info.formatted_entries]
+                              "value": entry.formatted_value,
+                              "stored_at": timesince(entry.stored_at)} for entry in new_entries]
+
         return JsonResponse({"raw_entries": raw_entries, "formatted_entries": formatted_entries})
 
 

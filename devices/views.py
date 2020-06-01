@@ -22,6 +22,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.timesince import timesince
 from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView, TemplateView
@@ -294,6 +295,10 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
                         context["label_js"] += "\nlabel.setObjectText('{0}', '{1}');".format(attribute,
                                                                                              getattr(context["device"],
                                                                                                      attribute))
+
+        context["provided_data"] = [{"name": entry.name,
+                                     "value": entry.formatted_value,
+                                     "stored_at": timesince(entry.stored_at)} for entry in self.object.provided_data.all()]
 
         # add data to breadcrumbs
         context["breadcrumbs"] = [

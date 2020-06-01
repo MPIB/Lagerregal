@@ -16,13 +16,13 @@
                     </div>
                     {% if note.creator == user %}
                         <div class="action">
-                            <button type="button" class="btn btn-primary btn-xs pull-left" title="Edit">
+                            <button type="button" class="btn btn-primary btn-sm pull-left" title="Edit">
                                 <i class="fa fa-edit"></i>
                             </button>
                             <form action="{% url "device-note-delete" device.id note.id %}" method="post"
                                   class="form-inline pull-left">
                                 {% csrf_token %}
-                                <button class="btn btn-danger btn-xs" title="Delete" type="submit">
+                                <button class="btn btn-danger btn-sm ml-1" title="Delete" type="submit">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
                             </form>

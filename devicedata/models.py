@@ -9,4 +9,4 @@ class ProvidedData(models.Model):
     name = models.CharField(max_length=200)
     raw_value = models.CharField(max_length=2000)
     formatted_value = models.CharField(max_length=500)
-    stored_at = models.DateTimeField(auto_created=True)
+    stored_at = models.DateTimeField(auto_now_add=True)

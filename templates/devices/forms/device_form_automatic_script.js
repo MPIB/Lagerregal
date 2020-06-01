@@ -43,7 +43,6 @@ function deviceForm() {
             return this.name && this.department && this.deviceType && this.operatingSystem;
         },
         hasDevice() {
-            console.log(this.device.pk, this.device.id, this.device.pk !== undefined || this.device.id !== undefined);
             return this.device.pk !== undefined || this.device.id !== undefined;
         },
         createDevice() { createDevice(this); }
