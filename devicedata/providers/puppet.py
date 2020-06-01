@@ -108,6 +108,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
 
 
 class PuppetProvider(BaseProvider):
+    name = "puppet"
 
     @staticmethod
     def __run_query(query):

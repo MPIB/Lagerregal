@@ -87,6 +87,7 @@ class OpsiDeviceInfo(BaseDeviceInfo):
 
 
 class OpsiProvider(BaseProvider):
+    name = "opsi"
     __connection = OpsiConnection(settings.OPSI_SETTINGS["host"] + ":" + settings.OPSI_SETTINGS["port"],
                                   username=settings.OPSI_SETTINGS["username"],
                                   password=settings.OPSI_SETTINGS["password"],

@@ -312,8 +312,16 @@
         </div>
         <div class="col-md-5">
             <h5 id="automatic_details_header">{% trans "Automatic Data" %}</h5>
-            <table id="details_table" class="table table-bordered table-striped">
+            <table id="automatic_details_table" class="table table-bordered table-striped">
                 <tbody>
+                {% for entry in device.provided_data.all %}
+                    <tr>
+                        <td>
+                            {{ entry.name }}
+                        </td>
+                        <td>{{ entry.formatted_value|safe }}</td>
+                    </tr>
+                {% endfor %}
                 </tbody>
             </table>
             {% if device.pictures.count > 0 %}
@@ -493,25 +501,6 @@
                 },
             });
         }
-
-    $.ajax({
-        url: "{% url "device-details-json" device.pk %}",
-        type: 'GET',
-        success: function(data) {
-            for (index in data["formatted_entries"]) {
-                var entry = data["formatted_entries"][index];
-                var row = '<tr><td>' + entry["name"] + '</td><td>' + entry["value"] + '</td></tr>';
-                $('#details_table tbody').append(row);
-            }
-
-            var rowCount = $('#automatic_details_table tr').length;
-            console.log(rowCount);
-            if (rowCount == 0) {
-                $('#automatic_details_header').remove();
-                $('#details_table').remove();
-            }
-        }
-    });
 
     $("#devicedetailsentry").load("{% url "device-details" device.pk %}");
     $("#softwaredetails").load("{% url "device-software" device.pk %}");

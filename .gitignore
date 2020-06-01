@@ -21,3 +21,4 @@ backup/
 node_modules/
 /Pipfile
 /Pipfile.lock
+/venv
