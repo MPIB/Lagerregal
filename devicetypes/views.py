@@ -190,7 +190,7 @@ class TypeMerge(PermissionRequiredMixin, View):
             (reverse("type-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"]),
             ("", _("Merge with {0}".format(context["newobject"])))]
 
-        return render(request, 'devices/base_merge.html', context)
+        return render(request, 'devicetypes/type_merge.html', context)
 
     def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
@@ -203,11 +203,23 @@ class TypeMerge(PermissionRequiredMixin, View):
             reversion.set_comment(_("Merged Devicetype {0} into {1}".format(oldobject, newobject)))
             device.save()
 
-        # adds all attributes of old devicetype to new devicetype
-        attributes = TypeAttribute.objects.filter(devicetype=oldobject)
-        for attribute in attributes:
-            attribute.devicetype = newobject
-            attribute.save()
+        if "remove_attributes" in request.POST and request.POST["remove_attributes"] == "on":
+            for device in devices:
+                attributes = device.typeattributevalue_set.all()
+                if len(attributes) is 0:
+                    continue
+                if device.description is None:
+                    device.description = ""
+                device.description += "\n\n==== Archived Attributes"
+                for attribute in attributes:
+                    device.description += "\n{0}: {1}".format(attribute.typeattribute.name, attribute.value)
+                device.save()
+        else:
+            # adds all attributes of old devicetype to new devicetype
+            attributes = TypeAttribute.objects.filter(devicetype=oldobject)
+            for attribute in attributes:
+                attribute.devicetype = newobject
+                attribute.save()
         oldobject.delete()
 
         return HttpResponseRedirect(newobject.get_absolute_url())
