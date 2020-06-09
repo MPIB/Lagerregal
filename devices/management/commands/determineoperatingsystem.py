@@ -22,4 +22,5 @@ class Command(BaseCommand):
                 if osname == entry[0]:
                     device.operating_system = osname
                     device.save()
+                    print("Set", device, "to", osname)
                     continue
