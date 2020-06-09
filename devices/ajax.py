@@ -245,7 +245,7 @@ class InitializeAutomaticDevice(View):
         device.operating_system = request.POST["operating_system"]
         device.creator = self.request.user
         device.save()
-        device.hostname = "{0}-{1}-{2}".format(device.department.short_name, request.POST["operating_system"], device.pk)
+        device.hostname = "{0}-{1}-{2:06d}".format(device.department.short_name, request.POST["operating_system"], device.pk)
         device.save()
 
         return HttpResponse(json.dumps({
