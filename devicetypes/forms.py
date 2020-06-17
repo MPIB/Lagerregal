@@ -9,7 +9,7 @@ class TypeForm(forms.ModelForm):
 
     class Meta:
         model = Type
-        fields = ("name", )
+        fields = ("name", "automatic_data")
 
     def __init__(self, *args, **kwargs):
         if "data" in kwargs:

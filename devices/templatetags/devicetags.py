@@ -67,6 +67,19 @@ def add_class(value, css_class):
 
 
 @register.filter
+def add_attr(value, attr):
+    string = str(value)
+    attr_name, attr_value = attr.split(",")
+    return mark_safe(string.replace('>', " {0}='{1}'>".format(attr_name, attr_value), 1))
+
+
+@register.filter
+def add_to_tag(value, new):
+    string = str(value)
+    return mark_safe(string.replace('>', " {0}>".format(new), 1))
+
+
+@register.filter
 def get_range(value):
     return list(range(value))
 

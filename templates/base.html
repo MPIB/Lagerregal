@@ -1,9 +1,9 @@
-{% load i18n staticfiles usertags %}<!DOCTYPE html>
+{% load i18n static usertags %}<!DOCTYPE html>
 <html lang="{{ user.language|default:"en" }}">
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self';
-        script-src 'self' 'unsafe-inline';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval';
         style-src 'self' 'unsafe-inline' http://fonts.googleapis.com https://fonts.googleapis.com;
         connect-src 'self' https://localhost:41951 https://127.0.0.1:41951;
         font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com;
@@ -22,6 +22,7 @@
     <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
 
     {% block extracss %}{% endblock %}
+    <script src="{% static "alpinejs/dist/alpine.js" %}"></script>
 </head>
 <body>
 {% if not nochrome %}
@@ -217,21 +218,20 @@
 <script src="{% static "js/lagerregal.js" %} "></script>
 
 <script>
-    {% block scriptend %}{% endblock %}
-
-    {% if messages %}
-        $(function () {
-            {% for message in messages %}
-                noty({
-                    text: '{{message|safe }}',
-                    type: '{{message.tags}}',
-                    layout: 'topCenter',
-                    theme: 'defaultTheme',
-                    timeout: 5000
-                });
-            {% endfor %}
-        });
-    {% endif %}
+{% block scriptend %}{% endblock %}
+{% if messages %}
+    $(function () {
+        {% for message in messages %}
+            noty({
+                text: '{{message|safe }}',
+                type: '{{message.tags}}',
+                layout: 'topCenter',
+                theme: 'defaultTheme',
+                timeout: 5000
+            });
+        {% endfor %}
+    });
+{% endif %}
 </script>
 </body>
 

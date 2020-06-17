@@ -9,7 +9,7 @@ import reversion
 
 from devicegroups.models import Devicegroup
 from devicetypes.models import Type
-from Lagerregal import utils
+from Lagerregal import utils, settings
 from locations.models import Section
 from users.models import Department
 from users.models import Lageruser
@@ -120,6 +120,7 @@ class Device(models.Model):
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
     data_provider = models.CharField(max_length=20, blank=True)
+    operating_system = models.CharField(max_length=10, choices=settings.OPERATING_SYSTEMS, null=True)
 
     department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)

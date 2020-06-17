@@ -111,6 +111,7 @@ INSTALLED_APPS = (
     'devicetypes',
     'devicegroups',
     'devicetags',
+    'devicedata',
     'locations',
     'users',
     'api',
@@ -190,6 +191,9 @@ THEMES = [
 NPM_ROOT_PATH = os.getcwd()
 
 NPM_FILE_PATTERNS = {
+    'alpinejs': [
+        'dist/alpine.js',
+    ],
     'bootstrap': [
         'dist/js/bootstrap.min.js',
     ],
@@ -240,3 +244,9 @@ SELECT2_CSS = ''
 TEST_RUNNER = 'Lagerregal.utils.DetectableTestRunner'
 TEST_MODE = False
 PRODUCTION = False
+
+OPERATING_SYSTEMS = [
+    ("win", "Windows"),
+    ("mac", "macOS"),
+    ("linux", "Linux")
+]

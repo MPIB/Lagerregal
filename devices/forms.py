@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import Select2MultipleWidget
 from django_select2.forms import Select2Widget
 
+from Lagerregal import settings
 from devicegroups.models import Devicegroup
 from devices.models import Device
 from devices.models import Manufacturer
@@ -98,7 +99,8 @@ def get_emailrecipientlist(special=None):
         (_("Groups"), [("g" + str(group.id), group.name) for group in Group.objects.all().order_by("name")])
     )
     objects.append(
-        (_("People"), [("u" + str(user.id), user) for user in Lageruser.objects.filter(is_active=True).order_by("last_name")])
+        (_("People"),
+         [("u" + str(user.id), user) for user in Lageruser.objects.filter(is_active=True).order_by("last_name")])
     )
     return objects
 
@@ -117,11 +119,13 @@ class IpAddressPurposeForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has-error'
-    owner = forms.ModelChoiceField(Lageruser.objects.filter(is_active=True).order_by("last_name"), widget=Select2Widget(),
+    owner = forms.ModelChoiceField(Lageruser.objects.filter(is_active=True).order_by("last_name"),
+                                   widget=Select2Widget(),
                                    label=_("Lent to"))
     device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(),
                                     label=_("Device"), required=False)
-    smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}), required=False)
+    smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}),
+                                  required=False)
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
                                                              '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
                                                              '%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y',
@@ -271,14 +275,16 @@ class DeviceForm(forms.ModelForm):
 
         # if edit
         if kwargs["instance"]:
-            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]")))for x in Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id).order_by("name")]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in
+                       Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id).order_by("name")]
             self.fields['uses'].choices = CHOICES
             self.initial['uses'] = [x.id for x in Device.objects.filter(used_in=kwargs["instance"].id)]
             self.fields['used_in'].queryset = Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)
 
         # if create
         else:
-            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in Device.objects.filter(used_in=None, trashed=None).order_by("name")]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in
+                       Device.objects.filter(used_in=None, trashed=None).order_by("name")]
             self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed=None)
 
@@ -320,6 +326,25 @@ class DeviceForm(forms.ModelForm):
                         typeattribute=attribute.pk)
                 except:
                     pass
+
+
+class DeviceFormAutomatic(forms.Form):
+    error_css_class = 'has-error'
+
+    # initial fields
+    name = forms.CharField(max_length=200, required=False)
+    devicetype = forms.ModelChoiceField(Type.objects.filter(automatic_data=True), required=False)
+    department = forms.ModelChoiceField(Department.objects.filter(short_name__isnull=False), required=False)
+    operating_system = forms.ChoiceField(choices=settings.OPERATING_SYSTEMS)
+
+    # optional fields
+    serialnumber = forms.CharField(max_length=100, required=False)
+    inventorynumber = forms.CharField(max_length=100, required=False)
+    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
+    ipaddresses = forms.ModelMultipleChoiceField(
+        IpAddress.objects.filter(device=None, user=None),
+        required=False,
+        widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))
 
 
 class AddForm(forms.ModelForm):

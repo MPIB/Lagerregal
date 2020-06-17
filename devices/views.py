@@ -1,11 +1,13 @@
 import csv
 import datetime
+import json
 import time
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
+from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
@@ -20,9 +22,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
+from django.utils.timesince import timesince
 from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
@@ -32,10 +35,12 @@ from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
+from rest_framework.renderers import JSONRenderer
 
 from reversion import revisions as reversion
 from reversion.models import Version
 
+from api.serializers import DeviceSerializer, DeviceIDSerializer
 from devices.forms import VIEWSORTING
 from devices.forms import VIEWSORTING_DEVICES
 from devices.forms import DeviceForm
@@ -49,6 +54,7 @@ from devices.forms import IpAddressPurposeForm
 from devices.forms import LendForm
 from devices.forms import ReturnForm
 from devices.forms import ViewForm
+from devices.forms import DeviceFormAutomatic
 from devices.models import Bookmark
 from devices.models import Building
 from devices.models import Device
@@ -290,6 +296,10 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
                                                                                              getattr(context["device"],
                                                                                                      attribute))
 
+        context["provided_data"] = [{"name": entry.name,
+                                     "value": entry.formatted_value,
+                                     "stored_at": timesince(entry.stored_at)} for entry in self.object.provided_data.all()]
+
         # add data to breadcrumbs
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
@@ -409,7 +419,7 @@ class DeviceLendingList(PermissionRequiredMixin, PaginationMixin, ListView):
 
 class DeviceCreate(PermissionRequiredMixin, CreateView):
     model = Device
-    template_name = 'devices/device_form.html'
+    template_name = 'devices/forms/device_form.html'
     form_class = DeviceForm
     permission_required = 'devices.add_device'
 
@@ -494,9 +504,71 @@ class DeviceCreate(PermissionRequiredMixin, CreateView):
         return r
 
 
+class DeviceCreateAutomatic(PermissionRequiredMixin, FormView):
+    template_name = 'devices/forms/device_form_automatic.html'
+    form_class = DeviceFormAutomatic
+    permission_required = 'devices.add_device'
+
+    def get_success_url(self):
+        pk = self.request.GET.get("id", None)
+        return reverse("device-detail", kwargs={"pk": pk})
+
+    def get_initial(self):
+        initial = super().get_initial()
+        if self.request.user.main_department:
+            initial["department"] = self.request.user.main_department
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"].fields["department"].queryset = self.request.user.departments.filter(short_name__isnull=False)
+        existing_id = self.request.GET.get("id", None)
+        if existing_id is not None:
+            device = get_object_or_404(Device, pk=existing_id)
+            serializer = DeviceIDSerializer(device).data
+            context["device_json"] = json.dumps(serializer)
+        else:
+            context["device_json"] = "{}"
+        context['actionstring'] = "Create new Device"
+        context["breadcrumbs"] = [
+            (reverse("device-list"), _("Devices")),
+            ("", _("Create new device"))]
+        return context
+
+    def form_valid(self, form):
+        if form.cleaned_data["department"]:
+            if not form.cleaned_data["department"] in self.request.user.departments.filter(short_name__isnull=False):
+                return HttpResponseBadRequest()
+        reversion.set_comment(_("Created"))
+        r = super().form_valid(form)
+        existing_id = self.request.GET.get("id", None)
+        if existing_id is not None:
+            device = get_object_or_404(Device, pk=existing_id)
+        else:
+            device = Device()
+        device.name = form.cleaned_data["name"]
+        device.department = form.cleaned_data["department"]
+        device.devicetype = form.cleaned_data["devicetype"]
+        device.operating_system = form.cleaned_data["operating_system"]
+        device.serialnumber = form.cleaned_data["serialnumber"]
+        device.inventorynumber = form.cleaned_data["inventorynumber"]
+        device.room = form.cleaned_data["room"]
+        device.save()
+
+        ipaddresses = form.cleaned_data["ipaddresses"]
+
+        reversion.set_comment(_("Assigned to Device {0}").format(device.name))
+        for ipaddress in ipaddresses:
+            ipaddress.device = device
+            ipaddress.save()
+
+        messages.success(self.request, _('Device was successfully saved.'))
+        return r
+
+
 class DeviceUpdate(PermissionRequiredMixin, UpdateView):
     model = Device
-    template_name = 'devices/device_form.html'
+    template_name = 'devices/forms/device_form.html'
     form_class = DeviceForm
     permission_required = 'devices.change_device'
 

@@ -1,5 +1,4 @@
 from Lagerregal import settings
-from devices.models import Device
 from abc import ABC, abstractmethod
 
 

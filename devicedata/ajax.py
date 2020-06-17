@@ -1,30 +1,17 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.utils.timesince import timesince
 from django.views.generic.base import View
 from django.utils.translation import ugettext_lazy as _
 
-from devicedata.providers.opsi import OpsiProvider
-from devicedata.providers.puppet import PuppetProvider
+from devicedata.generic import _get_provider, _update_provided_data
 from devices.models import Device
 import logging
 
-data_providers = {
-    "opsi": OpsiProvider,
-    "puppet": PuppetProvider
-}
+from devices.templatetags.devicetags import as_nested_list
 
 logger = logging.getLogger(__name__)
-
-
-def _get_provider(device):
-    if device.data_provider is not None and device.data_provider in data_providers.keys():
-        return data_providers[device.data_provider]()
-    else:
-        for provider in data_providers.values():
-            provider_instance = provider()
-            if provider_instance.has_device(device):
-                return provider_instance
 
 
 class DeviceDetails(View):
@@ -40,6 +27,7 @@ class DeviceDetails(View):
         context = {
             'device_info': device_info.raw_entries
         }
+        _update_provided_data(device, device_info)
         return render(request, 'devicedata/device_info.html', context)
 
 
@@ -54,9 +42,12 @@ class DeviceDetailsJson(View):
         device_info = provider.get_device_info(device)
         raw_entries = [{"name": entry.name,
                         "type": entry.type,
-                        "raw_value": entry.raw_value} for entry in device_info.raw_entries]
+                        "raw_value": as_nested_list(entry.raw_value)} for entry in device_info.raw_entries]
+        new_entries = _update_provided_data(device, device_info)
         formatted_entries = [{"name": entry.name,
-                              "value": entry.value} for entry in device_info.formatted_entries]
+                              "value": entry.formatted_value,
+                              "stored_at": timesince(entry.stored_at)} for entry in new_entries]
+
         return JsonResponse({"raw_entries": raw_entries, "formatted_entries": formatted_entries})
 
 

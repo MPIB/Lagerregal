@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
 {% load usertags %}
 
 {% block title %}{{ device.name }}{% endblock %}
@@ -155,7 +155,7 @@
     {% has_perm 'devices.delete_device' user device as can_delete_device %}
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
     {% has_perm 'devices.view_devicedetails' user device as can_view_devicedetails %}
-
+    <div x-data="deviceDetail()" x-init="onLoad()">
     <div class="row">
         <div class="col-md-4">
             <h5 id="manual_details_header">{% trans "Manual Data" %}</h5>
@@ -311,11 +311,20 @@
             {% include "devices/detail/device_lending_info.html" %}
         </div>
         <div class="col-md-5">
-            <h5 id="automatic_details_header">{% trans "Automatic Data" %}</h5>
-            <table id="details_table" class="table table-bordered table-striped">
-                <tbody>
-                </tbody>
-            </table>
+            <div x-show="provided_data.length > 0">
+                <h5 id="automatic_details_header">{% trans "Automatic Data" %}
+                    <span class="pull-right text-muted small">from <span x-text="storedAt()"></span> ago</span></h5>
+                <table id="automatic_details_table" class="table table-bordered table-striped">
+                    <tbody>
+                    <template  x-for="entry in provided_data" :key="entry">
+                        <tr>
+                            <td x-text="entry.name"></td>
+                            <td x-html="entry.value"></td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
             {% if device.pictures.count > 0 %}
                 {% include "devices/detail/device_pictures.html" %}
             {% endif %}
@@ -385,9 +394,7 @@
         {% if can_view_devicedetails %}
             <div class="tab-pane fade" id="devicedetails">
                 <h4>{% trans "Device data from backend providers" %}</h4>
-                <div id="devicedetailsentry">
-                    <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Device Details..." %}
-                </div>
+                {% include "devicedata/device_info_json.html" %}
             </div>
             <div class="tab-pane fade" id="software">
                 <h4>{% trans "Installed software from backend providers" %}</h4>
@@ -396,6 +403,7 @@
                 </div>
             </div>
         {% endif %}
+    </div>
     </div>
 {% endblock %}
 
@@ -419,6 +427,7 @@
 {% endblock %}
 
 {% block scriptend %}
+    {% include "devices/detail/device_detail.js" with device_id=device.id provided_data=provided_data %}
     $(function() {
         $("#id_ipaddresses").on("change", function(e) {
             if ($(this).val()) {
@@ -494,26 +503,6 @@
             });
         }
 
-    $.ajax({
-        url: "{% url "device-details-json" device.pk %}",
-        type: 'GET',
-        success: function(data) {
-            for (index in data["formatted_entries"]) {
-                var entry = data["formatted_entries"][index];
-                var row = '<tr><td>' + entry["name"] + '</td><td>' + entry["value"] + '</td></tr>';
-                $('#details_table tbody').append(row);
-            }
-
-            var rowCount = $('#automatic_details_table tr').length;
-            console.log(rowCount);
-            if (rowCount == 0) {
-                $('#automatic_details_header').remove();
-                $('#details_table').remove();
-            }
-        }
-    });
-
-    $("#devicedetailsentry").load("{% url "device-details" device.pk %}");
     $("#softwaredetails").load("{% url "device-software" device.pk %}");
     });
 {% endblock %}

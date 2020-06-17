@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load devicetags %}
+{% load static %}
+
+{% block title %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
+
+{% block header %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
+
+{% block content %}
+    <div x-data="deviceForm()" x-init="formLoaded()">
+        <form action="" method="post" id="form" enctype="multipart/form-data">{% csrf_token %}
+            <div class="row">
+                <div class="form-group col-md-3">
+                    <label for="name">Name</label>
+                    {{ form.name|add_class:'form-control'|add_attr:"x-model,name" }}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="deviceType">Device Type</label>
+                    {{ form.devicetype|add_class:'form-control'|add_attr:"x-model,deviceType" }}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="name">{% trans "Department" %}</label>
+                    {{ form.department|add_class:'form-control'|add_attr:"x-model,department" }}
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="name">{% trans "Operating System" %}</label>
+                    {{ form.operating_system|add_class:'form-control'|add_to_tag:"x-model='operatingSystem' x-ref='operatingSystem'" }}
+                </div>
+            </div>
+            <a href="#"  x-show="!isLoading && !hasDevice()" x-bind:class="{ disabled: !canInitialize() }" class="btn btn-primary" @click="createDevice()">{% trans "Create Device" %}</a>
+            <div class="d-flex justify-content-center">
+                <div x-show="isLoading" class="spinner-border" role="status">
+                </div>
+            </div>
+            <div x-show="hasDevice()">
+                <hr />
+                <div class="row" style="margin-bottom: 12px">
+                    <div class="col-md-6">
+                        <h4>Lagerregal ID: <b x-text="device.id"></b></h4>
+                    </div>
+                    <div class="col-md-6">
+                        <h4>Hostname: <b x-text="device.hostname"></b></h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="serialnumber">{% trans "Serialnumber" %}</label>
+                        {{ form.serialnumber|add_class:'form-control' }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inventorynumber">{% trans "Inventorynumber" %}</label>
+                        {{ form.inventorynumber|add_class:'form-control' }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="room">{% trans "Room" %}</label>
+                        {{ form.room|add_class:'form-control' }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="room">{% trans "IP-Addresses" %}</label>
+                        {{ form.ipaddresses|add_class:'form-control' }}
+                    </div>
+                </div>
+                <div>
+                    <input type="submit" value="{% trans "Save Device" %}" class="btn btn-primary"/>
+                    {% if display_printbutton %}
+                    <a class="btn btn-success pull-right" href="#" data-target="#printDymoModal" data-toggle="modal">
+                        <i class="fa fa-print"></i> {% trans "Print Label" %}
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+    {% if display_printbutton %}
+        {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=label_path %}
+    {% endif %}
+{% endblock %}
+
+{% block scriptend %}
+{% include "devices/forms/device_form_automatic_script.js" with device=device_json %}
+{% endblock %}
