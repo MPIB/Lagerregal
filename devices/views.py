@@ -1668,6 +1668,17 @@ class Search(PermissionRequiredMixin, ListView):
         'trashed': 'trashed',
         'inventoried': 'inventoried',
     }
+    DATA_FIELDS = {
+        "processor": "Processor",
+        "type": "Type",
+        "manufacturer": "Manufacturer",
+        "hostname": "Hostname",
+        "cpu": "Processor",
+        "memory": "Memory",
+        "storage": "Storage",
+        "network": "Network",
+        "graphics": "Graphics"
+    }
 
     def get_searchstring(self):
         return self.request.GET.get('searchstring', '')
@@ -1724,28 +1735,40 @@ class Search(PermissionRequiredMixin, ListView):
 
         result = models.Q()
         for key, values in data.items():
+            is_valid = False
             if key is None:
+                is_valid = True
                 for value in values:
                     q = models.Q()
                     for k in self.STRING_FIELDS.values():
                         q |= models.Q(**{k + '__icontains': value})
                     result &= q
-            elif key in self.STRING_FIELDS:
+            if key in self.STRING_FIELDS:
+                is_valid = True
                 k = self.STRING_FIELDS[key] + '__icontains'
 
                 q = models.Q()
                 for value in values:
                     q |= models.Q(**{k: value})
                 result &= q
-            elif key in self.DATE_FIELDS:
+            if key in self.DATE_FIELDS:
+                is_valid = True
                 k = self.DATE_FIELDS[key] + '__isnull'
 
                 q = models.Q()
                 for value in values:
                     q |= models.Q(**{k: self.parse_boolean(value)})
                 result &= q
-            else:
+            if key in self.DATA_FIELDS:
+                is_valid = True
+                for value in values:
+                    q = models.Q()
+                    q &= models.Q(**{"provided_data__name": self.DATA_FIELDS[key]})
+                    q &= models.Q(**{"provided_data__formatted_value__icontains": value})
+                    result &= q
+            if not is_valid:
                 raise SuspiciousOperation(_('Invalid search'))
+        print(result)
         return result
 
     def get_queryset(self):
@@ -1756,8 +1779,9 @@ class Search(PermissionRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [("", _("Search"))]
         context["searchstring"] = self.get_searchstring()
-        context["keys"] = sorted(list(self.STRING_FIELDS.keys())
-                                 + list(self.DATE_FIELDS.keys()))
+        context["keys"] = sorted(set(list(self.STRING_FIELDS.keys())
+                                 + list(self.DATE_FIELDS.keys())
+                                 + list(self.DATA_FIELDS.keys())))
         return context
 
 

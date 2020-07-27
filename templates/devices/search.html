@@ -16,7 +16,7 @@
             <button type="submit" class="btn btn-primary btn-block">{% trans "Search" %}</button>
         </div>
     </form>
-    <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
+    <p>{% trans "Available keys" %}: {{ keys|join:", " }}</p>
 
     {% if searchstring %}
         <table class="table table-bordered table-striped" data-table data-b-filter="false">
