@@ -122,3 +122,11 @@ table tr th, table tr td {
         0 0 0 2.1em #212529,
         0 0 0 2.6em #95a5a6;
 }
+
+.login {
+    background-color: var(--light, #eee);
+}
+.login main {
+    max-width: 330px;
+    margin: 40px auto;
+}

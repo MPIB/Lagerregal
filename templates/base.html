@@ -21,10 +21,9 @@
     <link rel="shortcut icon" href="{% static "images/favicon.ico" %}">
     <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
 
-    {% block extracss %}{% endblock %}
     <script src="{% static "alpinejs/dist/alpine.js" %}"></script>
 </head>
-<body>
+<body class="{% block body_class%}{% endblock %}">
 {% if not nochrome %}
 <header class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top mb-3">
     <a class="navbar-brand" href="/"><i class="fa fa-archive"></i> {{ SITE_NAME }}</a>
