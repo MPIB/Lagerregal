@@ -1,7 +1,5 @@
 import logging
 import requests
-import getpass
-import base64
 import os.path
 
 # ignore warnings about missing ssl cert field subjectAltName (you may remove this and ln 102)

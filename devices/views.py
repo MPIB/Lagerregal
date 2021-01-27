@@ -7,7 +7,6 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
-from django.core import serializers
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
 from django.db import models
@@ -25,7 +24,7 @@ from django.utils import timezone
 from django.utils.timesince import timesince
 from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
@@ -35,12 +34,11 @@ from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
-from rest_framework.renderers import JSONRenderer
 
 from reversion import revisions as reversion
 from reversion.models import Version
 
-from api.serializers import DeviceSerializer, DeviceIDSerializer
+from api.serializers import DeviceIDSerializer
 from devices.forms import VIEWSORTING
 from devices.forms import VIEWSORTING_DEVICES
 from devices.forms import DeviceForm

@@ -1,9 +1,7 @@
 from django.core.management import BaseCommand
 
 from devicedata.generic import _get_provider, _update_provided_data
-from devicedata.models import ProvidedData
 from devices.models import Device
-from datetime import datetime
 
 
 class Command(BaseCommand):
