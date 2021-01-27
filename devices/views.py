@@ -914,8 +914,8 @@ class DeviceArchive(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, 
         else:
             device.archived = None
         device.save()
-        reversion.set_comment(_("Device was archived".format(device.name)))
-        messages.success(request, _("Device was archived."))
+        reversion.set_comment(_("Device was archived"))
+        messages.success(request, _("Device was archived"))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
@@ -968,8 +968,8 @@ class DeviceTrash(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, Ba
             device.trashed = None
         device.save()
 
-        reversion.set_comment(_("Device was trashed".format(device.name)))
-        messages.success(request, _("Device was trashed."))
+        reversion.set_comment(_("Device was trashed"))
+        messages.success(request, _("Device was trashed"))
         return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
