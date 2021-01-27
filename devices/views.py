@@ -44,6 +44,7 @@ from api.serializers import DeviceSerializer, DeviceIDSerializer
 from devices.forms import VIEWSORTING
 from devices.forms import VIEWSORTING_DEVICES
 from devices.forms import DeviceForm
+from devices.forms import DeviceFormAutomatic
 from devices.forms import DeviceGroupFilterForm
 from devices.forms import DeviceMailForm
 from devices.forms import DeviceStorageForm
@@ -54,7 +55,6 @@ from devices.forms import IpAddressPurposeForm
 from devices.forms import LendForm
 from devices.forms import ReturnForm
 from devices.forms import ViewForm
-from devices.forms import DeviceFormAutomatic
 from devices.models import Bookmark
 from devices.models import Building
 from devices.models import Device

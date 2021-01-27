@@ -9,7 +9,8 @@ import reversion
 
 from devicegroups.models import Devicegroup
 from devicetypes.models import Type
-from Lagerregal import utils, settings
+from Lagerregal import settings
+from Lagerregal import utils
 from locations.models import Section
 from users.models import Department
 from users.models import Lageruser
