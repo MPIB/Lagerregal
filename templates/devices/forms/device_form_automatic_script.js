@@ -4,23 +4,24 @@ function createDevice(adata) {
     adata.isLoading = true;
     $.ajax({
         method: "POST",
-            url: "{% url 'init-automatic-device' %}",
+        url: "{% url 'init-automatic-device' %}",
         data: {
             "name": adata.name,
             "department": adata.department,
             "device_type": adata.deviceType,
-            "operating_system": adata.operatingSystem
-        }
-        }).done(function(data) {
-            console.log(data);
-            adata.isLoading = false;
-            adata.device = data
+            "operating_system": adata.operatingSystem,
+        },
+    }).done(function(data) {
+        console.log(data);
+        adata.isLoading = false;
+        adata.device = data;
 
-            history.replaceState(null, '', "?id=" + data.id)
-        }).fail(function() {
-            adata.isLoading = false;
+        history.replaceState(null, '', "?id=" + data.id);
+    }).fail(function() {
+        adata.isLoading = false;
     });
 }
+
 function deviceForm() {
     return {
         device: initialDevice,
@@ -34,7 +35,7 @@ function deviceForm() {
                 this.name = this.device.name;
                 this.department = this.device.department;
                 this.deviceType = this.device.devicetype;
-                this.operatingSystem = this.device.operating_system ? this.device.operating_system : "";
+                this.operatingSystem = this.device.operating_system || "";
             } else {
                 this.operatingSystem = this.$refs.operatingSystem.value;
             }
@@ -45,6 +46,8 @@ function deviceForm() {
         hasDevice() {
             return this.device.pk !== undefined || this.device.id !== undefined;
         },
-        createDevice() { createDevice(this); }
+        createDevice() {
+            createDevice(this);
+        },
     }
 }
