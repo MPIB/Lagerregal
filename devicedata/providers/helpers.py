@@ -5,4 +5,4 @@ def format_bytes(size, power=2**10):
     while size > power:
         size /= power
         n += 1
-    return "{0:g}{1}".format(size, power_labels[n]+"B")
+    return "{0:g}{1}".format(size, power_labels[n] + "B")
