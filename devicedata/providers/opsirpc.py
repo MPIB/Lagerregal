@@ -53,10 +53,11 @@ class OpsiConnection:
             # getPossibleMethods_listOfHashes lacks the modern _getObjects methods!
             opsicon_logger.debug("Get Methods from Server...")
             self.id += 1
-            rjson = self.__rpc_request(self.session,
-                                          {"method": "getPossibleMethods_listOfHashes",
-                                           "params": [],
-                                           "id": self.id})
+            rjson = self.__rpc_request(self.session, {
+                "method": "getPossibleMethods_listOfHashes",
+                "params": [],
+                "id": self.id,
+            })
             if rjson:
                 self.legal_methods = []
             for method in rjson:

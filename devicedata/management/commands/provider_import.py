@@ -16,7 +16,7 @@ class Command(BaseCommand):
         else:
             devices = Device.objects.exclude(data_provider__isnull=True)
 
-        if len(devices) is 0:
+        if len(devices) == 0:
             self.stdout.write("Could not find any devices with data provider.")
             return
         for device in devices:

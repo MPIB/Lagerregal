@@ -23,8 +23,8 @@ class OpsiDeviceInfo(BaseDeviceInfo):
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Manufacturer"), entries[0].raw_value["vendor"]))
             hostname = build_full_hostname(self.device)
             if entries[0].raw_value["hostId"] != hostname:
-                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>" +
-                                                                       entries[0].raw_value["hostId"] + "</span>"))
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>"
+                                                                       + entries[0].raw_value["hostId"] + "</span>"))
             else:
                 self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value["hostId"]))
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Last Seen"), entries[0].raw_value["lastseen"]))

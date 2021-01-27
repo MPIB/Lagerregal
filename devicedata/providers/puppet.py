@@ -31,8 +31,8 @@ class PuppetDeviceInfo(BaseDeviceInfo):
         if len(entries) > 0:
             hostname = build_full_hostname(self.device)
             if entries[0].raw_value["hostId"] != hostname:
-                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>" +
-                                                                       entries[0].raw_value + "</span>"))
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>"
+                                                                       + entries[0].raw_value + "</span>"))
             else:
                 self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value))
 

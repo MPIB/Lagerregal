@@ -96,7 +96,7 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "last_name": "sn",
     "email": "mail",
     "expiration_date": "accountExpires"  # FIXME
-    }
+}
 
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {}
 
