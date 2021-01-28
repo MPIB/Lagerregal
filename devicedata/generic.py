@@ -1,20 +1,17 @@
+from django.conf import settings
 from django.utils import timezone
-from devicedata.models import ProvidedData
-from devicedata.providers.opsi import OpsiProvider
-from devicedata.providers.puppet import PuppetProvider
+from django.utils.module_loading import import_string
 
-data_providers = {
-    "opsi": OpsiProvider,
-    "puppet": PuppetProvider
-}
+from devicedata.models import ProvidedData
 
 
 def _get_provider(device):
-    if device.data_provider is not None and device.data_provider in data_providers.keys():
-        return data_providers[device.data_provider]()
+    if device.data_provider in settings.DATA_PROVIDERS:
+        provider_path = settings.DATA_PROVIDERS[device.data_provider]
+        return import_string(provider_path)()
     else:
-        for provider in data_providers.values():
-            provider_instance = provider()
+        for provider_path in settings.DATA_PROVIDERS.values():
+            provider_instance = import_string(provider_path)()
             if provider_instance.has_device(device):
                 return provider_instance
 

@@ -90,13 +90,12 @@ class OpsiProvider(BaseProvider):
     name = "opsi"
 
     def __init__(self):
-        if settings.USE_OPSI:
-            self.__connection = OpsiConnection(
-                settings.OPSI_SETTINGS["host"] + ":" + settings.OPSI_SETTINGS["port"],
-                username=settings.OPSI_SETTINGS["username"],
-                password=settings.OPSI_SETTINGS["password"],
-                legal_methods_path="devicedata/providers/rpc_methods.txt",
-            )
+        self.__connection = OpsiConnection(
+            settings.OPSI_SETTINGS["host"] + ":" + settings.OPSI_SETTINGS["port"],
+            username=settings.OPSI_SETTINGS["username"],
+            password=settings.OPSI_SETTINGS["password"],
+            legal_methods_path="devicedata/providers/rpc_methods.txt",
+        )
 
     def __get_host(self, device):
         host = None

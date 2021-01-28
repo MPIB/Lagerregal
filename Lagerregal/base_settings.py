@@ -250,3 +250,5 @@ OPERATING_SYSTEMS = [
     ("mac", "macOS"),
     ("linux", "Linux")
 ]
+
+DATA_PROVIDERS = {}
