@@ -215,7 +215,6 @@ NPM_FILE_PATTERNS = {
         'css/dataTables.bootstrap4.min.css',
         'js/dataTables.bootstrap4.min.js',
     ],
-    'mustache': ['mustache.min.js'],
     'noty': [
         'js/noty/jquery.noty.js',
         'js/noty/layouts/*.js',
