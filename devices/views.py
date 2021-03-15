@@ -528,6 +528,7 @@ class DeviceCreateAutomatic(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.filter(short_name__isnull=False)
+        context["form"].fields["ipaddresses"].queryset = IpAddress.objects.filter(device = None, user = None).filter(Q(department__in=self.request.user.departments.all()) | Q(department=None))
         existing_id = self.request.GET.get("id", None)
         if existing_id is not None:
             device = get_object_or_404(Device, pk=existing_id)

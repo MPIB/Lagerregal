@@ -239,7 +239,7 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style': "height:80px"}), max_length=1000,
                                   required=False)
     webinterface = forms.URLField(max_length=60, required=False)
-    creator = forms.ModelChoiceField(queryset=Lageruser.objects.filter(is_active=True), widget=forms.HiddenInput())
+    creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
     devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')), required=False,
                                         widget=Select2Widget())

@@ -251,7 +251,7 @@ PRODUCTION = False
 
 OPERATING_SYSTEMS = [
     ("win", "Windows"),
-    ("mac", "macOS"),
+    ("osx", "macOS"),
     ("linux", "Linux")
 ]
 
