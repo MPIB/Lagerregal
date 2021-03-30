@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             name='ProvidedData',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('stored_at', models.DateTimeField(auto_created=True)),
+                ('stored_at', models.DateTimeField(auto_now_add=True)),
                 ('type', models.CharField(max_length=100)),
                 ('name', models.CharField(max_length=200)),
                 ('raw_value', models.CharField(max_length=2000)),
