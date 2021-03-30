@@ -1,0 +1,64 @@
+# we test outside of docker, because it is just so much faster
+# Docker-related errors will pop up in develop branch and can be fixed then
+
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: flake8
+      run: |
+        pip install flake8
+        flake8 --config=setup.cfg
+    - name: test
+      run: |
+        pip install -r requirements.txt
+        cp Lagerregal/template_development.py Lagerregal/settings.py
+        python manage.py test
+  release_develop:
+    if: github.event.branch == 'develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: mpib/Lagerregal:develop
+  release_master:
+    if: github.event.branch == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: mpib/Lagerregal:latest
+  release_demo:
+    if: github.event.branch == 'master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker/setup-qemu-action@v1
+      - uses: docker/setup-buildx-action@v1
+      - uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v2
+        with:
+          file: demo/Dockerfile
+          push: true
+          tags: mpib/Lagerregal:demo
