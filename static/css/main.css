@@ -130,3 +130,23 @@ table tr th, table tr td {
     max-width: 330px;
     margin: 40px auto;
 }
+
+meter.progress {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: none;
+    width: 100%;
+}
+meter.progress::-webkit-meter-inner-element {
+    display: block;
+}
+meter.progress::-webkit-meter-bar {
+    border: 0;
+    border-radius: 0;
+}
+meter.progress::-webkit-meter-optimum-value {
+    background: var(--primary);
+}
+meter.progress::-moz-meter-bar {
+    background: var(--primary);
+}

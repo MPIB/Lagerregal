@@ -21,7 +21,7 @@
                 {% trans "Devices" %}
             </div>
             <div class="col-md-9">
-                <meter class="w-100" max="100" value="{{ device_percent }}"></meter>
+                <meter class="progress" max="100" value="{{ device_percent }}"></meter>
                 <span>{{ device_available }}</span>
                 <span class="pull-right">{{ device_all }}</span>
             </div>
@@ -32,7 +32,7 @@
                 {% trans "IP-Addresses" %}
             </div>
             <div class="col-md-9">
-                <meter class="w-100" max="100" value="{{ ipaddress_percent }}"></meter>
+                <meter class="progress" max="100" value="{{ ipaddress_percent }}"></meter>
                 <span>{{ ipaddress_available }}</span>
                 <span class="pull-right">{{ ipaddress_all }}</span>
             </div>
