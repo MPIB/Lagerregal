@@ -19,7 +19,7 @@ jobs:
         - |
           pip install flake8 isort
           flake8 --config=setup.cfg
-          isort -c api demo devicegroups devices devicetags devicetypes history Lagerregal locale locations mail main media network users
+          isort -c api demo devicegroups devices devicetags devicetypes history Lagerregal locale locations mail main media network users devicedata
           pip install -r requirements.txt
           cp Lagerregal/template_development.py Lagerregal/settings.py
           python manage.py test

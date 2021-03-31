@@ -1,5 +1,7 @@
+from abc import ABC
+from abc import abstractmethod
+
 from Lagerregal import settings
-from abc import ABC, abstractmethod
 
 
 class BaseDeviceInfo(ABC):

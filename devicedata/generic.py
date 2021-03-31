@@ -1,4 +1,5 @@
 from django.utils import timezone
+
 from devicedata.models import ProvidedData
 from devicedata.providers.opsi import OpsiProvider
 from devicedata.providers.puppet import PuppetProvider

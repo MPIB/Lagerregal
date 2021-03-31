@@ -1,11 +1,15 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.translation import ugettext_lazy as _
 
-from Lagerregal import settings
-from devicedata.providers.base_provider import BaseProvider, SoftwareEntry, DeviceInfoEntry, BaseDeviceInfo, \
-    FormattedDeviceInfoEntry, build_full_hostname
+from devicedata.providers.base_provider import BaseDeviceInfo
+from devicedata.providers.base_provider import BaseProvider
+from devicedata.providers.base_provider import DeviceInfoEntry
+from devicedata.providers.base_provider import FormattedDeviceInfoEntry
+from devicedata.providers.base_provider import SoftwareEntry
+from devicedata.providers.base_provider import build_full_hostname
 from devicedata.providers.helpers import format_bytes
 from devicedata.providers.opsirpc import OpsiConnection
-from django.utils.translation import ugettext_lazy as _
+from Lagerregal import settings
 
 
 class OpsiDeviceInfo(BaseDeviceInfo):

@@ -1,14 +1,16 @@
-from django.http import HttpResponse, JsonResponse
+import logging
+
+from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.utils.timesince import timesince
-from django.views.generic.base import View
 from django.utils.translation import ugettext_lazy as _
+from django.views.generic.base import View
 
-from devicedata.generic import _get_provider, _update_provided_data
+from devicedata.generic import _get_provider
+from devicedata.generic import _update_provided_data
 from devices.models import Device
-import logging
-
 from devices.templatetags.devicetags import as_nested_list
 
 logger = logging.getLogger(__name__)
