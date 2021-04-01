@@ -120,7 +120,7 @@ class Device(models.Model):
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
     data_provider = models.CharField(max_length=20, blank=True)
-    operating_system = models.CharField(max_length=10, choices=settings.OPERATING_SYSTEMS, null=True)
+    operating_system = models.CharField(max_length=10, choices=settings.OPERATING_SYSTEMS, null=True, blank=True)
 
     department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
