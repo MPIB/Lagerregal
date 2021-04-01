@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext_lazy as _
 
@@ -9,7 +10,6 @@ from devicedata.providers.base_provider import SoftwareEntry
 from devicedata.providers.base_provider import build_full_hostname
 from devicedata.providers.helpers import format_bytes
 from devicedata.providers.opsirpc import OpsiConnection
-from Lagerregal import settings
 
 
 class OpsiDeviceInfo(BaseDeviceInfo):

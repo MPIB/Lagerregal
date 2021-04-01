@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
@@ -9,7 +10,6 @@ import reversion
 
 from devicegroups.models import Devicegroup
 from devicetypes.models import Type
-from Lagerregal import settings
 from Lagerregal import utils
 from locations.models import Section
 from users.models import Department

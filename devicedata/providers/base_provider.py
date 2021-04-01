@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 
-from Lagerregal import settings
+from django.conf import settings
 
 
 class BaseDeviceInfo(ABC):
