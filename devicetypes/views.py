@@ -206,7 +206,7 @@ class TypeMerge(PermissionRequiredMixin, View):
         if "remove_attributes" in request.POST and request.POST["remove_attributes"] == "on":
             for device in devices:
                 attributes = device.typeattributevalue_set.all()
-                if len(attributes) is 0:
+                if len(attributes) == 0:
                     continue
                 if device.description is None:
                     device.description = ""

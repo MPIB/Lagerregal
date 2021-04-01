@@ -1,5 +1,5 @@
-from django.core.management import BaseCommand
 from django.conf import settings
+from django.core.management import BaseCommand
 
 from devices.models import Device
 

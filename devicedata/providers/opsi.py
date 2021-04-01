@@ -23,8 +23,8 @@ class OpsiDeviceInfo(BaseDeviceInfo):
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Manufacturer"), entries[0].raw_value["vendor"]))
             hostname = build_full_hostname(self.device)
             if entries[0].raw_value["hostId"] != hostname:
-                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>" +
-                                                                       entries[0].raw_value["hostId"] + "</span>"))
+                self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>"
+                                                                       + entries[0].raw_value["hostId"] + "</span>"))
             else:
                 self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value["hostId"]))
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Last Seen"), entries[0].raw_value["lastseen"]))
@@ -88,14 +88,15 @@ class OpsiDeviceInfo(BaseDeviceInfo):
 
 class OpsiProvider(BaseProvider):
     name = "opsi"
-    __connection = None
 
     def __init__(self):
         if settings.USE_OPSI:
-            __connection = OpsiConnection(settings.OPSI_SETTINGS["host"] + ":" + settings.OPSI_SETTINGS["port"],
-                                          username=settings.OPSI_SETTINGS["username"],
-                                          password=settings.OPSI_SETTINGS["password"],
-                                          legal_methods_path="devicedata/providers/rpc_methods.txt")
+            self.__connection = OpsiConnection(
+                settings.OPSI_SETTINGS["host"] + ":" + settings.OPSI_SETTINGS["port"],
+                username=settings.OPSI_SETTINGS["username"],
+                password=settings.OPSI_SETTINGS["password"],
+                legal_methods_path="devicedata/providers/rpc_methods.txt",
+            )
 
     def __get_host(self, device):
         host = None

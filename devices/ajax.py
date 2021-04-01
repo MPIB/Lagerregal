@@ -1,13 +1,9 @@
-import http.client
 import json
-import urllib
 
-from django.conf import settings
-from django.forms.models import modelform_factory, model_to_dict
+from django.forms.models import modelform_factory
 from django.http import HttpResponse
 from django.http import QueryDict
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.urls import reverse
 from django.views.generic.base import View

@@ -10,6 +10,7 @@ from django.views.static import serve
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from api import views as api_views
+from devicedata import ajax as devicedata_ajax
 from devicegroups import views as devicegroups_views
 from devices import ajax as devices_ajax
 from devices import views as devices_views
@@ -23,7 +24,6 @@ from main import ajax as main_ajax
 from main import views as main_views
 from network import views as network_views
 from users import views as users_views
-from devicedata import ajax as devicedata_ajax
 
 from . import settings
 
@@ -236,6 +236,7 @@ urlpatterns += format_suffix_patterns([
 
 if settings.DEBUG:
     import debug_toolbar
+
     # static files (images, css, javascript, etc.)
     urlpatterns += [
         path('__debug__/', include(debug_toolbar.urls)),

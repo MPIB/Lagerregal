@@ -258,9 +258,10 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
     serializer_class = PictureSerializer
 
     def patch(self, request, *args, **kwargs):
-        from PIL import Image
-        import os.path
         import json
+        import os.path
+
+        from PIL import Image
 
         picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
         img = Image.open(picture.image)

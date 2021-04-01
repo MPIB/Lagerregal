@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import Select2MultipleWidget
 from django_select2.forms import Select2Widget
 
-from Lagerregal import settings
 from devicegroups.models import Devicegroup
 from devices.models import Device
 from devices.models import Manufacturer
@@ -19,6 +18,7 @@ from devices.models import Room
 from devices.models import Type
 from devicetypes.models import TypeAttribute
 from devicetypes.models import TypeAttributeValue
+from Lagerregal import settings
 from mail.models import MailTemplate
 from network.models import IpAddress
 from users.models import Department

@@ -96,7 +96,7 @@ AUTH_LDAP_USER_ATTR_MAP = {
     "last_name": "sn",
     "email": "mail",
     "expiration_date": "accountExpires"  # FIXME
-    }
+}
 
 AUTH_LDAP_USER_FLAGS_BY_GROUP = {}
 
@@ -106,15 +106,15 @@ AUTH_LDAP_DEPARTMENT_REGEX = "OU=([^,]*?),DC"
 USE_PUPPET = True
 
 PUPPETDB_SETTINGS = {
-        'host'       : 'lip-puppet.mpib-berlin.mpg.de',
-        'port'       : 8081,
-        'cacert'     : '/var/lib/puppet/ssl/certs/ca.pem',
-        'cert'       : '/var/lib/puppet/ssl/certs/lagerregal.mpib-berlin.mpg.de.pem',
-        'key'        : '/var/lib/puppet/ssl/private_keys/lagerregal.mpib-berlin.mpg.de.pem',
-        'req'        : '/pdb/query/v4/facts?',
-        'query_fact' : 'lagerregal_id',
-        'software_fact' : 'software',
-    }
+    'host'       : 'lip-puppet.mpib-berlin.mpg.de',
+    'port'       : 8081,
+    'cacert'     : '/var/lib/puppet/ssl/certs/ca.pem',
+    'cert'       : '/var/lib/puppet/ssl/certs/lagerregal.mpib-berlin.mpg.de.pem',
+    'key'        : '/var/lib/puppet/ssl/private_keys/lagerregal.mpib-berlin.mpg.de.pem',
+    'req'        : '/pdb/query/v4/facts?',
+    'query_fact' : 'lagerregal_id',
+    'software_fact' : 'software',
+}
 
 USE_OPSI = True
 OPSI_SETTINGS = {
