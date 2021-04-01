@@ -7,16 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
+    - name: python
+      run: |
+        sudo apt-get install python3 python3-ldap
     - name: flake8
       run: |
         pip install flake8
         flake8 --config=setup.cfg
     - name: test
       run: |
-        sudo apt-get install python3-ldap
         pip install -r requirements.txt
         cp Lagerregal/template_development.py Lagerregal/settings.py
         python manage.py test
