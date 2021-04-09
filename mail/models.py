@@ -41,6 +41,11 @@ class MailTemplate(models.Model):
     def get_edit_url(self):
         return reverse('mail-edit', kwargs={'pk': self.pk})
 
+    def format(self, datadict):
+        body = pystache.render(self.body, datadict)
+        subject = pystache.render(self.subject, datadict)
+        return subject, body
+
     def send(self, request, recipients=None, data=None):
         datadict = {}
         datadict["device"] = {
@@ -88,9 +93,7 @@ class MailTemplate(models.Model):
                 "first_name": data["owner"].first_name,
                 "last_name": data["owner"].last_name
             }
-        body = pystache.render(self.body, datadict)
-        subject = pystache.render(self.subject, datadict)
-
+        subject, body = self.format(datadict)
         email = EmailMessage(subject=subject, body=body, to=recipients)
         email.send()
         mailhistory = MailHistory()
