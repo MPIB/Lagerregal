@@ -17,6 +17,7 @@ from devicedata.providers.base_provider import FormattedDeviceInfoEntry
 from devicedata.providers.base_provider import SoftwareEntry
 from devicedata.providers.base_provider import build_full_hostname
 from devicedata.providers.helpers import format_bytes
+from Lagerregal import settings
 
 
 class PuppetDeviceInfo(BaseDeviceInfo):
