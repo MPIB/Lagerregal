@@ -1,6 +1,7 @@
 from django.core.management import BaseCommand
 
-from devicedata.generic import _get_provider, _update_provided_data
+from devicedata.generic import _get_provider
+from devicedata.generic import _update_provided_data
 from devices.models import Device
 
 

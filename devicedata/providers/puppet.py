@@ -1,16 +1,22 @@
 import http.client
 import json
-from http.client import ssl
 import urllib
-import requests
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from http.client import ssl
 
-from Lagerregal import settings
-from devicedata.providers.base_provider import BaseProvider, BaseDeviceInfo, DeviceInfoEntry, SoftwareEntry, \
-    FormattedDeviceInfoEntry, build_full_hostname
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
+import requests
+
+from devicedata.providers.base_provider import BaseDeviceInfo
+from devicedata.providers.base_provider import BaseProvider
+from devicedata.providers.base_provider import DeviceInfoEntry
+from devicedata.providers.base_provider import FormattedDeviceInfoEntry
+from devicedata.providers.base_provider import SoftwareEntry
+from devicedata.providers.base_provider import build_full_hostname
 from devicedata.providers.helpers import format_bytes
+from Lagerregal import settings
 
 
 class PuppetDeviceInfo(BaseDeviceInfo):

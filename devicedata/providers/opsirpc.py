@@ -1,7 +1,7 @@
 import logging
-import requests
 import os.path
 
+import requests
 # ignore warnings about missing ssl cert field subjectAltName (you may remove this and ln 102)
 from requests.packages.urllib3.exceptions import SubjectAltNameWarning
 
