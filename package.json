@@ -2,17 +2,17 @@
   "name": "lagerregal",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "alpinejs": "^2.3.2",
-    "bootstrap": "^4.3.1",
-    "bootswatch": "^4.3.1",
-    "datatables.net": "^1.10.22",
-    "datatables.net-bs4": "^1.10.19",
+    "alpinejs": "^2.8.2",
+    "bootstrap": "^4.6.0",
+    "bootswatch": "^4.6.0",
+    "datatables.net": "^1.10.24",
+    "datatables.net-bs4": "^1.10.24",
     "font-awesome": "^4.7.0",
-    "jquery": "^3.5.1",
+    "jquery": "^3.6.0",
     "jquery-ui-dist": "^1.12.1",
     "noty": "^2.4.1",
-    "popper.js": "^1.15.0",
-    "select2": "^4.0.5",
-    "timeago": "^1.6.5"
+    "popper.js": "^1.16.1",
+    "select2": "^4.0.13",
+    "timeago": "^1.6.7"
   }
 }
