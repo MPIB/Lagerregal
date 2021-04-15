@@ -1,6 +1,7 @@
 import re
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.db.utils import OperationalError
@@ -18,7 +19,6 @@ from devices.models import Room
 from devices.models import Type
 from devicetypes.models import TypeAttribute
 from devicetypes.models import TypeAttributeValue
-from Lagerregal import settings
 from mail.models import MailTemplate
 from network.models import IpAddress
 from users.models import Department

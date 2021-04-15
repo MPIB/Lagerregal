@@ -1,8 +1,8 @@
 from django import forms
+from django.conf import settings
 from django.utils.translation import ugettext
 from django.utils.translation import ugettext_lazy as _
 
-from Lagerregal import settings
 from users.models import DepartmentUser
 from users.models import Lageruser
 

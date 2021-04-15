@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -27,7 +28,6 @@ from devices.forms import FilterForm
 from devices.forms import ViewForm
 from devices.models import Device
 from devices.models import Lending
-from Lagerregal import settings
 from Lagerregal.utils import PaginationMixin
 from network.forms import UserIpAddressForm
 from network.models import IpAddress

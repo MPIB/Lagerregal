@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
@@ -24,8 +25,6 @@ from main import ajax as main_ajax
 from main import views as main_views
 from network import views as network_views
 from users import views as users_views
-
-from . import settings
 
 urlpatterns = [
     path('', login_required(main_views.Home.as_view()), name="home"),
