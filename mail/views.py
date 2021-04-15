@@ -16,6 +16,35 @@ from mail.models import MailTemplateRecipient
 from users.mixins import PermissionRequiredMixin
 from users.models import Lageruser
 
+PREVIEW_DATA = {
+    "device": {
+        "currentlending": "",
+        "description": "",
+        "devicetype": "Laptop",
+        "group": "",
+        "hostname": "1234",
+        "inventoried": "",
+        "inventorynumber": "124376543",
+        "manufacturer": "Examplecompany",
+        "name": "Laptop 123",
+        "room": "201 (Building 1)",
+        "serialnumber": "1234",
+        "templending": False,
+        "trashed": "",
+        "webinterface": "http://example.com"
+    },
+    "user" : {
+        "username": "testuser",
+        "first_name": "Test",
+        "last_name": "User"
+    },
+    "owner" : {
+        "username": "seconduser",
+        "first_name": "Second",
+        "last_name": "User"
+    }
+}
+
 
 class MailList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = MailTemplate
@@ -48,6 +77,7 @@ class MailDetail(PermissionRequiredMixin, DetailView):
         context["breadcrumbs"] = [
             (reverse("mail-list"), _("Mailtemplates")),
             (reverse("mail-detail", kwargs={"pk": self.object.pk}), self.object)]
+        context["preview_subject"], context["preview_body"] = self.object.format(PREVIEW_DATA)
         return context
 
 

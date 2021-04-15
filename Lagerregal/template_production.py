@@ -103,7 +103,10 @@ AUTH_LDAP_USER_FLAGS_BY_GROUP = {}
 AUTH_LDAP_DEPARTMENT_FIELD = "distinguishedName"
 AUTH_LDAP_DEPARTMENT_REGEX = "OU=([^,]*?),DC"
 
-USE_PUPPET = True
+DATA_PROVIDERS = {
+    'opsi': 'devicedata.providers.opsi.OpsiProvider',
+    'puppet': 'devicedata.providers.puppet.PuppetProvide',
+}
 
 PUPPETDB_SETTINGS = {
     'host'       : 'lip-puppet.mpib-berlin.mpg.de',
@@ -116,7 +119,6 @@ PUPPETDB_SETTINGS = {
     'software_fact' : 'software',
 }
 
-USE_OPSI = True
 OPSI_SETTINGS = {
     "host": "https://opsi.mpib-berlin.mpg.de",
     "port": "4447",

@@ -52,52 +52,14 @@
                 <tbody id="mailpreview">
                     <tr>
                         <td>{% trans "Subject" %}</td>
-                        <td>{{ mailtemplate.subject }}</td>
+                        <td>{{ preview_subject|safe }}</td>
                     </tr>
                     <tr>
                         <td>{% trans "Body" %}</td>
-                        <td>{{ mailtemplate.body|linebreaks }}</td>
+                        <td>{{ preview_body|safe }}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-{% endblock %}
-
-{% block htmlend %}
-    <script src="{% static "mustache/mustache.min.js" %}"></script>
-{% endblock %}
-
-{% block scriptend %}
-    var data = {
-        "device" : {
-            "currentlending": "",
-            "description": "",
-            "devicetype": "Laptop",
-            "group": "",
-            "hostname": "1234",
-            "inventoried": "",
-            "inventorynumber": "124376543",
-            "manufacturer": "Examplecompany",
-            "name": "Laptop 123",
-            "room": "201 (Building 1)",
-            "serialnumber": "1234",
-            "templending": false,
-            "trashed": "",
-            "webinterface": "http://example.com"
-        },
-        "user" : {
-            "username" : "testuser",
-            "first_name" : "Test",
-            "last_name" : "User"
-        },
-        "owner" : {
-            "username" : "seconduser",
-            "first_name" : "Second",
-            "last_name" : "User"
-        }
-    }
-
-    out = Mustache.render($("#mailpreview").html(), data)
-    $("#mailpreview").html(out)
 {% endblock %}
