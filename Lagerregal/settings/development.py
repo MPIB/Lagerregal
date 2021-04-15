@@ -1,4 +1,4 @@
-from .base_settings import *
+from .base import *
 
 DEBUG = True
 PRODUCTION = False
