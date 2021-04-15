@@ -298,7 +298,7 @@ class DeviceForm(forms.ModelForm):
                 return
 
         elif kwargs["instance"] is not None:
-            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk).order_by("name")
+            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
             if kwargs["instance"].devicetype is not None:
                 attributes = TypeAttribute.objects.filter(devicetype=kwargs["instance"].devicetype.pk)
             else:
