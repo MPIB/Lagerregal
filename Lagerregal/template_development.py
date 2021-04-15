@@ -37,9 +37,6 @@ LABEL_TEMPLATES = {
     }
 }
 
-USE_PUPPET = False
-USE_OPSI = False
-
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
 # MEDIA_ROOT =  '{0}/media'.format(os.getcwd())
