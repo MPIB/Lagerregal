@@ -27,11 +27,3 @@ jobs:
           docker build -t mpib/lagerregal:latest .
           docker run --rm mpib/lagerregal:latest ./manage.py test
           docker push mpib/lagerregal:latest
-    - stage: release_demo
-      if: branch = master AND type != pull_request
-      script:
-        - |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker build -t mpib/lagerregal:demo -f demo/Dockerfile .
-          docker run --rm mpib/lagerregal:demo   ./manage.py test
-          docker push mpib/lagerregal:demo
