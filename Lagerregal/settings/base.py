@@ -61,7 +61,6 @@ MIDDLEWARE = (
     'reversion.middleware.RevisionMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'users.middleware.TimezoneMiddleware',
     'users.middleware.LanguageMiddleware',
 )
@@ -121,7 +120,6 @@ INSTALLED_APPS = (
     'history',
     'reversion',
     'rest_framework',
-    'debug_toolbar',
     'oauth2_provider',
     'django_select2',
 )
