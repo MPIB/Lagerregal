@@ -53,3 +53,12 @@ INTERNAL_IPS = [
 
 # comment out next line to send emails to the console
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+try:
+    import debug_toolbar
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ] + MIDDLEWARE
+except ImportError:
+    pass
