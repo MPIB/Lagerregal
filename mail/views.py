@@ -33,12 +33,12 @@ PREVIEW_DATA = {
         "trashed": "",
         "webinterface": "http://example.com"
     },
-    "user" : {
+    "user": {
         "username": "testuser",
         "first_name": "Test",
         "last_name": "User"
     },
-    "owner" : {
+    "owner": {
         "username": "seconduser",
         "first_name": "Second",
         "last_name": "User"

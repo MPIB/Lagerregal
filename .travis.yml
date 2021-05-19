@@ -11,19 +11,6 @@ services:
 install:
 jobs:
   include:
-    # we test outside of docker, because it is just so much faster
-    # Docker-related errors will pop up in develop branch and can be fixed then
-    - stage: test
-      if: type == pull_request
-      script:
-        - |
-          pip install flake8 isort
-          flake8 --config=setup.cfg
-          isort -c api demo devicegroups devices devicetags devicetypes history Lagerregal locale locations mail main media network users devicedata
-          pip install -r requirements.txt
-          cp Lagerregal/template_development.py Lagerregal/settings.py
-          python manage.py makemigrations --dry-run --check --noinput
-          python manage.py test
     - stage: release_develop
       if: branch = develop AND type != pull_request
       script:
