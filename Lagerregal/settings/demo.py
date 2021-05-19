@@ -1,6 +1,6 @@
 # These settings are only used for the example docker container.
 
-from Lagerregal.base_settings import *
+from .base import *
 
 DEBUG = True
 PRODUCTION = False

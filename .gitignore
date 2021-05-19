@@ -7,7 +7,6 @@ mails/
 .idea/
 *.pyo
 newrelic.ini
-settings.py
 *.label
 .coverage
 htmlcov/
