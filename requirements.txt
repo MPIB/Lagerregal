@@ -3,7 +3,7 @@ django-reversion >= 2.0.10
 djangorestframework >= 3.6.4
 Pillow
 django-oauth-toolkit
-pytz
+pytz == 2020.4
 pystache
 model_mommy
 django_auth_ldap
