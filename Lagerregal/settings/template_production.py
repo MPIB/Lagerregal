@@ -2,7 +2,7 @@ import ldap
 from django_auth_ldap.config import LDAPSearch
 from django_auth_ldap.config import NestedActiveDirectoryGroupType
 
-from .base_settings import *
+from .base import *
 
 DEBUG = False
 PRODUCTION = True

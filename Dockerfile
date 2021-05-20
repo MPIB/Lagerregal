@@ -6,11 +6,11 @@ EXPOSE 8000/tcp
 ADD . code
 WORKDIR code
 ENV BUILDPKGS gcc libldap2-dev libsasl2-dev gettext
+ENV DJANGO_SETTINGS_MODULE Lagerregal.settings.development
 
 
 RUN apt-get update && apt-get install -y --no-install-recommends $BUILDPKGS
 RUN pip install -r requirements.txt
-RUN cp Lagerregal/template_development.py Lagerregal/settings.py
 RUN python manage.py compilemessages -l de
 RUN python manage.py migrate
 RUN apt-get purge -y $BUILDPKGS

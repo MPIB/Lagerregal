@@ -21,12 +21,7 @@
                 {% trans "Devices" %}
             </div>
             <div class="col-md-9">
-                <div class="progress mb-0">
-                    <div class="progress-bar progress-bar-{{ device_percentcolor }}" role="progressbar"
-                         aria-valuenow="{{ device_percent }}" aria-valuemin="0" aria-valuemax="100"
-                         style="width: {{ device_percent }}%;">
-                    </div>
-                </div>
+                <meter class="progress" max="100" value="{{ device_percent }}"></meter>
                 <span>{{ device_available }}</span>
                 <span class="pull-right">{{ device_all }}</span>
             </div>
@@ -37,12 +32,7 @@
                 {% trans "IP-Addresses" %}
             </div>
             <div class="col-md-9">
-                <div class="progress mb-0">
-                    <div class="progress-bar progress-bar-{{ ipaddress_percentcolor }}" role="progressbar"
-                         aria-valuenow="{{ ipaddress_percent }}" aria-valuemin="0" aria-valuemax="100"
-                         style="width: {{ ipaddress_percent }}%;">
-                    </div>
-                </div>
+                <meter class="progress" max="100" value="{{ ipaddress_percent }}"></meter>
                 <span>{{ ipaddress_available }}</span>
                 <span class="pull-right">{{ ipaddress_all }}</span>
             </div>

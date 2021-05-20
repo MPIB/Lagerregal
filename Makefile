@@ -4,7 +4,6 @@ VIRTUAL_ENV ?= .venv
 run: $(VIRTUAL_ENV)
 	$(VIRTUAL_ENV)/bin/pip install -r requirements.txt
 	yarn install || npm install
-	cp -n Lagerregal/template_development.py Lagerregal/settings.py
 	$(VIRTUAL_ENV)/bin/python manage.py compilemessages -l de
 	$(VIRTUAL_ENV)/bin/python manage.py migrate
 	$(VIRTUAL_ENV)/bin/python manage.py populate
