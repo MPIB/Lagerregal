@@ -53,9 +53,9 @@ INTERNAL_IPS = ['127.0.0.1', 'localhost']
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 try:
-    INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE = [
+    INSTALLED_APPS += ('debug_toolbar', )
+    MIDDLEWARE = (
         'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ] + MIDDLEWARE
+     ) + MIDDLEWARE
 except ImportError:
     pass
