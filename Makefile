@@ -17,7 +17,7 @@ makemessages: $(VIRTUAL_ENV)
 
 .PHONY: test
 test: $(VIRTUAL_ENV)
-	$(VIRTUAL_ENV)/bin/pip install coverage
+	$(VIRTUAL_ENV)/bin/pip install coverage django-debug-toolbar
 	$(VIRTUAL_ENV)/bin/coverage run --branch --omit=.venv/* manage.py test
 	$(VIRTUAL_ENV)/bin/coverage html --skip-covered
 
