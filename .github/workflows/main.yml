@@ -26,5 +26,6 @@ jobs:
     - name: test
       run: |
         pip install -r requirements.txt
+        pip install django-debug-toolbar
         python manage.py makemigrations --dry-run --check --noinput
         python manage.py test
