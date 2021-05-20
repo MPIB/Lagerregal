@@ -27,65 +27,18 @@ Features
 + Permission system for users and public device lists
 + Themable with bootswatch
 
-Demo and Docker
-===============
-
-To quickly spin up a Lagerregal with minimal sample data, run:
-
-```
-docker run --rm -it -p 8000:8000  mpib/lagerregal:demo
-```
-
-point your browser to [http://localhost:8000](http://localhost:8000) and login with "admin:admin".
-
-Note that both Dockerfiles included in the repo are intended for demo and
-development purposes and are not suited for production.
-
 Manual Quickstart
 =================
 
-Install necessary requirements (either globally or with virtualenv)
+The following command will install all dependencies, setup a demo database, and
+start a testserver for development:
 
 ```
-$ pip install -U -r requirements.txt
-$ npm install
+make run
 ```
 
-Generate settings.py
-
-For quickstart and development:
-
-```
-$ cp Lagerregal/template_development.py Lagerregal/settings.py
-```
-
-For production (edit first):
-```
-$ cp Lagerregal/template_production.py Lagerregal/settings.py
-```
-
-Compile translations:
-```
-$ python manage.py compilemessages -l de
-```
-
-Run:
-
-```
-$ python manage.py migrate
-$ python manage.py runserver
-```
-
-Optional (not optional for production):
-
-```
-$ python generate_secret_key.py
-```
-
-Generate sample data:
-```
-$ python manage.py populate
-```
+After that you can point your browser to
+[http://localhost:8000](http://localhost:8000) and login with "admin:admin".
 
 Label Printing
 ===============
