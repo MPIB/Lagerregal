@@ -1,6 +1,7 @@
 from django.apps import apps
 from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import ForeignKey
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
