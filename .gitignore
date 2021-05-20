@@ -21,3 +21,5 @@ node_modules/
 /Pipfile
 /Pipfile.lock
 /venv
+/.venv
+/yarn.lock
