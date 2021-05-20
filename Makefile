@@ -3,6 +3,7 @@ VIRTUAL_ENV ?= .venv
 .PHONY: run
 run: $(VIRTUAL_ENV)
 	$(VIRTUAL_ENV)/bin/pip install -r requirements.txt
+	$(VIRTUAL_ENV)/bin/pip install django-debug-toolbar
 	yarn install || npm install
 	$(VIRTUAL_ENV)/bin/python manage.py compilemessages -l de
 	$(VIRTUAL_ENV)/bin/python manage.py migrate

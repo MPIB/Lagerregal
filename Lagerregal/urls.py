@@ -234,12 +234,16 @@ urlpatterns += format_suffix_patterns([
 ], allowed=["json", "html"])
 
 if settings.DEBUG:
-    import debug_toolbar
-
-    # static files (images, css, javascript, etc.)
     urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
         path('media/<path:path>', serve, {
             'document_root': settings.MEDIA_ROOT,
         }),
     ]
+
+try:
+    import debug_toolbar
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
+except ImportError:
+    pass

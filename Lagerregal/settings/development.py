@@ -47,9 +47,19 @@ LABEL_TEMPLATES = {
 # Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
+INTERNAL_IPS = ['127.0.0.1', 'localhost']
 
 # comment out next line to send emails to the console
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+try:
+    import debug_toolbar  # noqa
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ] + MIDDLEWARE
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_COLLAPSED': True,
+    }
+except ImportError:
+    pass
