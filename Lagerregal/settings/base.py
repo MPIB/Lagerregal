@@ -34,24 +34,24 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 
 # Additional locations of static files
-STATICFILES_DIRS = (
+STATICFILES_DIRS = [
     '{0}/static'.format(os.getcwd()),
-)
+]
 
-LOCALE_PATHS = (
+LOCALE_PATHS = [
     '{0}/locale'.format(os.getcwd()),
-)
+]
 
 # List of finder classes that know how to find static files in
 # various locations.
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'npm.finders.NpmFinder',
-)
+]
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -63,7 +63,7 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'users.middleware.TimezoneMiddleware',
     'users.middleware.LanguageMiddleware',
-)
+]
 
 ROOT_URLCONF = 'Lagerregal.urls'
 
@@ -95,7 +95,7 @@ TEMPLATES = [
     },
 ]
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -120,12 +120,12 @@ INSTALLED_APPS = (
     'rest_framework',
     'oauth2_provider',
     'django_select2',
-)
+]
 
-LANGUAGES = (
+LANGUAGES = [
     ('de', 'German'),
     ('en', 'English'),
-)
+]
 
 AUTH_USER_MODEL = 'users.Lageruser'
 
