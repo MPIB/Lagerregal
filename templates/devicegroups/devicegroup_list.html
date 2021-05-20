@@ -7,34 +7,33 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {{ viewform.departmentfilter }}
     {% if perms.devicegroups.add_devicegroup %}
-        <a href="{% url 'devicegroup-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicegroup" %}</a>{% endif %}
+        <a href="{% url 'devicegroup-add' %}" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> {% trans "Add Devicegroup" %}
+        </a>
+    {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.department }}
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                </tr>
-                </thead>
-                {% for devicegroup in devicegroup_list %}
-
-                    <tr>
-                        <td>
-                            <a href="{% url 'devicegroup-detail' devicegroup.id %}">{{ devicegroup.name | default:"(None)" }}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-            {% include "snippets/devicegrouppagination.html" with listurl='devicegroup-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        {% for devicegroup in devicegroup_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'devicegroup-detail' devicegroup.id %}">{{ devicegroup.name|default:_("(None)") }}</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include "snippets/pagination.html" %}
 {% endblock %}

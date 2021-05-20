@@ -1,49 +1,51 @@
 {% extends "snippets/modals/baseForm.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
 
 {% block modalHeader %}
-  {%if device.currentlending == None%}
-    <h4 class="modal-title">{% trans "Mark device as lent" %}</h4>
-  {%else%}
-    <h4 class="modal-title">{% trans "Edit lending information" %}</h4>
-  {%endif%}
+    {% if device.currentlending == None %}
+        <h4 class="modal-title">{% trans "Mark device as lent" %}</h4>
+    {% else %}
+        <h4 class="modal-title">{% trans "Edit lending information" %}</h4>
+    {% endif %}
 {% endblock %}
 
 {% block modalUrl %}{% url "device-lend" %}{% endblock %}
 
 {% block modalBody %}
-    <div class="form-group {{ form.owner.css_classes }}">
+    <div class="form-group row {{ form.owner.css_classes }}">
         <label for="owner" class="col-lg-4 control-label">{% trans "Lent to" %}*</label>
 
         <div class="col-lg-8">
             {{ lendform.owner }}
-            <p class="help-block">
-                {% if form.owner.errors %}{% for error in form.owner.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+            <p class="text-danger">{% for error in form.owner.errors %}{{ error }}, {% endfor %}</p>
         </div>
     </div>
-    <div class="form-group {{ form.duedate.css_classes }}">
+    <div class="form-group row {{ form.duedate.css_classes }}">
         <label for="duedate" class="col-lg-4 control-label">{% trans "Duedate" %}</label>
 
         <div class="col-lg-8">
             {{ lendform.duedate }}
-            <p class="help-block">{% if form.duedate.errors %}{% for error in form.duedate.errors %}{{ error }},
-            {% endfor %}{% endif %}</p></div>
+            <p class="text-danger">{% for error in form.duedate.errors %}{{ error }}, {% endfor %}</p>
+        </div>
     </div>
-    <div class="form-group {{ form.room.css_classes }}">
+    <div class="form-group row {{ form.room.css_classes }}">
         <label for="room" class="col-lg-4 control-label">{% trans "Room" %}</label>
 
         <div class="col-lg-8">
             {{ lendform.room }}
-            <p class="help-block">
-                {% if form.room.errors %}{% for error in form.room.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+            <p class="text-danger">{% for error in form.room.errors %}{{ error }}, {% endfor %}</p>
         </div>
     </div>
     <input type="hidden" name="device" value="{{ device.id }}">
 {% endblock %}
 
 {% block modalFooter %}
-    {% if device.templending %}<span class="text-danger pull-left">Note: This device is intended for short term lending
-        </span>{% endif %}
-    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+    {% if device.templending %}
+        <span class="text-danger pull-left">
+            {% trans "Note: This device is intended for short term lending" %}
+        </span>
+    {% endif %}
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
     <input type="submit" value="{% trans "Submit" %}" class="btn btn-success"/>
 {% endblock %}

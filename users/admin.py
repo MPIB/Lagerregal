@@ -1,8 +1,8 @@
-from __future__ import unicode_literals
-
 from django.contrib import admin
 
-from users.models import Lageruser, Department, DepartmentUser
+from users.models import Department
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 
 class LageruserAdmin(admin.ModelAdmin):

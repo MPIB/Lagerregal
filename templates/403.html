@@ -1,20 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "I can't let you do that." %}{% endblock %}
 
 {% block content %}
-    <div class="well" style="text-align:center;width:60%;margin:auto;">
-        <h1 style="font-size:80px;">
-        <span class="fa-stack">
-        <i class="fa fa-circle text-muted fa-stack-1x" style="font-size:95px;"></i>
-        <i class="fa fa-circle fa-stack-1x"></i>
-        <i class="fa fa-circle text-danger fa-stack-1x" style="font-size:40px;text-shadow:0px 0px 10px #b94a48;"></i>
-        <i class="fa fa-circle fa-stack-1x" style="font-size:5px;text-shadow:0px 0px 10px #FAE966;color:#FAE966;"></i>
-    </span>
+    <div class="text-center">
+        <h1>
+            <span class="hal-eye mt-4 mb-5"></span>
         </h1>
-
         <h3>{% trans "Error 403" %}</h3>
-
         <h3>{% trans "I'm sorry, but I can't let you do that." %}</h3>
     </div>
 {% endblock content %}

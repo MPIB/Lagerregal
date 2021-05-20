@@ -1,11 +1,6 @@
 {% load i18n %}
 
-<a href="#"
-   id="deletebutton"
-   data-toggle="popover"
-   data-html="true"
-   data-placement="bottom"
-   data-title="<span class='text-info' style='margin-right:10px'><strong>{% trans "are you sure?" %}</strong></span>"
-   data-content="<form action='{{ url }}' method='post' class='form-horizontal'>{% csrf_token %}<button type='button' class='btn btn-default' onclick='$(&quot;#deletebutton&quot;).popover(&quot;hide&quot;);'>{% trans "No" %}</button><input type='submit' value='{% trans "Yes" %}' class='btn btn-danger pull-right'/></form>"
-   class="btn btn-danger btn-sm pull-right"
-   style="margin-left:10px"><i class="fa fa-trash-o" style="margin-right:7px"></i>{% trans "Delete" %}</a>
+<form action="{{ url }}" method="post" data-confirm="{% trans "Are you sure?" %}" class="d-inline-block">
+    {% csrf_token %}
+    <button class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i> {% trans "Delete" %}</button>
+</form>

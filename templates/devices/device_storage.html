@@ -1,28 +1,31 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
-{% block title %}{% trans "Move to storage	" %} {{ object }}{% endblock %}
 
-{% block header %}
-{% endblock %}
+{% block title %}{% trans "Move to storage" %} {{ object }}{% endblock %}
+
+{% block header %}{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="small-12 large-6 large-centered columns">
-            <div class="alert alert-danger">Do you really want to move the device to storage: {{ object }}?</div>
+            <div class="alert alert-danger">
+                {% blocktrans %}Do you really want to move the device to storage: {{ object }}?{% endblocktrans %}
+            </div>
 
-            <form action="" method="post" class="form-horizontal">{% csrf_token %}
-                <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">Send room-changed email</label>
+            <form action="" method="post">{% csrf_token %}
+                <div class="form-group row">
+                    <label for="inputPassword3" class="col-sm-2 control-label">
+                        {% trans "Send room-changed email" %}
+                    </label>
 
                     <div class="col-sm-10">
                         {{ form.send_mail|add_class:"form-control" }}
                     </div>
                 </div>
-                <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger"
-                   style="margin-right:10px;">{% trans "Cancel" %}</a><input type="submit" value="{% trans "Submit" %}"
-                                                                             class="btn btn-sm btn-success"/>
+                <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger">{% trans "Cancel" %}</a>
+                <input type="submit" value="{% trans "Submit" %}" class="btn btn-sm btn-success"/>
             </form>
-
         </div>
     </div>
 {% endblock %}

@@ -1,33 +1,34 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block pullright %}
-    {% if perms.devicegroups.delete_devicegroup %}
-        {% deletebutton "devicegroup-delete" object.id %}
-    {% endif %}
     {% if perms.devicegroups.change_devicegroup %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'devicegroup-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'devicegroup-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
+    {% if perms.devicegroups.delete_devicegroup %}
+        {% deletebutton "devicegroup-delete" object.id %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if perms.devices.read_device %}
-        <h4>Devices</h4>
-        <table width="100%" id="devicetable" class="table table-bordered table-striped">
+    {% if perms.devices.view_device %}
+        <h4>{% trans "Devices" %}</h4>
+        <table id="devicetable" class="table table-bordered table-striped">
             <thead>
             <tr>
                 <th>{% trans "Name" %}</th>

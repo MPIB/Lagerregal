@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Global edit history" %}{% endblock %}
 
 {% block header %}
@@ -7,90 +8,58 @@
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
+    {% include "snippets/pagination.html" %}
     <table id="change-history" class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th scope="col">{% trans 'Changed Objects' %}</th>
-            <th scope="col">{% trans 'Date/time' %}</th>
-            <th scope="col">{% trans 'User' %}</th>
-            <th scope="col">{% trans 'Comment' %}</th>
-        </tr>
+            <tr>
+                <th scope="col">{% trans 'Changed Objects' %}</th>
+                <th scope="col">{% trans 'Date/time' %}</th>
+                <th scope="col">{% trans 'User' %}</th>
+                <th scope="col">{% trans 'Comment' %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for revision in revision_list %}
-            <tr>
-                {% comment %}
-                                <td>{{action.content_type}}</td>
-                                <td>
-                                    {% if action.content_type.model == "ipaddress" %}
-                                    <a href="{% url 'ipaddress-detail' action.object_id %}">{{action.field_dict.address}}
-                                    {% elif action.content_type.model == "building" %}
-                                    <a href="{% url 'building-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "room" %}
-                                    <a href="{% url 'room-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "manufacturer" %}
-                                    <a href="{% url 'manufacturer-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "type" %}
-                                    <a href="{% url 'type-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "mailtemplate" %}
-                                    <a href="{% url 'mail-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "devicegroup" %}
-                                    <a href="{% url 'devicegroup-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% elif action.content_type.model == "device" %}
-                                    <a href="{% url 'device-detail' action.object_id %}">{{action.field_dict.name}}
-                                    {% endif %}
-                                    </a>
-                                </td>
-                                <td>
-                                {% if action.content_type.model == "device" %}
-                                <a href="{% url 'device-history' action.object_id action.pk %}" title="{{revision.date_created|date:'c'}}" data-timeago class="edit-date">{{revision.date_created}}</a>
-                                {% else %}
-                                <span  title="{{revision.date_created|date:'c'}}" data-timeago class="edit-date">{{action.revision.date_created}}</span>
-                                {% endif %}
-                                </td>
-                                {% endcomment %}
-                <td>
-                    {% if revision.version_set.count == 1 %}
-                        {% with version=revision.version_set.all.0 %}
-                            {{ version.content_type }}:
-                            <a href="{%  url "history-detail" version.pk %}">
-                            {% if version.content_type.model == "ipaddress" %}
-                                {{ version.field_dict.address }}
-                            {% else %}
-                                {{ version.field_dict.name }}
-                            {% endif %}
-                        </a>
-                        {% endwith %}
-                    {% else %}
-
-                        <div class="dropdown">
-                            <a data-toggle="dropdown" href="#">{{ revision.version_set.count }} Changes made</a>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-                                {% for version in revision.version_set.all %}
-                                    <li>{{ version.content_type }}:
-                                    <a href="{%  url "history-detail" version.pk %}">
+            {% for revision in revision_list %}
+                <tr>
+                    <td>
+                        {% if revision.version_set.count == 1 %}
+                            {% with version=revision.version_set.all.0 %}
+                                {{ version.content_type }}:
+                                <a href="{%  url "history-detail" version.pk %}">
                                     {% if version.content_type.model == "ipaddress" %}
                                         {{ version.field_dict.address }}
                                     {% else %}
                                         {{ version.field_dict.name }}
                                     {% endif %}
                                 </a>
-                                {% endfor %}
-                                </li>
-                            </ul>
-                        </div>
-                    {% endif %}
-                </td>
-                <td><span title="{{ revision.date_created|date:'c' }}"
-                          data-timeago
-                          class="edit-date">{{ action.revision.date_created }}</span></td>
-                <td><a href="{% url 'userprofile' revision.user.pk %}">{{ revision.user }}</a></td>
-                <td>{{ revision.comment|linebreaksbr|default:"" }}</td>
-            </tr>
-        {% endfor %}
+                            {% endwith %}
+                        {% else %}
+                            <div class="dropdown">
+                                <a data-toggle="dropdown" href="#">{{ revision.version_set.count }} Changes made</a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                    {% for version in revision.version_set.all %}
+                                        <li>
+                                            {{ version.content_type }}:
+                                            <a class="dropdown-item" href="{%  url "history-detail" version.pk %}">
+                                                {% if version.content_type.model == "ipaddress" %}
+                                                    {{ version.field_dict.address }}
+                                                {% else %}
+                                                    {{ version.field_dict.name }}
+                                                {% endif %}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td><span title="{{ revision.date_created|date:'c' }}" data-timeago class="edit-date">{{ action.revision.date_created }}</span></td>
+                    <td><a href="{% url 'userprofile' revision.user.pk %}">{{ revision.user }}</a></td>
+                    <td>{{ revision.comment|linebreaksbr|default:"" }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 
-    {% include "snippets/pagination_simple.html" with listurl='globalhistory' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

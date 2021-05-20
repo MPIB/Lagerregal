@@ -1,14 +1,12 @@
-from __future__ import unicode_literals
-
 import os
 import re
+import urllib
 
+from django.forms import CheckboxInput
 from django.template import Library
 from django.urls import reverse
-from django.utils.html import mark_safe, format_html
-from django.forms import CheckboxInput
-
-import six
+from django.utils.html import format_html
+from django.utils.html import mark_safe
 
 from devices.models import Bookmark
 
@@ -18,11 +16,6 @@ register = Library()
 @register.simple_tag
 def get_verbose_name(object):
     return object._meta.verbose_name
-
-
-@register.simple_tag
-def get_verbose_name_lowercase(object):
-    return object._meta.verbose_name.lower()
 
 
 @register.simple_tag
@@ -67,7 +60,7 @@ class_re = re.compile(r'(?<=class=["\'])(.*)(?=["\'])')
 
 @register.filter
 def add_class(value, css_class):
-    string = six.text_type(value)
+    string = str(value)
     match = class_re.search(string)
     if match:
         m = re.search(r'^%s$|^%s\s|\s%s\s|\s%s$' % (css_class, css_class,
@@ -80,6 +73,19 @@ def add_class(value, css_class):
     else:
         return mark_safe(string.replace('>', ' class="%s">' % css_class))
     return value
+
+
+@register.filter
+def add_attr(value, attr):
+    string = str(value)
+    attr_name, attr_value = attr.split(",")
+    return mark_safe(string.replace('>', " {0}='{1}'>".format(attr_name, attr_value), 1))
+
+
+@register.filter
+def add_to_tag(value, new):
+    string = str(value)
+    return mark_safe(string.replace('>', " {0}>".format(new), 1))
 
 
 @register.filter
@@ -98,12 +104,6 @@ def get_attribute(object, attribute):
         return getattr(object, attribute)
     except AttributeError:
         return object.get(attribute)
-
-
-@register.filter
-def get_attribute_from_list(device, attribute):
-    print(device, attribute)
-    return device[attribute]
 
 
 @register.filter
@@ -131,7 +131,7 @@ def as_nested_list(factvalue):
             res += "<li>{}</li>".format(item)
         res += "</ul>"
     else:
-        res += six.text_type(factvalue)
+        res += str(factvalue)
 
     return mark_safe(res)
 
@@ -146,3 +146,16 @@ def deletebutton(viewname, *args):
     return {
         'url': reverse(viewname, args=args)
     }
+
+
+@register.simple_tag(takes_context=True)
+def current_url(context, **kwargs):
+    path = context['request'].get_full_path()
+    if '?' in path:
+        path, qs = path.split('?', 1)
+        query = urllib.parse.parse_qs(qs)
+    else:
+        query = {}
+    query.update(kwargs)
+    qs = urllib.parse.urlencode(query, doseq=True)
+    return path + '?' + qs

@@ -1,13 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Nothing to see here" %}{% endblock %}
 
 {% block content %}
-    <div class="well" style="text-align:center;width:60%;margin:auto;">
-        <h1 class="text-danger" style="font-size:60px;"><i class="fa fa-frown-o"></i></h1>
-
+    <div class="text-center">
+        <h1 class="text-danger"><i class="fa fa-frown-o"></i></h1>
         <h3>{% trans "Error 404" %}</h3>
-
         <h3>{% trans "We couldn't find what you are looking for. Sorry for that" %}</h3>
     </div>
 {% endblock content %}

@@ -1,25 +1,22 @@
-from __future__ import unicode_literals
-
 import datetime
 
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
-from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 import reversion
-import six
 
-from users.models import Lageruser
-from devicetypes.models import Type, TypeAttributeValue
 from devicegroups.models import Devicegroup
-from locations.models import Section
+from devicetypes.models import Type
 from Lagerregal import utils
+from locations.models import Section
 from users.models import Department
+from users.models import Lageruser
 
 
 @reversion.register()
-@six.python_2_unicode_compatible
 class Building(models.Model):
     name = models.CharField(_('Name'), max_length=200, unique=True)
     street = models.CharField(_('Street'), max_length=100, blank=True)
@@ -35,9 +32,7 @@ class Building(models.Model):
     class Meta:
         verbose_name = _('Building')
         verbose_name_plural = _('Buildings')
-        permissions = (
-            ("read_building", _("Can read Building")),
-        )
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('building-detail', kwargs={'pk': self.pk})
@@ -47,7 +42,6 @@ class Building(models.Model):
 
 
 @reversion.register()
-@six.python_2_unicode_compatible
 class Room(models.Model):
     name = models.CharField(_('Name'), max_length=200)
     building = models.ForeignKey(Building, null=True, on_delete=models.SET_NULL)
@@ -55,16 +49,14 @@ class Room(models.Model):
 
     def __str__(self):
         if self.building:
-            return self.name + " (" + six.text_type(self.building) + ")"
+            return self.name + " (" + str(self.building) + ")"
         else:
             return self.name
 
     class Meta:
         verbose_name = _('Room')
         verbose_name_plural = _('Rooms')
-        permissions = (
-            ("read_room", _("Can read Room")),
-        )
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('room-detail', kwargs={'pk': self.pk})
@@ -74,7 +66,6 @@ class Room(models.Model):
 
 
 @reversion.register()
-@six.python_2_unicode_compatible
 class Manufacturer(models.Model):
     name = models.CharField(_('Manufacturer'), max_length=200, unique=True)
 
@@ -84,9 +75,7 @@ class Manufacturer(models.Model):
     class Meta:
         verbose_name = _('Manufacturer')
         verbose_name_plural = _('Manufacturers')
-        permissions = (
-            ("read_manufacturer", _("Can read Manufacturer")),
-        )
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('manufacturer-detail', kwargs={'pk': self.pk})
@@ -100,7 +89,9 @@ class Bookmark(models.Model):
     user = models.ForeignKey(Lageruser, on_delete=models.CASCADE)
 
 
-@six.python_2_unicode_compatible
+@reversion.register(follow=["typeattributevalue_set", ], exclude=[
+    "archived", "currentlending", "inventoried", "bookmarks", "trashed",
+], ignore_duplicates=True)
 class Device(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     creator = models.ForeignKey(Lageruser, on_delete=models.SET_NULL, null=True)
@@ -129,6 +120,9 @@ class Device(models.Model):
     inventoried = models.DateTimeField(null=True, blank=True)
     bookmarkers = models.ManyToManyField(Lageruser, through=Bookmark, related_name="bookmarks", blank=True)
 
+    data_provider = models.CharField(max_length=20, blank=True)
+    operating_system = models.CharField(max_length=10, choices=settings.OPERATING_SYSTEMS, null=True, blank=True)
+
     department = models.ForeignKey(Department, null=True, blank=True, related_name="devices", on_delete=models.SET_NULL)
     is_private = models.BooleanField(default=False)
     used_in = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL,)
@@ -143,9 +137,8 @@ class Device(models.Model):
             ("boss_mails", _("Emails for bosses")),
             ("managment_mails", _("Emails for managment")),
             ("support_mails", _("Emails for support")),
-            ("read_device", _("Can read Device")),
             ("lend_device", _("Can lend Device")),
-            ("read_puppetdetails", _("Read Puppet Details"))
+            ("view_devicedetails", _("View Device Details"))
         )
 
     def get_absolute_url(self):
@@ -180,7 +173,6 @@ class Device(models.Model):
             ~Q(department__in=departments), is_private=True)
 
 
-@six.python_2_unicode_compatible
 class DeviceInformationType(models.Model):
     keyname = models.CharField(_('Name'), max_length=200)
     humanname = models.CharField(_('Human readable name'), max_length=200)
@@ -193,24 +185,17 @@ class DeviceInformationType(models.Model):
         verbose_name_plural = _('Information Type')
 
 
-@six.python_2_unicode_compatible
 class DeviceInformation(models.Model):
     information = models.CharField(_('Information'), max_length=200)
     device = models.ForeignKey(Device, related_name="information", on_delete=models.CASCADE)
     infotype = models.ForeignKey(DeviceInformationType, on_delete=models.CASCADE)
 
     def __str__(self):
-        return six.text_type(self.infotype) + ": " + self.information
+        return str(self.infotype) + ": " + self.information
 
     class Meta:
         verbose_name = _('Information')
         verbose_name_plural = _('Information')
-
-
-reversion.register(Device, follow=["typeattributevalue_set", ], exclude=[
-    "archived", "currentlending", "inventoried", "bookmarks", "trashed",
-], ignore_duplicates=True)
-reversion.register(TypeAttributeValue)
 
 
 @reversion.register(ignore_duplicates=True)
@@ -228,7 +213,6 @@ class Lending(models.Model):
         verbose_name_plural = _('Lendings')
 
 
-@six.python_2_unicode_compatible
 class Template(models.Model):
     templatename = models.CharField(_('Templatename'), max_length=200)
     name = models.CharField(_('Name'), max_length=200)
@@ -243,9 +227,6 @@ class Template(models.Model):
         ordering = ['name']
         verbose_name = _('Template')
         verbose_name_plural = _('Templates')
-        permissions = (
-            ("read_template", _("Can read Template")),
-        )
 
     def get_absolute_url(self):
         return reverse('device-list')

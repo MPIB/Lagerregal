@@ -8,20 +8,20 @@
 {% block widgetname %}sections{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+    <table class="table table-bordered" {% if widget.minimized %}hidden{% endif %}>
         <thead>
-        <tr>
-            <th scope="col">{% trans 'Name' %}</th>
-            <th scope="col">{% trans 'Rooms' %}</th>
-        </tr>
+            <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Rooms' %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for section in sections %}
-            <tr>
-                <td><a href="{% url 'devicegroup-detail' section.pk %}">{{ section.name }}</a></td>
-                <td>{{ section.rooms.count }}</td>
-            </tr>
-        {% endfor %}
+            {% for section in sections %}
+                <tr>
+                    <td><a href="{% url 'devicegroup-detail' section.pk %}">{{ section.name }}</a></td>
+                    <td>{{ section.rooms.count }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
 {% endblock %}

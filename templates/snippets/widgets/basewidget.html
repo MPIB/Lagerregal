@@ -1,18 +1,14 @@
 {% load i18n %}
-<div class="panel {% block paneltype %}panel-primary{% endblock %} widget" id="{% block widgetname %}{% endblock %}">
-    <div class="panel-heading">
-        <h3 class="panel-title">{% block title %}{% endblock %}
-            <a class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}><i
-                    class="fa fa-times w-close"></i></a>
-            <a class="pull-right" {% if hidecontrols %}style="display:none"{% endif %}><i
-                    class="fa fa-{% if widget.minimized %}plus{% else %}minus{% endif %} w-minimize"></i></a>
+
+<div class="card border-{% block card-border %}primary{% endblock %} widget mb-3" id="{% block widgetname %}{% endblock %}">
+    <div class="card-header bg-{% block card-bg %}primary{% endblock %} text-white">
+        <h3 class="card-title h5 mb-0">
+            {% block title %}{% endblock %}
+            <div class="pull-right" {% if hidecontrols %}hidden{% endif %}>
+                <a><i class="fa fa-{{ widget.minimized|yesno:'plus,minus' }} w-minimize"></i></a>
+                <a><i class="fa fa-times w-close"></i></a>
+            </div>
         </h3>
     </div>
-    {% if not usestable %}
-        <div class="panel-body" {% if widget.minimized %}style="display: none;"{% endif %}>
-    {% endif %}
-    {% block  content %}{% endblock %}
-    {% if not usestable %}
-        </div>
-    {% endif %}
+    {% block content %}{% endblock %}
 </div>

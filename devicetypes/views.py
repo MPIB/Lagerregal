@@ -1,35 +1,46 @@
-from __future__ import unicode_literals
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.utils.translation import ugettext_lazy as _
-from django.urls import reverse_lazy, reverse
-from reversion import revisions as reversion
 from django.conf import settings
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.urls import reverse
+from django.urls import reverse_lazy
+from django.utils.translation import ugettext_lazy as _
+from django.views.generic import CreateView
+from django.views.generic import DeleteView
+from django.views.generic import DetailView
+from django.views.generic import ListView
+from django.views.generic import UpdateView
+from django.views.generic import View
 
+from reversion import revisions as reversion
+
+from devices.forms import VIEWSORTING
+from devices.forms import FilterForm
+from devices.forms import ViewForm
 from devices.models import Device
-from devicetypes.models import Type, TypeAttribute
 from devicetypes.forms import TypeForm
-from devices.forms import ViewForm, VIEWSORTING, FilterForm
+from devicetypes.models import Type
+from devicetypes.models import TypeAttribute
 from Lagerregal.utils import PaginationMixin
+from users.mixins import PermissionRequiredMixin
 
 
-class TypeList(PaginationMixin, ListView):
+class TypeList(PermissionRequiredMixin, PaginationMixin, ListView):
     model = Type
     context_object_name = 'type_list'
+    permission_required = 'devicetypes.view_type'
 
     def get_queryset(self):
-        '''mehtod for query all devicetypes and present the results depending on existing filter'''
+        '''method for query all devicetypes and present the results depending on existing filter'''
         devicetype = Type.objects.all()
 
         # filtering with existing filterstring
-        self.filterstring = self.kwargs.pop("filter", None)
+        self.filterstring = self.request.GET.get("filter", None)
         if self.filterstring:
             devicetype = devicetype.filter(name__icontains=self.filterstring)
 
         # sort list of results (name or ID ascending or descending)
-        self.viewsorting = self.kwargs.pop("sorting", "name")
+        self.viewsorting = self.request.GET.get("sorting", "name")
         if self.viewsorting in [s[0] for s in VIEWSORTING]:
             devicetype = devicetype.order_by(self.viewsorting)
 
@@ -38,14 +49,14 @@ class TypeList(PaginationMixin, ListView):
     def get_context_data(self, **kwargs):
         '''method for getting context data for filtering, viewsorting and breadcrumbs'''
         # Call the base implementation first to get a context
-        context = super(TypeList, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context["breadcrumbs"] = [
             (reverse("type-list"), _("Devicetypes")), ]
-        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
+        context["viewform"] = ViewForm(initial={"sorting": self.viewsorting})
 
         # filtering
         if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filterstring": self.filterstring})
+            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
         else:
             context["filterform"] = FilterForm()
 
@@ -56,14 +67,15 @@ class TypeList(PaginationMixin, ListView):
         return context
 
 
-class TypeDetail(DetailView):
+class TypeDetail(PermissionRequiredMixin, DetailView):
     model = Type
     context_object_name = 'object'
     template_name = "devicetypes/type_detail.html"
+    permission_required = 'devicetypes.view_type'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(TypeDetail, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         # adds data of related devices and attributes
         context["merge_list"] = Type.objects.exclude(pk=context["object"].pk).order_by("name")
@@ -85,14 +97,15 @@ class TypeDetail(DetailView):
         return context
 
 
-class TypeCreate(CreateView):
+class TypeCreate(PermissionRequiredMixin, CreateView):
     form_class = TypeForm
     template_name = 'devicetypes/type_form.html'
+    permission_required = 'devicetypes.add_type'
 
     def get_context_data(self, **kwargs):
         '''method for getting context data and show in breadcrumbs'''
         # Call the base implementation first to get a context
-        context = super(TypeCreate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = _("Create new Devicetype")
         context['type'] = "type"
@@ -118,14 +131,15 @@ class TypeCreate(CreateView):
         return HttpResponseRedirect(newobject.get_absolute_url())
 
 
-class TypeUpdate(UpdateView):
+class TypeUpdate(PermissionRequiredMixin, UpdateView):
     form_class = TypeForm
     model = Type
     template_name = 'devicetypes/type_form.html'
+    permission_required = 'devicetypes.change_type'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(TypeUpdate, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['actionstring'] = _("Update")
         context["attribute_list"] = TypeAttribute.objects.filter(devicetype=context["object"])
@@ -141,15 +155,16 @@ class TypeUpdate(UpdateView):
         return context
 
 
-class TypeDelete(DeleteView):
+class TypeDelete(PermissionRequiredMixin, DeleteView):
     model = Type
     success_url = reverse_lazy('type-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devicetypes.delete_type'
 
     # !!!! there is no forwarding or loading so the code is never run
     # def get_context_data(self, **kwargs):
     #     # Call the base implementation first to get a context
-    #     context = super(TypeDelete, self).get_context_data(**kwargs)
+    #     context = super().get_context_data(**kwargs)
     #
     #     # should add "Delete" to breadcrumbs
     #     context["breadcrumbs"] = [
@@ -160,8 +175,9 @@ class TypeDelete(DeleteView):
     #     return context
 
 
-class TypeMerge(View):
+class TypeMerge(PermissionRequiredMixin, View):
     model = Type
+    permission_required = 'devicetypes.change_type'
 
     def get(self, request, *args, **kwargs):
         context = {}
@@ -174,7 +190,7 @@ class TypeMerge(View):
             (reverse("type-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"]),
             ("", _("Merge with {0}".format(context["newobject"])))]
 
-        return render(request, 'devices/base_merge.html', context)
+        return render(request, 'devicetypes/type_merge.html', context)
 
     def post(self, request, *args, **kwargs):
         oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
@@ -187,11 +203,23 @@ class TypeMerge(View):
             reversion.set_comment(_("Merged Devicetype {0} into {1}".format(oldobject, newobject)))
             device.save()
 
-        # adds all attributes of old devicetype to new devicetype
-        attributes = TypeAttribute.objects.filter(devicetype=oldobject)
-        for attribute in attributes:
-            attribute.devicetype = newobject
-            attribute.save()
+        if "remove_attributes" in request.POST and request.POST["remove_attributes"] == "on":
+            for device in devices:
+                attributes = device.typeattributevalue_set.all()
+                if len(attributes) == 0:
+                    continue
+                if device.description is None:
+                    device.description = ""
+                device.description += "\n\n==== Archived Attributes"
+                for attribute in attributes:
+                    device.description += "\n{0}: {1}".format(attribute.typeattribute.name, attribute.value)
+                device.save()
+        else:
+            # adds all attributes of old devicetype to new devicetype
+            attributes = TypeAttribute.objects.filter(devicetype=oldobject)
+            for attribute in attributes:
+                attribute.devicetype = newobject
+                attribute.save()
         oldobject.delete()
 
         return HttpResponseRedirect(newobject.get_absolute_url())
@@ -201,34 +229,37 @@ class TypeMerge(View):
 #                                           attribute related views                                                  #
 ######################################################################################################################
 
-class TypeAttributeCreate(CreateView):
+class TypeAttributeCreate(PermissionRequiredMixin, CreateView):
     model = TypeAttribute
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devicetypes.change_type'
 
 
-class TypeAttributeUpdate(UpdateView):
+class TypeAttributeUpdate(PermissionRequiredMixin, UpdateView):
     model = TypeAttribute
     template_name = 'devices/base_form.html'
     fields = '__all__'
+    permission_required = 'devicetypes.change_type'
 
     def post(self, request, *args, **kwargs):
         self.success_url = reverse('type-detail',
                                    kwargs={'pk': request.POST['devicetype']})
-        return super(TypeAttributeUpdate, self).post(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
     def get_success_url(self):
         return self.success_url
 
 
-class TypeAttributeDelete(DeleteView):
+class TypeAttributeDelete(PermissionRequiredMixin, DeleteView):
     model = TypeAttribute
     success_url = reverse_lazy('type-list')
     template_name = 'devices/base_delete.html'
+    permission_required = 'devicetypes.change_type'
 
     def post(self, request, *args, **kwargs):
         self.next = request.POST["next"]
-        return super(TypeAttributeDelete, self).post(request, **kwargs)
+        return super().post(request, **kwargs)
 
     def get_success_url(self):
         return self.next

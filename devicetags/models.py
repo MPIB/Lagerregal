@@ -1,16 +1,11 @@
-from __future__ import unicode_literals
-
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
-
-import six
+from django.utils.translation import ugettext_lazy as _
 
 from devices.models import Device
 
 
 # Create your models here.
-@six.python_2_unicode_compatible
 class Devicetag(models.Model):
     name = models.CharField(max_length=200, unique=True)
     devices = models.ManyToManyField(Device, related_name="tags")
@@ -21,9 +16,7 @@ class Devicetag(models.Model):
     class Meta:
         verbose_name = _('Devicetag')
         verbose_name_plural = _('Devicegtag')
-        permissions = (
-            ("read_devicetag", _("Can read Devicetag")),
-        )
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('devicetag-edit', kwargs={'pk': self.pk})

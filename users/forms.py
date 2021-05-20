@@ -1,11 +1,10 @@
-from __future__ import unicode_literals
-
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 from django.utils.translation import ugettext
+from django.utils.translation import ugettext_lazy as _
 
-from users.models import Lageruser, DepartmentUser
-from Lagerregal import settings
+from users.models import DepartmentUser
+from users.models import Lageruser
 
 
 class SettingsForm(forms.ModelForm):
@@ -20,7 +19,7 @@ class SettingsForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
-        super(SettingsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["timezone"].choices[0] = ("", ugettext("Default ({0})".format(settings.TIME_ZONE)))
         self.fields["timezone"].widget.choices[0] = ("", ugettext("Default ({0})".format(settings.TIME_ZONE)))
 

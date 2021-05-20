@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Devicetypes" %}{% endblock %}
 
 {% block header %}
@@ -7,23 +8,32 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {% if perms.devicetypes.add_type %}<a href="{% url 'type-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Devicetype" %}</a>{% endif %}
+    {% if perms.devicetypes.add_type %}
+        <a href="{% url 'type-add' %}" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> {% trans "Add Devicetype" %}
+        </a>
+    {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-5">
-            {% include "snippets/pagination.html" with listurl='type-list' %}
-            <div class="list-group">
-                {% for type in type_list %}
-                    <a href="{% url 'type-detail' type.id %}"
-                       class="list-group-item">{{ type.name | default:"(None)" }}</a>
-                {% endfor %}
-            </div>
-            {% include "snippets/pagination.html" with listurl='type-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for type in type_list %}
+                <tr>
+                    <td><a href="{% url 'type-detail' type.id %}">{{ type.name|default:_("(None)") }}</a></tr>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/pagination.html" %}
 {% endblock %}

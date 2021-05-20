@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load devicetags %}
+
 {% block title %}{% trans "Revision for" %} {{ current_version }}{% endblock %}
 
 {% block pullright %}
     <form method="post">{% csrf_token %}
-        <button type="submit" class="btn btn-primary btn-sm pull-right">
+        <button type="submit" class="btn btn-primary btn-sm">
             <i class="fa fa-undo"></i> {% trans "Restore Revision" %}
         </button>
     </form>
@@ -13,34 +14,46 @@
 
 {% block content %}
     <div class="small-6 large-8 columns">
-        <h4>Version: {{ this_version.pk }} from {{ this_version.revision.date_created }}, by <a
-                href="{% url 'userprofile' this_version.revision.user.pk %}">{{ this_version.revision.user }}</a>.</h4>
+        <h4>
+            Version: {{ this_version.pk }} from {{ this_version.revision.date_created }},
+            by <a href="{% url 'userprofile' this_version.revision.user.pk %}">{{ this_version.revision.user }}</a>.
+        </h4>
         <ul class="pager">
             {% if previous_version != None %}
-                <li class="previous"><a href="{% url 'history-detail' previous_version.pk %}"><i
-                    class="fa fa-angle-left"></i> {% trans 'previous version' %}</a></li>{% endif %}
+                <li class="previous">
+                    <a href="{% url 'history-detail' previous_version.pk %}">
+                        <i class="fa fa-angle-left"></i> {% trans 'previous version' %}
+                    </a>
+                </li>
+            {% endif %}
             {% if next_version != None %}
                 <li class="next">
-                <a href="{% url 'history-detail' next_version.pk %}">{% trans 'next version' %} <i
-                        class="fa fa-angle-right"></i></a></li>{% endif %}
+                    <a href="{% url 'history-detail' next_version.pk %}">
+                        {% trans 'next version' %} <i class="fa fa-angle-right"></i>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
 
-
         <table class="table table-bordered table-striped">
-            <tbody>
+            <thead>
                 <tr>
                     <th></th>
-                    {%  if previous_version != None %}<th>{% trans "previous revision" %}</th>{% endif %}
+                    {% if previous_version != None %}
+                        <th>{% trans "previous revision" %}</th>
+                    {% endif %}
                     <th>{% trans "this revision" %}</th>
                     <th>{% trans "current revision" %}</th>
                 </tr>
+            </thead>
+            <tbody>
                 {% for key, value in this_version.field_dict.items %}
                     <tr>
                         <td>{{ key|capfirst }}</td>
-                        {%  if previous_version != None %}
+                        {% if previous_version != None %}
                             <th>{{ previous_version.field_dict|get_attribute:key }}</th>
                             <td>{% history_compare  previous_version.field_dict|get_attribute:key value %}</td>
-                        {%  else  %}
+                        {% else %}
                             <td>{{ value }}</td>
                         {% endif %}
                         <td>{% history_compare value current_version|get_attribute:key %}</td>

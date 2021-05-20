@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{% trans "Remove Tag" %}{% endblock %}
 
-{% block header %}
-{% endblock %}
+{% block header %}{% endblock %}
+
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-6 col-md-offset-3">
-            <div class="alert-danger alert">{% blocktrans %}Do you really want to remove the tag "{{ tag }}" from
-                {{ device }}?{% endblocktrans %}</div>
-            <form action="" method="post" class="form-horizontal">{% csrf_token %}
-                <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm pull-right"/><a
-                        href="{{ device.get_absolute_url }}" class="btn btn-default btn-sm pull-right"
-                        style="margin-right:10px;">{% trans "No" %}</a>
+        <div class="col-md-6 col-md-offset-3">
+            <div class="alert-danger alert">
+                {% blocktrans %}Do you really want to remove the tag "{{ tag }}" from {{ device }}?{% endblocktrans %}
+            </div>
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="text-right">
+                    <a href="{{ device.get_absolute_url }}" class="btn btn-secondary btn-sm">{% trans "No" %}</a>
+                    <input type="submit" value="{% trans "Yes" %}" class="btn btn-danger btn-sm"/>
+                </div>
             </form>
         </div>
     </div>

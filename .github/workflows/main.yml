@@ -1,0 +1,22 @@
+on: [push]
+jobs:
+  test:
+    # we test outside of docker, because it is just so much faster
+    # Docker-related errors will pop up in develop branch and can be fixed then
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: python
+      run: |
+        sudo apt-get install python3 python3-ldap
+    - name: lint
+      run: |
+        pip install flake8 isort
+        flake8
+        isort -c api demo devicegroups devices devicetags devicetypes history Lagerregal locale locations mail main media network users devicedata
+    - name: test
+      run: |
+        pip install -r requirements.txt
+        cp Lagerregal/template_development.py Lagerregal/settings.py
+        python manage.py makemigrations --dry-run --check --noinput
+        python manage.py test

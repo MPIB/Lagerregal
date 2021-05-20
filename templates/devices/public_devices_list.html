@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Devices" %}{% endblock %}
 
 {% block header %}
@@ -7,45 +8,49 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {{ groupfilterform.groupfilter }}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ groupfilterform.group }}
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/devicepagination.html" %}
-    <table width="100%" id="devicetable" class="table table-bordered table-striped">
+    {% include "snippets/pagination.html" %}
+    <table id="devicetable" class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Inventorynumber" %}</th>
-            <th>{% trans "Devicetype" %}</th>
-            <th>{% trans "Room" %}</th>
-            <th>{% trans "Devicegroup" %}</th>
-            {% if viewfilter == "lent" or viewfilter == "overdue" %}
-                <th>{% trans "Owner" %}</th>
-                <th>{% trans "Duedate" %}</th>
-            {% else %}
-                <th style="width:60px">{% trans "Available" %}</th>
-            {% endif %}
-        </tr>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Inventorynumber" %}</th>
+                <th>{% trans "Devicetype" %}</th>
+                <th>{% trans "Room" %}</th>
+                <th>{% trans "Devicegroup" %}</th>
+                {% if viewfilter == "lent" or viewfilter == "overdue" %}
+                    <th>{% trans "Owner" %}</th>
+                    <th>{% trans "Duedate" %}</th>
+                {% else %}
+                    <th>{% trans "Available" %}</th>
+                {% endif %}
+            </tr>
         </thead>
         <tbody>
-        {% for device in device_list %}
-            <tr {% if device.currentlending__duedate < today.date %}class="text-danger"{% endif %}>
-                <td><a href="{% url 'public-device-detail' device.id %}?nochrome={{ nochrome }}">{{ device.name | default:"(None)" }}</a></td>
-                <td>{{ device.inventorynumber}}</td>
-                <td>{{ device.devicetype__name|default:"--" }}</td>
-                <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>
-                <td>{{ device.group__name|default:"--" }}</td>
-                <td>{% if device.currentlending__owner__username == None %}
-                        <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
-                     {% else %}<i class="fa fa-exclamation-circle text-danger"
-                                  style="font-size:1.3em"></i>{% endif %}</td>
-
-            </tr>
-        {% endfor %}
+            {% for device in device_list %}
+                <tr {% if device.currentlending__duedate < today.date %}class="text-danger"{% endif %}>
+                    <td><a href="{% url 'public-device-detail' device.id %}?nochrome={{ nochrome }}">{{ device.name|default:_("(None)") }}</a></td>
+                    <td>{{ device.inventorynumber}}</td>
+                    <td>{{ device.devicetype__name|default:"--" }}</td>
+                    <td>{{ device.room__name|default:"--" }} {% if device.room__buiding__name %}({{ device.room__building__name }}){% endif %}</td>
+                    <td>{{ device.group__name|default:"--" }}</td>
+                    <td>
+                        {% if device.currentlending__owner %}
+                            <i class="fa fa-check-circle text-success"></i>
+                        {% else %}
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/pagination_simple.html" %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

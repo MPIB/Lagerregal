@@ -1,37 +1,46 @@
 {% load i18n %}
 {% load devicetags %}
+
 {% if is_paginated %}
-    <div class="pagination-centered">
-        <ul class="pager">
+    <nav class="d-flex justify-content-between mb-3">
+        <div>
             {% if page_obj.has_previous %}
-                <li class="previous"><a href="{% url listurl 1 viewform.viewsorting.value viewform.viewfilter.value %}"
-                                        style="margin-right:5px"><i
-                        class="fa fa-double-angle-left"></i> {% trans "First" %}</a></li>
-                <li class="previous"><a
-                        href="{% url listurl page_obj.previous_page_number viewform.viewsorting.value viewform.viewfilter.value %}"><i
-                        class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
+                <a href="{% current_url page=1 %}" class="btn btn-success"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</a>
+                <a href="{% current_url page=page_obj.previous_page_number %}" class="btn btn-success"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a>
             {% else %}
-                <li class="previous disabled"><a><i class="fa fa-angle-left"></i> {% trans "Previous" %}</a></li>
+                <button name="page" disabled class="btn btn-success"><i class="fa fa-double-angle-left"></i> {% trans "First" %}</button>
+                <button name="page" disabled class="btn btn-success"><i class="fa fa-angle-left"></i> {% trans "Previous" %}</button>
             {% endif %}
-            <li class="current">{% trans "Page" %}
-                <select class="pageselect">
-                    {% for pagenumber in  page_obj.paginator.num_pages|get_range %}
+        </div>
+        <form class="d-flex justify-content-between mb-3" method="get" data-autosubmit="change">
+            {% for name, value in request.GET.items %}
+                {% if name != 'page' %}
+                    <input type="hidden" name="{{ name }}" value="{{ value }}">
+                {% endif %}
+            {% endfor %}
+
+            <label>
+                {% trans "Page" %}
+                <select class="pageselect" name="page">
+                    {% for pagenumber in page_obj.paginator.num_pages|get_range %}
                         {% if pagenumber|add:"1" == page_obj.number %}
                             <option selected>{{ pagenumber|add:"1" }}</option>
                         {% else %}
                             <option>{{ pagenumber|add:"1" }}</option>
                         {% endif %}
                     {% endfor %}
-                </select> {% trans "of" %} {{ page_obj.paginator.num_pages }}</li>
+                </select>
+                {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </label>
+        </form>
+        <div>
             {% if page_obj.has_next %}
-                <li class="next"><a
-                        href="{% url listurl page_obj.paginator.num_pages viewform.viewsorting.value viewform.viewfilter.value %}"
-                        style="margin-left:5px">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a></li>
-                <li class="next"><a
-                        href="{% url listurl page_obj.next_page_number viewform.viewsorting.value viewform.viewfilter.value %}">{% trans "Next" %}
-                    <i class="fa fa-angle-right"></i></a></li>
+                <a href="{% current_url page=page_obj.next_page_number %}" class="btn btn-success">{% trans "Next" %} <i class="fa fa-angle-right"></i></a>
+                <a href="{% current_url page=page_obj.paginator.num_pages %}" class="btn btn-success">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></a>
             {% else %}
-                <li class="next disabled"><a>{% trans "Next" %} <i class="fa fa-angle-right"></i></a></li>
+                <button name="page" disabled class="btn btn-success">{% trans "Next" %} <i class="fa fa-angle-right"></i></button>
+                <button name="page" disabled class="btn btn-success">{% trans "Last" %} <i class="fa fa-double-angle-right"></i></button>
             {% endif %}
-        </ul>
+        </div>
+    </nav>
 {% endif %}

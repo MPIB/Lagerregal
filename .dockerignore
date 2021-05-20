@@ -1,0 +1,5 @@
+.dockerignore
+.env
+.venv
+.git
+media/*

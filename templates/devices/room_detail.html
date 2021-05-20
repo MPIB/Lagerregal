@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{{ room.name }}{% endblock %}
 
 {% block header %}
@@ -8,60 +9,65 @@
 {% endblock %}
 
 {% block pullright %}
-    {% if perms.devices.delete_room %}
-        {% deletebutton "room-delete" object.id %}
-    {% endif %}
-    {% if "room" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
-    {% endif %}
     {% if perms.devices.change_room %}
-        <a href="{% url 'room-edit' room.id %}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'room-merge' room.pk merge.id %}">{{ merge.name }}
-                        ({{ merge.building__name }})</a></li>
+                    <li><a class="dropdown-item" href="{% url 'room-merge' room.pk merge.id %}">{{ merge.name }} ({{ merge.building__name }})</a></li>
                 {% endfor %}
             </ul>
         </div>
+        <a href="{% url 'room-edit' room.id %}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
     {% endif %}
-
+    {% if "room" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
+    {% endif %}
+    {% if perms.devices.delete_room %}
+        {% deletebutton "room-delete" object.id %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-5">
+        <div class="col-md-5">
             <dl class="dl-horizontal">
                 <dt>{% trans "Building" %}</dt>
-                <dd><a href="{% url 'building-detail' room.building.id %}">{{ room.building }}</a></dd>
+                <dd>
+                    {% if room.building %}
+                        <a href="{% url 'building-detail' room.building.id %}">{{ room.building }}</a>
+                    {% else %}
+                        &mdash;
+                    {% endif %}
+                </dd>
             </dl>
         </div>
-        <div class="col-xs-12 col-md-7">
-            {% if perms.devices.read_device %}
+        <div class="col-md-7">
+            {% if perms.devices.view_device %}
                 <h4>{% trans "Device" %}</h4>
                 {% if device_list %}
-                    <table width="100%" id="devicetable" class="table table-bordered table-striped">
+                    <table id="devicetable" class="table table-bordered table-striped">
                         <thead>
-                        <tr>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Inventorynumber" %}</th>
-                            <th>{% trans "Devicetype" %}</th>
-                        </tr>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Inventorynumber" %}</th>
+                                <th>{% trans "Devicetype" %}</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {% for device in device_list %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-                                <td>{{ device.inventorynumber }}</td>
-                                <td>{{ device.devicetype__name }}</td>
-                            </tr>
-                        {% endfor %}
+                            {% for device in device_list %}
+                                <tr>
+                                    <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+                                    <td>{{ device.inventorynumber }}</td>
+                                    <td>{{ device.devicetype__name }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 {% endif %}

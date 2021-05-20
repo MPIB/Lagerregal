@@ -6,41 +6,45 @@
 {% block header %}
     {% trans "Devicetype" %}: {{ object.name }}
 {% endblock %}
+
 {% block pullright %}
-    {% if perms.devicetypes.delete_type %}
-        {% deletebutton "type-delete" object.id %}
-    {% endif %}
-    {% if "type" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
-    {% endif %}
     {% if perms.devicetypes.change_type %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'type-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
     {% endif %}
-
+    {% if "type" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
+    {% endif %}
+    {% if perms.devicetypes.delete_type %}
+        {% deletebutton "type-delete" object.id %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-5">
+        <div class="col-md-5">
             <h4>{% trans "Extra attributes" %}</h4>
             <ul>
                 {% for attribute in attribute_list %}
                     {% if perms.devicetypes.change_type %}
-                        <li><a href="#" class="attribute" data-id="{{ attribute.id }}" data-name="{{ attribute.name }}"
-                               data-regex="{{ attribute.regex }}">{{ attribute.name }}</a></li>
+                        <li>
+                            <a href="#" class="attribute" data-id="{{ attribute.id }}" data-name="{{ attribute.name }}" data-regex="{{ attribute.regex }}">
+                                {{ attribute.name }}
+                            </a>
+                        </li>
                     {% else %}
                         <li>{{ attribute.name }}</li>
                     {% endif %}
@@ -48,31 +52,33 @@
             </ul>
 
             {% if perms.devicetypes.change_type %}
-                <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-default btn-sm">
-                <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add new Attribute" %}</a>{% endif %}
+                <a href="#" data-target="#newAttributeModal" data-toggle="modal" class="btn btn-secondary btn-sm">
+                    <i class="fa fa-plus"></i> {% trans "Add new Attribute" %}
+                </a>
+            {% endif %}
         </div>
-        <div class="col-xs-12 col-md-7">
-            {% if perms.devices.read_device %}
+        <div class="col-md-7">
+            {% if perms.devices.view_device %}
                 {% if device_list %}
                     <h4>{% trans "Devices" %}</h4>
-                    <table width="100%" id="devicetable" class="table table-bordered table-striped">
+                    <table id="devicetable" class="table table-bordered table-striped">
                         <thead>
-                        <tr>
-                            <th>{% trans "Name" %}</th>
-                            <th>{% trans "Inventorynumber" %}</th>
-                            <th>{% trans "Devicetype" %}</th>
-                            <th>{% trans "Room" %}</th>
-                        </tr>
+                            <tr>
+                                <th>{% trans "Name" %}</th>
+                                <th>{% trans "Inventorynumber" %}</th>
+                                <th>{% trans "Devicetype" %}</th>
+                                <th>{% trans "Room" %}</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {% for device in device_list %}
-                            <tr>
-                                <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-                                <td>{{ device.inventorynumber }}</td>
-                                <td>{{ device.devicetype }}</td>
-                                <td>{{ device.room }} ({{ device.room.building }})</td>
-                            </tr>
-                        {% endfor %}
+                            {% for device in device_list %}
+                                <tr>
+                                    <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+                                    <td>{{ device.inventorynumber }}</td>
+                                    <td>{{ device.devicetype }}</td>
+                                    <td>{{ device.room }} ({{ device.room.building }})</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 {% endif %}
@@ -82,7 +88,6 @@
 
     {% if perms.devicetypes.change_type %}
         {% include "snippets/modals/attribute.html" with modalname="attributeModal" %}
-
         {% include "snippets/modals/newAttribute.html" with modalname="newAttributeModal" %}
     {% endif %}
 {% endblock %}
@@ -96,13 +101,13 @@
 {% block scriptend %}
     {% if perms.devicetypes.change_type %}
         $('.attribute').click(function() {
-            var editurl = $("#attribute_editform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"))
-            $("#attribute_editform").attr("action", editurl)
-            var deleteurl = $("#attribute_deleteform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"))
-            $("#attribute_deleteform").attr("action", deleteurl)
+            var editurl = $("#attribute_editform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"));
+            $("#attribute_editform").attr("action", editurl);
+            var deleteurl = $("#attribute_deleteform").attr("action").replace(new RegExp("0" + '$'), $(this).data("id"));
+            $("#attribute_deleteform").attr("action", deleteurl);
             $("#attributeModal").find("#id_name").val($(this).data("name"));
             $("#attributeModal").find("#id_regex").val($(this).data("regex"));
-            $('#attributeModal').modal('show')
-        })
+            $('#attributeModal').modal('show');
+        });
     {% endif %}
 {% endblock %}

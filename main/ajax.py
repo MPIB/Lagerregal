@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import json
 
 from django.db.models import Max
+from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.views.generic.base import View
-from django.http import HttpResponse
 
-from main.models import DashboardWidget, WIDGETS
+from main.models import WIDGETS
+from main.models import DashboardWidget
 from main.views import get_widget_data
 
 
@@ -27,7 +25,6 @@ class WidgetAdd(View):
             widget.user = request.user
             widget.save()
             context = get_widget_data(request.user, [widgetname, ])
-            context["usestable"] = True
             context["hidecontrols"] = True
             return HttpResponse(render_to_string('snippets/widgets/{0}.html'.format(widgetname), context))
         else:

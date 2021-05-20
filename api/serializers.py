@@ -1,12 +1,20 @@
-from __future__ import unicode_literals
+from django.contrib.auth.models import Group
+from django.contrib.auth.models import Permission
 
 from rest_framework import serializers
-from django.contrib.auth.models import Group, Permission
 
-from devices.models import Room, Building, Manufacturer, Device, Template, Lending, Picture
-from devicetypes.models import Type, TypeAttribute
-from users.models import Lageruser, Department
+from devices.models import Building
+from devices.models import Device
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Picture
+from devices.models import Room
+from devices.models import Template
+from devicetypes.models import Type
+from devicetypes.models import TypeAttribute
 from network.models import IpAddress
+from users.models import Department
+from users.models import Lageruser
 
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
@@ -98,6 +106,14 @@ class DeviceSerializer(serializers.HyperlinkedModelSerializer):
         exclude = ("bookmarkers", )
 
 
+class DeviceIDSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(source="pk", read_only=True)
+
+    class Meta:
+        model = Device
+        exclude = ("bookmarkers", )
+
+
 class DeviceListSerializer(serializers.HyperlinkedModelSerializer):
     url = serializers.HyperlinkedIdentityField(view_name='device-api-detail')
     id = serializers.CharField(source="pk", read_only=True)
@@ -143,14 +159,14 @@ class LendingSerializer(serializers.ModelSerializer):
         if self.context["request"].POST:
             del attrs["room"]
             del self.fields["room"]
-        obj = super(LendingSerializer, self).restore_object(attrs, instance=instance)
+        obj = super().restore_object(attrs, instance=instance)
         return obj
 
     def to_native(self, obj):
         if self.context["request"].POST:
             if "room" in self.fields:
                 del self.fields["room"]
-        return super(LendingSerializer, self).to_native(obj)
+        return super().to_native(obj)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

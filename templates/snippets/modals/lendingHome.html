@@ -1,5 +1,6 @@
 {% extends "snippets/modals/baseForm.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
 
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Lend Device" %}</h4>
@@ -7,62 +8,67 @@
 
 {% block cssClasses %}modal-lg{% endblock %}
 
-
 {% block modalUrl %}{% url "device-lend" %}{% endblock %}
 
 {% block modalBody %}
-    <div class="form-group {{ form.owner.css_classes }}">
+    <div class="form-group row {{ form.owner.css_classes }}">
         <label for="owner" class="col-lg-4 control-label">{% trans "Lend to" %}*</label>
 
         <div class="col-lg-8">
             {{ lendform.owner }}
-            <p class="help-block">
-                {% if form.owner.errors %}{% for error in form.owner.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+            <p class="text-danger">
+                {% for error in form.owner.errors %}{{ error }}, {% endfor %}
+            </p>
         </div>
     </div>
-    <div class="form-group {{ field.css_classes }}" style="margin:auto">
+    <div class="form-group {{ field.css_classes }}">
         <div class="row">
             <label for="device" class="col-lg-5">{% trans "Select Device" %}</label>
             <label for="smalldevice" class="col-lg-5 col-lg-offset-2">{% trans "Enter name for small device" %}</label>
         </div>
-        <div class="row" style="">
+        <div class="row">
             <div class="col-lg-5">
                 {{ lendform.device }}
-                <p class="help-block"></p>
+                <p class="text-danger"></p>
             </div>
             <div class="col-lg-2 text-center">
                 <strong>{% trans "or" %}</strong>
             </div>
             <div class="col-lg-5">
                 {{ lendform.smalldevice }}
-                <p class="help-block"></p>
+                <p class="text-danger"></p>
             </div>
         </div>
     </div>
-    <div class="form-group {{ form.duedate.css_classes }}">
+    <div class="form-group row {{ form.duedate.css_classes }}">
         <label for="duedate" class="col-lg-4 control-label">{% trans "Duedate" %}</label>
 
         <div class="col-lg-8">
             {{ lendform.duedate }}
-            <p class="help-block">{% if form.duedate.errors %}{% for error in form.duedate.errors %}{{ error }},
-            {% endfor %}{% endif %}</p></div>
+            <p class="text-danger">
+                {% for error in form.duedate.errors %}{{ error }}, {% endfor %}
+            </p>
+        </div>
     </div>
-    <div class="form-group {{ form.room.css_classes }}">
+    <div class="form-group row {{ form.room.css_classes }}">
         <label for="room" class="col-lg-4 control-label">{% trans "Room" %}</label>
 
         <div class="col-lg-8">
             {{ lendform.room }}
-            <p class="help-block">
-                {% if form.room.errors %}{% for error in form.room.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+            <p class="text-danger">
+                {% for error in form.room.errors %}{{ error }}, {% endfor %}
+            </p>
         </div>
     </div>
-
 {% endblock %}
 
 {% block modalFooter %}
-    {% if device.templending %}<span class="text-danger pull-left">Note: This device is intended for short term lending
-        </span>{% endif %}
-    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+    {% if device.templending %}
+        <span class="text-danger pull-left">
+            {% trans "Note: This device is intended for short term lending" %}
+        </span>
+    {% endif %}
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
     <input type="submit" value="{% trans "Submit" %}" class="btn btn-success"/>
     <script>
         $("input:text[name=smalldevice]").autocomplete({
@@ -70,7 +76,6 @@
             source: function (request, response) {
                 var term = request.term;
                 $.ajax({
-                    type: "POST",
                     url: "{% url "autocomplete-smalldevice" %}",
                     data: {'name': term}
                 }).done(response);

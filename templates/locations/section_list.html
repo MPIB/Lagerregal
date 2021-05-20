@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Sections" %}{% endblock %}
 
 {% block header %}
@@ -7,32 +8,30 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {% if perms.devicetags.add_devicetag %}<a href="{% url 'section-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Section" %}</a>{% endif %}
+    {% if perms.devicetags.add_devicetag %}
+        <a href="{% url 'section-add' %}" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> {% trans "Add Section" %}
+        </a>
+    {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/pagination.html" with listurl='section-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                    <th>{% trans "Name" %}</th>
-                </tr>
-                </thead>
-                {% for section in section_list %}
-
-                    <tr>
-                        <td><a href="{% url 'section-detail' section.id %}">{{ section.name | default:"(None)" }}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-
-            {% include "snippets/pagination.html" with listurl='section-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        {% for section in section_list %}
+            <tr>
+                <td><a href="{% url 'section-detail' section.id %}">{{ section.name|default:_("(None)") }}</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% include "snippets/pagination.html" %}
 {% endblock %}

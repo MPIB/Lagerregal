@@ -8,38 +8,37 @@
 {% block widgetname %}returnsoon{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+    <table class="table" {% if widget.minimized %}hidden{% endif %}>
         <thead>
-        <tr>
-            <th scope="col">{% trans 'Name' %}</th>
-            <th scope="col">{% trans 'Duedate' %}</th>
-            <th scope="col">{% trans 'Lent to' %}</th>
-        </tr>
+            <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Duedate' %}</th>
+                <th scope="col">{% trans 'Lent to' %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for lending in returnsoon %}
-            <tr>
-                <td>
-                    {% if lending.device %}
-                        <a href="{% url 'device-detail' lending.device.pk %}">{{ lending.device.name }}</a>
-                    {% else %}
-                        {% if lending.owner.id %}
-                            <a href="{% url "userprofile" lending.owner.id %}#devices">{{ lending.smalldevice }}</a>
+            {% for lending in returnsoon %}
+                <tr>
+                    <td>
+                        {% if lending.device %}
+                            <a href="{% url 'device-detail' lending.device.pk %}">{{ lending.device.name }}</a>
                         {% else %}
-                            {{ lending.smalldevice }}
+                            {% if lending.owner.id %}
+                                <a href="{% url "userprofile" lending.owner.id %}#devices">{{ lending.smalldevice }}</a>
+                            {% else %}
+                                {{ lending.smalldevice }}
+                            {% endif %}
                         {% endif %}
-                    {% endif %}
-                </td>
-                <td>{{ lending.duedate }}</td>
-                <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
-            </tr>
-        {% endfor %}
+                    </td>
+                    <td>{{ lending.duedate }}</td>
+                    <td><a href="{% url 'userprofile' lending.owner.pk %}">{{ lending.owner }}</a></td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    <div class="panel-footer">
-    {%  with dep=user.main_department|default:"all" %}
-        <a href="{% url 'device-list' department=dep filter='returnsoon' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
-    {% endwith %}
-        <div class="clearfix"></div>
+    <div class="card-footer text-right">
+        {% with dep=user.main_department|default:"all" %}
+            <a href="{% url 'device-list' %}?department={{ dep|iriencode }}&filter=returnsoon&sorting=name">{% trans "More…" %}</a>
+        {% endwith %}
     </div>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Departments" %}{% endblock %}
 
 {% block header %}
@@ -7,32 +8,33 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {% if perms.users.add_department %}<a href="{% url 'department-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Department" %}</a>{% endif %}
+    {% if perms.users.add_department %}
+        <a href="{% url 'department-add' %}" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> {% trans "Add Department" %}
+        </a>
+    {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-12">
-            {% include "snippets/pagination.html" with listurl='department-list' %}
-            <table class="table table-bordered table-striped">
-                <thead>
+    {% include "snippets/pagination.html" %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in department_list %}
                 <tr>
-                    <th>{% trans "Name" %}</th>
+                    <td><a href="{% url 'department-detail' department.id %}">{{ department.name|default:_("(None)") }}</a></td>
                 </tr>
-                </thead>
-                {% for department in department_list %}
+            {% endfor %}
+        </tbody>
+    </table>
 
-                    <tr>
-                        <td><a href="{% url 'department-detail' department.id %}">{{ department.name | default:"(None)" }}</a>
-                        </td>
-                    </tr>
-                {% endfor %}
-            </table>
-
-            {% include "snippets/pagination.html" with listurl='department-list' %}
-        </div>
-    </div>
+    {% include "snippets/pagination.html" %}
 {% endblock %}

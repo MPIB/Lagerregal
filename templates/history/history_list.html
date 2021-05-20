@@ -4,33 +4,32 @@
 {% block title %}{% trans "History for" %} {{ device.name }}{% endblock %}
 
 {% block content %}
-    {% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
+    {% include "snippets/pagination.html" %}
     <div class="module">
         {% if version_list %}
             <table id="change-history" class="table table-bordered table-striped">
                 <thead>
-                <tr>
-                    <th scope="col">{% trans 'Date/time' %}</th>
-                    <th scope="col">{% trans 'User' %}</th>
-                    <th scope="col">{% trans 'Comment' %}</th>
-                </tr>
+                    <tr>
+                        <th scope="col">{% trans 'Date/time' %}</th>
+                        <th scope="col">{% trans 'User' %}</th>
+                        <th scope="col">{% trans 'Comment' %}</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {% for action in version_list %}
-                    <tr>
-                        <th scope="row"><a
-                                href="{% url 'device-history' device.pk action.revision.pk %}">{{ action.revision.date_created }}</a>
-                        </th>
-                        <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
-                        </td>
-                        <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
-                    </tr>
-                {% endfor %}
+                    {% for action in version_list %}
+                        <tr>
+                            <th scope="row">
+                                <a href="{% url 'history-detail' action.revision.pk %}">{{ action.revision.date_created }}</a>
+                            </th>
+                            <td><a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a></td>
+                            <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         {% else %}
             <p>{% trans "This object doesn't have a change history." %}</p>
         {% endif %}
     </div>
-    {% include "snippets/subpagination.html" with parent=device.pk listurl='device-history-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

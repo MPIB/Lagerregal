@@ -8,33 +8,34 @@
 {% endblock %}
 
 {% block pullright %}
-    {% if perms.devices.delete_building %}
-        {% deletebutton "building-delete" object.id %}
-    {% endif %}
-    {% if "building" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
-    {% endif %}
     {% if perms.devices.change_building %}
-        <a href="{% url 'building-edit' building.id %}" class="btn btn-primary btn-sm pull-right"
-           style="margin-left:10px"><i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'building-merge' building.pk merge.pk %}">{{ merge.name }}</a></li>
                 {% endfor %}
             </ul>
-        </div>{% endif %}
-
+        </div>
+        <a href="{% url 'building-edit' building.id %}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
+    {% if "building" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
+    {% endif %}
+    {% if perms.devices.delete_building %}
+        {% deletebutton "building-delete" object.id %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-xs-12 col-md-5">
+        <div class="col-md-5">
             <table class="table table-bordered table-striped">
                 <tbody>
                 <tr>
@@ -60,27 +61,27 @@
                 </tbody>
             </table>
         </div>
-        <div class="col-xs-12 col-md-7">
+        <div class="col-md-7">
             {% if device_list %}
                 <h4>{% trans "Devices" %}</h4>
-                <table width="100%" id="devicetable" class="table table-bordered table-striped">
+                <table id="devicetable" class="table table-bordered table-striped">
                     <thead>
-                    <tr>
-                        <th>{% trans "Name" %}</th>
-                        <th>{% trans "Inventorynumber" %}</th>
-                        <th>{% trans "Devicetype" %}</th>
-                        <th>{% trans "Room" %}</th>
-                    </tr>
+                        <tr>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Inventorynumber" %}</th>
+                            <th>{% trans "Devicetype" %}</th>
+                            <th>{% trans "Room" %}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% for device in device_list %}
-                        <tr>
-                            <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
-                            <td>{{ device.inventorynumber }}</td>
-                            <td>{{ device.devicetype__name }}</td>
-                            <td>{{ device.room__name }}</td>
-                        </tr>
-                    {% endfor %}
+                        {% for device in device_list %}
+                            <tr>
+                                <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
+                                <td>{{ device.inventorynumber }}</td>
+                                <td>{{ device.devicetype__name }}</td>
+                                <td>{{ device.room__name }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             {% endif %}

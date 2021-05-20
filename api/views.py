@@ -1,26 +1,35 @@
-from __future__ import unicode_literals
-
 import datetime
 
-from rest_framework import generics
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
-import rest_framework.reverse
-from rest_framework.permissions import AllowAny
-from django.shortcuts import get_object_or_404
-from rest_framework.response import Response
-from rest_framework import status
-from reversion import revisions as reversion
-from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.models import Group
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext_lazy as _
+
+import rest_framework.reverse
+from rest_framework import generics
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from reversion import revisions as reversion
 
 from api.serializers import *
-from devices.models import *
-from devicetypes.models import *
-from network.models import *
-from django.contrib.auth.models import Group
-from django.conf import settings
+from devices.models import Bookmark
+from devices.models import Building
+from devices.models import Device
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Note
+from devices.models import Picture
+from devices.models import Room
+from devices.models import Template
+from devicetypes.models import Type
 from mail.models import MailTemplate
+from network.models import IpAddress
+from users.models import Lageruser
 
 
 @api_view(('GET',))
@@ -70,9 +79,9 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_object(self, query=None):
         if query:
-            device = super(DeviceApiDetail, self).get_object(query)
+            device = super().get_object(query)
         else:
-            device = super(DeviceApiDetail, self).get_object()
+            device = super().get_object()
         device.bookmarked = device.bookmarkers.filter(id=self.request.user.id).exists()
         return device
 
@@ -86,7 +95,7 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
         return self.put(request, pk)
 
     def put(self, request, pk, **kwargs):
-        response = super(DeviceApiRoomChange, self).put(request, pk)
+        response = super().put(request, pk)
         try:
             template = MailTemplate.objects.get(usage="room")
         except:
@@ -147,7 +156,7 @@ class DeviceApiLend(generics.CreateAPIView):
                 room = None
         else:
             room = None
-        response = super(DeviceApiLend, self).post(request)
+        response = super().post(request)
         if request.POST["device"] != "" and response.status_code == 201:
             device = Device.objects.get(pk=request.POST["device"])
             device.currentlending = self.object
@@ -249,9 +258,10 @@ class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
     serializer_class = PictureSerializer
 
     def patch(self, request, *args, **kwargs):
-        from PIL import Image
-        import os.path
         import json
+        import os.path
+
+        from PIL import Image
 
         picture = get_object_or_404(Picture, pk=self.kwargs["pk"])
         img = Image.open(picture.image)
@@ -386,7 +396,7 @@ class UserApiAvatar(generics.RetrieveAPIView):
     permission_classes = (AllowAny,)
     model = Lageruser
     serializer_class = UserAvatarSerializer
-    queryset = Lageruser.objects.all()
+    queryset = Lageruser.objects.filter(is_active=True)
 
     def get_object(self, kwargs=None):
         queryset = self.get_queryset()

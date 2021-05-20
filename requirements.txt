@@ -1,0 +1,15 @@
+django ~= 3.0.0
+django-reversion >= 2.0.10
+djangorestframework >= 3.6.4
+django-debug-toolbar >= 1.10
+Pillow
+django-oauth-toolkit
+pytz == 2020.4
+pystache
+model_mommy
+django_auth_ldap
+django-favicon
+django-npm
+django-select2
+psycopg2-binary
+faker

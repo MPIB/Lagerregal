@@ -1,16 +1,17 @@
 {% extends "snippets/modals/base.html" %}
 {% load i18n %}
+
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Preview for mailtemplate '<span id='previewmodal_header'></span>'" %}</h4>
 {% endblock %}
 
 {% block modalBody %}
     <div class="row">
-        <div class="col-md-2 text-right">Subject</div>
+        <div class="col-md-2 text-right">{% trans "Subject" %}</div>
         <div class="col-md-10" id="previewModalSubject"></div>
     </div>
-    <div class="row" style="margin-top:20px">
-        <div class="col-md-2 text-right">Body</div>
+    <div class="row">
+        <div class="col-md-2 text-right">{% trans "Body" %}</div>
         <div class="col-md-10" id="previewModalBody"></div>
     </div>
 {% endblock %}

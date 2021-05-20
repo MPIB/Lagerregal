@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Log in" %}{% endblock %}
+
+{% block body_class %}login{% endblock %}
+
+{% block content %}
+    <h1 class="mb-5 text-center text-success"><i class="fa fa-archive"></i> {{ SITE_NAME }}</h1>
+    {% if form.errors %}
+        <div data-alert class="alert-danger alert">
+            {% trans "Your username and password didn't match. Please try again." %}
+        </div>
+    {% endif %}
+    <form method="post" action="{% url 'login' %}" class="form-signin" role="form">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">{% trans "Please log in" %}</h2>
+        <div class="form-group mb-1">
+            <label for="{{ form.username.id_for_label }}" class="sr-only">{{ form.username.label }}</label>
+            <input id="{{ form.username.id_for_label }}" maxlength="254" name="username" type="text" class="form-control" placeholder="{% trans "username" %}">
+        </div>
+        <div class="form-group mb-1">
+            <label for="{{ form.password.id_for_label }}" class="sr-only">{{ form.password.label }}</label>
+            <input id="{{ form.password.id_for_label }}" name="password" type="password" class="form-control" placeholder="{% trans "Password" %}">
+        </div>
+        <button class="btn btn-lg btn-primary btn-block mb-4" type="submit">{% trans "Log in" %}</button>
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}"/>
+        {% else %}
+            <input type="hidden" name="next" value="{% url 'home' %}"/>
+        {% endif %}
+
+        <a href="{% url "public-device-list" %}" class="btn btn-info btn-block">
+            <i class="fa fa-globe"></i> {% trans "Public Device List" %}
+        </a>
+    </form>
+{% endblock %}

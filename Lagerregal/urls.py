@@ -1,305 +1,245 @@
-from __future__ import unicode_literals
-
-from django.conf.urls import include, url
+from django.conf import settings
+from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import logout
+from django.urls import include
+from django.urls import path
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
-from devices.views import *
-from network.views import *
-from devicetypes.views import *
-from main.views import *
-from api.views import *
-from mail.views import *
-from devicegroups.views import *
-from devicetags.views import *
-from locations.views import *
-from history.views import *
-from users.views import *
-from main.ajax import WidgetAdd, WidgetRemove, WidgetToggle, WidgetMove
-from devices.ajax import AutocompleteName, AutocompleteDevice, AutocompleteSmallDevice, \
-    LoadExtraform, LoadMailtemplate, PreviewMail, AddDeviceField, \
-    UserLendings, PuppetDetails, PuppetSoftware
-from devicetypes.ajax import GetTypeAttributes
-from rest_framework.urlpatterns import format_suffix_patterns
-from . import settings
-# Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-from django.utils.translation import ugettext_lazy as _
-import permission
-from permission.decorators import permission_required
-from django.views.decorators.clickjacking import xframe_options_exempt
 
-admin.autodiscover()
-permission.autodiscover()
+from rest_framework.urlpatterns import format_suffix_patterns
+
+from api import views as api_views
+from devicedata import ajax as devicedata_ajax
+from devicegroups import views as devicegroups_views
+from devices import ajax as devices_ajax
+from devices import views as devices_views
+from devicetags import views as devicetags_views
+from devicetypes import ajax as devicetypes_ajax
+from devicetypes import views as devicetypes_views
+from history import views as history_views
+from locations import views as locations_views
+from mail import views as mail_views
+from main import ajax as main_ajax
+from main import views as main_views
+from network import views as network_views
+from users import views as users_views
 
 urlpatterns = [
-    url(r'^$', login_required(Home.as_view()), name="home"),
+    path('', login_required(main_views.Home.as_view()), name="home"),
 
-    url(r'^accounts/login/$', login, {'template_name': 'login.html', "extra_context": {"breadcrumbs": [("", _("Login"))]}}, name="login"),
-    url(r'^accounts/logout/$', logout, {'template_name': 'logout.html', "extra_context": {"breadcrumbs": [("", _("Logout"))]}}, name="logout"),
+    path('accounts/login/', auth_views.LoginView.as_view(), name="login"),
+    path('accounts/logout/', auth_views.LogoutView.as_view(), name="logout"),
 
-    url(r'^search/$', permission_required("devices.read_device")(Search.as_view()), name="search"),
+    path('search/', devices_views.Search.as_view(), name="search"),
 
-    url(r'^devices/$', DeviceList.as_view(), name="device-list"),
-    url(r'^devices/page/(?P<page>[0-9]*)$', DeviceList.as_view(), name="device-list"),
-    url(r'^devices/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', DeviceList.as_view(), name="device-list"),
-    url(r'^devices/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', DeviceList.as_view(), name="device-list"),
-    url(r'^devices/add$', DeviceCreate.as_view(), name="device-add"),
-    url(r'^devices/add/template/(?P<templateid>[0-9]*)$', DeviceCreate.as_view(), name="device-add"),
-    url(r'^devices/add/copy/(?P<copyid>[0-9]*)$', DeviceCreate.as_view(), name="device-add-copy"),
-    url(r'^devices/(?P<pk>[0-9]*)/$', DeviceDetail.as_view(), name="device-detail"),
-    url(r'^devices/(?P<pk>[0-9]*)/edit/$', DeviceUpdate.as_view(), name="device-edit"),
-    url(r'^devices/(?P<pk>[0-9]*)/delete/$', DeviceDelete.as_view(), name="device-delete"),
-    url(r'^devices/(?P<pk>[0-9]*)/archive/$', DeviceArchive.as_view(), name="device-archive"),
-    url(r'^devices/(?P<pk>[0-9]*)/trash/$', DeviceTrash.as_view(), name="device-trash"),
-    url(r'^devices/(?P<pk>[0-9]*)/storage/$', DeviceStorage.as_view(), name="device-storage"),
-    url(r'^devices/(?P<pk>[0-9]*)/mail/$', DeviceMail.as_view(), name="device-mail"),
-    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/$', DeviceIpAddress.as_view(), name="device-ipaddress"),
-    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)/remove$', DeviceIpAddressRemove.as_view(), name="device-ipaddress-remove"),
-    url(r'^devices/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)/purpose$', DeviceIpAddressPurpose.as_view(), name="device-ipaddress-purpose"),
-    url(r'^devices/(?P<pk>[0-9]*)/tags/$', DeviceTags.as_view(), name="device-tags"),
-    url(r'^devices/(?P<pk>[0-9]*)/tags/(?P<tag>[0-9]*)$', DeviceTagRemove.as_view(), name="device-tag-remove"),
-    url(r'^devices/(?P<pk>[0-9]*)/lending/$', DeviceLendingList.as_view(), name="device-lending-list"),
-    url(r'^devices/(?P<pk>[0-9]*)/lending/(?P<page>[0-9]*)$', DeviceLendingList.as_view(), name="device-lending-list"),
-    url(r'^devices/(?P<pk>[0-9]*)/inventoried/$', DeviceInventoried.as_view(), name="device-inventoried"),
-    url(r'^devices/(?P<pk>[0-9]*)/bookmark/$', DeviceBookmark.as_view(), name="device-bookmark"),
-    url(r'^devices/(?P<pk>[0-9]*)/notes/create/$', NoteCreate.as_view(), name="device-note-create"),
-    url(r'^devices/(?P<pk>[0-9]*)/notes/edit/$', NoteUpdate.as_view(), name="device-note-edit"),
-    url(r'^devices/(?P<device>[0-9]*)/notes/(?P<pk>[0-9]*)/delete/$', NoteDelete.as_view(), name="device-note-delete"),
-    url(r'^devices/(?P<pk>[0-9]*)/pictures/create/$', PictureCreate.as_view(), name="device-picture-create"),
-    url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/edit/$', PictureUpdate.as_view(), name="device-picture-edit"),
-    url(r'^devices/(?P<device>[0-9]*)/pictures/(?P<pk>[0-9]*)/delete/$', PictureDelete.as_view(), name="device-picture-delete"),
-    url(r'^devices/lend/$', DeviceLend.as_view(), name="device-lend"),
-    url(r'^devices/lend/(?P<pk>[0-9]*)$', DeviceLend.as_view(), name="device-lend"),
-    url(r'^devices/export/csv/$', ExportCsv.as_view(), name='export-csv'),
-    url(r'^devices/return/(?P<lending>[0-9]*)$', DeviceReturn.as_view(), name="device-return"),
-    url(r'^devices/public/$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/(?P<page>[0-9]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/sorting/(?P<sorting>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/group/(?P<group>[^/]*)/filter/(?P<filter>[^/]*)$', xframe_options_exempt(PublicDeviceListView.as_view()), name="public-device-list"),
-    url(r'^devices/public/(?P<pk>[0-9]*)/$', xframe_options_exempt(PublicDeviceDetailView.as_view()), name="public-device-detail"),
-    url(r'^devices/templates/$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
-    url(r'^devices/templates/(?P<page>[0-9]*)$', permission_required("devices.read_template")(TemplateList.as_view()), name="template-list"),
-    url(r'^devices/templates/add$', permission_required("devices.add_template")(TemplateCreate.as_view()), name="template-add"),
-    url(r'^devices/templates/(?P<pk>[0-9]*)/edit/$', permission_required("devices.change_template")(TemplateUpdate.as_view()), name="template-edit"),
-    url(r'^devices/templates/(?P<pk>[0-9]*)/delete/$', permission_required("devices.delete_template")(TemplateDelete.as_view()), name="template-delete"),
+    path('devices/', devices_views.DeviceList.as_view(), name="device-list"),
+    path('devices/add/', devices_views.DeviceCreate.as_view(), name="device-add"),
+    path('devices/add-automatic/', devices_views.DeviceCreateAutomatic.as_view(), name="device-add-automatic"),
+    path('devices/add/template/<int:templateid>/', devices_views.DeviceCreate.as_view(), name="device-add"),
+    path('devices/add/copy/<int:copyid>/', devices_views.DeviceCreate.as_view(), name="device-add-copy"),
+    path('devices/<int:pk>/', devices_views.DeviceDetail.as_view(), name="device-detail"),
+    path('devices/<int:pk>/edit/', devices_views.DeviceUpdate.as_view(), name="device-edit"),
+    path('devices/<int:pk>/delete/', devices_views.DeviceDelete.as_view(), name="device-delete"),
+    path('devices/<int:pk>/archive/', devices_views.DeviceArchive.as_view(), name="device-archive"),
+    path('devices/<int:pk>/trash/', devices_views.DeviceTrash.as_view(), name="device-trash"),
+    path('devices/<int:pk>/storage/', devices_views.DeviceStorage.as_view(), name="device-storage"),
+    path('devices/<int:pk>/mail/', devices_views.DeviceMail.as_view(), name="device-mail"),
+    path('devices/<int:pk>/ipaddress/', devices_views.DeviceIpAddress.as_view(), name="device-ipaddress"),
+    path('devices/<int:pk>/ipaddress/<int:ipaddress>/remove/', devices_views.DeviceIpAddressRemove.as_view(), name="device-ipaddress-remove"),
+    path('devices/<int:pk>/ipaddress/<int:ipaddress>/purpose/', devices_views.DeviceIpAddressPurpose.as_view(), name="device-ipaddress-purpose"),
+    path('devices/<int:pk>/tags/', devicetags_views.DeviceTags.as_view(), name="device-tags"),
+    path('devices/<int:pk>/tags/<int:tag>/', devicetags_views.DeviceTagRemove.as_view(), name="device-tag-remove"),
+    path('devices/<int:pk>/lending/', devices_views.DeviceLendingList.as_view(), name="device-lending-list"),
+    path('devices/<int:pk>/inventoried/', devices_views.DeviceInventoried.as_view(), name="device-inventoried"),
+    path('devices/<int:pk>/bookmark/', devices_views.DeviceBookmark.as_view(), name="device-bookmark"),
+    path('devices/<int:pk>/notes/create/', devices_views.NoteCreate.as_view(), name="device-note-create"),
+    path('devices/<int:pk>/notes/edit/', devices_views.NoteUpdate.as_view(), name="device-note-edit"),
+    path('devices/<int:device>/notes/<int:pk>/delete/', devices_views.NoteDelete.as_view(), name="device-note-delete"),
+    path('devices/<int:pk>/pictures/create/', devices_views.PictureCreate.as_view(), name="device-picture-create"),
+    path('devices/<int:device>/pictures/<int:pk>/edit/', devices_views.PictureUpdate.as_view(), name="device-picture-edit"),
+    path('devices/<int:device>/pictures/<int:pk>/delete/', devices_views.PictureDelete.as_view(), name="device-picture-delete"),
+    path('devices/lend/', devices_views.DeviceLend.as_view(), name="device-lend"),
+    path('devices/lend/<int:pk>', devices_views.DeviceLend.as_view(), name="device-lend"),
+    path('devices/export/csv/', devices_views.ExportCsv.as_view(), name='export-csv'),
+    path('devices/return/<int:lending>/', devices_views.DeviceReturn.as_view(), name="device-return"),
+    path('devices/public/', xframe_options_exempt(devices_views.PublicDeviceListView.as_view()), name="public-device-list"),
+    path('devices/public/<int:pk>/', xframe_options_exempt(devices_views.PublicDeviceDetailView.as_view()), name="public-device-detail"),
+    path('devices/templates/', devices_views.TemplateList.as_view(), name="template-list"),
+    path('devices/templates/add/', devices_views.TemplateCreate.as_view(), name="template-add"),
+    path('devices/templates/<int:pk>/edit/', devices_views.TemplateUpdate.as_view(), name="template-edit"),
+    path('devices/templates/<int:pk>/delete/', devices_views.TemplateDelete.as_view(), name="template-delete"),
 
 
-    url(r'^types/$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
-    url(r'^types/(?P<page>[0-9]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
-    url(r'^types/sorting/(?P<sorting>[^/]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
-    url(r'^types/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
-    url(r'^types/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
-    url(r'^types/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicetypes.read_type")(TypeList.as_view()), name="type-list"),
-    url(r'^types/add$', permission_required("devicetypes.add_type")(TypeCreate.as_view()), name="type-add"),
-    url(r'^types/edit/(?P<pk>[0-9]*)$', permission_required("devicetypes.change_type")(TypeUpdate.as_view()), name="type-edit"),
-    url(r'^types/delete/(?P<pk>[0-9]*)$', permission_required("devicetypes.delete_type")(TypeDelete.as_view()), name="type-delete"),
-    url(r'^types/view/(?P<pk>[0-9]*)$', permission_required("devicetypes.read_type")(TypeDetail.as_view()), name="type-detail"),
-    url(r'^types/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("devices.change_type")(TypeMerge.as_view()), name="type-merge"),
-    url(r'^types/attribute/add$', permission_required("devicetypes.change_type")(TypeAttributeCreate.as_view()), name="typeattribute-add"),
-    url(r'^types/attribute/edit/(?P<pk>[0-9]*)$', permission_required("devicetypes.change_type")(TypeAttributeUpdate.as_view()), name="typeattribute-edit"),
-    url(r'^types/attribute/delete/(?P<pk>[0-9]*)$', permission_required("devicetypes.change_type")(TypeAttributeDelete.as_view()), name="typeattribute-delete"),
+    path('types/', devicetypes_views.TypeList.as_view(), name="type-list"),
+    path('types/add/', devicetypes_views.TypeCreate.as_view(), name="type-add"),
+    path('types/<int:pk>/', devicetypes_views.TypeDetail.as_view(), name="type-detail"),
+    path('types/<int:pk>/edit/', devicetypes_views.TypeUpdate.as_view(), name="type-edit"),
+    path('types/<int:pk>/delete/', devicetypes_views.TypeDelete.as_view(), name="type-delete"),
+    path('types/<int:oldpk>/merge/<int:newpk>/', devicetypes_views.TypeMerge.as_view(), name="type-merge"),
+    path('types/attribute/add/', devicetypes_views.TypeAttributeCreate.as_view(), name="typeattribute-add"),
+    path('types/attribute/<int:pk>/edit/', devicetypes_views.TypeAttributeUpdate.as_view(), name="typeattribute-edit"),
+    path('types/attribute/<int:pk>/delete/', devicetypes_views.TypeAttributeDelete.as_view(), name="typeattribute-delete"),
 
 
-    url(r'^rooms/$', permission_required("devices.read_room")(RoomList.as_view()), name="room-list"),
-    url(r'^rooms/(?P<page>[0-9]*)$', permission_required("devices.read_room")(RoomList.as_view()), name="room-list"),
-    url(r'^rooms/sorting/(?P<sorting>[^/]*)$', permission_required("devices.read_room")(RoomList.as_view()), name="room-list"),
-    url(r'^rooms/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devices.read_room")(RoomList.as_view()), name="room-list"),
-    url(r'^rooms/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_room")(RoomList.as_view()), name="room-list"),
-    url(r'^rooms/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_room")(RoomList.as_view()), name="room-list"),
-    url(r'^rooms/add$', permission_required("devices.add_room")(RoomCreate.as_view()), name="room-add"),
-    url(r'^rooms/edit/(?P<pk>[^/]*)$', permission_required("devices.read_room")(RoomUpdate.as_view()), name="room-edit"),
-    url(r'^rooms/delete/(?P<pk>[^/]*)$', permission_required("devices.delete_room")(RoomDelete.as_view()), name="room-delete"),
-    url(r'^rooms/view/(?P<pk>[^/]*)$', permission_required("devices.read_room")(RoomDetail.as_view()), name="room-detail"),
-    url(r'^rooms/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("devices.change_room")(RoomMerge.as_view()), name="room-merge"),
+    path('rooms/', devices_views.RoomList.as_view(), name="room-list"),
+    path('rooms/add/', devices_views.RoomCreate.as_view(), name="room-add"),
+    path('rooms/<int:pk>/', devices_views.RoomDetail.as_view(), name="room-detail"),
+    path('rooms/<int:pk>/edit/', devices_views.RoomUpdate.as_view(), name="room-edit"),
+    path('rooms/<int:pk>/delete/', devices_views.RoomDelete.as_view(), name="room-delete"),
+    path('rooms/<int:oldpk>/merge/<int:newpk>/', devices_views.RoomMerge.as_view(), name="room-merge"),
 
-    url(r'^buildings/$', permission_required("devices.read_building")(BuildingList.as_view()), name="building-list"),
-    url(r'^buildings/(?P<page>[0-9]*)$', permission_required("devices.read_building")(BuildingList.as_view()), name="building-list"),
-    url(r'^buildings/sorting/(?P<sorting>[^/]*)$', permission_required("devices.read_building")(BuildingList.as_view()), name="building-list"),
-    url(r'^buildings/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devices.read_building")(BuildingList.as_view()), name="building-list"),
-    url(r'^buildings/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_building")(BuildingList.as_view()), name="building-list"),
-    url(r'^buildings/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_building")(BuildingList.as_view()), name="building-list"),
-    url(r'^buildings/add$', permission_required("devices.add_building")(BuildingCreate.as_view()), name="building-add"),
-    url(r'^buildings/edit/(?P<pk>[^/]*)$', permission_required("devices.change_building")(BuildingUpdate.as_view()), name="building-edit"),
-    url(r'^buildings/delete/(?P<pk>[^/]*)$', permission_required("devices.delete_building")(BuildingDelete.as_view()), name="building-delete"),
-    url(r'^buildings/view/(?P<pk>[^/]*)$', permission_required("devices.read_building")(BuildingDetail.as_view()), name="building-detail"),
-    url(r'^buildings/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("devices.change_building")(BuildingMerge.as_view()), name="building-merge"),
+    path('buildings/', devices_views.BuildingList.as_view(), name="building-list"),
+    path('buildings/add/', devices_views.BuildingCreate.as_view(), name="building-add"),
+    path('buildings/<int:pk>/', devices_views.BuildingDetail.as_view(), name="building-detail"),
+    path('buildings/<int:pk>/edit/', devices_views.BuildingUpdate.as_view(), name="building-edit"),
+    path('buildings/<int:pk>/delete/', devices_views.BuildingDelete.as_view(), name="building-delete"),
+    path('buildings/<int:oldpk>/merge/<int:newpk>/', devices_views.BuildingMerge.as_view(), name="building-merge"),
 
-    url(r'^manufacturers/$', permission_required("devices.read_manufacturer")(ManufacturerList.as_view()), name="manufacturer-list"),
-    url(r'^manufacturers/page/(?P<page>[0-9]*)$', permission_required("devices.read_manufacturer")(ManufacturerList.as_view()), name="manufacturer-list"),
-    url(r'^manufacturers/sorting/(?P<sorting>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerList.as_view()), name="manufacturer-list"),
-    url(r'^manufacturers/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerList.as_view()), name="manufacturer-list"),
-    url(r'^manufacturers/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerList.as_view()), name="manufacturer-list"),
-    url(r'^manufacturers/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerList.as_view()), name="manufacturer-list"),
-    url(r'^manufacturers/add$', permission_required("devices.add_manufacturer")(ManufacturerCreate.as_view()), name="manufacturer-add"),
-    url(r'^manufacturers/edit/(?P<pk>[^/]*)$', permission_required("devices.change_manufacturer")(ManufacturerUpdate.as_view()), name="manufacturer-edit"),
-    url(r'^manufacturers/delete/(?P<pk>[^/]*)$', permission_required("devices.delete_manufacturer")(ManufacturerDelete.as_view()), name="manufacturer-delete"),
-    url(r'^manufacturers/view/(?P<pk>[^/]*)$', permission_required("devices.read_manufacturer")(ManufacturerDetail.as_view()), name="manufacturer-detail"),
-    url(r'^manufacturers/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("devices.change_manufacturer")(ManufacturerMerge.as_view()), name="manufacturer-merge"),
+    path('manufacturers/', devices_views.ManufacturerList.as_view(), name="manufacturer-list"),
+    path('manufacturers/add/', devices_views.ManufacturerCreate.as_view(), name="manufacturer-add"),
+    path('manufacturers/<int:pk>/', devices_views.ManufacturerDetail.as_view(), name="manufacturer-detail"),
+    path('manufacturers/<int:pk>/edit/', devices_views.ManufacturerUpdate.as_view(), name="manufacturer-edit"),
+    path('manufacturers/<int:pk>/delete/', devices_views.ManufacturerDelete.as_view(), name="manufacturer-delete"),
+    path('manufacturers/<int:oldpk>/merge/<int:newpk>/', devices_views.ManufacturerMerge.as_view(), name="manufacturer-merge"),
 
-    url(r'^mails/$', permission_required("mail.read_mailtemplate")(MailList.as_view()), name="mail-list"),
-    url(r'^mails/(?P<page>[0-9]*)$', permission_required("mail.read_mailtemplate")(MailList.as_view()), name="mail-list"),
-    url(r'^mails/add$', permission_required("mail.add_mailtemplate")(MailCreate.as_view()), name="mail-add"),
-    url(r'^mails/edit/(?P<pk>[^/]*)$', permission_required("mail.change_mailtemplate")(MailUpdate.as_view()), name="mail-edit"),
-    url(r'^mails/view/(?P<pk>[^/]*)$', permission_required("mail.read_mailtemplate")(MailDetail.as_view()), name="mail-detail"),
-    url(r'^mails/delete/(?P<pk>[^/]*)$', permission_required("mail.delete_mailtemplate")(MailDelete.as_view()), name="mail-delete"),
+    path('mails/', mail_views.MailList.as_view(), name="mail-list"),
+    path('mails/add/', mail_views.MailCreate.as_view(), name="mail-add"),
+    path('mails/<int:pk>/', mail_views.MailDetail.as_view(), name="mail-detail"),
+    path('mails/<int:pk>/edit/', mail_views.MailUpdate.as_view(), name="mail-edit"),
+    path('mails/<int:pk>/delete/', mail_views.MailDelete.as_view(), name="mail-delete"),
 
-    url(r'^devicegroups/$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
-    url(r'^devicegroups/(?P<page>[0-9]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
-    url(r'^devicegroups/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
-    url(r'^devicegroups/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupList.as_view()), name="devicegroup-list"),
-    url(r'^devicegroups/add$', permission_required("devicegroups.add_devicegroup")(DevicegroupCreate.as_view()), name="devicegroup-add"),
-    url(r'^devicegroups/edit/(?P<pk>[^/]*)$', permission_required("devicegroups.change_devicegroup")(DevicegroupUpdate.as_view()), name="devicegroup-edit"),
-    url(r'^devicegroups/view/(?P<pk>[^/]*)$', permission_required("devicegroups.read_devicegroup")(DevicegroupDetail.as_view()), name="devicegroup-detail"),
-    url(r'^devicegroups/delete/(?P<pk>[^/]*)$', permission_required("devicegroups.delete_devicegroup")(DevicegroupDelete.as_view()), name="devicegroup-delete"),
+    path('devicegroups/', devicegroups_views.DevicegroupList.as_view(), name="devicegroup-list"),
+    path('devicegroups/add/', devicegroups_views.DevicegroupCreate.as_view(), name="devicegroup-add"),
+    path('devicegroups/<int:pk>/', devicegroups_views.DevicegroupDetail.as_view(), name="devicegroup-detail"),
+    path('devicegroups/<int:pk>/edit/', devicegroups_views.DevicegroupUpdate.as_view(), name="devicegroup-edit"),
+    path('devicegroups/<int:pk>/delete/', devicegroups_views.DevicegroupDelete.as_view(), name="devicegroup-delete"),
 
-    url(r'^devicetags/$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
-    url(r'^devicetags/(?P<page>[0-9]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
-    url(r'^devicetags/sorting/(?P<sorting>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
-    url(r'^devicetags/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
-    url(r'^devicetags/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
-    url(r'^devicetags/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("devicetags.read_devicetag")(DevicetagList.as_view()), name="devicetag-list"),
-    url(r'^devicetags/add$', permission_required("devicetags.add_devicetag")(DevicetagCreate.as_view()), name="devicetag-add"),
-    url(r'^devicetags/edit/(?P<pk>[^/]*)$', permission_required("devicetags.change_devicetag")(DevicetagUpdate.as_view()), name="devicetag-edit"),
-    url(r'^devicetags/delete/(?P<pk>[^/]*)$', permission_required("devicetags.delete_devicetag")(DevicetagDelete.as_view()), name="devicetag-delete"),
+    path('devicetags/', devicetags_views.DevicetagList.as_view(), name="devicetag-list"),
+    path('devicetags/add/', devicetags_views.DevicetagCreate.as_view(), name="devicetag-add"),
+    path('devicetags/<int:pk>/edit/', devicetags_views.DevicetagUpdate.as_view(), name="devicetag-edit"),
+    path('devicetags/<int:pk>/delete/', devicetags_views.DevicetagDelete.as_view(), name="devicetag-delete"),
 
-    url(r'^sections/$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
-    url(r'^sections/(?P<page>[0-9]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
-    url(r'^sections/sorting/(?P<sorting>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
-    url(r'^sections/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
-    url(r'^sections/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
-    url(r'^sections/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("locations.read_section")(SectionList.as_view()), name="section-list"),
-    url(r'^sections/add$', permission_required("locations.add_section")(SectionCreate.as_view()), name="section-add"),
-    url(r'^sections/edit/(?P<pk>[^/]*)$', permission_required("locations.change_section")(SectionUpdate.as_view()), name="section-edit"),
-    url(r'^sections/view/(?P<pk>[^/]*)$', permission_required("locations.read_section")(SectionDetail.as_view()), name="section-detail"),
-    url(r'^sections/delete/(?P<pk>[^/]*)$', permission_required("locations.delete_section")(SectionDelete.as_view()), name="section-delete"),
-    url(r'^sections/merge/(?P<oldpk>[0-9]*)/(?P<newpk>[0-9]*)$', permission_required("locations.change_section")(SectionMerge.as_view()), name="section-merge"),
+    path('sections/', locations_views.SectionList.as_view(), name="section-list"),
+    path('sections/add/', locations_views.SectionCreate.as_view(), name="section-add"),
+    path('sections/<int:pk>/', locations_views.SectionDetail.as_view(), name="section-detail"),
+    path('sections/<int:pk>/edit/', locations_views.SectionUpdate.as_view(), name="section-edit"),
+    path('sections/<int:pk>/delete/', locations_views.SectionDelete.as_view(), name="section-delete"),
+    path('sections/<int:oldpk>/merge/<int:newpk>/', locations_views.SectionMerge.as_view(), name="section-merge"),
 
-    url(r'^departments/$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
-    url(r'^departments/(?P<page>[0-9]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
-    url(r'^departments/sorting/(?P<sorting>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
-    url(r'^departments/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
-    url(r'^departments/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
-    url(r'^departments/page/(?P<page>[0-9]*)/sorting/(?P<sorting>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_department")(DepartmentList.as_view()), name="department-list"),
-    url(r'^departments/add$', permission_required("users.add_department")(DepartmentCreate.as_view()), name="department-add"),
-    url(r'^departments/edit/(?P<pk>[^/]*)$', DepartmentUpdate.as_view(), name="department-edit"),
-    url(r'^departments/adduser/(?P<pk>[^/]*)$', DepartmentAddUser.as_view(), name="department-add-user"),
-    url(r'^departments/removeuser/(?P<pk>[^/]*)$', DepartmentDeleteUser.as_view(), name="department-remove-user"),
-    url(r'^departments/view/(?P<pk>[^/]*)$', permission_required("users.read_department")(DepartmentDetail.as_view()), name="department-detail"),
-    url(r'^departments/delete/(?P<pk>[^/]*)$', DepartmentDelete.as_view(), name="department-delete"),
+    path('departments/', users_views.DepartmentList.as_view(), name="department-list"),
+    path('departments/add/', users_views.DepartmentCreate.as_view(), name="department-add"),
+    path('departments/<int:pk>/', users_views.DepartmentDetail.as_view(), name="department-detail"),
+    path('departments/<int:pk>/edit/', users_views.DepartmentUpdate.as_view(), name="department-edit"),
+    path('departments/<int:pk>/adduser/', users_views.DepartmentAddUser.as_view(), name="department-add-user"),
+    path('departments/<int:pk>/removeuser/', users_views.DepartmentDeleteUser.as_view(), name="department-remove-user"),
+    path('departments/<int:pk>/delete/', users_views.DepartmentDelete.as_view(), name="department-delete"),
 
-    url(r'^ipaddresses/$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
-    url(r'^ipaddresses/page/(?P<page>[0-9]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
-    url(r'^ipaddresses/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
-    url(r'^ipaddresses/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
-    url(r'^ipaddresses/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)/search/(?P<search>[^/]*)$', permission_required("network.read_ipaddress")(IpAddressList.as_view()), name="ipaddress-list"),
-    url(r'^ipaddresses/add$', permission_required("network.add_ipaddress")(IpAddressCreate.as_view()), name="ipaddress-add"),
-    url(r'^ipaddresses/edit/(?P<pk>[^/]*)$', permission_required("network.change_ipaddress")(IpAddressUpdate.as_view()), name="ipaddress-edit"),
-    url(r'^ipaddresses/delete/(?P<pk>[^/]*)$', permission_required("network.delete_ipaddress")(IpAddressDelete.as_view()), name="ipaddress-delete"),
-    url(r'^ipaddresses/view/(?P<pk>[^/]*)$', permission_required("network.read_ipaddress")(IpAddressDetail.as_view()), name="ipaddress-detail"),
+    path('ipaddresses/', network_views.IpAddressList.as_view(), name="ipaddress-list"),
+    path('ipaddresses/add/', network_views.IpAddressCreate.as_view(), name="ipaddress-add"),
+    path('ipaddresses/<int:pk>/', network_views.IpAddressDetail.as_view(), name="ipaddress-detail"),
+    path('ipaddresses/<int:pk>/edit/', network_views.IpAddressUpdate.as_view(), name="ipaddress-edit"),
+    path('ipaddresses/<int:pk>/delete/', network_views.IpAddressDelete.as_view(), name="ipaddress-delete"),
 
-    url(r'^users/$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
-    url(r'^users/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
-    url(r'^users/page/(?P<page>[0-9]*)/department/(?P<department>[^/]*)/filter/(?P<filter>[^/]*)$', permission_required("users.read_user")(UserList.as_view()), name="user-list"),
-    url(r'^users/view/(?P<pk>[0-9]*)$', permission_required("users.read_user")(ProfileView.as_view()), name="userprofile"),
-    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/$', permission_required("users.change_user")(UserIpAddress.as_view()), name="user-ipaddress"),
-    url(r'^users/view/(?P<pk>[0-9]*)/ipaddress/(?P<ipaddress>[0-9]*)$', permission_required("users.change_user")(UserIpAddressRemove.as_view()), name="user-ipaddress-remove"),
-    url(r'^profile', login_required(UserprofileView.as_view()), name="userprofile"),
-    url(r'^settings', login_required(UsersettingsView.as_view()), name="usersettings"),
+    path('users/', users_views.UserList.as_view(), name="user-list"),
+    path('users/<int:pk>/', users_views.ProfileView.as_view(), name="userprofile"),
+    path('users/<int:pk>/ipaddress/', network_views.UserIpAddress.as_view(), name="user-ipaddress"),
+    path('users/<int:pk>/ipaddress/<int:ipaddress>/', network_views.UserIpAddressRemove.as_view(), name="user-ipaddress-remove"),
+    path('users/<int:oldpk>/merge/<int:newpk>/', users_views.TransferOwnershipView.as_view(), name="user-merge"),
+    path('users/<int:pk>/deactivate', users_views.DeactivateUserView.as_view(), name="user-deactivate"),
+    path('profile/', login_required(users_views.UserprofileView.as_view()), name="userprofile"),
+    path('settings/', login_required(users_views.UsersettingsView.as_view()), name="usersettings"),
 
-    url(r'^history/global/$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
-    url(r'^history/global/(?P<page>[0-9]*)$', permission_required("devices.change_device")(Globalhistory.as_view()), name="globalhistory"),
-    url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)$', permission_required("devices.change_device")(HistoryList.as_view()), name="history-list"),
-    url(r'^history/(?P<content_type_id>[0-9]*)/(?P<object_id>[0-9]*)/(?P<page>[0-9]*)$', permission_required("devices.change_device")(HistoryList.as_view()), name="history-list"),
-    url(r'^history/version/(?P<pk>[0-9]*)$', permission_required("devices.change_device")(HistoryDetail.as_view()), name="history-detail"),
+    path('history/global/', history_views.Globalhistory.as_view(), name="globalhistory"),
+    path('history/<int:content_type_id>/<int:object_id>/', history_views.HistoryList.as_view(), name="history-list"),
+    path('history/version/<int:pk>/', history_views.HistoryDetail.as_view(), name="history-detail"),
 
-    url(r'^admin/', admin.site.urls),
-    url(r'^i18n/', include('django.conf.urls.i18n')),
-    url(r'^jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path('admin/', admin.site.urls),
+    path('i18n/', include('django.conf.urls.i18n')),
+    path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
-    url(r'^oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
-    url(r'^', include('favicon.urls')),
+    path('', include('favicon.urls')),
 
-    url(r'^ajax/add_widget', login_required(WidgetAdd.as_view()), name="widget_add"),
-    url(r'^ajax/remove_widget', login_required(WidgetRemove.as_view()), name="widget_remove"),
-    url(r'^ajax/toggle_widget', login_required(WidgetToggle.as_view()), name="widget_toggle"),
-    url(r'^ajax/move_widget', login_required(WidgetMove.as_view()), name="widget_move"),
-    url(r'^ajax/autocomplete_name', login_required(AutocompleteName.as_view()), name="autocomplete-name"),
-    url(r'^ajax/autocomplete_device', login_required(AutocompleteDevice.as_view()), name="autocomplete-device"),
-    url(r'^ajax/autocomplete_smalldevice', login_required(AutocompleteSmallDevice.as_view()), name="autocomplete-smalldevice"),
-    url(r'^ajax/load_extraform', login_required(LoadExtraform.as_view()), name="load-extraform"),
-    url(r'^ajax/load_mailtemplate', login_required(LoadMailtemplate.as_view()), name="load-mailtemplate"),
-    url(r'^ajax/preview_mail', login_required(PreviewMail.as_view()), name="preview-mail"),
-    url(r'^ajax/add_device_field', login_required(AddDeviceField.as_view()), name="add-device-field"),
-    url(r'^ajax/get_attributes', login_required(GetTypeAttributes.as_view()), name="get-attributes"),
-    url(r'^ajax/user_lendings', login_required(UserLendings.as_view()), name="get-user-lendings"),
-    url(r'^ajax/puppetdetails', login_required(PuppetDetails.as_view()), name="puppet-details"),
-    url(r'^ajax/puppetsoftware', login_required(PuppetSoftware.as_view()), name="puppet-software"),
+    path('devices_ajax/add_widget/', login_required(main_ajax.WidgetAdd.as_view()), name="widget_add"),
+    path('devices_ajax/remove_widget/', login_required(main_ajax.WidgetRemove.as_view()), name="widget_remove"),
+    path('devices_ajax/toggle_widget/', login_required(main_ajax.WidgetToggle.as_view()), name="widget_toggle"),
+    path('devices_ajax/move_widget/', login_required(main_ajax.WidgetMove.as_view()), name="widget_move"),
+    path('devices_ajax/autocomplete_name/', login_required(devices_ajax.AutocompleteName.as_view()), name="autocomplete-name"),
+    path('devices_ajax/autocomplete_device/', login_required(devices_ajax.AutocompleteDevice.as_view()), name="autocomplete-device"),
+    path('devices_ajax/autocomplete_smalldevice/', login_required(devices_ajax.AutocompleteSmallDevice.as_view()), name="autocomplete-smalldevice"),
+    path('devices_ajax/load_extraform/', login_required(devices_ajax.LoadExtraform.as_view()), name="load-extraform"),
+    path('devices_ajax/load_mailtemplate/', login_required(devices_ajax.LoadMailtemplate.as_view()), name="load-mailtemplate"),
+    path('devices_ajax/preview_mail/', login_required(devices_ajax.PreviewMail.as_view()), name="preview-mail"),
+    path('devices_ajax/add_device_field/', login_required(devices_ajax.AddDeviceField.as_view()), name="add-device-field"),
+    path('devices_ajax/get_attributes/', login_required(devicetypes_ajax.GetTypeAttributes.as_view()), name="get-attributes"),
+    path('devices_ajax/user_lendings/', login_required(devices_ajax.UserLendings.as_view()), name="get-user-lendings"),
+    path('devices_ajax/devicedetails/<int:device>/', login_required(devicedata_ajax.DeviceDetails.as_view()), name="device-details"),
+    path('devices_ajax/devicedetails/<int:device>/json', login_required(devicedata_ajax.DeviceDetailsJson.as_view()), name="device-details-json"),
+    path('devices_ajax/devicesoftware/<int:device>/', login_required(devicedata_ajax.DeviceSoftware.as_view()), name="device-software"),
+    path('devices_ajax/initialize_device/', login_required(devices_ajax.InitializeAutomaticDevice.as_view()), name="init-automatic-device"),
 ]
 
 urlpatterns += format_suffix_patterns([
-    url(r'^api/$', api_root),
-    url(r'^api/devices/$', DeviceApiList.as_view(), name='device-api-list'),
-    url(r'^api/devices/create/$', DeviceApiCreate.as_view(), name='device-api-create'),
-    url(r'^api/devices/(?P<pk>\d+)/$', DeviceApiDetail.as_view(), name='device-api-detail'),
-    url(r'^api/devices/(?P<pk>\d+)/bookmark/$', DeviceApiBookmark.as_view(), name='device-api-bookmark'),
-    url(r'^api/devices/(?P<pk>\d+)/changeroom/$', DeviceApiRoomChange.as_view(), name='device-api-room'),
-    url(r'^api/devices/(?P<pk>\d+)/pictures/$', DeviceApiListPictures.as_view(), name='device-api-pictures'),
-    url(r'^api/devices/(?P<device>\d+)/pictures/(?P<pk>\d+)$', DeviceApiPicture.as_view(), name='device-api-picture'),
-    url(r'^api/devices/(?P<device>\d+)/pictures/(?P<pk>\d+)/rotate/(?P<orientation>[a-z]*)$', DeviceApiPictureRotate.as_view(), name='device-api-picture-rotate'),
-    url(r'^api/devices/lend/$', DeviceApiLend.as_view(), name='device-api-lend'),
-    url(r'^api/devices/return/$', DeviceApiReturn.as_view(), name='device-api-return'),
-    url(r'^api/smalldevices/$', SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
-    url(r'^api/smalldevices/(?P<subpart>[^/]*)/$', SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
+    path('api/', api_views.api_root),
+    path('api/devices/', api_views.DeviceApiList.as_view(), name='device-api-list'),
+    path('api/devices/create/', api_views.DeviceApiCreate.as_view(), name='device-api-create'),
+    path('api/devices/<int:pk>/', api_views.DeviceApiDetail.as_view(), name='device-api-detail'),
+    path('api/devices/<int:pk>/bookmark/', api_views.DeviceApiBookmark.as_view(), name='device-api-bookmark'),
+    path('api/devices/<int:pk>/changeroom/', api_views.DeviceApiRoomChange.as_view(), name='device-api-room'),
+    path('api/devices/<int:pk>/pictures/', api_views.DeviceApiListPictures.as_view(), name='device-api-pictures'),
+    path('api/devices/<int:device>/pictures/<int:pk>/', api_views.DeviceApiPicture.as_view(), name='device-api-picture'),
+    path('api/devices/<int:device>/pictures/<int:pk>/rotate/<orientation>/', api_views.DeviceApiPictureRotate.as_view(), name='device-api-picture-rotate'),
+    path('api/devices/lend/', api_views.DeviceApiLend.as_view(), name='device-api-lend'),
+    path('api/devices/return/', api_views.DeviceApiReturn.as_view(), name='device-api-return'),
+    path('api/smalldevices/', api_views.SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
+    path('api/smalldevices/<subpart>/', api_views.SmallDeviceApiList.as_view(), name='smalldevice-api-lend'),
 
 
-    url(r'^api/manufacturers/$', ManufacturerApiList.as_view(), name='manufacturer-api-list'),
-    url(r'^api/manufacturers/create/$', ManufacturerApiCreate.as_view(), name='manufacturer-api-create'),
-    url(r'^api/manufacturers/(?P<pk>\d+)/$', ManufacturerApiDetail.as_view(), name='manufacturer-api-detail'),
+    path('api/manufacturers/', api_views.ManufacturerApiList.as_view(), name='manufacturer-api-list'),
+    path('api/manufacturers/create/', api_views.ManufacturerApiCreate.as_view(), name='manufacturer-api-create'),
+    path('api/manufacturers/<int:pk>/', api_views.ManufacturerApiDetail.as_view(), name='manufacturer-api-detail'),
 
-    url(r'^api/rooms/$', RoomApiList.as_view(), name='room-api-list'),
-    url(r'^api/rooms/create/$', RoomApiCreate.as_view(), name='room-api-create'),
-    url(r'^api/rooms/(?P<pk>\d+)/$', RoomApiDetail.as_view(), name='room-api-detail'),
+    path('api/rooms/', api_views.RoomApiList.as_view(), name='room-api-list'),
+    path('api/rooms/create/', api_views.RoomApiCreate.as_view(), name='room-api-create'),
+    path('api/rooms/<int:pk>/', api_views.RoomApiDetail.as_view(), name='room-api-detail'),
 
-    url(r'^api/types/$', TypeApiList.as_view(), name='type-api-list'),
-    url(r'^api/types/create/$', TypeApiCreate.as_view(), name='type-api-create'),
-    url(r'^api/types/(?P<pk>\d+)/$', TypeApiDetail.as_view(), name='type-api-detail'),
+    path('api/types/', api_views.TypeApiList.as_view(), name='type-api-list'),
+    path('api/types/create/', api_views.TypeApiCreate.as_view(), name='type-api-create'),
+    path('api/types/<int:pk>/', api_views.TypeApiDetail.as_view(), name='type-api-detail'),
 
-    url(r'^api/buildings/$', BuildingApiList.as_view(), name='building-api-list'),
-    url(r'^api/buildings/create/$', BuildingApiCreate.as_view(), name='building-api-create'),
-    url(r'^api/buildings/(?P<pk>\d+)/$', BuildingApiDetail.as_view(), name='building-api-detail'),
+    path('api/buildings/', api_views.BuildingApiList.as_view(), name='building-api-list'),
+    path('api/buildings/create/', api_views.BuildingApiCreate.as_view(), name='building-api-create'),
+    path('api/buildings/<int:pk>/', api_views.BuildingApiDetail.as_view(), name='building-api-detail'),
 
-    url(r'^api/templates/$', TemplateApiList.as_view(), name='template-api-list'),
-    url(r'^api/templates/create/$', TemplateApiCreate.as_view(), name='template-api-create'),
-    url(r'^api/templates/(?P<pk>\d+)/$', TemplateApiDetail.as_view(), name='template-api-detail'),
+    path('api/templates/', api_views.TemplateApiList.as_view(), name='template-api-list'),
+    path('api/templates/create/', api_views.TemplateApiCreate.as_view(), name='template-api-create'),
+    path('api/templates/<int:pk>/', api_views.TemplateApiDetail.as_view(), name='template-api-detail'),
 
-    url(r'^api/ipaddresses/$', IpAddressApiList.as_view(), name='ipaddress-api-list'),
-    url(r'^api/ipaddresses/create/$', IpAddressApiCreate.as_view(), name='ipaddress-api-create'),
-    url(r'^api/ipaddresses/(?P<pk>\d+)/$', IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
+    path('api/ipaddresses/', api_views.IpAddressApiList.as_view(), name='ipaddress-api-list'),
+    path('api/ipaddresses/create/', api_views.IpAddressApiCreate.as_view(), name='ipaddress-api-create'),
+    path('api/ipaddresses/<int:pk>/', api_views.IpAddressApiDetail.as_view(), name='ipaddress-api-detail'),
 
-    url(r'^api/users/$', UserApiList.as_view(), name='user-api-list'),
-    url(r'^api/users/(?P<pk>\d+)/$', UserApiDetail.as_view(), name='user-api-detail'),
-    url(r'^api/users/profile/$$', UserApiProfile.as_view(), name='user-api-profile'),
-    url(r'^api/useravatar/(?P<username>[^/]*)/$', UserApiAvatar.as_view(), name='user-api-avatar'),
+    path('api/users/', api_views.UserApiList.as_view(), name='user-api-list'),
+    path('api/users/<int:pk>/', api_views.UserApiDetail.as_view(), name='user-api-detail'),
+    path('api/users/profile/', api_views.UserApiProfile.as_view(), name='user-api-profile'),
+    path('api/useravatar/<username>/', api_views.UserApiAvatar.as_view(), name='user-api-avatar'),
 
-    url(r'^api/groups/$', GroupApiList.as_view(), name='group-api-list'),
-    url(r'^api/groups/(?P<pk>\d+)/$', GroupApiDetail.as_view(), name='group-api-detail'),
+    path('api/groups/', api_views.GroupApiList.as_view(), name='group-api-list'),
+    path('api/groups/<int:pk>/', api_views.GroupApiDetail.as_view(), name='group-api-detail'),
 
-    url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
 ], allowed=["json", "html"])
 
 if settings.DEBUG:
     import debug_toolbar
+
     # static files (images, css, javascript, etc.)
     urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-        url(r'^media/(?P<path>.*)$', serve, {
+        path('__debug__/', include(debug_toolbar.urls)),
+        path('media/<path:path>', serve, {
             'document_root': settings.MEDIA_ROOT,
         }),
     ]

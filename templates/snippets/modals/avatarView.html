@@ -1,10 +1,10 @@
 {% extends "snippets/modals/baseNofooter.html" %}
 {% load i18n %}
+
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Avatar" %}</h4>
 {% endblock %}
 
-
 {% block modalBody %}
-    <img src="{{ avatarpath }}" alt="Avatar" class="center-block">
+    <img src="{{ avatarpath }}" alt="{% trans "Avatar" class="center-block img-fluid">
 {% endblock %}

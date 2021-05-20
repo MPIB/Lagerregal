@@ -2,59 +2,65 @@
 {% load devicetags %}
 {% load i18n %}
 
-{% block title %}{{ actionstring }} {% if object != None %}{{ object }}{% else %}Object{% endif %}{% endblock %}
+{% block title %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
 {% block content %}
-    <div class="col-xs-12 col-md-6 col-md-offset-{% if formhelp %}1{% else %}3{% endif %} well well-lg">
-        {% if form.non_field_errors %}
-            <div class="alert alert-danger">
-                {{ form.non_field_errors }}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-{% if formhelp %}1{% else %}3{% endif %} well well-lg">
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+            <form action="" method="post" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">{% csrf_token %}
+                {% for field in form.visible_fields %}
+                    <div class="form-group row {{ field.css_classes }}">
+                        <label for="{{ field.html_name }}" class="col-lg-3 control-label">
+                            {{ field.label }}{% if field.field.required %}*{% endif %}
+                        </label>
+
+                        <div class="col-lg-9">
+                            {% if field|is_select or field|is_selectmultiple %}
+                                {{ field }}
+                            {% else %}
+                                {{ field|add_class:'form-control' }}
+                            {% endif %}
+                            <p class="text-danger">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for field in form.hidden_fields %}
+                     <div>{{ field }}</div>
+                {% endfor %}
+                <div class="text-right">
+                    <input type="submit" value="{% trans "Submit" %}" class="btn btn-success"/>
+                </div>
+            </form>
+        </div>
+        {% if formhelp %}
+            <div class="col-md-4 col-md-offset-1 well">
+                <h3>{% trans "Help" %}</h3>
+                {% include formhelp %}
             </div>
         {% endif %}
-        <form action="" method="post" class="form-horizontal" enctype="{{ enctype|default:"application/x-www-form-urlencoded" }}">{% csrf_token %}
-            {% for field in form.visible_fields %}
-                <div class="form-group {{ field.css_classes }}">
-                    <label for="{{ field.html_name }}" class="col-lg-3 control-label">
-                        {{ field.label }}{% if field.field.required %}*{% endif %}</label>
-
-                    <div class="col-lg-9">
-                        {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
-                            {{ field|add_class:'form-control' }}{% endif %}
-                        <p class="help-block">
-                            {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}</p>
-                    </div>
-                </div>
-            {% endfor %}
-            {% for field in form.hidden_fields %}
-                 <div style="display:none;">{{ field }}</div>
-            {% endfor %}
-            <input type="submit" value="{% trans "Submit" %}" class="btn btn-success pull-right"/>
-        </form>
     </div>
-    {% if formhelp %}
-        <div class="col-xs-12 col-md-4 col-md-offset-1 well">
-            <h3 style="margin-top:0px">{% trans "Help" %}</h3>
-            {% include formhelp %}
-        </div>
-    {% endif %}
 {% endblock %}
 
 {% block scriptend %}
-    $( "input:text[name=name]" ).keyup(function() {
-        if($(this).val().length > 1) {
+    $("input:text[name=name]").keyup(function() {
+        if ($(this).val().length > 1) {
             $.ajax({
-                type: "POST",
                 url: "{% url "autocomplete-name" %}",
-                data: {'classtype':'{{ type }}', 'name':$(this).val()}
+                data: {'classtype':'{{ type }}', 'name':$(this).val()},
             }).done(function(data){
                 if (data != "") {
-                    if ($("#alternatives").length == 0){
-                        $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' style='margin-top:10px;' class='list-unstyled'></ul></div>")
+                    if ($("#alternatives").length === 0) {
+                        $( "input:text[name=name]" ).after("<div class='alert-danger alert' id='alternativebox'>There seem to be objects with similar name. Do you maybe mean one of those?<ul id='alternatives' class='list-unstyled'></ul></div>");
                     }
-                    $("#alternatives").empty()
+                    $("#alternatives").empty();
                     for (var i=0; i < data.length; i++) {
-                        $("#alternatives").append(data[i])
-                    };
+                        $("#alternatives").append(data[i]);
+                    }
                 } else {
                     $("#alternativebox").remove();
                 }
@@ -62,14 +68,13 @@
         }
     });
 
-    $( "input:text[name=smalldevice]" ).autocomplete({
+    $("input:text[name=smalldevice]").autocomplete({
         minLength: 2,
-        source: function( request, response ) {
+        source: function(request, response) {
             var term = request.term;
             $.ajax({
-                type: "POST",
                 url: "{% url "autocomplete-smalldevice" %}",
-                data: {'name':term}
+                data: {'name':term},
             }).done(response);
         }
     });

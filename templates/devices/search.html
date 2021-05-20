@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n staticfiles devicetags %}
+{% load i18n static devicetags %}
 
 {% block title %}{% trans "Search" %}{% endblock %}
 
@@ -16,35 +16,32 @@
             <button type="submit" class="btn btn-primary btn-block">{% trans "Search" %}</button>
         </div>
     </form>
-    <p>{% trans "Available keys" %}: {{ keys|join:', ' }}</p>
+    <p>{% trans "Available keys" %}: {{ keys|join:", " }}</p>
 
-    <table id="devicetable" class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>{% trans "Name" %}</th>
-                <th>{% trans "Inventorynumber" %}</th>
-                <th>{% trans "Serialnumber" %}</th>
-                <th>{% trans "Devicetype" %}</th>
-                <th>{% trans "Room" %}</th>
-                <th>{% trans "User" %}</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for device in object_list %}
+    {% if searchstring %}
+        <table class="table table-bordered table-striped" data-table data-b-filter="false">
+            <thead>
                 <tr>
-                    <td><a href="{{ device.get_absolute_url }}">{{ device.name }}</a></td>
-                    <td>{{ device.inventorynumber }}</td>
-                    <td>{{ device.serialnumber }}</td>
-                    <td>{{ device.devicetype }}</td>
-                    <td>{{ device.room }}</td>
-                    <td>{{ device.currentlending.owner }}</td>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Inventorynumber" %}</th>
+                    <th>{% trans "Serialnumber" %}</th>
+                    <th>{% trans "Devicetype" %}</th>
+                    <th>{% trans "Room" %}</th>
+                    <th>{% trans "User" %}</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endblock %}
-
-{% block htmlend %}
-    <script type="text/javascript" language="javascript" src="{% static "js/jquery.dataTables.min.js" %}"></script>
-    <script type="text/javascript" language="javascript" src="{% static "js/datatables.bootstrap.js" %}"></script>
+            </thead>
+            <tbody>
+                {% for device in object_list %}
+                    <tr>
+                        <td><a href="{{ device.get_absolute_url }}">{{ device.name }}</a></td>
+                        <td>{{ device.inventorynumber }}</td>
+                        <td>{{ device.serialnumber }}</td>
+                        <td>{{ device.devicetype }}</td>
+                        <td>{{ device.room }}</td>
+                        <td>{{ device.currentlending.owner }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 {% endblock %}

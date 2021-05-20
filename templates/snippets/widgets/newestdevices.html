@@ -8,29 +8,27 @@
 {% block widgetname %}newestdevices{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+    <table class="table" {% if widget.minimized %}hidden{% endif %}>
         <thead>
-        <tr>
-            <th scope="col">{% trans 'Name' %}</th>
-            <th scope="col">{% trans 'Creation date' %}</th>
-            <th scope="col">{% trans 'Creator' %}</th>
-        </tr>
+            <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Creation date' %}</th>
+                <th scope="col">{% trans 'Creator' %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for device in newest_devices %}
-            <tr>
-                <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
-                <td>{{ device.created_at|date:"d.m.y  H:i" }}</td>
-                <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
-            </tr>
-        {% endfor %}
+            {% for device in newest_devices %}
+                <tr>
+                    <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
+                    <td>{{ device.created_at|date:"d.m.y  H:i" }}</td>
+                    <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    <div class="panel-footer">
-    {%  with dep=user.main_department|default:"all" %}
-        <a href="{% url 'device-list' department=dep filter='active' sorting='-created_at' %}"
-           class="pull-right">{% trans "More…" %}</a>
-    {%  endwith %}
-        <div class="clearfix"></div>
+    <div class="card-footer text-right">
+        {% with dep=user.main_department|default:"all" %}
+            <a href="{% url 'device-list' %}?department={{ dep|iriencode }}&filter=active&sorting=-created_at">{% trans "More…" %}</a>
+        {% endwith %}
     </div>
 {% endblock %}

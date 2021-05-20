@@ -1,13 +1,8 @@
-from __future__ import unicode_literals
-
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
-import six
 
-
-@six.python_2_unicode_compatible
 class Section(models.Model):
     name = models.CharField(max_length=200)
 
@@ -17,9 +12,7 @@ class Section(models.Model):
     class Meta:
         verbose_name = _('Section')
         verbose_name_plural = _('Sections')
-        permissions = (
-            ("read_section", _("Can read Section")),
-        )
+        ordering = ["name"]
 
     def get_absolute_url(self):
         return reverse('section-detail', kwargs={'pk': self.pk})

@@ -1,5 +1,6 @@
 {% extends "snippets/modals/baseForm.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
 
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Mark device as returned" %}</h4>
@@ -8,18 +9,19 @@
 {% block modalUrl %}{% url "device-return" device.currentlending.id %}{% endblock %}
 
 {% block modalBody %}
-    <div class="form-group {{ form.room.css_classes }}">
+    <div class="form-group row {{ form.room.css_classes }}">
         <label for="room" class="col-lg-4 control-label">{% trans "Room" %}</label>
 
         <div class="col-lg-8">
             {{ lendform.room }}
-            <p class="help-block">
-                {% if form.room.errors %}{% for error in form.room.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+            <p class="text-danger">
+                {% for error in form.room.errors %}{{ error }}, {% endfor %}
+            </p>
         </div>
     </div>
 {% endblock %}
 
 {% block modalFooter %}
-    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
     <input type="submit" value="{% trans "Submit" %}" class="btn btn-success"/>
 {% endblock %}

@@ -1,24 +1,28 @@
-from __future__ import unicode_literals
-
 import re
 
 from django import forms
+from django.conf import settings
 from django.contrib.auth.models import Group
+from django.db.models import Count
+from django.db.utils import OperationalError
+from django.db.utils import ProgrammingError
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.db.utils import OperationalError, ProgrammingError
-from django.db.models import Count
 
-from django_select2.forms import Select2Widget
 from django_select2.forms import Select2MultipleWidget
+from django_select2.forms import Select2Widget
 
-from network.models import IpAddress
-from devices.models import Device, Type, Room, Manufacturer
-from devicetypes.models import TypeAttribute, TypeAttributeValue
 from devicegroups.models import Devicegroup
-from users.models import Lageruser, Department
+from devices.models import Device
+from devices.models import Manufacturer
+from devices.models import Room
+from devices.models import Type
+from devicetypes.models import TypeAttribute
+from devicetypes.models import TypeAttributeValue
 from mail.models import MailTemplate
-
+from network.models import IpAddress
+from users.models import Department
+from users.models import Lageruser
 
 CHARMODIFIER = (
     ('icontains', _('Contains')),
@@ -27,7 +31,7 @@ CHARMODIFIER = (
     ('iexact', _('Exact'))
 )
 
-VIEWFILTER = (
+CATEGORIES = (
     ('active', _('Active Devices')),
     ('all', _('All Devices')),
     ('available', _('Available Devices')),
@@ -87,16 +91,17 @@ def get_emailrecipientlist(special=None):
     objects = []
 
     if special:
-        objects.append((_("Special"),
-                        [(value, key) for key, value in special.items()]
-        ))
+        objects.append(
+            (_("Special"), [(value, key) for key, value in special.items()])
+        )
 
-    objects.append((_("Groups"),
-                    [("g" + str(group.id), group.name) for group in Group.objects.all().order_by("name")],
-    ))
-    objects.append((_("People"),
-                    [("u" + str(user.id), user) for user in Lageruser.objects.all().order_by("last_name")],
-    ))
+    objects.append(
+        (_("Groups"), [("g" + str(group.id), group.name) for group in Group.objects.all().order_by("name")])
+    )
+    objects.append(
+        (_("People"),
+         [("u" + str(user.id), user) for user in Lageruser.objects.filter(is_active=True).order_by("last_name")])
+    )
     return objects
 
 
@@ -104,8 +109,7 @@ class IpAddressForm(forms.Form):
     error_css_class = 'has-error'
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
-        widget=Select2MultipleWidget(attrs={"style": "width:100%;", "data-token-separators": '[",", " "]'}))
-    device = forms.ModelChoiceField(Device.objects.all())
+        widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))
 
 
 class IpAddressPurposeForm(forms.Form):
@@ -115,21 +119,23 @@ class IpAddressPurposeForm(forms.Form):
 
 class LendForm(forms.Form):
     error_css_class = 'has-error'
-    owner = forms.ModelChoiceField(Lageruser.objects.all(), widget=Select2Widget(attrs={"style": "width:100%;"}),
+    owner = forms.ModelChoiceField(Lageruser.objects.filter(is_active=True).order_by("last_name"),
+                                   widget=Select2Widget(),
                                    label=_("Lent to"))
-    device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(attrs={"style": "width:100%;"}),
+    device = forms.ModelChoiceField(Device.objects.all(), widget=Select2Widget(),
                                     label=_("Device"), required=False)
-    smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control input-sm"}), required=False)
+    smalldevice = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}),
+                                  required=False)
     duedate = forms.DateField(required=False, input_formats=('%Y-%m-%d', '%m/%d/%Y', '%m/%d/%y', '%b %d %Y',
                                                              '%b %d, %Y', '%d %b %Y', '%d %b, %Y', '%B %d %Y',
                                                              '%B %d, %Y', '%d %B %Y', '%d %B, %Y', '%d.%m.%Y',
                                                              '%d.%m.%y'),
-                              widget=forms.TextInput(attrs={"class": "form-control input-sm"}))
+                              widget=forms.TextInput(attrs={"class": "form-control form-control-sm"}))
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
-                                  widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                  widget=Select2Widget())
 
     def clean(self):
-        cleaned_data = super(LendForm, self).clean()
+        cleaned_data = super().clean()
         if "device" in cleaned_data and "smalldevice" in cleaned_data:
             if cleaned_data["device"] and cleaned_data["smalldevice"]:
                 raise forms.ValidationError("can not set both device and smalldevice")
@@ -138,7 +144,7 @@ class LendForm(forms.Form):
         return cleaned_data
 
     def __init__(self, pk=None, *args, **kwargs):
-        super(LendForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         device = None
         try:
             device = Device.objects.filter(pk=pk)[0]
@@ -149,7 +155,6 @@ class LendForm(forms.Form):
             self.fields['duedate'].initial = device.currentlending.duedate
             self.fields['room'].initial = device.room
             self.fields['device'].initial = device
-            print(self.fields['device'].initial)
 
     def clean_device(self):
         device = self.cleaned_data["device"]
@@ -162,59 +167,71 @@ class ReturnForm(forms.Form):
 
 
 class DeviceViewForm(forms.Form):
-    viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-                                   widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                              "class": "pull-right form-control input-sm"}))
-    viewsorting = forms.ChoiceField(choices=VIEWSORTING_DEVICES,
-                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
-    departmentfilter = forms.ChoiceField(choices=get_department_options(),
-                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+    category = forms.ChoiceField(
+        choices=CATEGORIES,
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
+    sorting = forms.ChoiceField(
+        choices=VIEWSORTING_DEVICES,
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
+    department = forms.ChoiceField(
+        choices=get_department_options(),
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
 
 
 class ViewForm(forms.Form):
-    viewsorting = forms.ChoiceField(choices=VIEWSORTING,
-                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+    sorting = forms.ChoiceField(
+        choices=VIEWSORTING,
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
 
 
 class DepartmentViewForm(ViewForm):
-    viewfilter = forms.ChoiceField(choices=VIEWFILTER,
-                                   widget=forms.Select(attrs={"style": "width:200px;margin-left:10px;",
-                                                              "class": "pull-right input-sm form-control"}))
-    departmentfilter = forms.ChoiceField(choices=get_department_options(),
-                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+    category = forms.ChoiceField(
+        choices=CATEGORIES,
+        widget=forms.Select(attrs={"class": "form-control-sm form-control"}),
+    )
+    department = forms.ChoiceField(
+        choices=get_department_options(),
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
 
 
 class FilterForm(forms.Form):
-    filterstring = forms.CharField(max_length=100,
-                                   widget=forms.TextInput(attrs={"style": "width:150px;margin-left:10px;",
-                                                                 "class": "pull-right form-control input-sm",
-                                                                 "placeholder": "Filter"}))
+    filter = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={
+            "class": "form-control form-control-sm",
+            "placeholder": "Filter",
+        }),
+    )
 
 
 class DepartmentFilterForm(FilterForm):
-    departmentfilter = forms.ChoiceField(choices=get_department_options(),
-                                    widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                               "class": "pull-right form-control input-sm"}))
+    department = forms.ChoiceField(
+        choices=get_department_options(),
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
 
 
 class DeviceGroupFilterForm(FilterForm):
-    groupfilter = forms.ChoiceField(choices=get_devicegroup_options(),
-                                         widget=forms.Select(attrs={"style": "width:150px;margin-left:10px;",
-                                                                        "class": "pull-right form-control input-sm"}))
+    group = forms.ChoiceField(
+        choices=get_devicegroup_options(),
+        widget=forms.Select(attrs={"class": "form-control form-control-sm"}),
+    )
 
 
 class DeviceForm(forms.ModelForm):
     error_css_class = 'has-error'
     uses = forms.MultipleChoiceField(choices=Device.objects.none(), required=False,
-                                     widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
+                                     widget=Select2MultipleWidget())
     emailrecipients = forms.MultipleChoiceField(required=False,
-                                                widget=Select2MultipleWidget(attrs={"style": "width:100%;"}))
+                                                widget=Select2MultipleWidget())
     emailtemplate = forms.ModelChoiceField(queryset=MailTemplate.objects.all(), required=False, label=_("Template"),
-                                           widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                           widget=Select2Widget())
     emailedit = forms.BooleanField(required=False, label=_("Edit template"))
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
@@ -222,21 +239,21 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style': "height:80px"}), max_length=1000,
                                   required=False)
     webinterface = forms.URLField(max_length=60, required=False)
-    creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
+    creator = forms.ModelChoiceField(queryset=Lageruser.objects.filter(is_active=True), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
-    devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')).order_by('-size'), required=False,
-                                        widget=Select2Widget(attrs={"style": "width:100%;"}))
+    devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')), required=False,
+                                        widget=Select2Widget())
     manufacturer = forms.ModelChoiceField(Manufacturer.objects.all(), required=False,
-                                          widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                          widget=Select2Widget())
     room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False,
-                                  widget=Select2Widget(attrs={"style": "width:100%;"}))
+                                  widget=Select2Widget())
 
     class Meta:
         model = Device
         exclude = ("archived", "currentlending", "bookmarkers", "inventoried", "trashed")
 
     def clean(self):
-        cleaned_data = super(DeviceForm, self).clean()
+        cleaned_data = super().clean()
         unclean_data = []
         if cleaned_data["emailrecipients"] and not cleaned_data["emailtemplate"]:
             self._errors["emailtemplate"] = self.error_class(
@@ -245,7 +262,7 @@ class DeviceForm(forms.ModelForm):
             if key.startswith("attribute_") and attribute != "":
                 attributenumber = key.split("_")[1]
                 typeattribute = get_object_or_404(TypeAttribute, pk=attributenumber)
-                if re.match(typeattribute.regex, attribute) is None:
+                if typeattribute.regex is not None and re.match(typeattribute.regex, attribute) is None:
                     self._errors[key] = self.error_class(
                         [_("Doesn't match the given regex \"{0}\".".format(typeattribute.regex))])
                     unclean_data.append(key)
@@ -254,18 +271,20 @@ class DeviceForm(forms.ModelForm):
         return cleaned_data
 
     def __init__(self, *args, **kwargs):
-        super(DeviceForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # if edit
         if kwargs["instance"]:
-            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]")))for x in Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in
+                       Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id).order_by("name")]
             self.fields['uses'].choices = CHOICES
             self.initial['uses'] = [x.id for x in Device.objects.filter(used_in=kwargs["instance"].id)]
             self.fields['used_in'].queryset = Device.objects.filter(trashed=None).exclude(pk=kwargs["instance"].id)
 
         # if create
         else:
-            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in Device.objects.filter(used_in=None, trashed=None)]
+            CHOICES = [(x.id, ''.join((x.name, " [", str(x.id), "]"))) for x in
+                       Device.objects.filter(used_in=None, trashed=None).order_by("name")]
             self.fields['uses'].choices = CHOICES
             self.fields['used_in'].queryset = Device.objects.filter(trashed=None)
 
@@ -279,7 +298,7 @@ class DeviceForm(forms.ModelForm):
                 return
 
         elif kwargs["instance"] is not None:
-            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk)
+            attributevalues = TypeAttributeValue.objects.filter(device=kwargs["instance"].pk).order_by("name")
             if kwargs["instance"].devicetype is not None:
                 attributes = TypeAttribute.objects.filter(devicetype=kwargs["instance"].devicetype.pk)
             else:
@@ -309,6 +328,25 @@ class DeviceForm(forms.ModelForm):
                     pass
 
 
+class DeviceFormAutomatic(forms.Form):
+    error_css_class = 'has-error'
+
+    # initial fields
+    name = forms.CharField(max_length=200, required=False)
+    devicetype = forms.ModelChoiceField(Type.objects.filter(automatic_data=True), required=False)
+    department = forms.ModelChoiceField(Department.objects.filter(short_name__isnull=False), required=False)
+    operating_system = forms.ChoiceField(choices=settings.OPERATING_SYSTEMS)
+
+    # optional fields
+    serialnumber = forms.CharField(max_length=100, required=False)
+    inventorynumber = forms.CharField(max_length=100, required=False)
+    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
+    ipaddresses = forms.ModelMultipleChoiceField(
+        IpAddress.objects.filter(device=None, user=None),
+        required=False,
+        widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))
+
+
 class AddForm(forms.ModelForm):
     error_css_class = 'has-error'
     classname = forms.ChoiceField(
@@ -316,7 +354,7 @@ class AddForm(forms.ModelForm):
         widget=forms.HiddenInput())
 
     def clean(self):
-        cleaned_data = super(AddForm, self).clean()
+        cleaned_data = super().clean()
         if cleaned_data["classname"] == "manufacturer":
             count = Manufacturer.objects.filter(name=cleaned_data["name"]).count()
         elif cleaned_data["classname"] == "devicetype":
@@ -332,11 +370,11 @@ class AddForm(forms.ModelForm):
 
 class DeviceMailForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        super(DeviceMailForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["emailrecipients"].choices = get_emailrecipientlist()
 
     error_css_class = 'has-error'
-    emailrecipients = forms.MultipleChoiceField()
+    emailrecipients = forms.MultipleChoiceField(widget=Select2MultipleWidget())
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))

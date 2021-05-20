@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+{% load devicetags %}
+{% load i18n %}
+{% load static %}
+{% load usertags %}
+
+{% block title %}{{ device.name }}{% endblock %}
+
+{% block header %}
+    {% trans "Device" %}: {{ device.name }}
+{% endblock %}
+
+{% block pullright %}
+    {% has_perm 'devices.change_device' user device as can_change_device %}
+    {% has_perm 'devices.add_device' user device as can_add_device %}
+    {% has_perm 'devices.delete_device' user device as can_delete_device %}
+    {% has_perm 'devices.lend_device' user device as can_lend_device %}
+
+    {% if device.archived == None and device.trashed == None %}
+        {% if can_lend_device %}
+            {% if device.currentlending != None %}
+                <a href="{% url "device-lend" device.pk %}" class="btn btn-success btn-sm">
+                    {% trans "Edit lending information" %}
+                </a>
+                <a href="#" data-target="#returnModal" data-toggle="modal" class="btn btn-success btn-sm">
+                    <i class="fa fa-check"></i> {% trans "returned" %}
+                </a>
+            {% else %}
+                <a href="#" data-target="#lendModal" data-toggle="modal" class="btn btn-success btn-sm">
+                    <i class="fa fa-check"></i> {% trans "Lend" %}
+                </a>
+            {% endif %}
+        {% endif %}
+
+        {% if can_lend_device %}
+            <a href="#" class="btn btn-primary btn-sm" data-target="#mailModal" data-toggle="modal">
+                <i class="fa fa-envelope"></i> {% trans "Send Mail" %}
+            </a>
+        {% endif %}
+
+        {% if can_change_device %}
+            <a href="{% url 'device-edit' device.id %}" class="btn btn-primary btn-sm">
+                <i class="fa fa-pencil"></i> {% trans "Edit" %}
+            </a>
+            <form action="{% url "device-bookmark" object.id %}" method="post" class="d-inline-block">
+                {% csrf_token %}
+                {% with is_bookmarked=device|check_bookmark:user %}
+                    {% if is_bookmarked %}
+                        <button type='submit' class='btn btn-success btn-sm'>
+                            <i class="fa fa-bookmark"></i> {% trans "Remove Bookmark" %}
+                        </button>
+                    {% else %}
+                        <button type='submit' class='btn btn-success btn-sm'>
+                            <i class="fa fa-bookmark-o"></i> {% trans "Bookmark" %}
+                        </button>
+                    {% endif %}
+                {% endwith %}
+            </form>
+        {% endif %}
+
+        <div class="btn-group">
+            <button type="button" class="btn btn-secondary dropdown-toggle btn-sm" data-toggle="dropdown">
+                {% trans "Manage" %}
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                {% if display_printbutton %}
+                    <li>
+                        <a class="dropdown-item" href="#" data-target="#printDymoModal" data-toggle="modal">
+                            <i class="fa fa-print"></i> {% trans "Print Label" %}
+                        </a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a class="dropdown-item" href="#" data-target="#pictureModal" data-toggle="modal">
+                        <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
+                    </a>
+                </li>
+                {% if can_change_device %}
+                    <li>
+                        <a class="dropdown-item" href="{% url "device-inventoried" device.id %}">
+                            <i class="fa fa-check"></i> {% trans "Inventoried" %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if can_add_device %}
+                    <li>
+                        <a class="dropdown-item" href="{% url 'device-add-copy' device.id %}">
+                            <i class="fa fa-copy"></i> {% trans "Create Copy" %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if can_change_device or can_delete_device %}
+                    <li class="dropdown-divider"></li>
+                {% endif %}
+                {% if can_change_device %}
+                    <li>
+                        <form action="{% url "device-storage" object.id %}" method="post"
+                              data-confirm="{% trans "Are you sure?" %}">
+                            {% csrf_token %}
+                            <button class="dropdown-item"><i class="fa fa-folder"></i> {% trans "Move to storage" %}
+                            </button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="{% url "device-archive" object.id %}" method="post"
+                              data-confirm="{% trans "Are you sure?" %}">
+                            {% csrf_token %}
+                            <button class="dropdown-item"><i class="fa fa-folder"></i> {% trans "Archive" %}</button>
+                        </form>
+                    </li>
+                    <li>
+                        <form action="{% url "device-trash" object.id %}" method="post"
+                              data-confirm="{% trans "Are you sure?" %} {% if object.used_in %}This object is still used in {{ object.used_in }}.{% elif usedset %}This object still uses {{ usedset|join:"," }}.{% endif %}"
+                              class="form-inline">
+                            {% csrf_token %}
+                            <button class="dropdown-item"><i class="fa fa-trash-o"></i> {% trans "Trash" %}</button>
+                        </form>
+                    </li>
+                {% endif %}
+                {% if can_change_device %}
+                    <li>
+                        <form action="{% url "device-delete" object.id %}" method="post"
+                              data-confirm="{% trans "Are you sure?" %}">
+                            {% csrf_token %}
+                            <button class="dropdown-item"><i class="fa fa-times"></i> {% trans "Delete" %}</button>
+                        </form>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    {% else %}
+        {% if can_change_device and device.archived != None %}
+            <form action="{% url "device-archive" object.id %}" method="post" data-confirm="{% trans "Are you sure?" %}"
+                  class="d-inline-block">
+                {% csrf_token %}
+                <button class="btn btn-success btn-sm"><i class="fa fa-folder-open"></i> {% trans "Unarchive" %}
+                </button>
+            </form>
+        {% endif %}
+
+        {% if can_change_device and device.trashed != None %}
+            <form action="{% url "device-trash" object.id %}" method="post" data-confirm="{% trans "Are you sure?" %}"
+                  class="d-inline-block">
+                {% csrf_token %}
+                <button class="btn btn-success btn-sm"><i class="fa fa-folder-open"></i> {% trans "Remove from Trash" %}
+                </button>
+            </form>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% has_perm 'devices.change_device' user device as can_change_device %}
+    {% has_perm 'devices.add_device' user device as can_add_device %}
+    {% has_perm 'devices.delete_device' user device as can_delete_device %}
+    {% has_perm 'devices.lend_device' user device as can_lend_device %}
+    {% has_perm 'devices.view_devicedetails' user device as can_view_devicedetails %}
+    <div x-data="deviceDetail()" x-init="onLoad()">
+    <div class="row">
+        <div class="col-md-4">
+            <h5 id="manual_details_header">{% trans "Manual Data" %}</h5>
+            <table class="table table-bordered table-striped">
+                <tbody>
+                <tr>
+                    <td>{% trans "Lagerregal ID" %}</td>
+                    <td>{{ device.pk }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Inventorynumber" %}</td>
+                    <td>{{ device.inventorynumber }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Serialnumber" %}</td>
+                    <td>{{ device.serialnumber }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Hostname" %}</td>
+                    <td>{{ device.hostname }}</td>
+                </tr>
+                <tr>
+                    <td>{% trans "Devicetype" %}</td>
+                    <td>
+                        {% if device.devicetype %}
+                            <a href="{% url 'type-detail' device.devicetype.pk %}">{{ device.devicetype }}</a>
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Manufacturer" %}</td>
+                    <td>
+                        {% if device.manufacturer %}
+                            <a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">{{ device.manufacturer }}</a>
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                </tr>
+                <tr>
+                    <td>{% trans "Room" %}</td>
+                    <td>
+                        {% if device.room %}
+                            <a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}</a>
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if device.used_in %}
+                    <tr>
+                        <td>{% trans "Used in" %}</td>
+                        <td><a href="{% url "device-detail" device.used_in.pk %}">{{ device.used_in }}</a></td>
+                    </tr>
+                {% endif %}
+                {% if usedset %}
+                    <tr>
+                        <td>{% trans "Uses" %}</td>
+                        <td>
+                            {% for element in usedset %}
+                                <a href="{% url "device-detail" element.pk %}">{{ element }}</a><br/>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>{% trans "Devicegroup" %}</td>
+                    <td>
+                        {% if device.group %}
+                            <a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}</a>
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Department" %}</td>
+                    <td>
+                        {% if device.department %}
+                            {{ device.department }}
+                        {% else %}
+                            &mdash;
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>{% trans "Short term device" %}</td>
+                    <td>
+                        {% if device.templending %}
+                            <i class="fa fa-check-circle text-success"></i>
+                        {% else %}
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if device.manual %}
+                    <tr>
+                        <td>{% trans "Manual" %}</td>
+                        <td>
+                            <a href="{{ device.manual.url }}">
+                                {% with filename=device.manual|filename|splitstr:'.'|last %}
+                                    {{ device.name|add:'.'|add:filename }}
+                                {% endwith %}
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if device.contact %}
+                    <tr>
+                        <td>{% trans "Contact" %}</td>
+                        <td><a href="{% url 'userprofile' device.contact.pk %}">{{ device.contact }}</a></td>
+                    </tr>
+                {% endif %}
+                {% if device.creator %}
+                    <tr>
+                        <td>{% trans "Created by" %}</td>
+                        <td><a href="{% url 'userprofile' device.creator.pk %}">{{ device.creator }}</a></td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>{% trans "Last edited" %}</td>
+                    <td>
+                        {% if lastedit != None %}
+                            <a href="{% url 'history-detail' lastedit.pk %}">{{ lastedit.revision.date_created }}</a> by
+                            {{ lastedit.revision.user }}
+                        {% else %}
+                            {% trans "Not edited yet" %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if device.trashed %}
+                    <tr>
+                        <td>{% trans "Trashed on" %}</td>
+                        <td>{{ device.trashed }}</td>
+                    </tr>
+                {% endif %}
+                {% if device.inventoried %}
+                    <tr>
+                        <td>{% trans "Last inventoried on" %}</td>
+                        <td>{{ device.inventoried }}</td>
+                    </tr>
+                {% endif %}
+                {% for attributevalue in attributevalue_list %}
+                    <tr>
+                        <td>{{ attributevalue.typeattribute.name }}</td>
+                        <td>{{ attributevalue }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+            {% include "devices/detail/device_lending_info.html" %}
+        </div>
+        <div class="col-md-5">
+            <div x-show="provided_data.length > 0">
+                <h5 id="automatic_details_header">{% trans "Automatic Data" %}
+                    <span class="pull-right text-muted small">from <span x-text="storedAt()"></span> ago</span></h5>
+                <table id="automatic_details_table" class="table table-bordered table-striped">
+                    <tbody>
+                    <template  x-for="entry in provided_data" :key="entry">
+                        <tr>
+                            <td x-text="entry.name"></td>
+                            <td x-html="entry.value"></td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+            </div>
+            {% if device.pictures.count > 0 %}
+                {% include "devices/detail/device_pictures.html" %}
+            {% endif %}
+
+
+            {% if device.webinterface != "" %}
+                <a href="{{ device.webinterface }}" target="_blank">{% trans "Go to webinterface" %}</a>
+            {% endif %}
+
+            {% if device.description %}
+                <h4>{% trans "Description" %}</h4>
+                {{ device.description|linebreaks }}
+            {% endif %}
+        </div>
+        <div class="col-md-3">
+            {% include "devices/detail/device_ipaddress_card.html" %}
+
+            {% include "devices/detail/device_tags_card.html" %}
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs my-3">
+        {% if can_change_device %}
+            <li class="nav-item"><a class="nav-link active" href="#notes" data-toggle="tab">{% trans "Notes" %}</a></li>
+        {% endif %}
+        {% if can_lend_device %}
+            <li class="nav-item"><a class="nav-link" href="#lending" data-toggle="tab">{% trans "Lending history" %}</a>
+            </li>
+        {% endif %}
+        {% if can_change_device %}
+            <li class="nav-item"><a class="nav-link" href="#edit" data-toggle="tab">{% trans "Edit history" %}</a></li>
+        {% endif %}
+        {% if can_lend_device %}
+            <li class="nav-item"><a class="nav-link" href="#mail" data-toggle="tab">{% trans "Mail history" %}</a></li>
+        {% endif %}
+        {% if can_view_devicedetails %}
+            <li class="nav-item"><a class="nav-link" href="#devicedetails"
+                                    data-toggle="tab">{% trans "Device Stats" %}</a></li>
+            <li class="nav-item"><a class="nav-link" href="#software" data-toggle="tab">{% trans "Software" %}</a></li>
+        {% endif %}
+    </ul>
+
+    <div class="tab-content">
+        {% if can_change_device %}
+            <div class="tab-pane fade show active" id="notes">
+                {% include "devices/detail/device_notes_tab.html" %}
+            </div>
+        {% endif %}
+        {% if can_change_device %}
+            <div class="tab-pane fade" id="lending">
+                {% include "devices/detail/device_lending_tab.html" %}
+            </div>
+        {% endif %}
+
+        {% if can_change_device %}
+            <div class="tab-pane fade" id="edit">
+                {% include "devices/detail/device_history_tab.html" %}
+            </div>
+        {% endif %}
+
+        {% if can_lend_device %}
+            <div class="tab-pane fade" id="mail">
+                {% include "devices/detail/device_mail_tab.html" %}
+            </div>
+        {% endif %}
+
+        {% if can_view_devicedetails %}
+            <div class="tab-pane fade" id="devicedetails">
+                <h4>{% trans "Device data from backend providers" %}</h4>
+                {% include "devicedata/device_info_json.html" %}
+            </div>
+            <div class="tab-pane fade" id="software">
+                <h4>{% trans "Installed software from backend providers" %}</h4>
+                <div id="softwaredetails">
+                    <i class="fa fa-spinner fa-spin"></i> {% trans "Loading Software List..." %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}
+
+{% block htmlend %}
+    {% has_perm 'devices.lend_device' user device as can_lend_device %}
+
+    {% if can_lend_device %}
+        {% include "snippets/modals/lending.html" with modalname="lendModal" %}
+        {% if device.currentlending %}
+            {% include "snippets/modals/lendingReturn.html" with modalname="returnModal" %}
+        {% endif %}
+
+        {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
+        {% include "snippets/modals/deviceImageModal.html" with modalname="pictureModal" %}
+    {% endif %}
+
+
+    {% if display_printbutton %}
+        {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=label_path %}
+    {% endif %}
+{% endblock %}
+
+{% block scriptend %}
+    {% include "devices/detail/device_detail.js" with device_id=device.id provided_data=provided_data %}
+    $(function() {
+        $("#id_ipaddresses").on("change", function(e) {
+            if ($(this).val()) {
+                $("#submitipaddress").removeClass("disabled");
+            } else {
+                $("#submitipaddress").addClass("disabled");
+            }
+        });
+
+        $("#id_tags").on("change", function(e) {
+            if ($(this).val()) {
+                $("#submittags").removeClass("disabled");
+            } else {
+                $("#submittags").addClass("disabled");
+            }
+        });
+
+        $("#id_mailtemplate").change(function() {
+            if ($(this).val() !== "") {
+                $.ajax({
+                    url: "{% url "load-mailtemplate" %}",
+                    data: {"template":$(this).val(), "recipients":$("#id_emailrecipients").val()},
+                }).done(function(data) {
+                    $("#id_emailsubject").val(data.subject);
+                    $("#id_emailbody").val(data.body);
+                    $('#id_emailrecipients').val(data.recipients);
+                });
+            }
+        });
+
+        $(document).on('click', '.dropdown-cancel', function(e) {
+            e.stopPropagation();
+        });
+
+        $(document).on('click', '.delete-picture', function(e) {
+            var picture_id = e.target.id.replace("picture", "");
+            var url = "{% url "device-api-picture" device.pk 0 %}".replace("pictures/0", "pictures/" + picture_id);
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function() {
+                    var row = e.target.parentNode.parentNode;
+                    var modalBody = row.parentNode;
+                    modalBody.removeChild(row);
+                },
+            });
+        });
+
+        $(document).on('click', '.rotate-picture-right', function(e) {
+            rotate_and_reload(this, "right");
+        });
+        $(document).on('click', '.rotate-picture-left', function(e) {
+            rotate_and_reload(this, "left");
+        });
+
+        function rotate_and_reload(target, direction){
+            var picture_id = target.id.replace("picture", "")
+            var url = "{% url "device-api-picture-rotate" device.pk 0 "placeholder" %}".replace("pictures/0", "pictures/"+picture_id).replace("placeholder", direction);
+            $.ajax({
+                url: url,
+                type: 'PATCH',
+                success: function(data) {
+                    var d = new Date();
+                    img = target.parentElement.parentElement.getElementsByTagName('img')[0];
+                    if (data.new_source.length) {
+                        // image was converted to png
+                        img.src = img.src.replace(data.old_source, data.new_source);
+                    } else {
+                        // force cache invalidation and reload
+                        img.src = img.src.split("?")[0] + '?' + d.getTime();
+                    }
+                },
+            });
+        }
+
+    $("#softwaredetails").load("{% url "device-software" device.pk %}");
+    });
+{% endblock %}

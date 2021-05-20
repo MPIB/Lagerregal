@@ -1,4 +1,5 @@
 *.pyc
+*.mo
 database.db
 mails/
 .spyderproject
@@ -6,7 +7,6 @@ mails/
 .idea/
 *.pyo
 newrelic.ini
-settings.py
 *.label
 .coverage
 htmlcov/
@@ -17,3 +17,7 @@ media/
 scripts/
 exports/
 backup/
+node_modules/
+/Pipfile
+/Pipfile.lock
+/venv

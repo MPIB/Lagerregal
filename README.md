@@ -23,7 +23,7 @@ Features
 + Generates and prints Dymo labels from templates for inventory stickers
 + Manage static IP addresses for legacy network environments
 + Semi-Automatic e-mail delivery (on lending, trashing etc)
-+ Optional query and listing for puppet facts of a device
++ Optional query and listing for puppet facts or opsi details of a device
 + Permission system for users and public device lists
 + Themable with bootswatch
 
@@ -47,7 +47,8 @@ Manual Quickstart
 Install necessary requirements (either globally or with virtualenv)
 
 ```
-$ pip install -U -r dependencies.txt
+$ pip install -U -r requirements.txt
+$ npm install
 ```
 
 Generate settings.py
@@ -63,6 +64,11 @@ For production (edit first):
 $ cp Lagerregal/template_production.py Lagerregal/settings.py
 ```
 
+Compile translations:
+```
+$ python manage.py compilemessages -l de
+```
+
 Run:
 
 ```
@@ -74,6 +80,11 @@ Optional (not optional for production):
 
 ```
 $ python generate_secret_key.py
+```
+
+Generate sample data:
+```
+$ python manage.py populate
 ```
 
 Label Printing

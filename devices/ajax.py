@@ -1,40 +1,30 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import json
 
-try:
-    import urllib.parse as urllib
-    import http.client as httplib
-    from http.client import ssl
-except ImportError:
-    import urllib
-    import httplib
-    from httplib import ssl
-
-import six
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
 from django.forms.models import modelform_factory
-from django.template.loader import render_to_string
-from django.views.generic.base import View
 from django.http import HttpResponse
-import pystache
 from django.http import QueryDict
-from django.shortcuts import render
-from django.conf import settings
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.views.generic.base import View
 
-from devices.models import Device, Room, Building, Manufacturer, Lending
-from users.models import Lageruser
-from mail.models import MailTemplate
-from devicetypes.models import Type
-from devices.forms import AddForm
+import pystache
+
 from devicegroups.models import Devicegroup
+from devices.forms import AddForm
+from devices.models import Building
+from devices.models import Device
+from devices.models import Lending
+from devices.models import Manufacturer
+from devices.models import Room
+from devicetypes.models import Type
+from mail.models import MailTemplate
+from users.models import Lageruser
 
 
 class AutocompleteDevice(View):
-    def post(self, request):
-        name = request.POST["name"]
+    def get(self, request):
+        name = request.GET["name"]
         devices = Device.objects.filter(name__icontains=name).values("name").distinct()[:20]
         results = []
         for device in devices:
@@ -47,8 +37,8 @@ class AutocompleteDevice(View):
 
 
 class AutocompleteSmallDevice(View):
-    def post(self, request):
-        name = request.POST["name"]
+    def get(self, request):
+        name = request.GET["name"]
         devices = Lending.objects.filter(smalldevice__icontains=name).values("smalldevice").distinct()
         results = []
         for device in devices:
@@ -59,9 +49,9 @@ class AutocompleteSmallDevice(View):
 
 
 class AutocompleteName(View):
-    def post(self, request):
-        name = request.POST["name"]
-        classtype = request.POST["classtype"]
+    def get(self, request):
+        name = request.GET["name"]
+        classtype = request.GET["classtype"]
         if classtype == "type":
             objects = Type.objects.filter(name__icontains=name)[:20]
             urlname = "type-detail"
@@ -80,9 +70,11 @@ class AutocompleteName(View):
         else:
             return HttpResponse("")
         if len(objects) > 0:
-            retobjects = ["<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
-                reverse(urlname, kwargs={"pk": obj[0]}), obj[1].decode('utf-8'))
-                          for obj in objects.values_list("pk", "name")]
+            retobjects = [
+                "<li><a href='{0}'  class='alert-link'>{1}</a></li>".format(
+                    reverse(urlname, kwargs={"pk": obj[0]}), obj[1]
+                ) for obj in objects.values_list("pk", "name")
+            ]
             return HttpResponse(json.dumps(retobjects), content_type='application/json')
         else:
             return HttpResponse("")
@@ -90,7 +82,7 @@ class AutocompleteName(View):
 
 class AddDeviceField(View):
     def post(self, request):
-        dform = QueryDict(query_string=six.text_type(request.POST["form"]).encode('utf-8'))
+        dform = QueryDict(query_string=str(request.POST["form"]).encode('utf-8'))
         classname = dform["classname"]
         if classname == "manufacturer":
             form = modelform_factory(Manufacturer, exclude=(), form=AddForm)(dform)
@@ -128,14 +120,13 @@ class AddDeviceField(View):
                 data["name"] = newitem.name
                 data["classname"] = classname
         else:
-            print(form.errors)
             data["error"] = "Error: {0}".format(form.non_field_errors())
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 class LoadExtraform(View):
-    def post(self, request):
-        classname = request.POST["classname"]
+    def get(self, request):
+        classname = request.GET["classname"]
         if classname == "manufacturer":
             form = modelform_factory(Manufacturer, exclude=(), form=AddForm)()
         elif classname == "devicetype":
@@ -151,21 +142,21 @@ class LoadExtraform(View):
 
 
 class PreviewMail(View):
-    def post(self, request):
-        template = request.POST["template"]
+    def get(self, request):
+        template = request.GET["template"]
         device = {
-            "currentlending": request.POST.get("device[currentlending]", ""),
-            "description": request.POST.get("device[description]", ""),
-            "devicetype": request.POST.get("device[devicetype]", ""),
-            "group": request.POST.get("device[group]", ""),
-            "hostname": request.POST.get("device[hostname]", ""),
-            "inventorynumber": request.POST.get("device[inventorynumber]", ""),
-            "manufacturer": request.POST.get("device[manufacturer]", ""),
-            "name": request.POST.get("device[name]", ""),
-            "room": request.POST.get("device[room]", ""),
-            "serialnumber": request.POST.get("device[serialnumber]", ""),
-            "templending": request.POST.get("device[templending]", ""),
-            "webinterface": request.POST.get("device[webinterface]", "")
+            "currentlending": request.GET.get("device[currentlending]", ""),
+            "description": request.GET.get("device[description]", ""),
+            "devicetype": request.GET.get("device[devicetype]", ""),
+            "group": request.GET.get("device[group]", ""),
+            "hostname": request.GET.get("device[hostname]", ""),
+            "inventorynumber": request.GET.get("device[inventorynumber]", ""),
+            "manufacturer": request.GET.get("device[manufacturer]", ""),
+            "name": request.GET.get("device[name]", ""),
+            "room": request.GET.get("device[room]", ""),
+            "serialnumber": request.GET.get("device[serialnumber]", ""),
+            "templending": request.GET.get("device[templending]", ""),
+            "webinterface": request.GET.get("device[webinterface]", "")
         }
         if template == "":
             return HttpResponse("")
@@ -198,14 +189,14 @@ class PreviewMail(View):
 
 class LoadMailtemplate(View):
 
-    def post(self, request):
-        template = request.POST["template"]
-        recipients = request.POST.get("recipients[]", [])
+    def get(self, request):
+        template = request.GET["template"]
+        recipients = request.GET.get("recipients[]", [])
         if template == "":
             return HttpResponse("")
         template = get_object_or_404(MailTemplate, pk=template)
         data = {"subject": template.subject, "body": template.body}
-        if isinstance(recipients, six.text_type):
+        if isinstance(recipients, str):
             recipients = [recipients]
         newrecipients = [obj for obj in recipients]
         newrecipients += [obj.content_type.name[0].lower() + str(obj.object_id) for obj in
@@ -216,78 +207,44 @@ class LoadMailtemplate(View):
 
 
 class UserLendings(View):
-    def post(self, request):
-        user = request.POST["user"]
+    def get(self, request):
+        user = request.GET["user"]
         if user == "":
             return HttpResponse("")
         user = get_object_or_404(Lageruser, pk=user)
         data = {}
-        data["devices"] = [[device["device__name"] if device["device__name"] else device["smalldevice"],
-                            device["device__inventorynumber"], device["device__serialnumber"],
-                            device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "", device["pk"]]
-                           for device in user.lending_set.filter(returndate=None).values("pk", "device__name",
-                                                                                         "device__inventorynumber",
-                                                                                         "device__serialnumber",
-                                                                                         "smalldevice", "duedate")]
+        data["devices"] = [
+            [
+                device["device__name"] if device["device__name"] else device["smalldevice"],
+                device["device__inventorynumber"],
+                device["device__serialnumber"],
+                device["duedate"].strftime("%d.%m.%y") if device["duedate"] else "",
+                device["pk"],
+            ]
+            for device in user.lending_set.filter(returndate=None).values(
+                "pk", "device__name", "device__inventorynumber",
+                "device__serialnumber", "smalldevice", "duedate",
+            )
+        ]
 
         return HttpResponse(json.dumps(data), content_type='application/json')
 
 
-class PuppetDetails(View):
+class InitializeAutomaticDevice(View):
 
     def post(self, request):
-        searchvalue = request.POST["id"]
-        params = urllib.urlencode({'query': '["in", "certname",["extract", "certname",'
-                                            + '["select_facts",["and",["=", "name","'
-                                            + settings.PUPPETDB_SETTINGS['query_fact'] + '"],'
-                                            + '["=","value","' + searchvalue + '"]]]]]'})
-        context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
-        context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
-                                keyfile=settings.PUPPETDB_SETTINGS['key'])
-        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
-                                       settings.PUPPETDB_SETTINGS['port'],
-                                       context=context)
-        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
-        res = conn.getresponse()
-        if res.status != httplib.OK:
-            return HttpResponse('Failed to fetch puppet details from '
-                                    + settings.PUPPETDB_SETTINGS['host'])
-        context = {
-            'puppetdetails': json.loads(res.read().decode('utf-8'))
-        }
-        return render(request, 'devices/puppetdetails.html', context)
+        print(request.POST)
+        device = Device()
+        device.name = request.POST["name"]
+        device.department_id = request.POST["department"]
+        device.devicetype_id = request.POST["device_type"]
+        device.operating_system = request.POST["operating_system"]
+        device.creator = self.request.user
+        device.save()
+        device.hostname = "{0}-{1}-{2:06d}".format(device.department.short_name, request.POST["operating_system"], device.pk)
+        device.save()
 
-
-class PuppetSoftware(View):
-
-    def post(self, request):
-        searchvalue = request.POST["id"]
-        software_fact = settings.PUPPETDB_SETTINGS['software_fact']
-        query_fact = settings.PUPPETDB_SETTINGS['query_fact']
-
-        params = urllib.urlencode({'query': '["and", [ "=", "name", "' + software_fact + '"],'
-                                            + '["in", "certname",["extract", "certname",'
-                                            + '["select_facts",["and",["=", "name","' + query_fact + '"],'
-                                            + '["=","value","' + searchvalue + '"]]]]]]'})
-        context = ssl.create_default_context(cafile=settings.PUPPETDB_SETTINGS['cacert'])
-        context.load_cert_chain(certfile=settings.PUPPETDB_SETTINGS['cert'],
-                                keyfile=settings.PUPPETDB_SETTINGS['key'])
-        conn = httplib.HTTPSConnection(settings.PUPPETDB_SETTINGS['host'],
-                                       settings.PUPPETDB_SETTINGS['port'],
-                                       context=context)
-        conn.request("GET", settings.PUPPETDB_SETTINGS['req'] + params)
-        res = conn.getresponse()
-        if res.status != httplib.OK:
-            return HttpResponse('Failed to fetch puppet details from '
-                                + settings.PUPPETDB_SETTINGS['host'])
-
-        try:
-            res = json.loads(res.read().decode('utf-8'))[0]
-            software = res['value']
-            context = {
-                'puppetsoftware': list(software.values())
-            }
-        except:
-            return HttpResponse('Malformed puppet software fact.')
-
-        return render(request, 'devices/puppetsoftware.html', context)
+        return HttpResponse(json.dumps({
+            "id": device.id,
+            "hostname": device.hostname
+        }), content_type='application/json')

@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div id="devicedetailsentry">
+    <div x-show="raw_provided_data.length == 0"><i class="fa fa-spinner fa-spin"></i> {% trans "Loading Device Details..." %}</div>
+    <table class="table table-bordered table-striped table-wrapped" x-show="raw_provided_data.length > 0">
+        <thead>
+            <tr>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Data" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <template x-for="entry in raw_provided_data" :key="entry">
+                <tr>
+                    <td class="devicedetails_type" x-text="entry.type"></td>
+                    <td class="devicedetails_name" x-text="entry.name"></td>
+                    <td class="devicedetails_value" x-html="entry.raw_value"></td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</div>

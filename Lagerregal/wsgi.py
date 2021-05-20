@@ -13,21 +13,19 @@ middleware here, or combine a Django application with an application of another
 framework.
 
 """
-from __future__ import unicode_literals
 
 import os
 import sys
+
+from django.core.wsgi import get_wsgi_application
 
 path = '/opt/lagerregal'
 if path not in sys.path:
     sys.path.append(path)
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "Lagerregal.settings")
-
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
-from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 
 # Apply WSGI middleware here.

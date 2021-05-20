@@ -1,7 +1,6 @@
-from __future__ import unicode_literals
-
 import uuid
-from datetime import date, timedelta
+from datetime import date
+from datetime import timedelta
 
 from django.conf import settings
 from django.test.runner import DiscoverRunner
@@ -29,8 +28,11 @@ def get_file_location(instance=None, filename=""):
         destination += instance.__class__.__name__.lower()
 
     destination += "/"
-    ext = filename.split(".")[-1]
-    destination += "{0}.{1}".format(uuid.uuid4(), ext)
+    if settings.PRODUCTION:
+        ext = filename.split(".")[-1]
+        destination += "{0}.{1}".format(uuid.uuid4(), ext)
+    else:
+        destination += filename
 
     return destination
 
@@ -57,4 +59,4 @@ def convert_ad_accountexpires(timestamp):
 class DetectableTestRunner(DiscoverRunner):
     def __init__(self, *args, **kwargs):
         settings.TEST_MODE = True
-        super(DetectableTestRunner, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)

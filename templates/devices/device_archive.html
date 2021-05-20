@@ -1,22 +1,27 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{% trans "Archive" %} {{ object.name }}{% endblock %}
 
-{% block header %}
-{% endblock %}
+{% block header %}{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="small-12 large-6 large-centered columns">
-            <div class="alert alert-danger">Do you really want to {% if object.archived != None %}un{% endif %}archive
-                the {% get_verbose_name object %}: {{ object }}?
+            <div class="alert alert-danger">
+                {% get_verbose_name object as verbose_name %}
+                {% if object.archived %}
+                    {% blocktrans %}Do you really want to unarchive the {{ verbose_name }}: {{ object }}?{% endblocktrans %}
+                {% else %}
+                    {% blocktrans %}Do you really want to archive the {{ verbose_name }}: {{ object }}?{% endblocktrans %}
+                {% endif %}
             </div>
-            <form action="" method="post" class="form-horizontal">{% csrf_token %}
-                <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger"
-                   style="margin-right:10px;">{% trans "No" %}</a><input type="submit" value="{% trans "Yes" %}"
-                                                                         class="btn btn-sm btn-success"/>
+            <form action="" method="post">
+                {% csrf_token %}
+                <a href="{{ object.get_absolute_url }}" class="btn btn-sm btn-danger">{% trans "No" %}</a>
+                <input type="submit" value="{% trans "Yes" %}" class="btn btn-sm btn-success"/>
             </form>
-
         </div>
     </div>
 {% endblock %}

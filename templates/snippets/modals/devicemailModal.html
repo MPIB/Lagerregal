@@ -1,5 +1,7 @@
 {% extends "snippets/modals/baseForm.html" %}
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
+
 {% block modalHeader %}
     {% trans "Send mail to user" %}
 {% endblock %}
@@ -8,21 +10,24 @@
 
 {% block modalBody %}
     {% for field in mailform %}
-        <div class="form-group {{ field.css_classes }}">
+        <div class="form-group row {{ field.css_classes }}">
             <label for="{{ field.html_name }}" class="col-lg-4 control-label">
-                {{ field.label }}{% if field.field.required %}*{% endif %}</label>
+                {{ field.label }}{% if field.field.required %}*{% endif %}
+            </label>
 
             <div class="col-lg-8">
-                {% if field|is_select or field|is_selectmultiple %}{{ field }}{% else %}
-                    {{ field|add_class:'form-control' }}{% endif %}
-                <p class="help-block">
-                    {% if field.errors %}{% for error in field.errors %}{{ error }}, {% endfor %}{% endif %}</p>
+                {% if field|is_select or field|is_selectmultiple %}
+                    {{ field }}
+                {% else %}
+                    {{ field|add_class:'form-control' }}
+                {% endif %}
+                <p class="text-danger">{% for error in field.errors %}{{ error }}, {% endfor %}</p>
             </div>
         </div>
     {% endfor %}
 {% endblock %}
 
 {% block modalFooter %}
-    <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans "Close" %}</button>
     <input type="submit" value="{% trans "Send" %}" class="btn btn-success"/>
 {% endblock %}

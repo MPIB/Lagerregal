@@ -1,12 +1,14 @@
-{% load i18n %}{% load devicetags %}
+{% load i18n %}
+{% load devicetags %}
+
 <div class="modal fade" id="{{ modalname }}" role="dialog" aria-labelledby="{{ modalname }}Label" aria-hidden="true">
     <div class="modal-dialog {% block cssClasses %}{% endblock %}">
         <div class="modal-content">
-            <form action="{% block modalUrl %}{% endblock %}" method="post" class="form-horizontal"
+            <form action="{% block modalUrl %}{% endblock %}" method="post"
                   id="{{ modalname }}-form">{% csrf_token %}
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     {% block modalHeader %}{% endblock %}
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body">
                     {% block modalBody %}{% endblock %}
@@ -16,7 +18,5 @@
                 </div>
             </form>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
-</div><!-- /.modal -->
+</div>

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Rooms" %}{% endblock %}
 
 {% block header %}
@@ -7,29 +8,32 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
-    {% if perms.devices.add_room %}<a href="{% url 'room-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Room" %}</a>{% endif %}
+    {% if perms.devices.add_room %}<a href="{% url 'room-add' %}" class="btn btn-success btn-sm">
+        <i class="fa fa-plus"></i> {% trans "Add Room" %}</a>
+    {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    {% include "snippets/pagination.html" with listurl='room-list' %}
-    <table width="100%" id="roomtable" class="table table-bordered table-striped">
+    {% include "snippets/pagination.html" %}
+    <table id="roomtable" class="table table-bordered table-striped">
         <thead>
-        <tr>
-            <th>{% trans "Name" %}</th>
-            <th>{% trans "Building" %}</th>
-        </tr>
+            <tr>
+                <th>{% trans "Name" %}</th>
+                <th>{% trans "Building" %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for room in room_list %}
-            <tr>
-                <td><a href="{% url 'room-detail' room.id %}">{{ room.name | default:"(None)" }}</a></td>
-                <td>{{ room.building }}</td>
-            </tr>
-        {% endfor %}
+            {% for room in room_list %}
+                <tr>
+                    <td><a href="{% url 'room-detail' room.id %}">{{ room.name|default:_("(None)") }}</a></td>
+                    <td>{{ room.building }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    {% include "snippets/pagination.html" with listurl='room-list' %}
+    {% include "snippets/pagination.html" %}
 {% endblock %}

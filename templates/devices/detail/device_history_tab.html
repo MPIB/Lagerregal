@@ -1,0 +1,34 @@
+{% load i18n %}
+<h4>{% trans "10 last edits" %}</h4>
+<table id="change-history" class="table table-bordered table-striped">
+    <thead>
+    <tr>
+        <th scope="col">{% trans 'Date/time' %}</th>
+        <th scope="col">{% trans 'User' %}</th>
+        <th scope="col">{% trans 'Comment' %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for action in version_list %}
+        <tr>
+            <th scope="row">
+                <a href="{% url 'history-detail' action.pk %}" title="{{ action.revision.date_created|date:'c' }}"
+                   data-timeago class="edit-date">
+                    {{ action.revision.date_created }}
+                </a>
+            </th>
+            <td>
+                {% if action.revision.user %}
+                    <a href="{% url 'userprofile' action.revision.user.pk %}">{{ action.revision.user }}</a>
+                {% else %}
+                    {% trans 'Unknown' %}
+                {% endif %}
+            </td>
+            <td>{{ action.revision.comment|linebreaksbr|default:"" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<a href="{% url 'history-list' content_type device.pk %}" class="btn btn-secondary">
+    <i class="fa fa-book"></i> {% trans "View edit history" %}
+</a>

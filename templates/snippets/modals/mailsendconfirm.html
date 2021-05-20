@@ -1,15 +1,15 @@
 {% extends "snippets/modals/base.html" %}
 {% load i18n %}{% load devicetags %}
+
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Please Confirm" %}</h4>
 {% endblock %}
 
-
 {% block modalBody %}
- <p>{% trans "Are you sure you want to submit? An E-Mail will be sent to the selected users." %}</p>
+    <p>{% trans "Are you sure you want to submit? An E-Mail will be sent to the selected users." %}</p>
 {% endblock %}
 
 {% block modalFooter %}
-    <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
     <input type="submit" value="{% trans "Submit" %}" class="btn btn-success" onclick="$('#form').submit();" />
 {% endblock %}

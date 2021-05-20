@@ -1,30 +1,25 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
+import logging
 import re
 from datetime import date
-import logging
 
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.utils.translation import ugettext_lazy as _
-from django.core.validators import MaxValueValidator
 from django.conf import settings
-from django.urls import reverse
+from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator
+from django.db import models
 from django.dispatch import receiver
+from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
 
 import pytz
-import six
 from django_auth_ldap.backend import populate_user
 
 from Lagerregal import utils
 
 
-@six.python_2_unicode_compatible
 class Lageruser(AbstractUser):
     language = models.CharField(max_length=10, null=True, blank=True,
                                 choices=settings.LANGUAGES, default=settings.LANGUAGES[0][0])
-    theme = models.CharField(max_length=50, null=False, blank=False, default='default',
+    theme = models.CharField(max_length=50, blank=True,
                              choices=[(theme, theme) for theme in settings.THEMES])
     timezone = models.CharField(max_length=50, null=True, blank=True,
                                 choices=[(tz, tz) for tz in pytz.common_timezones], default=None)
@@ -47,9 +42,7 @@ class Lageruser(AbstractUser):
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
-        permissions = (
-            ("read_user", _("Can read User")),
-        )
+        ordering = ['username']
 
     def get_absolute_url(self):
         return reverse('userprofile', kwargs={'pk': self.pk})
@@ -62,8 +55,8 @@ class Lageruser(AbstractUser):
     @staticmethod
     def users_from_departments(departments=[]):
         if len(departments) == 0:
-            return Lageruser.objects.all()
-        return Lageruser.objects.filter(departments__in=departments)
+            return Lageruser.objects.filter(is_active=True)
+        return Lageruser.objects.filter(departments__in=departments, is_active=True)
 
 
 @receiver(populate_user)
@@ -110,9 +103,9 @@ def populate_ldap_user(sender, signal, user, ldap_user, **kwargs):
     user.save()
 
 
-@six.python_2_unicode_compatible
 class Department(models.Model):
     name = models.CharField(max_length=40, unique=True)
+    short_name = models.CharField(max_length=6, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -120,8 +113,8 @@ class Department(models.Model):
     class Meta:
         verbose_name = _('Department')
         verbose_name_plural = _('Departments')
+        ordering = ["name"]
         permissions = (
-            ("read_department", _("Can read Departments")),
             ("add_department_user", _("Can add a User to a Department")),
             ("delete_department_user", _("Can remove a User from a Department")),)
 

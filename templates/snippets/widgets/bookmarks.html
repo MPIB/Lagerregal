@@ -8,24 +8,24 @@
 {% block widgetname %}bookmarks{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+    <table class="table" {% if widget.minimized %}hidden{% endif %}>
         <thead>
-        <tr>
-            <th scope="col">{% trans 'Name' %}</th>
-        </tr>
+            <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for device in bookmarks %}
-            <tr>
-                <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
-            </tr>
-        {% endfor %}
+            {% for device in bookmarks %}
+                <tr>
+                    <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    <div class="panel-footer">
-    {%  with dep=user.main_department|default:"all" %}
-        <a href="{% url 'device-list' department=dep filter='bookmark' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
-    {%  endwith %}
-        <div class="clearfix"></div>
+
+    <div class="card-footer text-right">
+        {% with dep=user.main_department|default:"all" %}
+            <a href="{% url 'device-list' %}?department={{ dep|iriencode }}&filter=bookmark&sorting=name">{% trans "More…" %}</a>
+        {% endwith %}
     </div>
 {% endblock %}

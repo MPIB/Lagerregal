@@ -1,51 +1,52 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
+
 {% block title %}{{ object.name }}{% endblock %}
 
 {% block header %}
     {% trans "Manufacturer" %}: {{ object.name }}
 {% endblock %}
+
 {% block pullright %}
-    {% if perms.devices.delete_manufacturer %}
-        {% deletebutton "manufacturer-delete" object.id %}
-    {% endif %}
-    {% if "manufacturer" in LABEL_TEMPLATES %}
-        <a href="#" class="btn btn-primary pull-right btn-sm" style="margin-left:10px" data-target="#printDymoModal"
-           data-toggle="modal"><i class="fa fa-print" style="margin-right:7px"></i>{% trans "Print Label" %}</a>
-    {% endif %}
     {% if perms.devices.change_manufacturer %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>
-        <a href="#" class="button right small dropdown" data-dropdown="mergedropdown"></a>
         <div class="btn-group">
             <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-share" style="margin-right:7px"></i>{% trans "Merge" %} <span class="caret"></span>
+                <i class="fa fa-share"></i> {% trans "Merge" %}
             </button>
             <ul class="dropdown-menu" role="menu">
                 {% for merge in merge_list %}
-                    <li><a href="{% url 'manufacturer-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
+                    <li><a class="dropdown-item" href="{% url 'manufacturer-merge' object.pk merge.pk %}">{{ merge.name }}</a></li>
                 {% endfor %}
             </ul>
         </div>
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
     {% endif %}
-
+    {% if "manufacturer" in LABEL_TEMPLATES %}
+        <a href="#" class="btn btn-primary btn-sm" data-target="#printDymoModal" data-toggle="modal">
+            <i class="fa fa-print"></i> {% trans "Print Label" %}
+        </a>
+    {% endif %}
+    {% if perms.devices.delete_manufacturer %}
+        {% deletebutton "manufacturer-delete" object.id %}
+    {% endif %}
 {% endblock %}
 
 {% block content %}
-    {% if device_list %}
-        {% if perms.devices.read_device %}
-            <h4>Devices</h4>
-            <table width="100%" id="devicetable" class="table table-bordered table-striped">
-                <thead>
+    {% if device_list and perms.devices.view_device %}
+        <h4>{% trans "Devices" %}</h4>
+        <table id="devicetable" class="table table-bordered table-striped">
+            <thead>
                 <tr>
                     <th>{% trans "Name" %}</th>
                     <th>{% trans "Inventorynumber" %}</th>
                     <th>{% trans "Devicetype" %}</th>
                     <th>{% trans "Room" %}</th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 {% for device in device_list %}
                     <tr>
                         <td><a href="{% url 'device-detail' device.id %}">{{ device.name }}</a></td>
@@ -54,10 +55,8 @@
                         <td>{{ device.room__name }} ({{ device.room__building__name }})</td>
                     </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-
+            </tbody>
+        </table>
     {% endif %}
 {% endblock %}
 

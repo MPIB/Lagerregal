@@ -1,32 +1,32 @@
 {% extends "snippets/modals/baseNofooter.html" %}
 {% load i18n %}
+
 {% block modalHeader %}
     <h4 class="modal-title">{% trans "Manage Pictures" %}</h4>
 {% endblock %}
-
 
 {% block modalBody %}
     <a href="{% url "device-picture-create" device.pk %}" class="btn btn-success">{% trans "Add Picture" %}</a>
 
     {% for picture in device.pictures.all %}
-    <div class="row" style="margin-bottom:10px">
-        <div class="col-sm-2">
-          <img src="{{ picture.image.url }}" class="img-responsive">
+        <div class="row">
+            <div class="col-sm-2">
+                <img src="{{ picture.image.url }}" class="img-fluid">
+            </div>
+            <div class="col-sm-6">
+                <a href="{% url "device-picture-edit" device.pk picture.pk %}">{{ picture.caption }}</a>
+            </div>
+            <div class="col-sm-4">
+                <button type="button" class="btn pull-right delete-picture" aria-label="Close" id="picture{{ picture.pk }}">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn pull-right rotate-picture-right" aria-label="Rotate" id="picture{{ picture.pk }}">
+                    <i class="fa fa-repeat "  aria-hidden="true"></i>
+                </button>
+                <button type="button" class="btn pull-right rotate-picture-left" aria-label="Rotate" id="picture{{ picture.pk }}">
+                    <i class="fa fa-undo" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
-        <div class="col-sm-6">
-          <a href="{% url "device-picture-edit" device.pk picture.pk %}">{{ picture.caption }}</a>
-        </div>
-        <div class="col-sm-4">
-              <button type="button" class="btn pull-right delete-picture" aria-label="Close" id="picture{{ picture.pk }}">
-                <i class="fa fa-times" style="pointer-events:none" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn pull-right rotate-picture-right" aria-label="Rotate" id="picture{{ picture.pk }}">
-                <i class="fa fa-repeat " style="pointer-events:none"  aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn pull-right rotate-picture-left" aria-label="Rotate" id="picture{{ picture.pk }}">
-                <i class="fa fa-undo" style="pointer-events:none" aria-hidden="true"></i>
-              </button>
-        </div>
-    </div>
     {% endfor %}
 {% endblock %}

@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="card border-primary mb-3">
+    <div class="card-header bg-primary text-white">{% trans "Tags" %}</div>
+    <ul class="list-group">
+        {% for tag in device.tags.all %}
+            <li class="list-group-item tag-list">
+                {{ tag.name }}
+                <a href="{% url 'device-tag-remove' device.pk tag.pk %}" class="pull-right text-secondary">
+                    <i class="fa fa-times"></i>
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="card-footer">
+        <form method="post" action="{% url 'device-tags' device.pk %}">
+            {% csrf_token %}
+            <div class="form-group">{{ tagform.tags }}</div>
+            <div class="text-right">
+                <button type="submit" class="btn btn-success btn-sm disabled" id="submittags">
+                    <i class="fa fa-plus"></i> {% trans "Assign Tags" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

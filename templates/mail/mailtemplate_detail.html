@@ -1,26 +1,29 @@
 {% extends "base.html" %}
 {% load devicetags %}
 {% load i18n %}
-{% load staticfiles %}
+{% load static %}
+
 {% block title %}{{ mailtemplate.name }}{% endblock %}
 
 {% block header %}
     {% trans "Mailtemplate" %}: {{ mailtemplate.name }}
 {% endblock %}
+
 {% block pullright %}
     {% if perms.mail.delete_mailtemplate %}
         {% deletebutton "mail-delete" object.id %}
     {% endif %}
     {% if perms.mail.change_mailtemplate %}
-        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm pull-right" style="margin-left:10px">
-        <i class="fa fa-pencil" style="margin-right:7px"></i>{% trans "Edit" %}</a>{% endif %}
+        <a href="{{ object.get_edit_url }}" class="btn btn-primary btn-sm">
+            <i class="fa fa-pencil"></i> {% trans "Edit" %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-md-5 col-xs-12">
+        <div class="col-md-5">
             <table class="table table-bordered table-striped">
-                <tbody>
                 <tr>
                     <td>{% trans "Subject" %}</td>
                     <td>{{ mailtemplate.subject }}</td>
@@ -41,61 +44,22 @@
                         {% endfor %}
                     </td>
                 </tr>
-                </tbody>
             </table>
         </div>
-        <div class="col-md-5 col-xs-12">
-            <h4>{% trans "Preview" %}
-                <table class="table table-bordered table-striped">
-                    <tbody id="mailpreview">
+        <div class="col-md-5">
+            <h4>{% trans "Preview" %}</h4>
+            <table class="table table-bordered table-striped">
+                <tbody id="mailpreview">
                     <tr>
                         <td>{% trans "Subject" %}</td>
-                        <td>{{ mailtemplate.subject }}</td>
+                        <td>{{ preview_subject|safe }}</td>
                     </tr>
                     <tr>
                         <td>{% trans "Body" %}</td>
-                        <td>{{ mailtemplate.body|linebreaks }}</td>
+                        <td>{{ preview_body|safe }}</td>
                     </tr>
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
         </div>
     </div>
-{% endblock %}
-
-{% block htmlend %}
-    <script src="{% static "js/mustache.js" %}"></script>
-{% endblock %}
-
-{% block scriptend %}
-    var data = {
-        "device" : {
-            "currentlending": "",
-            "description": "",
-            "devicetype": "Laptop",
-            "group": "",
-            "hostname": "1234",
-            "inventoried": "",
-            "inventorynumber": "124376543",
-            "manufacturer": "Examplecompany",
-            "name": "Laptop 123",
-            "room": "201 (Building 1)",
-            "serialnumber": "1234",
-            "templending": false,
-            "trashed": "",
-            "webinterface": "http://example.com"
-        },
-        "user" : {
-            "username" : "testuser",
-            "first_name" : "Test",
-            "last_name" : "User"
-        },
-        "owner" : {
-            "username" : "seconduser",
-            "first_name" : "Second",
-            "last_name" : "User"
-        }
-    }
-
-    out = Mustache.render($("#mailpreview").html(), data)
-    $("#mailpreview").html(out)
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+
 {% block title %}{% trans "Manufacturers" %}{% endblock %}
 
 {% block header %}
@@ -7,25 +8,34 @@
 {% endblock %}
 
 {% block pullright %}
-    {{ filterform.filterstring }}
-    {{ viewform.viewsorting }}
     {% if perms.devices.add_manufacturer %}
-        <a href="{% url 'manufacturer-add' %}" class="btn btn-success btn-sm pull-right">
-        <i class="fa fa-plus" style="margin-right:7px"></i>{% trans "Add Manufacturer" %}</a>{% endif %}
+        <a href="{% url 'manufacturer-add' %}" class="btn btn-success btn-sm">
+            <i class="fa fa-plus"></i> {% trans "Add Manufacturer" %}
+        </a>
+    {% endif %}
+    <form class="form-inline d-inline-block" method="get" data-autosubmit="change">
+        {{ viewform.sorting }}
+        {{ filterform.filter }}
+    </form>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-xs-12 col-md-5">
-            {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
-            <div class="list-group">
-                {% for manufacturer in manufacturer_list %}
-                    <a href="{% url 'manufacturer-detail' manufacturer.id %}"
-                       class="list-group-item">{{ manufacturer.name | default:"(None)" }}</a>
-                {% endfor %}
-            </div>
-            {% include "snippets/pagination.html" with listurl='manufacturer-list' %}
-
-        </div>
-    </div>
+    {% include "snippets/pagination.html" %}
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{% trans "Name" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manufacturer in manufacturer_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'manufacturer-detail' manufacturer.id %}">{{ manufacturer.name|default:_("(None)") }}</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include "snippets/pagination.html" %}
 {% endblock %}

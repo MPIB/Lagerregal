@@ -8,29 +8,31 @@
 {% block widgetname %}shorttermdevices{% endblock %}
 
 {% block content %}
-    <table class="table table-bordered" {% if widget.minimized and usestable %}style="display: none;"{% endif %}>
+    <table class="table" {% if widget.minimized %}hidden{% endif %}>
         <thead>
-        <tr>
-            <th scope="col">{% trans 'Name' %}</th>
-            <th scope="col">{% trans 'Availability' %}</th>
-        </tr>
+            <tr>
+                <th scope="col">{% trans 'Name' %}</th>
+                <th scope="col">{% trans 'Availability' %}</th>
+            </tr>
         </thead>
         <tbody>
-        {% for device in shorttermdevices %}
-            <tr>
-                <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
-                <td>{% if device.currentlending == None %}
-                    <i class="fa fa-check-circle text-success" style="font-size:1.3em"></i>
-                    {% else %}<i class="fa fa-exclamation-circle text-danger" style="font-size:1.3em"></i>{% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+            {% for device in shorttermdevices %}
+                <tr>
+                    <td><a href="{% url 'device-detail' device.pk %}">{{ device.name }}</a></td>
+                    <td>
+                        {% if device.currentlending == None %}
+                            <i class="fa fa-check-circle text-success"></i>
+                        {% else %}
+                            <i class="fa fa-exclamation-circle text-danger"></i>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    <div class="panel-footer">
-    {%  with dep=user.main_department|default:"all" %}
-        <a href="{% url 'device-list' department=dep filter='temporary' sorting='name' %}" class="pull-right">{% trans "More…" %}</a>
-    {% endwith %}
-        <div class="clearfix"></div>
+    <div class="card-footer text-right">
+        {% with dep=user.main_department|default:"all" %}
+            <a href="{% url 'device-list' %}?department={{ dep|iriencode }}&filter=temporary&sorting=name">{% trans "More…" %}</a>
+        {% endwith %}
     </div>
 {% endblock %}
