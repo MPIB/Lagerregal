@@ -5,7 +5,6 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import Group
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ImproperlyConfigured
 from django.core.exceptions import SuspiciousOperation
@@ -476,20 +475,15 @@ class DeviceCreate(PermissionRequiredMixin, CreateView):
                 attribute.value = value
                 attribute.save()
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
-            recipients = []
-            for recipient in form.cleaned_data["emailrecipients"]:
-                if recipient[0] == "g":
-                    group = get_object_or_404(Group, pk=recipient[1:])
-                    recipients += group.user_set.all().values_list("email")[0]
-                else:
-                    recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
-            recipients = list(set(recipients))
             template = form.cleaned_data["emailtemplate"]
             if form.cleaned_data["emailedit"]:
                 template.subject = form.cleaned_data["emailsubject"]
                 template.body = form.cleaned_data["emailbody"]
-            template.send(request=self.request, recipients=recipients,
-                          data={"device": self.object, "user": self.request.user})
+            template.send(
+                request=self.request,
+                recipients=form.cleaned_data["emailrecipients"],
+                data={"device": self.object, "user": self.request.user},
+            )
             messages.success(self.request, _('Mail successfully sent'))
 
         if "uses" in form.changed_data:
@@ -623,20 +617,15 @@ class DeviceUpdate(PermissionRequiredMixin, UpdateView):
                     pass
 
         if form.cleaned_data["emailrecipients"] and form.cleaned_data["emailtemplate"]:
-            recipients = []
-            for recipient in form.cleaned_data["emailrecipients"]:
-                if recipient[0] == "g":
-                    group = get_object_or_404(Group, pk=recipient[1:])
-                    recipients += group.user_set.all().values_list("email")[0]
-                else:
-                    recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
-            recipients = list(set(recipients))
             template = form.cleaned_data["emailtemplate"]
             if form.cleaned_data["emailedit"]:
                 template.subject = form.cleaned_data["emailsubject"]
                 template.body = form.cleaned_data["emailbody"]
-            template.send(request=self.request, recipients=recipients,
-                          data={"device": device, "user": self.request.user})
+            template.send(
+                request=self.request,
+                recipients=form.cleaned_data["emailrecipients"],
+                data={"device": device, "user": self.request.user},
+            )
             messages.success(self.request, _('Mail successfully sent'))
 
         if "uses" in form.changed_data:
@@ -733,14 +722,7 @@ class DeviceLend(PermissionRequiredMixin, FormView):
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
                 for template in templates:
-                    recipients = []
-                    for recipient in template.default_recipients.all():
-                        recipient = recipient.content_object
-                        if isinstance(recipient, Group):
-                            recipients += recipient.user_set.all().values_list("email")[0]
-                        else:
-                            recipients.append(recipient.email)
-                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                    template.send(self.request, data={"device": device, "user": self.request.user})
                 if len(templates) == 1:
                     messages.success(self.request, _('Mail successfully sent'))
                 else:
@@ -825,14 +807,7 @@ class DeviceReturn(PermissionRequiredMixin, FormView):
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
             if templates:
                 for template in templates:
-                    recipients = []
-                    for recipient in template.default_recipients.all():
-                        recipient = recipient.content_object
-                        if isinstance(recipient, Group):
-                            recipients += recipient.user_set.all().values_list("email")[0]
-                        else:
-                            recipients.append(recipient.email)
-                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                    template.send(self.request, data={"device": device, "user": self.request.user})
                 if len(templates) == 1:
                     messages.success(self.request, _('Mail successfully sent'))
                 else:
@@ -876,17 +851,13 @@ class DeviceMail(PermissionRequiredMixin, FormView):
         deviceid = self.kwargs["pk"]
         device = get_object_or_404(Device, pk=deviceid)
         template = form.cleaned_data["mailtemplate"]
-        recipients = []
-        for recipient in form.cleaned_data["emailrecipients"]:
-            if recipient[0] == "g":
-                group = get_object_or_404(Group, pk=recipient[1:])
-                recipients += group.user_set.all().values_list("email")[0]
-            else:
-                recipients.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
-        recipients = list(set(recipients))
         template.subject = form.cleaned_data["emailsubject"]
         template.body = form.cleaned_data["emailbody"]
-        template.send(self.request, recipients, {"device": device, "user": self.request.user})
+        template.send(
+            self.request,
+            recipients=form.cleaned_data["emailrecipients"],
+            data={"device": device, "user": self.request.user},
+        )
         if template.usage == "reminder" or template.usage == "overdue":
             device.currentlending.duedate_email = datetime.date.today()
             device.currentlending.save()
@@ -955,14 +926,7 @@ class DeviceTrash(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, Ba
                 template = None
                 messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
             if template is not None:
-                recipients = []
-                for recipient in template.default_recipients.all():
-                    recipient = recipient.content_object
-                    if isinstance(recipient, Group):
-                        recipients += recipient.user_set.all().values_list("email")[0]
-                    else:
-                        recipients.append(recipient.email)
-                template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                template.send(self.request, data={"device": device, "user": self.request.user})
                 messages.success(self.request, _('Mail successfully sent'))
         else:
             device.trashed = None
@@ -1012,14 +976,7 @@ class DeviceStorage(PermissionRequiredMixin, SingleObjectMixin, FormView):
                 template = None
                 messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
             if template is not None:
-                recipients = []
-                for recipient in template.default_recipients.all():
-                    recipient = recipient.content_object
-                    if isinstance(recipient, Group):
-                        recipients += recipient.user_set.all().values_list("email")[0]
-                    else:
-                        recipients.append(recipient.email)
-                template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                template.send(self.request, data={"device": device, "user": self.request.user})
                 messages.success(self.request, _('Mail successfully sent'))
 
         messages.success(self.request, _("Device was moved to storage."))

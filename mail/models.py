@@ -1,3 +1,4 @@
+from django.contrib.auth.models import Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import EmailMessage
@@ -46,7 +47,7 @@ class MailTemplate(models.Model):
         subject = pystache.render(self.subject, datadict)
         return subject, body
 
-    def send(self, request, recipients=None, data=None):
+    def get_datadict(self, data):
         datadict = {}
         datadict["device"] = {
             "archived": data["device"].archived,
@@ -93,9 +94,31 @@ class MailTemplate(models.Model):
                 "first_name": data["owner"].first_name,
                 "last_name": data["owner"].last_name
             }
-        subject, body = self.format(datadict)
-        email = EmailMessage(subject=subject, body=body, to=recipients)
+
+        return datadict
+
+    def send(self, request, recipients=None, data=None):
+        subject, body = self.format(self.get_datadict(data))
+        to = []
+
+        if recipients:
+            for recipient in recipients:
+                if recipient[0] == "g":
+                    group = get_object_or_404(Group, pk=recipient[1:])
+                    to += group.user_set.all().values_list("email")[0]
+                else:
+                    to.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
+        else:
+            for recipient in self.default_recipients.all():
+                recipient = recipient.content_object
+                if isinstance(recipient, Group):
+                    to += recipient.lageruser_set.all().values_list("email")[0]
+                else:
+                    to.append(recipient.email)
+
+        email = EmailMessage(subject=subject, body=body, to=list(set(to)))
         email.send()
+
         mailhistory = MailHistory()
         mailhistory.mailtemplate = self
         mailhistory.subject = self.subject
