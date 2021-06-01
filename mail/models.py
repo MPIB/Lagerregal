@@ -9,23 +9,23 @@ import pystache
 
 from users.models import Lageruser
 
-USAGES = [
-    ("lent", _("Device has been lent")),
-    ("new", _("New Device is created")),
-    ("reminder", _("Reminder that device is still owned")),
-    ("returned", _("Device has been returned by user")),
-    ("room", _("Room has been changed")),
-    ("overdue", _("Reminder that device is overdue")),
-    ("owner", _("Lending owner has been changed")),
-    ("trashed", _("Device has been trashed")),
-]
-
 
 class MailTemplate(models.Model):
+    USAGE_CHOICES = [
+        ("lent", _("Device has been lent")),
+        ("new", _("New Device is created")),
+        ("reminder", _("Reminder that device is still owned")),
+        ("returned", _("Device has been returned by user")),
+        ("room", _("Room has been changed")),
+        ("overdue", _("Reminder that device is overdue")),
+        ("owner", _("Lending owner has been changed")),
+        ("trashed", _("Device has been trashed")),
+    ]
+
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
-    usage = models.CharField(_('Usage'), choices=USAGES, null=True, blank=True, max_length=200)
+    usage = models.CharField(_('Usage'), choices=USAGE_CHOICES, null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.name

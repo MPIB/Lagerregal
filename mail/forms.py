@@ -3,7 +3,6 @@ from django import forms
 from django_select2.forms import Select2MultipleWidget
 
 from devices.forms import get_emailrecipientlist
-from mail.models import USAGES
 from mail.models import MailTemplate
 
 
@@ -12,7 +11,7 @@ class MailTemplateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["default_recipients"].choices = get_emailrecipientlist()
         # get all valid options for template usages
-        available = dict(USAGES)
+        available = dict(MailTemplate.USAGE_CHOICES)
         used_keys = MailTemplate.objects.values_list('usage', flat=True)
         valid_keys = set(available.keys()) - set(used_keys)
         valid_choices = []
