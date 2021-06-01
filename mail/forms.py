@@ -1,8 +1,11 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
+import pystache
 from django_select2.forms import Select2MultipleWidget
 
 from devices.forms import get_emailrecipientlist
+from mail.models import PREVIEW_DATA
 from mail.models import MailTemplate
 
 
@@ -30,3 +33,12 @@ class MailTemplateForm(forms.ModelForm):
     class Meta:
         model = MailTemplate
         fields = "__all__"
+
+    def clean_body(self):
+        body = self.cleaned_data['body']
+        try:
+            renderer = pystache.Renderer(missing_tags='strict')
+            renderer.render(body, PREVIEW_DATA)
+        except Exception as ex:
+            raise ValidationError(str(ex), code='invalid') from ex
+        return body
