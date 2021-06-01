@@ -4,11 +4,46 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.mail import EmailMessage
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 import pystache
 
 from users.models import Lageruser
+
+PREVIEW_DATA = {
+    "device": {
+        "archived": None,
+        "created_at": timezone.now(),
+        "creator": "user",
+        "department": "Accounting",
+        "description": "",
+        "devicetype": "Laptop",
+        "group": "",
+        "hostname": "1234",
+        "id": "123",
+        "inventoried": None,
+        "inventorynumber": "124376543",
+        "manufacturer": "Examplecompany",
+        "name": "Laptop 123",
+        "room": "201 (Building 1)",
+        "serialnumber": "1234",
+        "templending": False,
+        "trashed": None,
+        "webinterface": "http://example.com"
+    },
+    "user": {
+        "username": "testuser",
+        "first_name": "Test",
+        "last_name": "User",
+        "main_department": "Accounting",
+    },
+    "owner": {
+        "username": "seconduser",
+        "first_name": "Second",
+        "last_name": "User"
+    }
+}
 
 
 class MailTemplate(models.Model):
