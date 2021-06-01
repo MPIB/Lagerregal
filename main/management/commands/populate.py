@@ -18,6 +18,7 @@ from devices.models import Room
 from devicetypes.models import Type
 from Lagerregal import utils
 from locations.models import Section
+from mail.models import MailTemplate
 from users.models import Department
 from users.models import DepartmentUser
 from users.models import Lageruser
@@ -61,6 +62,7 @@ def fake_lageruser(word):
     return Lageruser(
         main_department=Department.objects.order_by('?').first(),
         username=word,
+        email=fake.email(),
         first_name=fake.first_name(),
         last_name=fake.last_name()
     )
@@ -204,6 +206,17 @@ def generate_pictures(number):
         pic.save()
 
 
+def generate_mail_templates():
+    print("Generating mail templates")
+    for key, label in MailTemplate.USAGE_CHOICES:
+        MailTemplate.objects.create(
+            name=label,
+            subject=label,
+            body="{{device.name}}",
+            usage=key,
+        )
+
+
 class Command(BaseCommand):
     help = 'Populate database with sample data.'
     err = SystemExit("can't create sample data in production mode")
@@ -229,6 +242,7 @@ class Command(BaseCommand):
             generate_devices(150)
             generate_lendings(30)
             generate_pictures(20)
+            generate_mail_templates()
             admin = Lageruser.objects.create_superuser('admin', 'admin@localhost', 'admin')
             for department in Department.objects.all():
                 DepartmentUser.objects.create(user=admin, department=department)
