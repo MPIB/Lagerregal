@@ -18,7 +18,6 @@ from users.models import Lageruser
 
 PREVIEW_DATA = {
     "device": {
-        "currentlending": "",
         "description": "",
         "devicetype": "Laptop",
         "group": "",

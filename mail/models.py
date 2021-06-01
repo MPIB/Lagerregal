@@ -53,7 +53,6 @@ class MailTemplate(models.Model):
             "archived": data["device"].archived,
             "created_at": data["device"].created_at,
             "creator": data["device"].creator,
-            "currentlending": data["device"].currentlending,
             "department": data["device"].department,
             "description": data["device"].description,
             "devicetype": (data["device"].devicetype.name if data["device"].devicetype is not None else ""),
@@ -78,9 +77,7 @@ class MailTemplate(models.Model):
                 "owner": str(data["device"].currentlending.owner),
                 "duedate": data["device"].currentlending.duedate,
                 "lenddate": data["device"].currentlending.lenddate
-            },
-        else:
-            datadict["device"]["currentlending"] = ""
+            }
 
         datadict["user"] = {
             "username": data["user"].username,
