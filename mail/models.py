@@ -102,12 +102,11 @@ class MailTemplate(models.Model):
         to = []
 
         if recipients:
-            for recipient in recipients:
-                if recipient[0] == "g":
-                    group = get_object_or_404(Group, pk=recipient[1:])
-                    to += group.user_set.all().values_list("email")[0]
-                else:
-                    to.append(get_object_or_404(Lageruser, pk=recipient[1:]).email)
+            user_ids = [r[1:] for r in recipients if r[0] != "g"]
+            group_ids = [r[1:] for r in recipients if r[0] == "g"]
+
+            to += Lageruser.objects.filter(id__in=user_ids).values_list("email")[0]
+            to += Lageruser.objects.filter(groups__id__in=group_ids).values_list("email")[0]
         else:
             for recipient in self.default_recipients.all():
                 recipient = recipient.content_object
