@@ -36,7 +36,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
         entries = self.find_entries("fqdn")
         if len(entries) > 0:
             hostname = build_full_hostname(self.device)
-            if entries[0].raw_value["hostId"] != hostname:
+            if entries[0].raw_value != hostname:
                 self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>"
                                                                        + entries[0].raw_value + "</span>"))
             else:
@@ -89,7 +89,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
         formatted_controllers = []
         device_addresses = self.device.ipaddress_set.all()
         for controller in controllers:
-            if any(elem.address in controller["ipAddress"] for elem in device_addresses):
+            if any(elem.address in controller["ip"] for elem in device_addresses):
                 formatted_controllers.append("{0} {1}".format(controller["identifier"], controller["ip"]))
             else:
                 formatted_controllers.append(
