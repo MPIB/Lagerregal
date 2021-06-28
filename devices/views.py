@@ -4,6 +4,7 @@ import io
 import json
 import time
 
+import pdfrw
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -40,6 +41,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from rest_framework.renderers import JSONRenderer
+from pdfrw.toreportlab import makerl
 
 from reversion import revisions as reversion
 from reversion.models import Version
@@ -1879,5 +1881,42 @@ def generate_label_pdf(request, pk):
     # present the option to save the file.
     buffer.seek(0)
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = 'filename=some_file.pdf'
+    response['Content-Disposition'] = "filename=label_{0}.pdf".format(pk)
+    return response
+
+def merge(overlay_canvas: io.BytesIO, template_path: str) -> io.BytesIO:
+    template_pdf = pdfrw.PdfReader(template_path)
+    overlay_pdf = pdfrw.PdfReader(overlay_canvas)
+    for page, data in zip(template_pdf.pages, overlay_pdf.pages):
+        overlay = pdfrw.PageMerge().add(data)[0]
+        pdfrw.PageMerge(page).add(overlay).render()
+    form = io.BytesIO()
+    pdfrw.PdfWriter().write(form, template_pdf)
+    form.seek(0)
+    return form
+
+def generate_hand_over_protocol(request, pk):
+    device = get_object_or_404(Device, pk=pk)
+
+    data = io.BytesIO()
+    pdf = canvas.Canvas(data)
+    pdf.drawString(x=155, y=632, text=str(request.user))
+    pdf.drawString(x=350, y=632, text=str(datetime.date.today()))
+
+    pdf.drawString(x=155, y=597, text=str(device.devicetype))
+    pdf.drawString(x=362, y=597, text=str(device.manufacturer))
+
+    pdf.drawString(x=155, y=563, text=str(device.inventorynumber))
+    pdf.drawString(x=372, y=563, text=str(device.serialnumber))
+
+    pdf.drawString(x=165, y=530, text=str(device.name))
+
+    pdf.save()
+    data.seek(0)
+
+    buffer = merge(data, template_path=settings.HANDOVER_PROTOCOL_LOCATION)
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = "filename={0}_{1}.pdf".format(_("handover_protocol"), pk)
     return response

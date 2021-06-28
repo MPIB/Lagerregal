@@ -76,6 +76,11 @@
                     </button>
                 </li>
                 <li>
+                    <button class="dropdown-item" href="#" onclick="printJS({printable: '{% url "device-generate-handover" device.id %}', type:'pdf'})">
+                        <i class="fa fa-print"></i> {% trans "Print Handover Protocol" %}
+                    </button>
+                </li>
+                <li>
                     <a class="dropdown-item" href="#" data-target="#pictureModal" data-toggle="modal">
                         <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
                     </a>
@@ -479,10 +484,6 @@
                     modalBody.removeChild(row);
                 },
             });
-        });
-        $(document).on('click', '.delete-picture', function(e) {
-    console.log("HELLO");
-            printJS("{% url "device-generate-label" device.id %}");
         });
 
         $(document).on('click', '.rotate-picture-right', function(e) {

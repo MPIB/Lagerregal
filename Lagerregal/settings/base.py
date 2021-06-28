@@ -255,4 +255,5 @@ OPERATING_SYSTEMS = [
     ("linux", "Linux")
 ]
 
+HANDOVER_PROTOCOL_LOCATION = "protocol.pdf"
 DATA_PROVIDERS = {}

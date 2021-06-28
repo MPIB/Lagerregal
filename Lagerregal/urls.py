@@ -71,6 +71,7 @@ urlpatterns = [
     path('devices/templates/<int:pk>/edit/', devices_views.TemplateUpdate.as_view(), name="template-edit"),
     path('devices/templates/<int:pk>/delete/', devices_views.TemplateDelete.as_view(), name="template-delete"),
     path('devices/<int:pk>/generate-label', devices_views.generate_label_pdf, name="device-generate-label"),
+    path('devices/<int:pk>/generate-handover', devices_views.generate_hand_over_protocol, name="device-generate-handover"),
 
 
     path('types/', devicetypes_views.TypeList.as_view(), name="type-list"),
