@@ -194,8 +194,12 @@ NPM_FILE_PATTERNS = {
     'alpinejs': [
         'dist/alpine.js',
     ],
+    'print-js': [
+        'dist/print.js',
+    ],
     'bootstrap': [
         'dist/js/bootstrap.min.js',
+        'dist/js/bootstrap.min.js.map',
     ],
     'bootswatch': ['dist/{}/bootstrap.min.css'.format(t) for t in THEMES],
     'font-awesome': [
@@ -222,6 +226,7 @@ NPM_FILE_PATTERNS = {
     ],
     'popper.js': [
         'dist/umd/popper.min.js',
+        'dist/umd/popper.min.js.map',
     ],
     'select2': [
         'dist/js/select2.min.js',

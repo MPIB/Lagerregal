@@ -1,5 +1,6 @@
 import csv
 import datetime
+import io
 import json
 import time
 
@@ -12,7 +13,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models import Q
 from django.db.transaction import atomic
-from django.http import Http404
+from django.http import Http404, FileResponse
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
@@ -34,6 +35,11 @@ from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
+from reportlab.graphics.barcode import code128
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.pdfgen import canvas
+from rest_framework.renderers import JSONRenderer
 
 from reversion import revisions as reversion
 from reversion.models import Version
@@ -1847,3 +1853,31 @@ class PublicDeviceDetailView(DetailView):
             (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
         context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
+
+
+def generate_label_pdf(request, pk):
+    # Create a file-like buffer to receive PDF data.
+    buffer = io.BytesIO()
+    if hasattr(settings, "LABEL_PAGESIZE"):
+        size = settings.LABEL_PAGESIZE
+    else:
+        size = A4
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer, pagesize=size)
+
+    barcode = code128.Code128('{:06d}'.format(pk), barHeight=size[1]/2, barWidth=1)
+    barcode._calculate()
+    width, height = barcode._width, barcode._height
+    barcode.drawOn(p, (size[0] - width) / 2, (size[1] - height) / 2)
+    p.drawCentredString(size[0] / 2 + 1, (size[1] - height) / 2 - 10, '{:06d}'.format(pk))
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'filename=some_file.pdf'
+    return response

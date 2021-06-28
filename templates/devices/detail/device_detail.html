@@ -66,10 +66,15 @@
                 {% if display_printbutton %}
                     <li>
                         <a class="dropdown-item" href="#" data-target="#printDymoModal" data-toggle="modal">
-                            <i class="fa fa-print"></i> {% trans "Print Label" %}
+                            <i class="fa fa-print"></i> {% trans "Print Dymo Label" %}
                         </a>
                     </li>
                 {% endif %}
+                <li>
+                    <button class="dropdown-item" href="#" onclick="printJS({printable: '{% url "device-generate-label" device.id %}', type:'pdf'})">
+                        <i class="fa fa-print"></i> {% trans "Print Label" %}
+                    </button>
+                </li>
                 <li>
                     <a class="dropdown-item" href="#" data-target="#pictureModal" data-toggle="modal">
                         <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
@@ -474,6 +479,10 @@
                     modalBody.removeChild(row);
                 },
             });
+        });
+        $(document).on('click', '.delete-picture', function(e) {
+    console.log("HELLO");
+            printJS("{% url "device-generate-label" device.id %}");
         });
 
         $(document).on('click', '.rotate-picture-right', function(e) {

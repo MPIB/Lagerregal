@@ -70,6 +70,7 @@ urlpatterns = [
     path('devices/templates/add/', devices_views.TemplateCreate.as_view(), name="template-add"),
     path('devices/templates/<int:pk>/edit/', devices_views.TemplateUpdate.as_view(), name="template-edit"),
     path('devices/templates/<int:pk>/delete/', devices_views.TemplateDelete.as_view(), name="template-delete"),
+    path('devices/<int:pk>/generate-label', devices_views.generate_label_pdf, name="device-generate-label"),
 
 
     path('types/', devicetypes_views.TypeList.as_view(), name="type-list"),

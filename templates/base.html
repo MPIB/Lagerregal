@@ -7,7 +7,9 @@
         style-src 'self' http://fonts.googleapis.com https://fonts.googleapis.com;
         connect-src 'self' https://localhost:41951 https://127.0.0.1:41951;
         font-src 'self' http://fonts.gstatic.com https://fonts.gstatic.com;
-        img-src 'self' data:; ">
+        img-src 'self' data:;
+        object-src 'self' blob:;
+        child-src 'self' blob:;">
     <title>{% block title %}{% endblock %} &middot; {{ SITE_NAME }}</title>
     <link rel="stylesheet" href="{% static user|theme_path %}">
     <link rel="stylesheet" href="{% static "select2/dist/css/select2.min.css" %}">
@@ -22,6 +24,7 @@
     <link rel="apple-touch-icon" href="{% static "images/apple-touch-icon.png" %}">
 
     <script src="{% static "alpinejs/dist/alpine.js" %}"></script>
+    <script src="{% static "print-js/dist/print.js" %}"></script>
 </head>
 <body class="{% block body_class%}{% endblock %}">
 {% if not nochrome %}
