@@ -3,15 +3,15 @@ from django.contrib.auth.models import Permission
 
 from rest_framework import serializers
 
-from devices.models import Building
 from devices.models import Device
 from devices.models import Lending
 from devices.models import Manufacturer
 from devices.models import Picture
-from devices.models import Room
 from devices.models import Template
 from devicetypes.models import Type
 from devicetypes.models import TypeAttribute
+from locations.models import Building
+from locations.models import Room
 from network.models import IpAddress
 from users.models import Department
 from users.models import Lageruser
