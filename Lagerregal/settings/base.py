@@ -255,5 +255,31 @@ OPERATING_SYSTEMS = [
     ("linux", "Linux")
 ]
 
-HANDOVER_PROTOCOL_LOCATION = "protocol.pdf"
+HANDOVER_PROTOCOL_LOCATION = "pdf_forms/Leihschein.pdf"
+HANDOVER_PROTOCOL_TEXT_LOCATIONS = {
+    "user_name": [155, 632],
+    "date": [350, 632],
+    "devicetype": [155, 597],
+    "manufacturer": [362, 597],
+    "inventorynumber": [155, 563],
+    "serialnumber": [372, 563],
+    "name": [165, 530],
+    "recipient_name": [210, 353],
+}
+TRASHED_PROTOCOL_LOCATION = "pdf_forms/geraeterueckgabe_lagerregal.pdf"
+TRASHED_PROTOCOL_TEXT_LOCATIONS = {
+    "department": [170, 668],
+    "user_name": [170, 629],
+    "date": [485, 668],
+    "devicetype": [170, 588],
+    "name": [170, 559],
+    "manufacturer": [182, 433],
+    "inventorynumber": [182, 373],
+    "serialnumber": [182, 346],
+    "room": [182, 323],
+    "comment": [175, 150, 78],
+    "checkmarks": [
+        [537, 230]
+    ]
+}
 DATA_PROVIDERS = {}

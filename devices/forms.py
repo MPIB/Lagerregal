@@ -383,9 +383,10 @@ class DeviceMailForm(forms.Form):
 
 class DeviceTrashForm(forms.Form):
     error_css_class = 'has-error'
-    send_mail = forms.BooleanField(required=False, initial=True)
+    send_mail = forms.BooleanField(required=False, initial=True, label=_("Send E-Mail"))
+    generate_pdf = forms.BooleanField(required=False, initial=True, label=_("Generate PDF"))
     reason = forms.CharField(required=False, label=_("Reason"),
-                             widget=forms.Textarea(attrs={'style': "height:80px"}),
+                             widget=forms.Textarea(attrs={'style': "height:60px"}),
                              help_text=_("The reason will be printed on the generated PDF and added to the E-Mail sent"))
 
 

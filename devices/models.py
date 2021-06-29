@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.urls import reverse
+from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
 
 import reversion
@@ -109,12 +110,44 @@ class Device(models.Model):
         dict["room"] = self.room
         return dict
 
+    @property
     def is_overdue(self):
         if self.currentlending is None:
             return False
         if self.currentlending.duedate < datetime.date.today():
             return True
         return False
+
+    @property
+    def is_active(self):
+        return self.archived == None and self.trashed == None
+
+    def archive_device(self):
+        self.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
+        self.make_inactive()
+
+    def trash_device(self):
+        self.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
+        self.make_inactive()
+
+    def make_inactive(self):
+        self.room = None
+        if self.currentlending:
+            self.currentlending.returndate = datetime.date.today()
+            self.currentlending.save()
+            self.currentlending = None
+        # if device.uses
+        if Device.objects.filter(used_in=self.pk):
+            other_list = Device.objects.filter(used_in=self.pk)
+            for element in other_list:
+                other = element
+                other.used_in = None
+                other.save()
+        if self.used_in:
+            self.used_in = None
+        for ip in self.ipaddress_set.all():
+            ip.device = None
+            ip.save()
 
     @staticmethod
     def active():

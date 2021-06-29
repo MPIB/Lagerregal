@@ -2,7 +2,9 @@ import csv
 import datetime
 import io
 import json
+import textwrap
 import time
+from django.http.response import HttpResponseNotFound
 
 import pdfrw
 from django.conf import settings
@@ -54,6 +56,7 @@ from devices.forms import DeviceFormAutomatic
 from devices.forms import DeviceGroupFilterForm
 from devices.forms import DeviceMailForm
 from devices.forms import DeviceStorageForm
+from devices.forms import DeviceTrashForm
 from devices.forms import DeviceViewForm
 from devices.forms import FilterForm
 from devices.forms import IpAddressForm
@@ -277,6 +280,12 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.all()
         versions = Version.objects.get_for_object(context["device"])
+
+        context['trashform'] = DeviceTrashForm()
+
+        if self.request.GET.get("generate_pdf", None) is not None:
+            context["generate_pdf"] = self.request.GET.get("generate_pdf", None)
+            context["pdf_comment"] = self.request.GET.get("comment", None)
 
         if len(versions) != 0:
             context["lastedit"] = versions[0]
@@ -600,7 +609,7 @@ class DeviceUpdate(PermissionRequiredMixin, UpdateView):
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
         device = self.object
-        if device.archived is not None:
+        if not device.is_active:
             messages.error(self.request, _("Archived Devices can't be edited"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
@@ -721,7 +730,7 @@ class DeviceLend(PermissionRequiredMixin, FormView):
         templates = []
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
-            if device.archived is not None:
+            if not device.is_active:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
             if device.currentlending is not None:
@@ -914,12 +923,7 @@ class DeviceArchive(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, 
     def post(self, request, **kwargs):
         device = self.get_object()
         if device.archived is None:
-            device.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
-            device.room = None
-            device.currentlending = None
-            for ip in device.ipaddress_set.all():
-                ip.device = None
-                ip.save()
+            device.archive_device()
         else:
             device.archived = None
         device.save()
@@ -939,47 +943,37 @@ class DeviceTrash(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, Ba
     def post(self, request, **kwargs):
         device = self.get_object()
         if device.trashed is None:
-            device.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
-            device.room = None
-            if device.currentlending:
-                device.currentlending.returndate = datetime.date.today()
-                device.currentlending.save()
-                device.currentlending = None
-            # if device.uses
-            if Device.objects.filter(used_in=device.pk):
-                other_list = Device.objects.filter(used_in=device.pk)
-                for element in other_list:
-                    other = element
-                    other.used_in = None
-                    other.save()
-            if device.used_in:
-                device.used_in = None
-            for ip in device.ipaddress_set.all():
-                ip.device = None
-                ip.save()
+            device.trash_device()
 
-            try:
-                template = MailTemplate.objects.get(usage="trashed")
-            except:
-                template = None
-                messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
-            if template is not None:
-                recipients = []
-                for recipient in template.default_recipients.all():
-                    recipient = recipient.content_object
-                    if isinstance(recipient, Group):
-                        recipients += recipient.user_set.all().values_list("email")[0]
-                    else:
-                        recipients.append(recipient.email)
-                template.send(self.request, recipients, {"device": device, "user": self.request.user})
-                messages.success(self.request, _('Mail successfully sent'))
+            if "send_mail" in request.POST and request.POST["send_mail"]:
+                try:
+                    template = MailTemplate.objects.get(usage="trashed")
+                except:
+                    template = None
+                    messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
+                if template is not None:
+                    recipients = []
+                    for recipient in template.default_recipients.all():
+                        recipient = recipient.content_object
+                        if isinstance(recipient, Group):
+                            recipients += recipient.user_set.all().values_list("email")[0]
+                        else:
+                            recipients.append(recipient.email)
+                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                    messages.success(self.request, _('Mail successfully sent'))
         else:
             device.trashed = None
         device.save()
 
         reversion.set_comment(_("Device was trashed"))
         messages.success(request, _("Device was trashed"))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
+        url = reverse("device-detail", kwargs={"pk": device.pk})
+        if device.trashed != None and request.POST.get("generate_pdf", False):
+            url += "?generate_pdf=trashed"
+            if "reason" in request.POST:
+                url += "&comment={0}".format(request.POST["reason"])
+        return HttpResponseRedirect(url)
 
 
 class DeviceStorage(PermissionRequiredMixin, SingleObjectMixin, FormView):
@@ -1619,28 +1613,59 @@ def merge(overlay_canvas: io.BytesIO, template_path: str) -> io.BytesIO:
     form.seek(0)
     return form
 
-def generate_hand_over_protocol(request, pk):
+def generate_device_protocol(request, pk, purpose):
     device = get_object_or_404(Device, pk=pk)
+
+    if purpose == "handover" and hasattr(settings, "HANDOVER_PROTOCOL_LOCATION"):
+        file_location = settings.HANDOVER_PROTOCOL_LOCATION
+        text_locations = settings.HANDOVER_PROTOCOL_TEXT_LOCATIONS
+    elif purpose == "trashed" and hasattr(settings, "TRASHED_PROTOCOL_LOCATION"):
+        file_location = settings.TRASHED_PROTOCOL_LOCATION
+        text_locations = settings.TRASHED_PROTOCOL_TEXT_LOCATIONS
+    elif purpose == "returned" and hasattr(settings, "RETURNED_PROTOCOL_LOCATION"):
+        file_location = settings.RETURNED_PROTOCOL_LOCATION
+        text_locations = settings.RETURNED_PROTOCOL_TEXT_LOCATIONS
+    else:
+        return HttpResponseNotFound()
 
     data = io.BytesIO()
     pdf = canvas.Canvas(data)
-    pdf.drawString(x=155, y=632, text=str(request.user))
-    pdf.drawString(x=350, y=632, text=str(datetime.date.today()))
-
-    pdf.drawString(x=155, y=597, text=str(device.devicetype))
-    pdf.drawString(x=362, y=597, text=str(device.manufacturer))
-
-    pdf.drawString(x=155, y=563, text=str(device.inventorynumber))
-    pdf.drawString(x=372, y=563, text=str(device.serialnumber))
-
-    pdf.drawString(x=165, y=530, text=str(device.name))
+    data_map = {
+        "user_name": str(request.user),
+        "date": str(datetime.date.today()),
+        "devicetype": str(device.devicetype),
+        "manufacturer": str(device.manufacturer),
+        "inventorynumber": device.inventorynumber,
+        "serialnumber": device.serialnumber,
+        "name": device.name,
+        "room": str(device.room),
+        "department": str(device.department),
+        "comment": str(request.GET.get("comment", ""))
+    }
+    if device.currentlending != None:
+        data_map["recipient_name"] = str(device.currentlending.owner)
+    
+    wrapper = textwrap.TextWrapper()
+    for (key, location) in text_locations.items():
+        if key in data_map:
+            text = data_map[key]
+            if len(location) == 3:
+                wrapper.width = location[2]
+            else:
+                wrapper.width = 70
+            lines = wrapper.wrap(text)
+            for index, line in enumerate(lines, start=0):
+                pdf.drawString(x=location[0], y=location[1] - (index * (pdf._fontsize + 4)), text=line)
+        elif key == "checkmarks":
+            for checkmark_location in location:
+                pdf.drawString(x=checkmark_location[0], y=checkmark_location[1], text="✔")
 
     pdf.save()
     data.seek(0)
 
-    buffer = merge(data, template_path=settings.HANDOVER_PROTOCOL_LOCATION)
+    buffer = merge(data, template_path=file_location)
     # FileResponse sets the Content-Disposition header so that browsers
     # present the option to save the file.
     response = HttpResponse(buffer, content_type='application/pdf')
-    response['Content-Disposition'] = "filename={0}_{1}.pdf".format(_("handover_protocol"), pk)
+    response['Content-Disposition'] = "filename={0}_{1}.pdf".format(_("{0}_protocol".format(purpose)), pk)
     return response
