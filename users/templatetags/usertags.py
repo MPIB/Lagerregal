@@ -26,7 +26,7 @@ def has_perm(perm, user, obj=None):
 
 @register.filter
 def bootstrap_message_classes(message):
-    classes = ['alert']
+    classes = ['alert', 'alert-dismissible', 'fade', 'show']
     classes.append(MESSAGE_LEVEL_CLASSES[message.level])
     classes.append(message.extra_tags or '')
     return ' '.join(classes)
