@@ -8,72 +8,70 @@
 {% block header %}{{ actionstring }} {{ object|default:_("Object") }}{% endblock %}
 
 {% block content %}
-    <div x-data="deviceForm()" x-init="formLoaded()">
-        <form action="" method="post" id="form" enctype="multipart/form-data">{% csrf_token %}
+    <form action="" method="post" id="form" enctype="multipart/form-data" x-data="deviceForm()" x-init="formLoaded()">{% csrf_token %}
+        <div class="row">
+            <div class="form-group col-md-3">
+                <label for="name">{% trans "Name" %}</label>
+                {{ form.name|add_class:'form-control'|add_attr:"x-model,name" }}
+            </div>
+            <div class="form-group col-md-3">
+                <label for="deviceType">{% trans "Devicetype" %}</label>
+                {{ form.devicetype|add_class:'form-control'|add_attr:"x-model,deviceType" }}
+            </div>
+            <div class="form-group col-md-3">
+                <label for="name">{% trans "Department" %}</label>
+                {{ form.department|add_class:'form-control'|add_attr:"x-model,department" }}
+            </div>
+            <div class="form-group col-md-3">
+                <label for="name">{% trans "Operating System" %}</label>
+                {{ form.operating_system|add_class:'form-control'|add_to_tag:"x-model='operatingSystem' x-ref='operatingSystem'" }}
+            </div>
+        </div>
+        <button type="button" x-show="!isLoading && !hasDevice()" x-bind:disabled="!canInitialize()" class="btn btn-primary" @click="createDevice()">{% trans "Create Device" %}</button>
+        <div class="d-flex justify-content-center">
+            <div x-show="isLoading" class="spinner-border" role="status">
+            </div>
+        </div>
+        <div x-show="hasDevice()">
+            <hr />
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <h4>{% trans "Lagerregal ID" %}: <b x-text="device.id"></b></h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>{% trans "Hostname" %}: <b x-text="device.hostname"></b></h4>
+                </div>
+            </div>
             <div class="row">
-                <div class="form-group col-md-3">
-                    <label for="name">{% trans "Name" %}</label>
-                    {{ form.name|add_class:'form-control'|add_attr:"x-model,name" }}
+                <div class="form-group col-md-6">
+                    <label for="serialnumber">{% trans "Serialnumber" %}</label>
+                    {{ form.serialnumber|add_class:'form-control' }}
                 </div>
-                <div class="form-group col-md-3">
-                    <label for="deviceType">{% trans "Devicetype" %}</label>
-                    {{ form.devicetype|add_class:'form-control'|add_attr:"x-model,deviceType" }}
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="name">{% trans "Department" %}</label>
-                    {{ form.department|add_class:'form-control'|add_attr:"x-model,department" }}
-                </div>
-                <div class="form-group col-md-3">
-                    <label for="name">{% trans "Operating System" %}</label>
-                    {{ form.operating_system|add_class:'form-control'|add_to_tag:"x-model='operatingSystem' x-ref='operatingSystem'" }}
+                <div class="form-group col-md-6">
+                    <label for="inventorynumber">{% trans "Inventorynumber" %}</label>
+                    {{ form.inventorynumber|add_class:'form-control' }}
                 </div>
             </div>
-            <button type="button" x-show="!isLoading && !hasDevice()" x-bind:disabled="!canInitialize()" class="btn btn-primary" @click="createDevice()">{% trans "Create Device" %}</button>
-            <div class="d-flex justify-content-center">
-                <div x-show="isLoading" class="spinner-border" role="status">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <label for="room">{% trans "Room" %}</label>
+                    {{ form.room|add_class:'form-control' }}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="room">{% trans "IP-Addresses" %}</label>
+                    {{ form.ipaddresses|add_class:'form-control' }}
                 </div>
             </div>
-            <div x-show="hasDevice()">
-                <hr />
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <h4>{% trans "Lagerregal ID" %}: <b x-text="device.id"></b></h4>
-                    </div>
-                    <div class="col-md-6">
-                        <h4>{% trans "Hostname" %}: <b x-text="device.hostname"></b></h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label for="serialnumber">{% trans "Serialnumber" %}</label>
-                        {{ form.serialnumber|add_class:'form-control' }}
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="inventorynumber">{% trans "Inventorynumber" %}</label>
-                        {{ form.inventorynumber|add_class:'form-control' }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label for="room">{% trans "Room" %}</label>
-                        {{ form.room|add_class:'form-control' }}
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="room">{% trans "IP-Addresses" %}</label>
-                        {{ form.ipaddresses|add_class:'form-control' }}
-                    </div>
-                </div>
-                <div>
-                    <button class="btn btn-primary">{% trans "Save Device" %}</button>
-                    {% if display_printbutton %}
-                    <button type="button" class="btn btn-success pull-right" data-target="#printDymoModal" data-toggle="modal">
-                        <i class="fa fa-print" aria-hidden="true"></i> {% trans "Print Label" %}
-                    </button>
-                    {% endif %}
-                </div>
+            <div>
+                <button class="btn btn-primary">{% trans "Save Device" %}</button>
+                {% if display_printbutton %}
+                <button type="button" class="btn btn-success pull-right" data-target="#printDymoModal" data-toggle="modal">
+                    <i class="fa fa-print" aria-hidden="true"></i> {% trans "Print Label" %}
+                </button>
+                {% endif %}
             </div>
-        </form>
-    </div>
+        </div>
+    </form>
     {% if display_printbutton %}
         {% include "snippets/modals/deviceprintDymoModal.html" with modalname="printDymoModal" label_path=label_path %}
     {% endif %}
