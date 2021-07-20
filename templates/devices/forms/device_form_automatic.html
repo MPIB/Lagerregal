@@ -28,7 +28,7 @@
                     {{ form.operating_system|add_class:'form-control'|add_to_tag:"x-model='operatingSystem' x-ref='operatingSystem'" }}
                 </div>
             </div>
-            <a href="#"  x-show="!isLoading && !hasDevice()" x-bind:class="{ disabled: !canInitialize() }" class="btn btn-primary" @click="createDevice()">{% trans "Create Device" %}</a>
+            <button type="button" x-show="!isLoading && !hasDevice()" x-bind:disabled="!canInitialize()" class="btn btn-primary" @click="createDevice()">{% trans "Create Device" %}</button>
             <div class="d-flex justify-content-center">
                 <div x-show="isLoading" class="spinner-border" role="status">
                 </div>
@@ -64,11 +64,11 @@
                     </div>
                 </div>
                 <div>
-                    <input type="submit" value="{% trans "Save Device" %}" class="btn btn-primary"/>
+                    <button class="btn btn-primary">{% trans "Save Device" %}</button>
                     {% if display_printbutton %}
-                    <a class="btn btn-success pull-right" href="#" data-target="#printDymoModal" data-toggle="modal">
-                        <i class="fa fa-print"></i> {% trans "Print Label" %}
-                    </a>
+                    <button type="button" class="btn btn-success pull-right" data-target="#printDymoModal" data-toggle="modal">
+                        <i class="fa fa-print" aria-hidden="true"></i> {% trans "Print Label" %}
+                    </button>
                     {% endif %}
                 </div>
             </div>
