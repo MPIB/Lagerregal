@@ -312,14 +312,6 @@
 
 {% block scriptend %}
     $(function() {
-        var $affix = $(".affix-container");
-        var $parent = $affix.parent();
-        var resize = function() {
-            $affix.width($parent.width());
-        };
-        $(window).resize(resize);
-        resize();
-
         var url = document.location.toString();
         if (url.match('#')) {
             $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
