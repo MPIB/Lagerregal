@@ -157,6 +157,9 @@
 
 <div class="container">
     <main>
+        {% for message in messages %}
+            <p role="alert" class="{{ message|bootstrap_message_classes }}">{{ message }}</p>
+        {% endfor %}
         <header class="bg-light d-flex justify-content-between align-items-center p-3 mb-3 flex-md-row flex-column">
             <h1 class="h3 m-0 flex-shrink-0">
                 <ol class="breadcrumb p-0 m-0">
@@ -218,19 +221,6 @@
 
 <script>
 {% block scriptend %}{% endblock %}
-{% if messages %}
-    $(function () {
-        {% for message in messages %}
-            noty({
-                text: '{{message|safe }}',
-                type: '{{message.tags}}',
-                layout: 'topCenter',
-                theme: 'defaultTheme',
-                timeout: 5000
-            });
-        {% endfor %}
-    });
-{% endif %}
 </script>
 </body>
 
