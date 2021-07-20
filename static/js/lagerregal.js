@@ -71,4 +71,10 @@
             }
         });
     });
+
+    $(function() {
+        if (document.location.hash) {
+            $('[data-toggle="tab"][href="' + document.location.hash + '"]').tab('show') ;
+        }
+    });
 })();

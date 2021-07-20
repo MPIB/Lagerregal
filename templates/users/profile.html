@@ -309,12 +309,3 @@
         {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
     {% endif %}
 {% endblock %}
-
-{% block scriptend %}
-    $(function() {
-        var url = document.location.toString();
-        if (url.match('#')) {
-            $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
-        }
-    });
-{% endblock %}
