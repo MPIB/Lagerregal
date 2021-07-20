@@ -12,11 +12,11 @@
         <form action="" method="post" id="form" enctype="multipart/form-data">{% csrf_token %}
             <div class="row">
                 <div class="form-group col-md-3">
-                    <label for="name">Name</label>
+                    <label for="name">{% trans "Name" %}</label>
                     {{ form.name|add_class:'form-control'|add_attr:"x-model,name" }}
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="deviceType">Device Type</label>
+                    <label for="deviceType">{% trans "Devicetype" %}</label>
                     {{ form.devicetype|add_class:'form-control'|add_attr:"x-model,deviceType" }}
                 </div>
                 <div class="form-group col-md-3">
@@ -37,10 +37,10 @@
                 <hr />
                 <div class="row mb-3">
                     <div class="col-md-6">
-                        <h4>Lagerregal ID: <b x-text="device.id"></b></h4>
+                        <h4>{% trans "Lagerregal ID" %}: <b x-text="device.id"></b></h4>
                     </div>
                     <div class="col-md-6">
-                        <h4>Hostname: <b x-text="device.hostname"></b></h4>
+                        <h4>{% trans "Hostname" %}: <b x-text="device.hostname"></b></h4>
                     </div>
                 </div>
                 <div class="row">

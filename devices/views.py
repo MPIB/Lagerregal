@@ -453,7 +453,7 @@ class DeviceCreate(PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.all()
-        context['actionstring'] = "Create new Device"
+        context['actionstring'] = _("Create new device")
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Create new device"))]
@@ -527,7 +527,7 @@ class DeviceCreateAutomatic(PermissionRequiredMixin, FormView):
             context["device_json"] = json.dumps(serializer)
         else:
             context["device_json"] = "{}"
-        context['actionstring'] = "Create new Device"
+        context['actionstring'] = _("Create new device")
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Create new device"))]
@@ -789,7 +789,7 @@ class DeviceReturn(PermissionRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['actionstring'] = "Mark device as returned"
+        context['actionstring'] = _("Mark device as returned")
 
         # get lending object with given pk
         lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
@@ -1179,7 +1179,7 @@ class RoomCreate(PermissionRequiredMixin, CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Room"
+        context['actionstring'] = _("Create new room")
         context['type'] = "room"
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
@@ -1197,7 +1197,7 @@ class RoomUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1317,7 +1317,7 @@ class BuildingCreate(PermissionRequiredMixin, CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Building"
+        context['actionstring'] = _("Create new building")
         context['type'] = "building"
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
@@ -1335,7 +1335,7 @@ class BuildingUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1455,7 +1455,7 @@ class ManufacturerCreate(PermissionRequiredMixin, CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Manufacturer"
+        context['actionstring'] = _("Create new manufacturer")
         context['type'] = "manufacturer"
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
@@ -1473,7 +1473,7 @@ class ManufacturerUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
