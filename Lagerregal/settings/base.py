@@ -191,9 +191,6 @@ THEMES = [
 NPM_ROOT_PATH = os.getcwd()
 
 NPM_FILE_PATTERNS = {
-    'alpinejs': [
-        'dist/alpine.js',
-    ],
     'bootstrap': [
         'dist/js/bootstrap.min.js',
     ],
