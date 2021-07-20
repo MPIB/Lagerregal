@@ -179,7 +179,6 @@ urlpatterns = [
     path('devices_ajax/devicedetails/<int:device>/', login_required(devicedata_ajax.DeviceDetails.as_view()), name="device-details"),
     path('devices_ajax/devicedetails/<int:device>/json', login_required(devicedata_ajax.DeviceDetailsJson.as_view()), name="device-details-json"),
     path('devices_ajax/devicesoftware/<int:device>/', login_required(devicedata_ajax.DeviceSoftware.as_view()), name="device-software"),
-    path('devices_ajax/initialize_device/', login_required(devices_ajax.InitializeAutomaticDevice.as_view()), name="init-automatic-device"),
 ]
 
 urlpatterns += format_suffix_patterns([

@@ -228,23 +228,3 @@ class UserLendings(View):
         ]
 
         return HttpResponse(json.dumps(data), content_type='application/json')
-
-
-class InitializeAutomaticDevice(View):
-
-    def post(self, request):
-        print(request.POST)
-        device = Device()
-        device.name = request.POST["name"]
-        device.department_id = request.POST["department"]
-        device.devicetype_id = request.POST["device_type"]
-        device.operating_system = request.POST["operating_system"]
-        device.creator = self.request.user
-        device.save()
-        device.hostname = "{0}-{1}-{2:06d}".format(device.department.short_name, request.POST["operating_system"], device.pk)
-        device.save()
-
-        return HttpResponse(json.dumps({
-            "id": device.id,
-            "hostname": device.hostname
-        }), content_type='application/json')
