@@ -429,22 +429,6 @@
 {% block scriptend %}
     {% include "devices/detail/device_detail.js" with device_id=device.id provided_data=provided_data %}
     $(function() {
-        $("#id_ipaddresses").on("change", function(e) {
-            if ($(this).val()) {
-                $("#submitipaddress").removeClass("disabled");
-            } else {
-                $("#submitipaddress").addClass("disabled");
-            }
-        });
-
-        $("#id_tags").on("change", function(e) {
-            if ($(this).val()) {
-                $("#submittags").removeClass("disabled");
-            } else {
-                $("#submittags").addClass("disabled");
-            }
-        });
-
         $("#id_mailtemplate").change(function() {
             if ($(this).val() !== "") {
                 $.ajax({

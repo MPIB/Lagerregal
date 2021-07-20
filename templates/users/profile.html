@@ -262,7 +262,7 @@
                         {% csrf_token %}
                         <div class="form-group">{{ ipaddressform.ipaddresses }}</div>
                         <div class="text-right">
-                            <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
+                            <button type="submit" class="btn btn-success btn-sm" id="submitipaddress">
                                 <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
                             </button>
                         </div>
@@ -311,14 +311,6 @@
 {% endblock %}
 
 {% block scriptend %}
-    $("#id_ipaddresses").on("change", function(e) {
-        if ($(this).val()) {
-            $("#submitipaddress").removeClass("disabled");
-        } else {
-            $("#submitipaddress").addClass("disabled");
-        }
-    });
-
     $(function() {
         var $affix = $(".affix-container");
         var $parent = $affix.parent();
