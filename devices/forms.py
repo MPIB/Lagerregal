@@ -1,7 +1,6 @@
 import re
 
 from django import forms
-from django.conf import settings
 from django.contrib.auth.models import Group
 from django.db.models import Count
 from django.db.utils import OperationalError
@@ -11,6 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from django_select2.forms import Select2MultipleWidget
 from django_select2.forms import Select2Widget
+from reversion import revisions as reversion
 
 from devicegroups.models import Devicegroup
 from devices.models import Device
@@ -328,23 +328,49 @@ class DeviceForm(forms.ModelForm):
                     pass
 
 
-class DeviceFormAutomatic(forms.Form):
+class DeviceFormAutomatic(forms.ModelForm):
     error_css_class = 'has-error'
 
-    # initial fields
-    name = forms.CharField(max_length=200, required=False)
-    devicetype = forms.ModelChoiceField(Type.objects.filter(automatic_data=True), required=False)
-    department = forms.ModelChoiceField(Department.objects.filter(short_name__isnull=False), required=False)
-    operating_system = forms.ChoiceField(choices=settings.OPERATING_SYSTEMS)
-
-    # optional fields
-    serialnumber = forms.CharField(max_length=100, required=False)
-    inventorynumber = forms.CharField(max_length=100, required=False)
-    room = forms.ModelChoiceField(Room.objects.select_related("building").all(), required=False)
     ipaddresses = forms.ModelMultipleChoiceField(
         IpAddress.objects.filter(device=None, user=None),
         required=False,
         widget=Select2MultipleWidget(attrs={"data-token-separators": '[",", " "]'}))
+
+    class Meta:
+        model = Device
+        fields = [
+            'name',
+            'devicetype',
+            'department',
+            'operating_system',
+            'serialnumber',
+            'inventorynumber',
+            'room',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['devicetype'].required = True
+        self.fields['devicetype'].queryset = Type.objects.filter(automatic_data=True)
+        self.fields['department'].required = True
+        self.fields['operating_system'].required = True
+
+    def save(self):
+        device = super().save()
+
+        device.hostname = "{0}-{1}-{2:06d}".format(
+            self.cleaned_data["department"].short_name,
+            self.cleaned_data["operating_system"],
+            device.pk,
+        )
+        device.save()
+
+        reversion.set_comment(_("Assigned to Device {0}").format(device.name))
+        for ipaddress in self.cleaned_data['ipaddresses']:
+            ipaddress.device = device
+            ipaddress.save()
+
+        return device
 
 
 class AddForm(forms.ModelForm):

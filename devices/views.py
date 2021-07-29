@@ -1,6 +1,5 @@
 import csv
 import datetime
-import json
 import time
 
 from django.conf import settings
@@ -38,7 +37,6 @@ from django.views.generic.detail import SingleObjectTemplateResponseMixin
 from reversion import revisions as reversion
 from reversion.models import Version
 
-from api.serializers import DeviceIDSerializer
 from devices.forms import VIEWSORTING
 from devices.forms import VIEWSORTING_DEVICES
 from devices.forms import DeviceForm
@@ -453,7 +451,7 @@ class DeviceCreate(PermissionRequiredMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         context["form"].fields["emailtemplate"].queryset = MailTemplate.objects.all()
-        context['actionstring'] = "Create new Device"
+        context['actionstring'] = _("Create new device")
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Create new device"))]
@@ -507,61 +505,32 @@ class DeviceCreateAutomatic(PermissionRequiredMixin, FormView):
     form_class = DeviceFormAutomatic
     permission_required = 'devices.add_device'
 
-    def get_success_url(self):
-        pk = self.request.GET.get("id", None)
-        return reverse("device-detail", kwargs={"pk": pk})
-
-    def get_initial(self):
-        initial = super().get_initial()
-        if self.request.user.main_department:
-            initial["department"] = self.request.user.main_department
-        return initial
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if "id" in self.request.GET:
+            kwargs["instance"] = get_object_or_404(Device, pk=self.request.GET["id"])
+        elif self.request.user.main_department:
+            kwargs["initial"]["department"] = self.request.user.main_department
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.filter(short_name__isnull=False)
-        existing_id = self.request.GET.get("id", None)
-        if existing_id is not None:
-            device = get_object_or_404(Device, pk=existing_id)
-            serializer = DeviceIDSerializer(device).data
-            context["device_json"] = json.dumps(serializer)
-        else:
-            context["device_json"] = "{}"
-        context['actionstring'] = "Create new Device"
+        context['actionstring'] = _("Create new device")
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             ("", _("Create new device"))]
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["department"]:
-            if not form.cleaned_data["department"] in self.request.user.departments.filter(short_name__isnull=False):
-                return HttpResponseBadRequest()
-        reversion.set_comment(_("Created"))
-        r = super().form_valid(form)
-        existing_id = self.request.GET.get("id", None)
-        if existing_id is not None:
-            device = get_object_or_404(Device, pk=existing_id)
+        if "id" not in self.request.GET:
+            device = form.save()
+            return HttpResponseRedirect("{}?id={}".format(self.request.path, device.pk))
         else:
-            device = Device()
-        device.name = form.cleaned_data["name"]
-        device.department = form.cleaned_data["department"]
-        device.devicetype = form.cleaned_data["devicetype"]
-        device.operating_system = form.cleaned_data["operating_system"]
-        device.serialnumber = form.cleaned_data["serialnumber"]
-        device.inventorynumber = form.cleaned_data["inventorynumber"]
-        device.room = form.cleaned_data["room"]
-        device.save()
-
-        ipaddresses = form.cleaned_data["ipaddresses"]
-
-        reversion.set_comment(_("Assigned to Device {0}").format(device.name))
-        for ipaddress in ipaddresses:
-            ipaddress.device = device
-            ipaddress.save()
-
-        messages.success(self.request, _('Device was successfully saved.'))
-        return r
+            reversion.set_comment(_("Created"))
+            device = form.save()
+            messages.success(self.request, _("Device was successfully saved."))
+            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
 
 class DeviceUpdate(PermissionRequiredMixin, UpdateView):
@@ -789,7 +758,7 @@ class DeviceReturn(PermissionRequiredMixin, FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['actionstring'] = "Mark device as returned"
+        context['actionstring'] = _("Mark device as returned")
 
         # get lending object with given pk
         lending = get_object_or_404(Lending, pk=self.kwargs["lending"])
@@ -1179,7 +1148,7 @@ class RoomCreate(PermissionRequiredMixin, CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Room"
+        context['actionstring'] = _("Create new room")
         context['type'] = "room"
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
@@ -1197,7 +1166,7 @@ class RoomUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("room-list"), _("Rooms")),
             (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1317,7 +1286,7 @@ class BuildingCreate(PermissionRequiredMixin, CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Building"
+        context['actionstring'] = _("Create new building")
         context['type'] = "building"
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
@@ -1335,7 +1304,7 @@ class BuildingUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("building-list"), _("Buildings")),
             (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
@@ -1455,7 +1424,7 @@ class ManufacturerCreate(PermissionRequiredMixin, CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Manufacturer"
+        context['actionstring'] = _("Create new manufacturer")
         context['type'] = "manufacturer"
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
@@ -1473,7 +1442,7 @@ class ManufacturerUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("manufacturer-list"), _("Manufacturers")),
             (reverse("manufacturer-detail", kwargs={"pk": context["object"].pk}), context["object"].name),

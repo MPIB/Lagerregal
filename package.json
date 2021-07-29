@@ -2,7 +2,6 @@
   "name": "lagerregal",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "alpinejs": "^2.8.2",
     "bootstrap": "^4.6.0",
     "bootswatch": "^4.6.0",
     "datatables.net": "^1.10.24",

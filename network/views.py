@@ -104,7 +104,7 @@ class IpAddressCreate(PermissionRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['actionstring'] = "Create new"
+        context['actionstring'] = _("Create new IP-Address")
         context["form"].fields["department"].queryset = self.request.user.departments.all()
         if self.request.user.main_department:
             context["form"].fields["department"].initial = self.request.user.main_department
@@ -129,7 +129,7 @@ class IpAddressUpdate(PermissionRequiredMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.all()
-        context['actionstring'] = "Update"
+        context['actionstring'] = _("Update")
         context["breadcrumbs"] = [
             (reverse("ipaddress-list"), _("IP-Addresses")),
             (reverse("ipaddress-detail", kwargs={"pk": self.object.pk}), self.object.address),
