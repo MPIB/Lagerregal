@@ -780,7 +780,12 @@ class DeviceLend(PermissionRequiredMixin, FormView):
         if form.cleaned_data["device"]:
             device.currentlending = lending
             device.save()
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+            url = reverse("device-detail", kwargs={"pk": device.pk})
+            if device.trashed != None and self.request.POST.get("generate_pdf", True):
+                url += "?generate_pdf=handover"
+                if "comment" in self.request.POST:
+                    url += "&comment={0}".format(self.request.POST["comment"])
+            return HttpResponseRedirect(url)
         else:
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": lending.owner.pk}))
 
