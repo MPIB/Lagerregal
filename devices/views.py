@@ -43,7 +43,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from rest_framework.renderers import JSONRenderer
-from pdfrw.toreportlab import makerl
 
 from reversion import revisions as reversion
 from reversion.models import Version
@@ -1590,11 +1589,22 @@ def generate_label_pdf(request, pk):
     # Create the PDF object, using the buffer as its "file."
     p = canvas.Canvas(buffer, pagesize=size)
 
-    barcode = code128.Code128('{:06d}'.format(pk), barHeight=size[1]/2, barWidth=1)
+    offset = 0
+    if hasattr(settings, "LABEL_ICON"):
+        icon_size = size[1] * 0.9
+        offset = size[1] * 0.05
+        p.drawInlineImage(settings.LABEL_ICON, offset, offset, icon_size, icon_size)
+        size = (size[0] - icon_size, size[1])
+        offset += icon_size + offset
+
+    barcode = code128.Code128('{:06d}'.format(pk), barHeight=size[1]/2, barWidth=2)
     barcode._calculate()
     width, height = barcode._width, barcode._height
-    barcode.drawOn(p, (size[0] - width) / 2, (size[1] - height) / 2)
-    p.drawCentredString(size[0] / 2 + 1, (size[1] - height) / 2 - 10, '{:06d}'.format(pk))
+    barcode.drawOn(p, offset + (size[0] - width) / 2, (size[1] - height) / 2)
+    p.drawCentredString(offset + (size[0] / 2) + 1, (size[1] - height) / 2 - 11, '{:06d}'.format(pk))
+    if hasattr(settings, "LABEL_TITLE"):
+        p.setFontSize(9)
+        p.drawCentredString(offset + (size[0] / 2) + 1, (size[1] - height) / 2 + height + 6, settings.LABEL_TITLE)
 
     # Close the PDF object cleanly, and we're done.
     p.showPage()

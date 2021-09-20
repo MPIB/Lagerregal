@@ -1,5 +1,6 @@
 # Django settings for Lagerregal project.
 import os
+from reportlab.lib.units import mm
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -254,6 +255,10 @@ OPERATING_SYSTEMS = [
     ("osx", "macOS"),
     ("linux", "Linux")
 ]
+
+LABEL_PAGESIZE = (83*mm, 25*mm)
+LABEL_ICON = "pdf_forms/minerva.jpg"
+LABEL_TITLE = "Information Services & Technology"
 
 HANDOVER_PROTOCOL_LOCATION = "pdf_forms/Leihschein.pdf"
 HANDOVER_PROTOCOL_TEXT_LOCATIONS = {
