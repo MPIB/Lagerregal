@@ -16,8 +16,8 @@ from devices.models import Picture
 from devicetypes.models import Type
 from Lagerregal import utils
 from locations.models import Building
-from locations.models import Section
 from locations.models import Room
+from locations.models import Section
 from users.models import Department
 from users.models import DepartmentUser
 from users.models import Lageruser

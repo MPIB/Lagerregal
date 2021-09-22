@@ -21,8 +21,8 @@ from devices.forms import ViewForm
 from devices.models import Device
 from Lagerregal.utils import PaginationMixin
 from locations.models import Building
-from locations.models import Section
 from locations.models import Room
+from locations.models import Section
 from users.mixins import PermissionRequiredMixin
 
 

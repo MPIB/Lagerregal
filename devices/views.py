@@ -4,9 +4,7 @@ import io
 import json
 import textwrap
 import time
-from django.http.response import HttpResponseNotFound
 
-import pdfrw
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Group
@@ -16,10 +14,12 @@ from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models import Q
 from django.db.transaction import atomic
-from django.http import Http404, FileResponse
+from django.http import FileResponse
+from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
@@ -38,12 +38,13 @@ from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
+
+import pdfrw
 from reportlab.graphics.barcode import code128
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
 from rest_framework.renderers import JSONRenderer
-
 from reversion import revisions as reversion
 from reversion.models import Version
 

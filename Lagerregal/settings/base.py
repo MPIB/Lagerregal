@@ -1,5 +1,6 @@
 # Django settings for Lagerregal project.
 import os
+
 from reportlab.lib.units import mm
 
 # Local time zone for this installation. Choices can be found here:

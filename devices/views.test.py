@@ -1,5 +1,7 @@
-from devices import views
 import pytest
+
+from devices import views
+
 
 class Test_Search_Parse_boolean:
     
