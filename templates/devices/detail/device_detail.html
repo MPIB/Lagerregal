@@ -65,25 +65,25 @@
             <ul class="dropdown-menu" role="menu">
                 {% if display_printbutton %}
                     <li>
-                        <a class="dropdown-item" href="#" data-target="#printDymoModal" data-toggle="modal">
+                        <button class="dropdown-item" type="button" data-target="#printDymoModal" data-toggle="modal">
                             <i class="fa fa-print"></i> {% trans "Print Dymo Label" %}
-                        </a>
+                        </button>
                     </li>
                 {% endif %}
                 <li>
-                    <button class="dropdown-item" href="#" onclick="printJS({printable: '{% url "device-generate-label" device.id %}', type:'pdf'})">
+                    <button class="dropdown-item" type="button" onclick="printJS({printable: '{% url "device-generate-label" device.id %}', type:'pdf'})">
                         <i class="fa fa-print"></i> {% trans "Print Label" %}
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" href="#" onclick="printJS({printable: '{% url "device-generate-protocol" device.id "handover" %}', type:'pdf'})">
+                    <button class="dropdown-item" type="button" onclick="printJS({printable: '{% url "device-generate-protocol" device.id "handover" %}', type:'pdf'})">
                         <i class="fa fa-print"></i> {% trans "Print Handover Protocol" %}
                     </button>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="#" data-target="#pictureModal" data-toggle="modal">
+                    <button class="dropdown-item" type="button" data-target="#pictureModal" data-toggle="modal">
                         <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
-                    </a>
+                    </button>
                 </li>
                 {% if can_change_device %}
                     <li>
@@ -118,9 +118,9 @@
                         </form>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#" data-target="#trashModal" data-toggle="modal">
+                        <button class="dropdown-item" type="button" data-target="#trashModal" data-toggle="modal">
                             <i class="fa fa-trash-o"></i> {% trans "Trash" %}
-                        </a>
+                        </button>
                     </li>
                 {% endif %}
                 {% if can_delete_device %}
