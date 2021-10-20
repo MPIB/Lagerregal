@@ -12,12 +12,12 @@ import pystache
 
 from devicegroups.models import Devicegroup
 from devices.forms import AddForm
-from devices.models import Building
 from devices.models import Device
 from devices.models import Lending
 from devices.models import Manufacturer
-from devices.models import Room
 from devicetypes.models import Type
+from locations.models import Building
+from locations.models import Room
 from mail.models import MailTemplate
 from users.models import Lageruser
 

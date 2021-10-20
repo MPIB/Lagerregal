@@ -9,7 +9,6 @@ from django.urls import reverse
 from model_mommy import mommy
 
 from devices import views as device_views
-from devices.models import Building
 from devices.models import Device
 from devices.models import DeviceInformation
 from devices.models import DeviceInformationType
@@ -18,6 +17,7 @@ from devices.models import Manufacturer
 from devices.models import Note
 from devices.models import Picture
 from devices.models import Template
+from locations.models import Building
 from locations.models import Room
 from network.models import IpAddress
 from users.models import Lageruser
