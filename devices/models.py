@@ -118,7 +118,7 @@ class Device(models.Model):
 
     @property
     def is_active(self):
-        return self.archived == None and self.trashed == None
+        return self.archived is None and self.trashed is None
 
     def archive_device(self):
         self.archived = datetime.datetime.utcnow().replace(tzinfo=utc)

@@ -380,7 +380,6 @@ class DeviceMailForm(forms.Form):
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
 
 
-
 class DeviceTrashForm(forms.Form):
     error_css_class = 'has-error'
     send_mail = forms.BooleanField(required=False, initial=True, label=_("Send E-Mail"))

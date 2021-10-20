@@ -107,8 +107,7 @@
                         <form action="{% url "device-storage" object.id %}" method="post"
                               data-confirm="{% trans "Are you sure?" %}">
                             {% csrf_token %}
-                            <button class="dropdown-item"><i class="fa fa-folder"></i> {% trans "Move to storage" %}
-                            </button>
+                            <button class="dropdown-item"><i class="fa fa-folder"></i> {% trans "Move to storage" %}</button>
                         </form>
                     </li>
                     <li>
@@ -141,8 +140,7 @@
             <form action="{% url "device-archive" object.id %}" method="post" data-confirm="{% trans "Are you sure?" %}"
                   class="d-inline-block">
                 {% csrf_token %}
-                <button class="btn btn-success btn-sm"><i class="fa fa-folder-open"></i> {% trans "Unarchive" %}
-                </button>
+                <button class="btn btn-success btn-sm"><i class="fa fa-folder-open"></i> {% trans "Unarchive" %}</button>
             </form>
         {% endif %}
 
@@ -150,8 +148,7 @@
             <form action="{% url "device-trash" object.id %}" method="post" data-confirm="{% trans "Are you sure?" %}"
                   class="d-inline-block">
                 {% csrf_token %}
-                <button class="btn btn-success btn-sm"><i class="fa fa-folder-open"></i> {% trans "Remove from Trash" %}
-                </button>
+                <button class="btn btn-success btn-sm"><i class="fa fa-folder-open"></i> {% trans "Remove from Trash" %}</button>
             </form>
         {% endif %}
     {% endif %}
@@ -516,10 +513,10 @@
             });
         }
 
-    $("#softwaredetails").load("{% url "device-software" device.pk %}");
-    
+        $("#softwaredetails").load("{% url "device-software" device.pk %}");
+
         {% if generate_pdf %}
-        printJS({printable: '{% url "device-generate-protocol" device.id generate_pdf %}?comment={{ pdf_comment|urlencode }}', type:'pdf'})
+            printJS({printable: '{% url "device-generate-protocol" device.id generate_pdf %}?comment={{ pdf_comment|urlencode }}', type:'pdf'})
         {% endif %}
     });
 {% endblock %}

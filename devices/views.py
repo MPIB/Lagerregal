@@ -14,7 +14,6 @@ from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models import Q
 from django.db.transaction import atomic
-from django.http import FileResponse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
@@ -26,7 +25,6 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timesince import timesince
-from django.utils.timezone import utc
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
@@ -42,9 +40,7 @@ from django.views.generic.detail import SingleObjectTemplateResponseMixin
 import pdfrw
 from reportlab.graphics.barcode import code128
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import mm
 from reportlab.pdfgen import canvas
-from rest_framework.renderers import JSONRenderer
 from reversion import revisions as reversion
 from reversion.models import Version
 
@@ -76,7 +72,6 @@ from devicetags.models import Devicetag
 from devicetypes.models import TypeAttribute
 from devicetypes.models import TypeAttributeValue
 from Lagerregal.utils import PaginationMixin
-from locations.models import Building
 from locations.models import Room
 from mail.models import MailHistory
 from mail.models import MailTemplate
@@ -537,7 +532,7 @@ class DeviceCreateAutomatic(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.filter(short_name__isnull=False)
-        context["form"].fields["ipaddresses"].queryset = IpAddress.objects.filter(device = None, user = None).filter(Q(department__in=self.request.user.departments.all()) | Q(department=None))
+        context["form"].fields["ipaddresses"].queryset = IpAddress.objects.filter(device=None, user=None).filter(Q(department__in=self.request.user.departments.all()) | Q(department=None))
         existing_id = self.request.GET.get("id", None)
         if existing_id is not None:
             device = get_object_or_404(Device, pk=existing_id)
@@ -781,7 +776,7 @@ class DeviceLend(PermissionRequiredMixin, FormView):
             device.currentlending = lending
             device.save()
             url = reverse("device-detail", kwargs={"pk": device.pk})
-            if device.trashed != None and self.request.POST.get("generate_pdf", True):
+            if device.trashed is not None and self.request.POST.get("generate_pdf", True):
                 url += "?generate_pdf=handover"
                 if "comment" in self.request.POST:
                     url += "&comment={0}".format(self.request.POST["comment"])
@@ -974,7 +969,7 @@ class DeviceTrash(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, Ba
         messages.success(request, _("Device was trashed"))
 
         url = reverse("device-detail", kwargs={"pk": device.pk})
-        if device.trashed != None and request.POST.get("generate_pdf", False):
+        if device.trashed is not None and request.POST.get("generate_pdf", False):
             url += "?generate_pdf=trashed"
             if "reason" in request.POST:
                 url += "&comment={0}".format(request.POST["reason"])
@@ -1598,7 +1593,7 @@ def generate_label_pdf(request, pk):
         size = (size[0] - icon_size, size[1])
         offset += icon_size + offset
 
-    barcode = code128.Code128('{:06d}'.format(pk), barHeight=size[1]/2, barWidth=2)
+    barcode = code128.Code128('{:06d}'.format(pk), barHeight=size[1] / 2, barWidth=2)
     barcode._calculate()
     width, height = barcode._width, barcode._height
     barcode.drawOn(p, offset + (size[0] - width) / 2, (size[1] - height) / 2)
@@ -1618,6 +1613,7 @@ def generate_label_pdf(request, pk):
     response['Content-Disposition'] = "filename=label_{0}.pdf".format(pk)
     return response
 
+
 def merge(overlay_canvas: io.BytesIO, template_path: str) -> io.BytesIO:
     template_pdf = pdfrw.PdfReader(template_path)
     overlay_pdf = pdfrw.PdfReader(overlay_canvas)
@@ -1628,6 +1624,7 @@ def merge(overlay_canvas: io.BytesIO, template_path: str) -> io.BytesIO:
     pdfrw.PdfWriter().write(form, template_pdf)
     form.seek(0)
     return form
+
 
 def generate_device_protocol(request, pk, purpose):
     device = get_object_or_404(Device, pk=pk)
@@ -1658,9 +1655,9 @@ def generate_device_protocol(request, pk, purpose):
         "department": str(device.department),
         "comment": str(request.GET.get("comment", ""))
     }
-    if device.currentlending != None:
+    if device.currentlending is not None:
         data_map["recipient_name"] = str(device.currentlending.owner)
-    
+
     wrapper = textwrap.TextWrapper()
     for (key, location) in text_locations.items():
         if key in data_map:
