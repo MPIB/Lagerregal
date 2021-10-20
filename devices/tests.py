@@ -47,9 +47,9 @@ class DeviceTests(TestCase):
             "devicetype": device.devicetype,
             "room": device.room,
         })
-        self.assertFalse(device.is_overdue))
-        self.assertTrue(mommy.make(Device, currentlending=lending_past).is_overdue))
-        self.assertFalse(mommy.make(Device, currentlending=lending_future).is_overdue))
+        self.assertFalse(device.is_overdue)
+        self.assertTrue(mommy.make(Device, currentlending=lending_past).is_overdue)
+        self.assertFalse(mommy.make(Device, currentlending=lending_future).is_overdue)
 
     def test_list_view(self):
         mommy.make(Device, _quantity=40)
