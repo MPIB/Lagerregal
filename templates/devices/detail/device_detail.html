@@ -71,12 +71,12 @@
                     </li>
                 {% endif %}
                 <li>
-                    <button class="dropdown-item" type="button" onclick="printJS({printable: '{% url "device-generate-label" device.id %}', type:'pdf'})">
+                    <button class="dropdown-item" type="button" data-print-pdf="{% url "device-generate-label" device.id %}">
                         <i class="fa fa-print"></i> {% trans "Print Label" %}
                     </button>
                 </li>
                 <li>
-                    <button class="dropdown-item" type="button" onclick="printJS({printable: '{% url "device-generate-protocol" device.id "handover" %}', type:'pdf'})">
+                    <button class="dropdown-item" type="button" data-print-pdf="{% url "device-generate-protocol" device.id "handover" %}">
                         <i class="fa fa-print"></i> {% trans "Print Handover Protocol" %}
                     </button>
                 </li>
