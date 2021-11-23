@@ -27,8 +27,6 @@
         </tbody>
     </table>
     <div class="card-footer text-right">
-        {% with dep=user.main_department|default:"all" %}
-            <a href="{% url 'device-list' %}?department={{ dep|iriencode }}&filter=active&sorting=-created_at">{% trans "More…" %}</a>
-        {% endwith %}
+        <a href="{% url 'device-list' %}?filter=active&sorting=-created_at">{% trans "More…" %}</a>
     </div>
 {% endblock %}
