@@ -106,7 +106,7 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
             for recipient in template.default_recipients.all():
                 recipient = recipient.content_object
                 if isinstance(recipient, Group):
-                    recipients += recipient.lageruser_set.all().values_list("email")[0]
+                    recipients += recipient.lageruser_set.all().values_list("email", flat=True)
                 else:
                     recipients.append(recipient.email)
             template.send(self.request, recipients, {"device": self.get_object(), "user": self.request.user})
@@ -174,7 +174,7 @@ class DeviceApiLend(generics.CreateAPIView):
                     for recipient in template.default_recipients.all():
                         recipient = recipient.content_object
                         if isinstance(recipient, Group):
-                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                            recipients += recipient.lageruser_set.all().values_list("email", flat=True)
                         else:
                             recipients.append(recipient.email)
                     template.send(self.request, recipients, {"device": device, "user": self.request.user})
@@ -214,7 +214,7 @@ class DeviceApiReturn(APIView):
                     for recipient in template.default_recipients.all():
                         recipient = recipient.content_object
                         if isinstance(recipient, Group):
-                            recipients += recipient.lageruser_set.all().values_list("email")[0]
+                            recipients += recipient.lageruser_set.all().values_list("email", flat=True)
                         else:
                             recipients.append(recipient.email)
                     template.send(self.request, recipients, {"device": device, "user": self.request.user})
