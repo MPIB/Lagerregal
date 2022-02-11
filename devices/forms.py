@@ -7,7 +7,7 @@ from django.db.models import Count
 from django.db.utils import OperationalError
 from django.db.utils import ProgrammingError
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from django_select2.forms import Select2MultipleWidget
 from django_select2.forms import Select2Widget

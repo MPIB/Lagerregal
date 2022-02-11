@@ -27,7 +27,7 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timesince import timesince
 from django.utils.timezone import utc
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
