@@ -1,6 +1,8 @@
 import csv
 import datetime
+import io
 import json
+import textwrap
 import time
 
 from django.conf import settings
@@ -11,10 +13,12 @@ from django.core.exceptions import SuspiciousOperation
 from django.db import models
 from django.db.models import Q
 from django.db.transaction import atomic
+from django.http import FileResponse
 from django.http import Http404
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
+from django.http.response import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.urls import reverse
@@ -34,6 +38,12 @@ from django.views.generic.detail import BaseDetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.detail import SingleObjectTemplateResponseMixin
 
+import pdfrw
+from reportlab.graphics.barcode import code128
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import mm
+from reportlab.pdfgen import canvas
+from rest_framework.renderers import JSONRenderer
 from reversion import revisions as reversion
 from reversion.models import Version
 
@@ -45,6 +55,7 @@ from devices.forms import DeviceFormAutomatic
 from devices.forms import DeviceGroupFilterForm
 from devices.forms import DeviceMailForm
 from devices.forms import DeviceStorageForm
+from devices.forms import DeviceTrashForm
 from devices.forms import DeviceViewForm
 from devices.forms import FilterForm
 from devices.forms import IpAddressForm
@@ -53,19 +64,19 @@ from devices.forms import LendForm
 from devices.forms import ReturnForm
 from devices.forms import ViewForm
 from devices.models import Bookmark
-from devices.models import Building
 from devices.models import Device
 from devices.models import Lending
 from devices.models import Manufacturer
 from devices.models import Note
 from devices.models import Picture
-from devices.models import Room
 from devices.models import Template
 from devicetags.forms import DeviceTagForm
 from devicetags.models import Devicetag
 from devicetypes.models import TypeAttribute
 from devicetypes.models import TypeAttributeValue
 from Lagerregal.utils import PaginationMixin
+from locations.models import Building
+from locations.models import Room
 from mail.models import MailHistory
 from mail.models import MailTemplate
 from network.models import IpAddress
@@ -268,6 +279,12 @@ class DeviceDetail(PermissionRequiredMixin, DetailView):
         context["mailform"] = DeviceMailForm(initial=mailinitial)
         context["mailform"].fields["mailtemplate"].queryset = MailTemplate.objects.all()
         versions = Version.objects.get_for_object(context["device"])
+
+        context['trashform'] = DeviceTrashForm()
+
+        if self.request.GET.get("generate_pdf", None) is not None:
+            context["generate_pdf"] = self.request.GET.get("generate_pdf", None)
+            context["pdf_comment"] = self.request.GET.get("comment", None)
 
         if len(versions) != 0:
             context["lastedit"] = versions[0]
@@ -514,6 +531,7 @@ class DeviceCreateAutomatic(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"].fields["department"].queryset = self.request.user.departments.filter(short_name__isnull=False)
+        context["form"].fields["ipaddresses"].queryset = IpAddress.objects.filter(device = None, user = None).filter(Q(department__in=self.request.user.departments.all()) | Q(department=None))
         existing_id = self.request.GET.get("id", None)
         if existing_id is not None:
             device = get_object_or_404(Device, pk=existing_id)
@@ -585,7 +603,7 @@ class DeviceUpdate(PermissionRequiredMixin, UpdateView):
             if not form.cleaned_data["department"] in self.request.user.departments.all():
                 return HttpResponseBadRequest()
         device = self.object
-        if device.archived is not None:
+        if not device.is_active:
             messages.error(self.request, _("Archived Devices can't be edited"))
             return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
 
@@ -701,7 +719,7 @@ class DeviceLend(PermissionRequiredMixin, FormView):
         templates = []
         if form.cleaned_data["device"] and form.cleaned_data["device"] != "":
             device = form.cleaned_data["device"]
-            if device.archived is not None:
+            if not device.is_active:
                 messages.error(self.request, _("Archived Devices can't be lent"))
                 return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
             if device.currentlending is not None:
@@ -744,7 +762,12 @@ class DeviceLend(PermissionRequiredMixin, FormView):
         if form.cleaned_data["device"]:
             device.currentlending = lending
             device.save()
-            return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+            url = reverse("device-detail", kwargs={"pk": device.pk})
+            if device.trashed != None and self.request.POST.get("generate_pdf", True):
+                url += "?generate_pdf=handover"
+                if "comment" in self.request.POST:
+                    url += "&comment={0}".format(self.request.POST["comment"])
+            return HttpResponseRedirect(url)
         else:
             return HttpResponseRedirect(reverse("userprofile", kwargs={"pk": lending.owner.pk}))
 
@@ -876,12 +899,7 @@ class DeviceArchive(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, 
     def post(self, request, **kwargs):
         device = self.get_object()
         if device.archived is None:
-            device.archived = datetime.datetime.utcnow().replace(tzinfo=utc)
-            device.room = None
-            device.currentlending = None
-            for ip in device.ipaddress_set.all():
-                ip.device = None
-                ip.save()
+            device.archive_device()
         else:
             device.archived = None
         device.save()
@@ -901,40 +919,30 @@ class DeviceTrash(PermissionRequiredMixin, SingleObjectTemplateResponseMixin, Ba
     def post(self, request, **kwargs):
         device = self.get_object()
         if device.trashed is None:
-            device.trashed = datetime.datetime.utcnow().replace(tzinfo=utc)
-            device.room = None
-            if device.currentlending:
-                device.currentlending.returndate = datetime.date.today()
-                device.currentlending.save()
-                device.currentlending = None
-            # if device.uses
-            if Device.objects.filter(used_in=device.pk):
-                other_list = Device.objects.filter(used_in=device.pk)
-                for element in other_list:
-                    other = element
-                    other.used_in = None
-                    other.save()
-            if device.used_in:
-                device.used_in = None
-            for ip in device.ipaddress_set.all():
-                ip.device = None
-                ip.save()
+            device.trash_device()
 
-            try:
-                template = MailTemplate.objects.get(usage="trashed")
-            except:
-                template = None
-                messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
-            if template is not None:
-                template.send(self.request, data={"device": device, "user": self.request.user})
-                messages.success(self.request, _('Mail successfully sent'))
+            if "send_mail" in request.POST and request.POST["send_mail"]:
+              try:
+                  template = MailTemplate.objects.get(usage="trashed")
+              except:
+                  template = None
+                  messages.error(self.request, _('MAIL NOT SENT - Template for trashed device does not exist for this department'))
+              if template is not None:
+                  template.send(self.request, data={"device": device, "user": self.request.user})
+                  messages.success(self.request, _('Mail successfully sent'))
         else:
             device.trashed = None
         device.save()
 
         reversion.set_comment(_("Device was trashed"))
         messages.success(request, _("Device was trashed"))
-        return HttpResponseRedirect(reverse("device-detail", kwargs={"pk": device.pk}))
+
+        url = reverse("device-detail", kwargs={"pk": device.pk})
+        if device.trashed != None and request.POST.get("generate_pdf", False):
+            url += "?generate_pdf=trashed"
+            if "reason" in request.POST:
+                url += "&comment={0}".format(request.POST["reason"])
+        return HttpResponseRedirect(url)
 
 
 class DeviceStorage(PermissionRequiredMixin, SingleObjectMixin, FormView):
@@ -1062,283 +1070,6 @@ class TemplateDelete(PermissionRequiredMixin, DeleteView):
             (reverse("template-list"), _("Templates")),
             ("", _("Delete: {0}".format(self.object.templatename)))]
         return context
-
-
-class RoomList(PermissionRequiredMixin, PaginationMixin, ListView):
-    model = Room
-    context_object_name = 'room_list'
-    permission_required = 'devices.view_room'
-
-    def get_queryset(self):
-        rooms = Room.objects.select_related("building").all()
-        self.filterstring = self.request.GET.get("filter", None)
-        if self.filterstring:
-            rooms = rooms.filter(name__icontains=self.filterstring)
-        self.viewsorting = self.request.GET.get("sorting", "name")
-        if self.viewsorting in [s[0] for s in VIEWSORTING]:
-            rooms = rooms.order_by(self.viewsorting)
-        return rooms
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context["breadcrumbs"] = [(reverse("room-list"), _("Rooms"))]
-        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
-        if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
-        else:
-            context["filterform"] = FilterForm()
-        if context["is_paginated"] and context["page_obj"].number > 1:
-            context["breadcrumbs"].append(["", context["page_obj"].number])
-        return context
-
-
-class RoomDetail(PermissionRequiredMixin, DetailView):
-    model = Room
-    context_object_name = 'room'
-    permission_required = 'devices.view_room'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context["merge_list"] = Room.objects.exclude(pk=context["room"].pk).order_by("name").values("id", "name",
-                                                                                                    "building__name")
-        context['device_list'] = Device.objects.select_related().filter(room=context["room"], archived=None,
-                                                                        trashed=None).values("id", "name",
-                                                                                             "inventorynumber",
-                                                                                             "devicetype__name")
-
-        if "room" in settings.LABEL_TEMPLATES:
-            context["label_js"] = ""
-            for attribute in settings.LABEL_TEMPLATES["room"][1]:
-                if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
-                        context["room"], attribute))
-                else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute,
-                                                                                              getattr(context["room"],
-                                                                                                      attribute))
-
-        context["breadcrumbs"] = [
-            (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk": context["room"].pk}), context["room"].name)]
-        return context
-
-
-class RoomCreate(PermissionRequiredMixin, CreateView):
-    model = Room
-    template_name = 'devices/base_form.html'
-    fields = '__all__'
-    permission_required = 'devices.add_room'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Room"
-        context['type'] = "room"
-        context["breadcrumbs"] = [
-            (reverse("room-list"), _("Rooms")),
-            ("", _("Create new room"))]
-        return context
-
-
-class RoomUpdate(PermissionRequiredMixin, UpdateView):
-    model = Room
-    template_name = 'devices/base_form.html'
-    fields = '__all__'
-    permission_required = 'devices.change_room'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
-        context["breadcrumbs"] = [
-            (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
-            ("", _("Edit"))]
-        return context
-
-
-class RoomDelete(PermissionRequiredMixin, DeleteView):
-    model = Room
-    success_url = reverse_lazy('room-list')
-    template_name = 'devices/base_delete.html'
-    permission_required = 'devices.delete_room'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context["breadcrumbs"] = [
-            (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
-            ("", _("Delete"))]
-        return context
-
-
-class RoomMerge(PermissionRequiredMixin, View):
-    model = Room
-    permission_required = 'devices.change_room'
-
-    def get(self, request, *args, **kwargs):
-        context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
-                   "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
-        context["breadcrumbs"] = [
-            (reverse("room-list"), _("Rooms")),
-            (reverse("room-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
-            ("", _("Merge with {0}".format(context["newobject"].name)))]
-        return render(request, 'devices/base_merge.html', context)
-
-    @atomic
-    def post(self, request, *args, **kwargs):
-        oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
-        newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
-        devices = Device.objects.filter(room=oldobject)
-        for device in devices:
-            device.room = newobject
-            reversion.set_comment(_("Merged Room {0} into {1}".format(oldobject, newobject)))
-            device.save()
-        oldobject.delete()
-        return HttpResponseRedirect(newobject.get_absolute_url())
-
-
-class BuildingList(PermissionRequiredMixin, PaginationMixin, ListView):
-    model = Building
-    context_object_name = 'building_list'
-    permission_required = 'devices.view_building'
-
-    def get_queryset(self):
-        buildings = Building.objects.all()
-        self.filterstring = self.request.GET.get("filter", None)
-        if self.filterstring:
-            buildings = buildings.filter(name__icontains=self.filterstring)
-        self.viewsorting = self.request.GET.get("sorting", "name")
-        if self.viewsorting in [s[0] for s in VIEWSORTING]:
-            buildings = buildings.order_by(self.viewsorting)
-        return buildings
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context["breadcrumbs"] = [(reverse("building-list"), _("Buildings"))]
-        context["viewform"] = ViewForm(initial={"viewsorting": self.viewsorting})
-        if self.filterstring:
-            context["filterform"] = FilterForm(initial={"filter": self.filterstring})
-        else:
-            context["filterform"] = FilterForm()
-        return context
-
-
-class BuildingDetail(PermissionRequiredMixin, DetailView):
-    model = Building
-    context_object_name = 'building'
-    permission_required = 'devices.view_building'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context["merge_list"] = Building.objects.exclude(pk=context["building"].pk).order_by("name")
-        context['device_list'] = Device.objects.select_related().filter(room__building=context["building"],
-                                                                        archived=None, trashed=None).values("id",
-                                                                                                            "name",
-                                                                                                            "inventorynumber",
-                                                                                                            "devicetype__name",
-                                                                                                            "room__name")
-
-        if "building" in settings.LABEL_TEMPLATES:
-            context["label_js"] = ""
-            for attribute in settings.LABEL_TEMPLATES["building"][1]:
-                if attribute == "id":
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1:07d}');".format(attribute, getattr(
-                        context["building"], attribute))
-                else:
-                    context["label_js"] += "\n" + "label.setObjectText('{0}', '{1}');".format(attribute, getattr(
-                        context["building"], attribute))
-
-        context["breadcrumbs"] = [
-            (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk": context["building"].pk}), context["building"].name)]
-        return context
-
-
-class BuildingCreate(PermissionRequiredMixin, CreateView):
-    model = Building
-    template_name = 'devices/base_form.html'
-    fields = '__all__'
-    permission_required = 'devices.add_building'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['actionstring'] = "Create new Building"
-        context['type'] = "building"
-        context["breadcrumbs"] = [
-            (reverse("building-list"), _("Buildings")),
-            ("", _("Create new building"))]
-        return context
-
-
-class BuildingUpdate(PermissionRequiredMixin, UpdateView):
-    model = Building
-    template_name = 'devices/base_form.html'
-    fields = '__all__'
-    permission_required = 'devices.change_building'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['actionstring'] = "Update"
-        context["breadcrumbs"] = [
-            (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
-            ("", _("Edit"))]
-        return context
-
-
-class BuildingDelete(PermissionRequiredMixin, DeleteView):
-    model = Building
-    success_url = reverse_lazy('building-list')
-    template_name = 'devices/base_delete.html'
-    permission_required = 'devices.delete_building'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        context["breadcrumbs"] = [
-            (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk": context["object"].pk}), context["object"].name),
-            ("", _("Delete"))]
-        return context
-
-
-class BuildingMerge(PermissionRequiredMixin, View):
-    model = Building
-    permission_required = 'devices.change_building'
-
-    def get(self, request, *args, **kwargs):
-        context = {"oldobject": get_object_or_404(self.model, pk=kwargs["oldpk"]),
-                   "newobject": get_object_or_404(self.model, pk=kwargs["newpk"])}
-        context["breadcrumbs"] = [
-            (reverse("building-list"), _("Buildings")),
-            (reverse("building-detail", kwargs={"pk": context["oldobject"].pk}), context["oldobject"].name),
-            ("", _("Merge with {0}".format(context["newobject"].name)))]
-        return render(request, 'devices/base_merge.html', context)
-
-    @atomic
-    def post(self, request, *args, **kwargs):
-        oldobject = get_object_or_404(self.model, pk=kwargs["oldpk"])
-        newobject = get_object_or_404(self.model, pk=kwargs["newpk"])
-        rooms = Room.objects.filter(building=oldobject)
-        for room in rooms:
-            room.building = newobject
-            room.save()
-        oldobject.delete()
-        return HttpResponseRedirect(newobject.get_absolute_url())
 
 
 class ManufacturerList(PermissionRequiredMixin, PaginationMixin, ListView):
@@ -1804,3 +1535,110 @@ class PublicDeviceDetailView(DetailView):
             (reverse("public-device-detail", kwargs={"pk": context["device"].pk}), context["device"].name)]
         context["nochrome"] = self.request.GET.get("nochrome", False)
         return context
+
+
+def generate_label_pdf(request, pk):
+    # Create a file-like buffer to receive PDF data.
+    buffer = io.BytesIO()
+    if hasattr(settings, "LABEL_PAGESIZE"):
+        size = settings.LABEL_PAGESIZE
+    else:
+        size = A4
+    # Create the PDF object, using the buffer as its "file."
+    p = canvas.Canvas(buffer, pagesize=size)
+
+    offset = 0
+    if hasattr(settings, "LABEL_ICON"):
+        icon_size = size[1] * 0.9
+        offset = size[1] * 0.05
+        p.drawInlineImage(settings.LABEL_ICON, offset, offset, icon_size, icon_size)
+        size = (size[0] - icon_size, size[1])
+        offset += icon_size + offset
+
+    barcode = code128.Code128('{:06d}'.format(pk), barHeight=size[1]/2, barWidth=2)
+    barcode._calculate()
+    width, height = barcode._width, barcode._height
+    barcode.drawOn(p, offset + (size[0] - width) / 2, (size[1] - height) / 2)
+    p.drawCentredString(offset + (size[0] / 2) + 1, (size[1] - height) / 2 - 11, '{:06d}'.format(pk))
+    if hasattr(settings, "LABEL_TITLE"):
+        p.setFontSize(9)
+        p.drawCentredString(offset + (size[0] / 2) + 1, (size[1] - height) / 2 + height + 6, settings.LABEL_TITLE)
+
+    # Close the PDF object cleanly, and we're done.
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = "filename=label_{0}.pdf".format(pk)
+    return response
+
+def merge(overlay_canvas: io.BytesIO, template_path: str) -> io.BytesIO:
+    template_pdf = pdfrw.PdfReader(template_path)
+    overlay_pdf = pdfrw.PdfReader(overlay_canvas)
+    for page, data in zip(template_pdf.pages, overlay_pdf.pages):
+        overlay = pdfrw.PageMerge().add(data)[0]
+        pdfrw.PageMerge(page).add(overlay).render()
+    form = io.BytesIO()
+    pdfrw.PdfWriter().write(form, template_pdf)
+    form.seek(0)
+    return form
+
+def generate_device_protocol(request, pk, purpose):
+    device = get_object_or_404(Device, pk=pk)
+
+    if purpose == "handover" and hasattr(settings, "HANDOVER_PROTOCOL_LOCATION"):
+        file_location = settings.HANDOVER_PROTOCOL_LOCATION
+        text_locations = settings.HANDOVER_PROTOCOL_TEXT_LOCATIONS
+    elif purpose == "trashed" and hasattr(settings, "TRASHED_PROTOCOL_LOCATION"):
+        file_location = settings.TRASHED_PROTOCOL_LOCATION
+        text_locations = settings.TRASHED_PROTOCOL_TEXT_LOCATIONS
+    elif purpose == "returned" and hasattr(settings, "RETURNED_PROTOCOL_LOCATION"):
+        file_location = settings.RETURNED_PROTOCOL_LOCATION
+        text_locations = settings.RETURNED_PROTOCOL_TEXT_LOCATIONS
+    else:
+        return HttpResponseNotFound()
+
+    data = io.BytesIO()
+    pdf = canvas.Canvas(data)
+    data_map = {
+        "user_name": str(request.user),
+        "date": str(datetime.date.today()),
+        "devicetype": str(device.devicetype),
+        "manufacturer": str(device.manufacturer),
+        "inventorynumber": device.inventorynumber,
+        "serialnumber": device.serialnumber,
+        "name": device.name,
+        "room": str(device.room),
+        "department": str(device.department),
+        "comment": str(request.GET.get("comment", ""))
+    }
+    if device.currentlending != None:
+        data_map["recipient_name"] = str(device.currentlending.owner)
+    
+    wrapper = textwrap.TextWrapper()
+    for (key, location) in text_locations.items():
+        if key in data_map:
+            text = data_map[key]
+            if len(location) == 3:
+                wrapper.width = location[2]
+            else:
+                wrapper.width = 70
+            lines = wrapper.wrap(text)
+            for index, line in enumerate(lines, start=0):
+                pdf.drawString(x=location[0], y=location[1] - (index * (pdf._fontsize + 4)), text=line)
+        elif key == "checkmarks":
+            for checkmark_location in location:
+                pdf.drawString(x=checkmark_location[0], y=checkmark_location[1], text="✔")
+
+    pdf.save()
+    data.seek(0)
+
+    buffer = merge(data, template_path=file_location)
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = "filename={0}_{1}.pdf".format(_("{0}_protocol".format(purpose)), pk)
+    return response

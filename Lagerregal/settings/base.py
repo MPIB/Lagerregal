@@ -1,6 +1,8 @@
 # Django settings for Lagerregal project.
 import os
 
+from reportlab.lib.units import mm
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -194,8 +196,12 @@ NPM_FILE_PATTERNS = {
     'alpinejs': [
         'dist/alpine.js',
     ],
+    'print-js': [
+        'dist/print.js',
+    ],
     'bootstrap': [
         'dist/js/bootstrap.min.js',
+        'dist/js/bootstrap.min.js.map',
     ],
     'bootswatch': ['dist/{}/bootstrap.min.css'.format(t) for t in THEMES],
     'font-awesome': [
@@ -222,6 +228,7 @@ NPM_FILE_PATTERNS = {
     ],
     'popper.js': [
         'dist/umd/popper.min.js',
+        'dist/umd/popper.min.js.map',
     ],
     'select2': [
         'dist/js/select2.min.js',
@@ -246,8 +253,39 @@ PRODUCTION = False
 
 OPERATING_SYSTEMS = [
     ("win", "Windows"),
-    ("mac", "macOS"),
+    ("osx", "macOS"),
     ("linux", "Linux")
 ]
 
+LABEL_PAGESIZE = (83*mm, 25*mm)
+LABEL_ICON = "pdf_forms/minerva.jpg"
+LABEL_TITLE = "Information Services & Technology"
+
+HANDOVER_PROTOCOL_LOCATION = "pdf_forms/Leihschein.pdf"
+HANDOVER_PROTOCOL_TEXT_LOCATIONS = {
+    "user_name": [155, 632],
+    "date": [350, 632],
+    "devicetype": [155, 597],
+    "manufacturer": [362, 597],
+    "inventorynumber": [155, 563],
+    "serialnumber": [372, 563],
+    "name": [165, 530],
+    "recipient_name": [210, 353],
+}
+TRASHED_PROTOCOL_LOCATION = "pdf_forms/geraeterueckgabe_lagerregal.pdf"
+TRASHED_PROTOCOL_TEXT_LOCATIONS = {
+    "department": [170, 668],
+    "user_name": [170, 629],
+    "date": [485, 668],
+    "devicetype": [170, 588],
+    "name": [170, 559],
+    "manufacturer": [182, 433],
+    "inventorynumber": [182, 373],
+    "serialnumber": [182, 346],
+    "room": [182, 323],
+    "comment": [175, 150, 78],
+    "checkmarks": [
+        [537, 230]
+    ]
+}
 DATA_PROVIDERS = {}

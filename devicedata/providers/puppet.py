@@ -36,7 +36,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
         entries = self.find_entries("fqdn")
         if len(entries) > 0:
             hostname = build_full_hostname(self.device)
-            if entries[0].raw_value["hostId"] != hostname:
+            if entries[0].raw_value != hostname:
                 self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), "<span class='text-warning'>"
                                                                        + entries[0].raw_value + "</span>"))
             else:
@@ -89,7 +89,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
         formatted_controllers = []
         device_addresses = self.device.ipaddress_set.all()
         for controller in controllers:
-            if any(elem.address in controller["ipAddress"] for elem in device_addresses):
+            if any(elem.address in controller["ip"] for elem in device_addresses):
                 formatted_controllers.append("{0} {1}".format(controller["identifier"], controller["ip"]))
             else:
                 formatted_controllers.append(
@@ -118,6 +118,8 @@ class PuppetProvider(BaseProvider):
 
     @staticmethod
     def __run_query(query):
+        if not hasattr(settings, "PUPPETDB_SETTINGS"):
+            return
         params = urllib.parse.urlencode({'query': query})
 
         if settings.PUPPETDB_SETTINGS['ignore_ssl'] is not True:
@@ -150,6 +152,8 @@ class PuppetProvider(BaseProvider):
         return body
 
     def get_device_info(self, device):
+        if not hasattr(settings, "PUPPETDB_SETTINGS"):
+            return
         query = (
             '["in", "certname", ["extract", "certname", ["select_facts", '
             '["and", ["=", "name", "{}"], ["=", "value", "{}"]]]]]'
@@ -161,6 +165,8 @@ class PuppetProvider(BaseProvider):
         return PuppetDeviceInfo(device, device_entries)
 
     def get_software_info(self, device):
+        if not hasattr(settings, "PUPPETDB_SETTINGS"):
+            return
         software_fact = settings.PUPPETDB_SETTINGS['software_fact']
         query_fact = settings.PUPPETDB_SETTINGS['query_fact']
 
@@ -176,6 +182,8 @@ class PuppetProvider(BaseProvider):
         return software_infos
 
     def has_device(self, device):
+        if not hasattr(settings, "PUPPETDB_SETTINGS"):
+            return False
         query = (
             '["in", "certname", ["extract", "certname", ["select_facts", '
             '["and", ["=", "name", "{}"], ["=", "value", "{}"]]]]]'

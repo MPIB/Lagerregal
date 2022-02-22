@@ -7,6 +7,7 @@ from users.models import Lageruser
 
 class LageruserAdmin(admin.ModelAdmin):
     search_fields = ('first_name', 'last_name', )
+    list_display = ('username', '__str__', 'is_superuser', 'main_department')
 
 
 class DepartmentUserAdmin(admin.ModelAdmin):

@@ -15,7 +15,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         devices = Device.objects.exclude(hostname="").filter(operating_system__isnull=True, ipaddress__isnull=False)
         for device in devices:
-            osname = device.hostname.split("-")[1]
+            components = device.hostname.split("-")
+            if len(components) < 2:
+                continue
+            osname = components[1]
             if osname in os_mapping:
                 osname = os_mapping[osname]
             for entry in settings.OPERATING_SYSTEMS:

@@ -70,6 +70,8 @@ urlpatterns = [
     path('devices/templates/add/', devices_views.TemplateCreate.as_view(), name="template-add"),
     path('devices/templates/<int:pk>/edit/', devices_views.TemplateUpdate.as_view(), name="template-edit"),
     path('devices/templates/<int:pk>/delete/', devices_views.TemplateDelete.as_view(), name="template-delete"),
+    path('devices/<int:pk>/generate-label', devices_views.generate_label_pdf, name="device-generate-label"),
+    path('devices/<int:pk>/generate-protocol/<str:purpose>', devices_views.generate_device_protocol, name="device-generate-protocol"),
 
 
     path('types/', devicetypes_views.TypeList.as_view(), name="type-list"),
@@ -83,19 +85,19 @@ urlpatterns = [
     path('types/attribute/<int:pk>/delete/', devicetypes_views.TypeAttributeDelete.as_view(), name="typeattribute-delete"),
 
 
-    path('rooms/', devices_views.RoomList.as_view(), name="room-list"),
-    path('rooms/add/', devices_views.RoomCreate.as_view(), name="room-add"),
-    path('rooms/<int:pk>/', devices_views.RoomDetail.as_view(), name="room-detail"),
-    path('rooms/<int:pk>/edit/', devices_views.RoomUpdate.as_view(), name="room-edit"),
-    path('rooms/<int:pk>/delete/', devices_views.RoomDelete.as_view(), name="room-delete"),
-    path('rooms/<int:oldpk>/merge/<int:newpk>/', devices_views.RoomMerge.as_view(), name="room-merge"),
+    path('rooms/', locations_views.RoomList.as_view(), name="room-list"),
+    path('rooms/add/', locations_views.RoomCreate.as_view(), name="room-add"),
+    path('rooms/<int:pk>/', locations_views.RoomDetail.as_view(), name="room-detail"),
+    path('rooms/<int:pk>/edit/', locations_views.RoomUpdate.as_view(), name="room-edit"),
+    path('rooms/<int:pk>/delete/', locations_views.RoomDelete.as_view(), name="room-delete"),
+    path('rooms/<int:oldpk>/merge/<int:newpk>/', locations_views.RoomMerge.as_view(), name="room-merge"),
 
-    path('buildings/', devices_views.BuildingList.as_view(), name="building-list"),
-    path('buildings/add/', devices_views.BuildingCreate.as_view(), name="building-add"),
-    path('buildings/<int:pk>/', devices_views.BuildingDetail.as_view(), name="building-detail"),
-    path('buildings/<int:pk>/edit/', devices_views.BuildingUpdate.as_view(), name="building-edit"),
-    path('buildings/<int:pk>/delete/', devices_views.BuildingDelete.as_view(), name="building-delete"),
-    path('buildings/<int:oldpk>/merge/<int:newpk>/', devices_views.BuildingMerge.as_view(), name="building-merge"),
+    path('buildings/', locations_views.BuildingList.as_view(), name="building-list"),
+    path('buildings/add/', locations_views.BuildingCreate.as_view(), name="building-add"),
+    path('buildings/<int:pk>/', locations_views.BuildingDetail.as_view(), name="building-detail"),
+    path('buildings/<int:pk>/edit/', locations_views.BuildingUpdate.as_view(), name="building-edit"),
+    path('buildings/<int:pk>/delete/', locations_views.BuildingDelete.as_view(), name="building-delete"),
+    path('buildings/<int:oldpk>/merge/<int:newpk>/', locations_views.BuildingMerge.as_view(), name="building-merge"),
 
     path('manufacturers/', devices_views.ManufacturerList.as_view(), name="manufacturer-list"),
     path('manufacturers/add/', devices_views.ManufacturerCreate.as_view(), name="manufacturer-add"),

@@ -15,10 +15,10 @@ from django_select2.forms import Select2Widget
 from devicegroups.models import Devicegroup
 from devices.models import Device
 from devices.models import Manufacturer
-from devices.models import Room
 from devices.models import Type
 from devicetypes.models import TypeAttribute
 from devicetypes.models import TypeAttributeValue
+from locations.models import Room
 from mail.models import MailTemplate
 from network.models import IpAddress
 from users.models import Department
@@ -239,7 +239,7 @@ class DeviceForm(forms.ModelForm):
     description = forms.CharField(widget=forms.Textarea(attrs={'style': "height:80px"}), max_length=1000,
                                   required=False)
     webinterface = forms.URLField(max_length=60, required=False)
-    creator = forms.ModelChoiceField(queryset=Lageruser.objects.filter(is_active=True), widget=forms.HiddenInput())
+    creator = forms.ModelChoiceField(queryset=Lageruser.objects.all(), widget=forms.HiddenInput())
     comment = forms.CharField(required=False)
     devicetype = forms.ModelChoiceField(Type.objects.annotate(size=Count('device')), required=False,
                                         widget=Select2Widget())
@@ -378,6 +378,16 @@ class DeviceMailForm(forms.Form):
     mailtemplate = forms.ModelChoiceField(MailTemplate.objects.all())
     emailsubject = forms.CharField(required=False, label=_("Subject"))
     emailbody = forms.CharField(widget=forms.Textarea(), required=False, label=_("Body"))
+
+
+
+class DeviceTrashForm(forms.Form):
+    error_css_class = 'has-error'
+    send_mail = forms.BooleanField(required=False, initial=True, label=_("Send E-Mail"))
+    generate_pdf = forms.BooleanField(required=False, initial=True, label=_("Generate PDF"))
+    reason = forms.CharField(required=False, label=_("Reason"),
+                             widget=forms.Textarea(attrs={'style': "height:60px"}),
+                             help_text=_("The reason will be printed on the generated PDF and added to the E-Mail sent"))
 
 
 class DeviceStorageForm(forms.Form):

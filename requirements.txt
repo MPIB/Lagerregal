@@ -11,4 +11,6 @@ django-favicon
 django-npm
 django-select2
 psycopg2-binary
-faker
+faker~=4.1.1
+reportlab
+requests

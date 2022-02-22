@@ -16,7 +16,7 @@
     {% has_perm 'devices.delete_device' user device as can_delete_device %}
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
 
-    {% if device.archived == None and device.trashed == None %}
+    {% if device.is_active %}
         {% if can_lend_device %}
             {% if device.currentlending != None %}
                 <a href="{% url "device-lend" device.pk %}" class="btn btn-success btn-sm">
@@ -66,10 +66,20 @@
                 {% if display_printbutton %}
                     <li>
                         <a class="dropdown-item" href="#" data-target="#printDymoModal" data-toggle="modal">
-                            <i class="fa fa-print"></i> {% trans "Print Label" %}
+                            <i class="fa fa-print"></i> {% trans "Print Dymo Label" %}
                         </a>
                     </li>
                 {% endif %}
+                <li>
+                    <button class="dropdown-item" href="#" onclick="printJS({printable: '{% url "device-generate-label" device.id %}', type:'pdf'})">
+                        <i class="fa fa-print"></i> {% trans "Print Label" %}
+                    </button>
+                </li>
+                <li>
+                    <button class="dropdown-item" href="#" onclick="printJS({printable: '{% url "device-generate-protocol" device.id "handover" %}', type:'pdf'})">
+                        <i class="fa fa-print"></i> {% trans "Print Handover Protocol" %}
+                    </button>
+                </li>
                 <li>
                     <a class="dropdown-item" href="#" data-target="#pictureModal" data-toggle="modal">
                         <i class="fa fa-picture-o"></i> {% trans "Manage Pictures" %}
@@ -109,15 +119,13 @@
                         </form>
                     </li>
                     <li>
-                        <form action="{% url "device-trash" object.id %}" method="post"
-                              data-confirm="{% trans "Are you sure?" %} {% if object.used_in %}This object is still used in {{ object.used_in }}.{% elif usedset %}This object still uses {{ usedset|join:"," }}.{% endif %}"
-                              class="form-inline">
-                            {% csrf_token %}
-                            <button class="dropdown-item"><i class="fa fa-trash-o"></i> {% trans "Trash" %}</button>
-                        </form>
+                        <a class="dropdown-item" href="#" data-target="#trashModal" data-toggle="modal">
+                            <i class="fa fa-trash-o"></i> {% trans "Trash" %}
+                        </a>
                     </li>
                 {% endif %}
-                {% if can_change_device %}
+                {% if can_delete_device %}
+                    <li class="dropdown-divider"></li>
                     <li>
                         <form action="{% url "device-delete" object.id %}" method="post"
                               data-confirm="{% trans "Are you sure?" %}">
@@ -409,6 +417,7 @@
 
 {% block htmlend %}
     {% has_perm 'devices.lend_device' user device as can_lend_device %}
+    {% has_perm 'devices.change_device' user device as can_change_device %}
 
     {% if can_lend_device %}
         {% include "snippets/modals/lending.html" with modalname="lendModal" %}
@@ -418,6 +427,10 @@
 
         {% include "snippets/modals/devicemailModal.html" with modalname="mailModal" %}
         {% include "snippets/modals/deviceImageModal.html" with modalname="pictureModal" %}
+    {% endif %}
+
+    {% if can_change_device %}
+        {% include "snippets/modals/devicetrashModal.html" with modalname="trashModal" %}
     {% endif %}
 
 
@@ -504,5 +517,9 @@
         }
 
     $("#softwaredetails").load("{% url "device-software" device.pk %}");
+    
+        {% if generate_pdf %}
+        printJS({printable: '{% url "device-generate-protocol" device.id generate_pdf %}?comment={{ pdf_comment|urlencode }}', type:'pdf'})
+        {% endif %}
     });
 {% endblock %}
