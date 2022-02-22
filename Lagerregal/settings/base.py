@@ -221,11 +221,6 @@ NPM_FILE_PATTERNS = {
         'css/dataTables.bootstrap4.min.css',
         'js/dataTables.bootstrap4.min.js',
     ],
-    'noty': [
-        'js/noty/jquery.noty.js',
-        'js/noty/layouts/*.js',
-        'js/noty/themes/*.js',
-    ],
     'popper.js': [
         'dist/umd/popper.min.js',
         'dist/umd/popper.min.js.map',
@@ -257,7 +252,7 @@ OPERATING_SYSTEMS = [
     ("linux", "Linux")
 ]
 
-LABEL_PAGESIZE = (83*mm, 25*mm)
+LABEL_PAGESIZE = (83 * mm, 25 * mm)
 LABEL_ICON = "pdf_forms/minerva.jpg"
 LABEL_TITLE = "Information Services & Technology"
 

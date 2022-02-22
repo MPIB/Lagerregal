@@ -1,31 +1,67 @@
+from django.contrib.auth.models import Group
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.mail import EmailMessage
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pystache
 
 from users.models import Lageruser
 
-USAGES = [
-    ("lent", _("Device has been lent")),
-    ("new", _("New Device is created")),
-    ("reminder", _("Reminder that device is still owned")),
-    ("returned", _("Device has been returned by user")),
-    ("room", _("Room has been changed")),
-    ("overdue", _("Reminder that device is overdue")),
-    ("owner", _("Lending owner has been changed")),
-    ("trashed", _("Device has been trashed")),
-]
+PREVIEW_DATA = {
+    "device": {
+        "archived": None,
+        "created_at": timezone.now(),
+        "creator": "user",
+        "department": "Accounting",
+        "description": "",
+        "devicetype": "Laptop",
+        "group": "",
+        "hostname": "1234",
+        "id": "123",
+        "inventoried": None,
+        "inventorynumber": "124376543",
+        "manufacturer": "Examplecompany",
+        "name": "Laptop 123",
+        "room": "201 (Building 1)",
+        "serialnumber": "1234",
+        "templending": False,
+        "trashed": None,
+        "webinterface": "http://example.com"
+    },
+    "user": {
+        "username": "testuser",
+        "first_name": "Test",
+        "last_name": "User",
+        "main_department": "Accounting",
+    },
+    "owner": {
+        "username": "seconduser",
+        "first_name": "Second",
+        "last_name": "User"
+    }
+}
 
 
 class MailTemplate(models.Model):
+    USAGE_CHOICES = [
+        ("lent", _("Device has been lent")),
+        ("new", _("New Device is created")),
+        ("reminder", _("Reminder that device is still owned")),
+        ("returned", _("Device has been returned by user")),
+        ("room", _("Room has been changed")),
+        ("overdue", _("Reminder that device is overdue")),
+        ("owner", _("Lending owner has been changed")),
+        ("trashed", _("Device has been trashed")),
+    ]
+
     name = models.CharField(_('Name'), max_length=200, unique=True)
     subject = models.CharField(_('Subject'), max_length=500)
     body = models.CharField(_('Body'), max_length=10000)
-    usage = models.CharField(_('Usage'), choices=USAGES, null=True, blank=True, max_length=200)
+    usage = models.CharField(_('Usage'), choices=USAGE_CHOICES, null=True, blank=True, max_length=200)
 
     def __str__(self):
         return self.name
@@ -46,13 +82,12 @@ class MailTemplate(models.Model):
         subject = pystache.render(self.subject, datadict)
         return subject, body
 
-    def send(self, request, recipients=None, data=None):
+    def get_datadict(self, data):
         datadict = {}
         datadict["device"] = {
             "archived": data["device"].archived,
             "created_at": data["device"].created_at,
             "creator": data["device"].creator,
-            "currentlending": data["device"].currentlending,
             "department": data["device"].department,
             "description": data["device"].description,
             "devicetype": (data["device"].devicetype.name if data["device"].devicetype is not None else ""),
@@ -77,9 +112,7 @@ class MailTemplate(models.Model):
                 "owner": str(data["device"].currentlending.owner),
                 "duedate": data["device"].currentlending.duedate,
                 "lenddate": data["device"].currentlending.lenddate
-            },
-        else:
-            datadict["device"]["currentlending"] = ""
+            }
 
         datadict["user"] = {
             "username": data["user"].username,
@@ -93,9 +126,30 @@ class MailTemplate(models.Model):
                 "first_name": data["owner"].first_name,
                 "last_name": data["owner"].last_name
             }
-        subject, body = self.format(datadict)
-        email = EmailMessage(subject=subject, body=body, to=recipients)
+
+        return datadict
+
+    def send(self, request, recipients=None, data=None):
+        subject, body = self.format(self.get_datadict(data))
+        to = []
+
+        for recipient in self.default_recipients.all():
+            recipient = recipient.content_object
+            if isinstance(recipient, Group):
+                to += recipient.lageruser_set.all().values_list("email", flat=True)
+            else:
+                to.append(recipient.email)
+
+        if recipients:
+            user_ids = [r[1:] for r in recipients if r[0] != "g"]
+            group_ids = [r[1:] for r in recipients if r[0] == "g"]
+
+            to += Lageruser.objects.filter(id__in=user_ids).values_list("email", flat=True)
+            to += Lageruser.objects.filter(groups__id__in=group_ids).values_list("email", flat=True)
+
+        email = EmailMessage(subject=subject, body=body, to=list(set(to)))
         email.send()
+
         mailhistory = MailHistory()
         mailhistory.mailtemplate = self
         mailhistory.subject = self.subject

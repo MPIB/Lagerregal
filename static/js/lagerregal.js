@@ -70,5 +70,10 @@
                 event.preventDefault();
             }
         });
+
+        $(document).on('click', '[data-print-pdf]', function(event) {
+            var url = $(this).data('print-pdf');
+            printJS({printable: url, type:'pdf'});
+        });
     });
 })();
