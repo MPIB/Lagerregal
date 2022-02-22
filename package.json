@@ -5,7 +5,7 @@
     "alpinejs": "^2.8.2",
     "bootstrap": "^4.6.0",
     "bootswatch": "^4.6.0",
-    "datatables.net": "^1.10.24",
+    "datatables.net": "^1.11.3",
     "datatables.net-bs4": "^1.10.24",
     "font-awesome": "^4.7.0",
     "jquery": "^3.6.0",
