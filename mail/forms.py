@@ -1,9 +1,11 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
+import pystache
 from django_select2.forms import Select2MultipleWidget
 
 from devices.forms import get_emailrecipientlist
-from mail.models import USAGES
+from mail.models import PREVIEW_DATA
 from mail.models import MailTemplate
 
 
@@ -11,18 +13,16 @@ class MailTemplateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["default_recipients"].choices = get_emailrecipientlist()
-        # get all valid options for template usages
-        available = dict(USAGES)
+
+        edit_usage = None
+        if kwargs.get('instance'):
+            edit_usage = kwargs['instance'].usage
         used_keys = MailTemplate.objects.values_list('usage', flat=True)
-        valid_keys = set(available.keys()) - set(used_keys)
-        valid_choices = []
-        for key in valid_keys:
-            valid_choices.append((key, available[key]))
-        # if edit: append usage of edited template to valid choices
-        edit_usage = kwargs['instance']
-        if edit_usage is not None and edit_usage.usage is not None:
-            valid_choices.append((edit_usage.usage, available[edit_usage.usage]))
-        valid_choices.insert(0, ('', '--------'))
+
+        valid_choices = [('', '--------')]
+        for key, label in MailTemplate.USAGE_CHOICES:
+            if key == edit_usage or key not in used_keys:
+                valid_choices.append((key, label))
         self.fields["usage"].choices = valid_choices
 
     error_css_class = 'has-error'
@@ -33,3 +33,12 @@ class MailTemplateForm(forms.ModelForm):
     class Meta:
         model = MailTemplate
         fields = "__all__"
+
+    def clean_body(self):
+        body = self.cleaned_data['body']
+        try:
+            renderer = pystache.Renderer(missing_tags='strict')
+            renderer.render(body, PREVIEW_DATA)
+        except Exception as ex:
+            raise ValidationError(str(ex), code='invalid') from ex
+        return body

@@ -102,14 +102,7 @@ class DeviceApiRoomChange(generics.UpdateAPIView):
             template = None
             messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
         if template is not None:
-            recipients = []
-            for recipient in template.default_recipients.all():
-                recipient = recipient.content_object
-                if isinstance(recipient, Group):
-                    recipients += recipient.lageruser_set.all().values_list("email")[0]
-                else:
-                    recipients.append(recipient.email)
-            template.send(self.request, recipients, {"device": self.get_object(), "user": self.request.user})
+            template.send(self.request, data={"device": self.get_object(), "user": self.request.user})
 
         reversion.set_user(request.user)
         reversion.set_comment(_("Device moved to room {0}").format(self.get_object().room))
@@ -170,14 +163,7 @@ class DeviceApiLend(generics.CreateAPIView):
                     template = None
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
                 if template is not None:
-                    recipients = []
-                    for recipient in template.default_recipients.all():
-                        recipient = recipient.content_object
-                        if isinstance(recipient, Group):
-                            recipients += recipient.lageruser_set.all().values_list("email")[0]
-                        else:
-                            recipients.append(recipient.email)
-                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                    template.send(self.request, data={"device": device, "user": self.request.user})
             reversion.set_ignore_duplicates(True)
             device.save()
         return response
@@ -210,14 +196,7 @@ class DeviceApiReturn(APIView):
                     template = None
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
                 if template is not None:
-                    recipients = []
-                    for recipient in template.default_recipients.all():
-                        recipient = recipient.content_object
-                        if isinstance(recipient, Group):
-                            recipients += recipient.lageruser_set.all().values_list("email")[0]
-                        else:
-                            recipients.append(recipient.email)
-                    template.send(self.request, recipients, {"device": device, "user": self.request.user})
+                    template.send(self.request, data={"device": device, "user": self.request.user})
                 reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
             device.save()
         else:

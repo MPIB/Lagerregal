@@ -7,10 +7,12 @@
         <dd>{{device.archived}}</dd>
         <dd>{{device.created_at}}</dd>
         <dd>{{device.creator}}</dd>
-        <dd>{{device.currentlending}}</dd>
+        <dd>{{device.currentlending.owner}}</dd>
+        <dd>{{device.currentlending.duedate}}</dd>
+        <dd>{{device.currentlending.lenddate}}</dd>
+        <dd>{{device.department}}</dd>
         <dd>{{device.description}}</dd>
         <dd>{{device.devicetype}}</dd>
-        <dd>{{device.department}}</dd>
         <dd>{{device.group}}</dd>
         <dd>{{device.hostname}}</dd>
         <dd>{{device.id}}</dd>
@@ -33,4 +35,4 @@
     {% endverbatim %}
 </dl>
 
-<span>Further information can be found at the <a href="https://docs.djangoproject.com/en/1.5/topics/templates/">Django template documentation</a></span>
+<span>Further information can be found at the <a href="https://mustache.github.io/mustache.5.html">Mustache template documentation</a></span>
