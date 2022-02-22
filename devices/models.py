@@ -12,9 +12,7 @@ import reversion
 from devicegroups.models import Devicegroup
 from devicetypes.models import Type
 from Lagerregal import utils
-from locations.models import Building
 from locations.models import Room
-from locations.models import Section
 from users.models import Department
 from users.models import Lageruser
 
@@ -120,7 +118,7 @@ class Device(models.Model):
 
     @property
     def is_active(self):
-        return self.archived == None and self.trashed == None
+        return self.archived is None and self.trashed is None
 
     def archive_device(self):
         self.archived = datetime.datetime.utcnow().replace(tzinfo=utc)

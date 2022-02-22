@@ -252,7 +252,7 @@ OPERATING_SYSTEMS = [
     ("linux", "Linux")
 ]
 
-LABEL_PAGESIZE = (83*mm, 25*mm)
+LABEL_PAGESIZE = (83 * mm, 25 * mm)
 LABEL_ICON = "pdf_forms/minerva.jpg"
 LABEL_TITLE = "Information Services & Technology"
 

@@ -18,15 +18,15 @@ from reversion import revisions as reversion
 
 from api.serializers import *
 from devices.models import Bookmark
-from devices.models import Building
 from devices.models import Device
 from devices.models import Lending
 from devices.models import Manufacturer
 from devices.models import Note
 from devices.models import Picture
-from devices.models import Room
 from devices.models import Template
 from devicetypes.models import Type
+from locations.models import Building
+from locations.models import Room
 from mail.models import MailTemplate
 from network.models import IpAddress
 from users.models import Lageruser
