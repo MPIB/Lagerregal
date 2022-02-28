@@ -105,7 +105,8 @@ AUTH_LDAP_DEPARTMENT_REGEX = "OU=([^,]*?),DC"
 
 DATA_PROVIDERS = {
     'opsi': 'devicedata.providers.opsi.OpsiProvider',
-    'puppet': 'devicedata.providers.puppet.PuppetProvide',
+    'puppet': 'devicedata.providers.puppet.PuppetProvider',
+    'baramundi': 'devicedata.providers.baramundi.BaramundiProvider',
 }
 
 PUPPETDB_SETTINGS = {
@@ -122,6 +123,13 @@ PUPPETDB_SETTINGS = {
 OPSI_SETTINGS = {
     "host": "https://opsi.mpib-berlin.mpg.de",
     "port": "4447",
+}
+
+BARAMUNDI_SETTINGS = {
+    "host": "https://baramundi.mpib-berlin.mpg.de",
+    "port": "443",
+    "ignore_ssl": True,
+    "authorization": ""
 }
 
 HOST_BASE_DOMAIN = "mpib-berlin.mpg.de"

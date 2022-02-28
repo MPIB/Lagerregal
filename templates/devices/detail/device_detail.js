@@ -9,6 +9,7 @@ function loadAdditionalData(adata) {
                 adata.provided_data = data.formatted_entries;
             }
             if (data.raw_entries) {
+                console.log(data.raw_entries);
                 adata.raw_provided_data = data.raw_entries;
             }
         }).fail(function() {

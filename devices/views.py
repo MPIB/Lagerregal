@@ -24,7 +24,7 @@ from django.urls import reverse
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.utils.timesince import timesince
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
@@ -725,14 +725,14 @@ class DeviceLend(PermissionRequiredMixin, FormView):
             try:
                 templates.append(MailTemplate.objects.get(usage="lent"))
             except:
-                messages.error(self.request, _('MAIL NOT SENT - Template for lent devices does not exist for your main department'))
+                messages.error(self.request, _('MAIL NOT SENT - Template for lent devices does not exist'))
 
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
                     templates.append(MailTemplate.objects.get(usage="room"))
                 except:
-                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
+                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
             if templates:
                 for template in templates:
                     template.send(self.request, data={"device": device, "user": self.request.user})
@@ -816,13 +816,13 @@ class DeviceReturn(PermissionRequiredMixin, FormView):
             try:
                 templates.append(MailTemplate.objects.get(usage="returned"))
             except:
-                messages.error(self.request, _('MAIL NOT SENT - Template for returned device does not exist for your main department'))
+                messages.error(self.request, _('MAIL NOT SENT - Template for returned device does not exist'))
             if form.cleaned_data["room"]:
                 device.room = form.cleaned_data["room"]
                 try:
                     templates.append(MailTemplate.objects.get(usage="room"))
                 except:
-                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist for your main department'))
+                    messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
             if templates:
                 for template in templates:
                     template.send(self.request, data={"device": device, "user": self.request.user})

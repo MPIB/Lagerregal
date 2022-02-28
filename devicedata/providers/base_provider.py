@@ -12,6 +12,11 @@ class BaseDeviceInfo(ABC):
     def find_entries(self, entry_type):
         return [entry for entry in self.raw_entries if entry.type == entry_type]
 
+    def simple_format(self, entry_type, name):
+        entries = self.find_entries(entry_type)
+        if len(entries) > 0:
+            self.formatted_entries.append((FormattedDeviceInfoEntry(name, entries[0].raw_value)))
+
     def __init__(self, device, raw_entries):
         self.device = device
         self.formatted_entries = []

@@ -1,0 +1,13 @@
+{% load i18n %}
+<tr>
+    <td>{% trans name %}</td>
+    <td>
+        {% if url and value %}
+            <a href="{% url url url_key %}">{{ value }}</a>
+        {% elif value %}
+            {{ value }}
+        {% else %}
+            &mdash;
+        {% endif %}
+    </td>
+</tr>

@@ -2,7 +2,7 @@ import datetime
 
 from django.db.models import Q
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 
 from reversion.models import Revision

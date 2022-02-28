@@ -17,12 +17,12 @@ def _get_provider(device):
 
 
 def _update_provided_data(device, data, force=False):
+    old_data = device.provided_data.all()
     if not force:
-        old_data = device.provided_data.all()
         if len(old_data) > 0:
             if (timezone.now() - old_data[0].stored_at).days < 7:
                 return old_data
-    device.provided_data.all().delete()
+    old_data.delete()
     for entry in data.formatted_entries:
         pd = ProvidedData()
         pd.device = device
