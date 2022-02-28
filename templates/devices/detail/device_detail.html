@@ -166,51 +166,13 @@
             <h5 id="manual_details_header">{% trans "Manual Data" %}</h5>
             <table class="table table-bordered table-striped">
                 <tbody>
-                <tr>
-                    <td>{% trans "Lagerregal ID" %}</td>
-                    <td>{{ device.pk }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Inventorynumber" %}</td>
-                    <td>{{ device.inventorynumber }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Serialnumber" %}</td>
-                    <td>{{ device.serialnumber }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Hostname" %}</td>
-                    <td>{{ device.hostname }}</td>
-                </tr>
-                <tr>
-                    <td>{% trans "Devicetype" %}</td>
-                    <td>
-                        {% if device.devicetype %}
-                            <a href="{% url 'type-detail' device.devicetype.pk %}">{{ device.devicetype }}</a>
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>{% trans "Manufacturer" %}</td>
-                    <td>
-                        {% if device.manufacturer %}
-                            <a href="{% url 'manufacturer-detail' device.manufacturer.pk %}">{{ device.manufacturer }}</a>
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                </tr>
-                <tr>
-                    <td>{% trans "Room" %}</td>
-                    <td>
-                        {% if device.room %}
-                            <a href="{% url 'room-detail' device.room.pk %}">{{ device.room }}</a>
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                </tr>
+{% include 'devices/detail/device_detail_table_entry.html' with name='Laggerregal ID' value=device.id %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Inventorynumber' value=device.inventorynumber %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Serialnumber' value=device.serialnumber %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Hostname' value=device.hostname %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Devicetype' value=device.devicetype url='type-detail' url_key=device.devicetype.pk %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Manufacturer' value=device.manufacturer url='manufacturer-detail' url_key=device.manufacturer.pk %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Room' value=device.room url='room-detail' url_key=device.room.pk %}
                 {% if device.used_in %}
                     <tr>
                         <td>{% trans "Used in" %}</td>
@@ -227,26 +189,8 @@
                         </td>
                     </tr>
                 {% endif %}
-                <tr>
-                    <td>{% trans "Devicegroup" %}</td>
-                    <td>
-                        {% if device.group %}
-                            <a href="{% url 'devicegroup-detail' device.group.pk %}">{{ device.group }}</a>
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td>{% trans "Department" %}</td>
-                    <td>
-                        {% if device.department %}
-                            {{ device.department }}
-                        {% else %}
-                            &mdash;
-                        {% endif %}
-                    </td>
-                </tr>
+{% include 'devices/detail/device_detail_table_entry.html' with name='Devicegroup' value=device.devicegroup url='devicegroup-detail' url_key=device.devicegroup.pk %}
+{% include 'devices/detail/device_detail_table_entry.html' with name='Department' value=device.department %}
                 <tr>
                     <td>{% trans "Short term device" %}</td>
                     <td>
@@ -293,10 +237,7 @@
                     </td>
                 </tr>
                 {% if device.trashed %}
-                    <tr>
-                        <td>{% trans "Trashed on" %}</td>
-                        <td>{{ device.trashed }}</td>
-                    </tr>
+                {% include 'devices/detail/device_detail_table_entry.html' with name='Trashed on' value=device.trashed %}
                 {% endif %}
                 {% if device.inventoried %}
                     <tr>
@@ -321,7 +262,7 @@
                     <span class="pull-right text-muted small">from <span x-text="storedAt()"></span> ago</span></h5>
                 <table id="automatic_details_table" class="table table-bordered table-striped">
                     <tbody>
-                    <template  x-for="entry in provided_data" :key="entry">
+                    <template x-for="entry in provided_data" :key="entry">
                         <tr>
                             <td x-text="entry.name"></td>
                             <td x-html="entry.value"></td>

@@ -45,7 +45,7 @@ class DeviceDetailsJson(View):
         raw_entries = [{"name": entry.name,
                         "type": entry.type,
                         "raw_value": as_nested_list(entry.raw_value)} for entry in device_info.raw_entries]
-        new_entries = _update_provided_data(device, device_info)
+        new_entries = _update_provided_data(device, device_info, True)
         formatted_entries = [{"name": entry.name,
                               "value": entry.formatted_value,
                               "stored_at": timesince(entry.stored_at)} for entry in new_entries]
@@ -58,8 +58,11 @@ class DeviceSoftware(View):
     @staticmethod
     def get(request, device):
         device = get_object_or_404(Device, pk=device)
+        provider = _get_provider(device)
+        if provider is None:
+            return JsonResponse({})
         try:
-            software_info = _get_provider(device).get_software_info(device)
+            software_info = provider.get_software_info(device)
         except Exception as e:
             logger.error(e)
             return HttpResponse(_("Could not load data."))

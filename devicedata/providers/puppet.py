@@ -28,9 +28,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
             self.formatted_entries.append(FormattedDeviceInfoEntry(_("Serial Number"), entries[0].raw_value))
 
     def format_type(self):
-        entries = self.find_entries("sp_machine_name")
-        if len(entries) > 0:
-            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Type"), entries[0].raw_value))
+        self.simple_format('sp_machine_name', _('Type'))
 
     def format_hostname(self):
         entries = self.find_entries("fqdn")
@@ -43,9 +41,7 @@ class PuppetDeviceInfo(BaseDeviceInfo):
                 self.formatted_entries.append(FormattedDeviceInfoEntry(_("Hostname"), entries[0].raw_value))
 
     def format_lastseen(self):
-        entries = self.find_entries("timestamp")
-        if len(entries) > 0:
-            self.formatted_entries.append(FormattedDeviceInfoEntry(_("Last Seen"), entries[0].raw_value))
+        self.simple_format('timestamp', _('Last Seen'))
 
     def format_processor(self):
         entries = self.find_entries("processors")
