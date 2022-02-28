@@ -1,7 +1,7 @@
 from django import forms
 from django.conf import settings
-from django.utils.translation import ugettext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext
+from django.utils.translation import gettext_lazy as _
 
 from users.models import DepartmentUser
 from users.models import Lageruser
@@ -20,8 +20,8 @@ class SettingsForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["timezone"].choices[0] = ("", ugettext("Default ({0})".format(settings.TIME_ZONE)))
-        self.fields["timezone"].widget.choices[0] = ("", ugettext("Default ({0})".format(settings.TIME_ZONE)))
+        self.fields["timezone"].choices[0] = ("", gettext("Default ({0})".format(settings.TIME_ZONE)))
+        self.fields["timezone"].widget.choices[0] = ("", gettext("Default ({0})".format(settings.TIME_ZONE)))
 
 
 class AvatarForm(forms.ModelForm):
