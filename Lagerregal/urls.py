@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.urls import include
-from django.urls import path, re_path
+from django.urls import path
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.i18n import JavaScriptCatalog
 from django.views.static import serve
@@ -165,7 +165,7 @@ urlpatterns = [
 
     path('oauth2/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 
-    re_path(r'^favicon\.ico$', RedirectView.as_view(url=conf.FAVICON_PATH, permanent=True), name='favicon'),
+    path('favicon.ico', RedirectView.as_view(url=conf.FAVICON_PATH, permanent=True), name='favicon'),
 
     path('devices_ajax/add_widget/', login_required(main_ajax.WidgetAdd.as_view()), name="widget_add"),
     path('devices_ajax/remove_widget/', login_required(main_ajax.WidgetRemove.as_view()), name="widget_remove"),
