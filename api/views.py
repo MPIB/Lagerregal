@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 import rest_framework.reverse
 from rest_framework import generics
@@ -196,6 +196,7 @@ class DeviceApiReturn(APIView):
                     template = None
                     messages.error(self.request, _('MAIL NOT SENT - Template for room change does not exist'))
                 if template is not None:
+
                     template.send(self.request, data={"device": device, "user": self.request.user})
                 reversion.set_comment(_("Device returned and moved to room {0}").format(device.room))
             device.save()

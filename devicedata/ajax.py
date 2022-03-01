@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.utils.timesince import timesince
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic.base import View
 
 from devicedata.generic import _get_provider
