@@ -75,7 +75,7 @@ class DeviceApiCreate(generics.CreateAPIView):
 class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Device
     serializer_class = DeviceSerializer
-    queryset = Device.objects.all()
+    queryset = model.objects.all()
 
     def get_object(self, query=None):
         if query:
@@ -88,8 +88,8 @@ class DeviceApiDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class DeviceApiRoomChange(generics.UpdateAPIView):
     model = Device
-    queryset = Device.objects.all()
     serializer_class = DeviceRoomSerializer
+    queryset = model.objects.all()
 
     def post(self, request, pk):
         return self.put(request, pk)
@@ -228,14 +228,14 @@ class DeviceApiListPictures(generics.ListCreateAPIView):
 
 class DeviceApiPicture(generics.RetrieveDestroyAPIView):
     model = Picture
-    queryset = Picture.objects.all()
     serializer_class = PictureSerializer
+    queryset = model.objects.all()
 
 
 class DeviceApiPictureRotate(generics.RetrieveUpdateAPIView):
     model = Picture
-    queryset = Picture.objects.all()
     serializer_class = PictureSerializer
+    queryset = model.objects.all()
 
     def patch(self, request, *args, **kwargs):
         import json
@@ -293,6 +293,7 @@ class TypeApiCreate(generics.CreateAPIView):
 class TypeApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Type
     serializer_class = TypeSerializer
+    queryset = model.objects.all()
 
 
 class RoomApiList(SearchQuerysetMixin, generics.ListAPIView):
@@ -308,6 +309,7 @@ class RoomApiCreate(generics.CreateAPIView):
 class RoomApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Room
     serializer_class = RoomSerializer
+    queryset = model.objects.all()
 
 
 class BuildingApiList(SearchQuerysetMixin, generics.ListAPIView):
@@ -323,6 +325,7 @@ class BuildingApiCreate(generics.CreateAPIView):
 class BuildingApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Building
     serializer_class = BuildingSerializer
+    queryset = model.objects.all()
 
 
 class ManufacturerApiList(SearchQuerysetMixin, generics.ListAPIView):
@@ -338,6 +341,7 @@ class ManufacturerApiCreate(generics.CreateAPIView):
 class ManufacturerApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Manufacturer
     serializer_class = ManufacturerSerializer
+    queryset = model.objects.all()
 
 
 class TemplateApiList(SearchQuerysetMixin, generics.ListAPIView):
@@ -353,6 +357,7 @@ class TemplateApiCreate(generics.CreateAPIView):
 class TemplateApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Template
     serializer_class = TemplateSerializer
+    queryset = model.objects.all()
 
 
 class UserApiList(SearchQuerysetMixin, generics.ListAPIView):
@@ -363,6 +368,7 @@ class UserApiList(SearchQuerysetMixin, generics.ListAPIView):
 class UserApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Lageruser
     serializer_class = UserSerializer
+    queryset = model.objects.all()
 
 
 class UserApiProfile(generics.RetrieveAPIView):
@@ -393,6 +399,7 @@ class GroupApiList(SearchQuerysetMixin, generics.ListAPIView):
 class GroupApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = Group
     serializer_class = GroupSerializer
+    queryset = model.objects.all()
 
 
 class IpAddressApiList(SearchQuerysetMixin, generics.ListCreateAPIView):
@@ -408,6 +415,7 @@ class IpAddressApiCreate(generics.CreateAPIView):
 class IpAddressApiDetail(generics.RetrieveUpdateDestroyAPIView):
     model = IpAddress
     serializer_class = IpAddressSerializer
+    queryset = model.objects.all()
 
 
 class SmallDeviceApiList(APIView):
