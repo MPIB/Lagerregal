@@ -50,7 +50,7 @@ def api_root(request, format=None):
 class SearchQuerysetMixin():
     def get_queryset(self):
         queryset = self.model.objects.all()
-        valid_fields = self.model._meta.fields
+        valid_fields = [f.name for f in self.model._meta.fields]
         filters = {}
         for param in self.request.query_params.lists():
             if param[0] in valid_fields:
@@ -58,7 +58,10 @@ class SearchQuerysetMixin():
                 if param[0] == "department":
                     key_name = "department__name__in"
                 filters[key_name] = param[1]
-        queryset = queryset.filter(**filters)
+        try:
+            queryset = queryset.filter(**filters)
+        except ValueError:
+            queryset = self.model.objects.none()
         return queryset
 
 
