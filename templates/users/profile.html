@@ -262,7 +262,7 @@
                         {% csrf_token %}
                         <div class="form-group">{{ ipaddressform.ipaddresses }}</div>
                         <div class="text-right">
-                            <button type="submit" class="btn btn-success btn-sm disabled" id="submitipaddress">
+                            <button type="submit" class="btn btn-success btn-sm" id="submitipaddress">
                                 <i class="fa fa-plus"></i> {% trans "Assign Addresses" %}
                             </button>
                         </div>
@@ -308,29 +308,4 @@
     {% if perms.users.view_lageruser and profileuser.avatar %}
         {% include "snippets/modals/avatarView.html" with modalname="avatarModal" avatarpath=profileuser.avatar.url %}
     {% endif %}
-{% endblock %}
-
-{% block scriptend %}
-    $("#id_ipaddresses").on("change", function(e) {
-        if ($(this).val()) {
-            $("#submitipaddress").removeClass("disabled");
-        } else {
-            $("#submitipaddress").addClass("disabled");
-        }
-    });
-
-    $(function() {
-        var $affix = $(".affix-container");
-        var $parent = $affix.parent();
-        var resize = function() {
-            $affix.width($parent.width());
-        };
-        $(window).resize(resize);
-        resize();
-
-        var url = document.location.toString();
-        if (url.match('#')) {
-            $('.nav-tabs a[href=#'+url.split('#')[1]+']').tab('show') ;
-        }
-    });
 {% endblock %}

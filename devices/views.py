@@ -686,7 +686,6 @@ class DeviceLend(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['actionstring'] = "Mark device as lend"
-        context['form_scripts'] = "$('#id_owner').select2();"
         if "device" in self.request.POST:
             deviceid = self.request.POST["device"]
             if deviceid != "":
@@ -853,7 +852,6 @@ class DeviceMail(PermissionRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
 
         # Add in a QuerySet of all the books
-        context['form_scripts'] = "$('#id_owner').select2();"
         context["breadcrumbs"] = [
             (reverse("device-list"), _("Devices")),
             (reverse("device-detail", kwargs={"pk": self.device.pk}), self.device.name),
